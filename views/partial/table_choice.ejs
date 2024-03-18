@@ -1,0 +1,173 @@
+
+ 
+  <!-- Bootstrap CSS -->
+  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+  <style>
+    #success-message {
+        color: green;
+    }
+    
+    #error-message {
+        color: rgb(255, 0, 0);
+    }
+</style>
+
+
+
+<!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Save
+</button> -->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Save Confirmation  
+          <div id="success-message" style="display: none;"></div>
+          <div id="error-message" style="display: none;"></div> 
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <!--  Your changes have been saved successfully. -->
+
+       <div class="form-group">
+        <label for="menu">Choisir la table où souvegarder les donées :</label>
+        <select id="menu"                                    >
+            <option value="" selected disabled>Selectionner  la table</option>
+            <% Object.keys(items).forEach(function(key) { %>
+                <option value="<%= key %>"><%= key %></option>
+            <% }); %>
+        </select>
+    </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="2" checked>
+          <label class="form-check-label" for="exampleRadios1">
+          
+           Ajouter les nouvelles et  mettre à jours les anciennes données
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="1">
+          <label class="form-check-label" for="exampleRadios2">
+            Ajouter uniquement les nouvelles données
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- Send button -->
+        <button type="button" class="btn btn-success"  onclick="SaveAndSend()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS (Optional) -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+
+<script>
+           $('#exampleModal').on('hidden.bs.modal', function () {
+    // Clear the success and error messages
+    $('#success-message').text('').hide();
+    $('#error-message').text('').hide();
+});
+
+
+function SaveAndSend() {
+    var data = saveTable();
+    var options = getSelectedOption();
+    var tableName = getSelectedValue();
+    console.log("data before save", data);
+    $.ajax({
+        url: '/saveToDatabase', // Replace with your server-side endpoint URL
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            Data: data,
+            Options: options,
+            TableName: tableName
+        }),
+        success: function (response) {
+            // Check if the response contains a message
+            if (response && response.message) {
+                // Show success message
+                $('#success-message').text("Success: " + response.message).show();
+            } else {
+                // Show generic success message if response does not contain a message
+                $('#success-message').text("Success: Data saved successfully.").show();
+            }
+            // Hide error message if it's visible
+            $('#error-message').hide();
+        },
+        error: function (xhr, status, error) {
+            // Check if the response contains an error
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                // Show error message
+                var errorMessage = xhr.responseJSON.error;
+                $('#error-message').text("Error: " + errorMessage).show();
+            } else {
+                // Show generic error message if response does not contain an error
+                $('#error-message').text("Error: Failed to save data.").show();
+            }
+            // Hide success message if it's visible
+            $('#success-message').hide();
+        }
+    });
+}
+
+
+   /* function SaveAndSend() {
+    var data = saveTable();
+    var options = getSelectedOption();
+    var tableName = getSelectedValue();
+    console.log("data before save", data);
+    $.ajax({
+        url: '/uploadsfiles/saveToDatabase', // Replace with your server-side endpoint URL
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            Data: data,
+            Options: options,
+            TableName: tableName
+        }),
+        success: function (response) {
+            // Show success message
+            $('#success-message').text("Success : " + response.message).show();
+            // Hide error message if it's visible
+            $('#error-message').hide();
+        },
+        error: function (xhr, status, error) {
+            // Show error message
+            var errorMessage = JSON.parse(xhr.responseText).error;
+            $('#error-message').text("Error saving data : " + errorMessage).show();
+            // Hide success message if it's visible
+            $('#success-message').hide();
+        }
+    });
+}
+ */
+   // }
+
+    function getSelectedOption() {
+        var selectedOption = document.querySelector('input[name="exampleRadios"]:checked').value;
+        return selectedOption;
+    }
+
+    function getSelectedValue() {
+        var menu = document.getElementById("menu");
+        var selectedValue = menu.value;
+        return selectedValue;
+    }
+
+
+</script>
+
+

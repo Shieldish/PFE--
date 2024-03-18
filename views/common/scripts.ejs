@@ -1,0 +1,39 @@
+<script src="../../public/js/script.js"></script>
+    <!-- Include Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   <!--  <script>
+        // JavaScript for highlighting active items in the sidebar and navbar
+        const currentLocation = location.pathname + location.hash;
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+
+        sidebarItems.forEach(item => {
+            if (item.getAttribute('href') === currentLocation) {
+                item.classList.add('active');
+            }
+        });
+    </script> -->
+
+<script>
+    // JavaScript for highlighting active items in the sidebar and navbar
+    const currentLocation = location.pathname + location.hash;
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+
+    sidebarItems.forEach(item => {
+        if (item.getAttribute('href') === currentLocation) {
+            item.classList.add('active');
+        }
+
+        item.addEventListener('click', function() {
+            // Remove 'active' class from all sidebar items
+            sidebarItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Add 'active' class to the clicked item
+            this.classList.add('active');
+        });
+    });
+</script>

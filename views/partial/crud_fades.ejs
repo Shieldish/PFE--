@@ -1,0 +1,59 @@
+<!-- Add New Record Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLabel">Add New <%= tableName %></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Form for adding new record -->
+          <!-- Form for adding new record -->
+  <form action="/gestion/<%= tableName %>/add" method="POST">
+    <% if (data.length > 0) { %>
+      <% Object.keys(data[0]).forEach(key => { %>
+        <div class="form-group">
+          <label for="<%= key %>"><%= key %></label>
+          <input type="text" class="form-control" id="<%= key %>" name="<%= key %>" required>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>No columns available</p>
+    <% } %>
+    <button type="submit" class="btn btn-primary float-right">Add <%= tableName %></button>
+  </form>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+                         <!--  modal for edit -->
+  
+  <% data.forEach(row => { %>
+    <div class="modal fade" id="editModal<%= row.EMAIL %>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit <%= tableName %></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/gestion/<%= tableName %>/update/<%= row.EMAIL %>" method="POST">  <% Object.keys(data[0]).forEach(key => { %>
+                <div class="form-group">
+                  <label for="<%= key %>"><%= key %></label>
+                  <input type="text" class="form-control" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">  </div>
+              <% }); %>
+              <button type="button" class="btn btn-danger float-left" data-dismiss="modal">Annuler </button>
+              <button type="submit" class="btn btn-primary float-right">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <% }); %>
+  

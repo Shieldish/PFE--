@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%-include('./common/head') %>
+    <title>Upload Excel File</title>
+   <!--  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">   
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+
+ <style>
+    /* Set fixed height and make tbody scrollable */
+</style>
+</head>
+<body>
+    <div class="container">
+        <%-include('./common/sidebar') %>
+         <div class="main-content">
+            <%-include('./common/navbar') %>
+          <main>
+            <strong class="mt-5">Upload Excel File</strong>
+            <form class="mt-3" id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file">
+                        <i class="fas fa-file-excel"></i> Choose Excel File:
+                    </label>
+                    <input type="file" class="form-control-file" id="file" name="file" required accept=".csv, .xlsx">
+                </div>
+                <button type="button" class="btn btn-dark" id="uploadButton" onclick="validateAndUpload()">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+                  <!-- Include the table -->
+                  <%- include('./partial/schemaInfo') %>
+                  <%- include('./partial/u_table_save') %>
+                  <%- include('./partial/fadeError') %>
+            </form>       
+          </main>  
+        </div>
+    </div>
+
+    <!-- Modal for Error Message -->
+   
+    <%-include('./common/scripts')%>
+               
+    <!-- Include Bootstrap JS and jQuery from CDN -->
+  <!--   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js"></script> 
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/mdbootstrap/js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mdbootstrap/js/bootstrap.min.js"></script> -->
+    
+    <!-- Bootstrap JS and jQuery -->
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
+    
+    <script>
+        function validateAndUpload() {
+            var fileInput = document.getElementById('file');
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.csv|\.xlsx)$/i;
+    
+            if (!allowedExtensions.exec(filePath)) {
+                displayError("Please choose a .csv or .xlsx file.");
+            } else {
+                // Proceed with file upload
+                document.getElementById('uploadForm').submit();
+            }
+        }
+    
+        function displayError(message) {
+            var errorMessageElement = document.getElementById('errorMessage');
+            errorMessageElement.textContent = message;
+            $('#errorModal').modal('show');
+        }
+        
+    </script>
+</body>
+</html>
