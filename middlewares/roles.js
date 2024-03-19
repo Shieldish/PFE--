@@ -4,6 +4,8 @@ const isAdmin = (req, res, next) => {
     } else {
      // next();
      return res.status(403).json({ error: 'Access denied' });
+    // return res.status(403).send('Access denied');
+
     }
   };
   
@@ -14,5 +16,4 @@ const isAdmin = (req, res, next) => {
       return res.status(403).json({ error: 'Access denied' });
     }
   };
-  
   module.exports = { isAdmin, isUser };

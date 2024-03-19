@@ -35,22 +35,12 @@ router.get('/', (req, res) => {
       }
       let count=results.length
       
+      //remove password , token , and date :  
       const keysToRemove = ['PASSWORD', 'TOKEN','DATE'];
       const filteredArray = results.map(obj => {
         keysToRemove.forEach(key => delete obj[key]);
         return obj;
       });
-
-      /* const formattedArray = keysToRemove.map(obj => {
-        if (obj.DATE instanceof Date) {
-          const formattedDate = `${obj.date.getDate()}/${obj.date.getMonth() + 1}/${obj.date.getFullYear()} ${obj.date.toLocaleTimeString()}`;
-          return { ...obj, date: formattedDate };
-        } else {
-          return obj;
-        }
-      }); */
-      
-
 
       res.render('crud', { data: filteredArray, tableName, count  });
     });

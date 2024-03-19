@@ -1,4 +1,3 @@
-// app.js
 const $ = require('jquery');
 global.jQuery = $;
 const session = require('express-session');
@@ -14,8 +13,6 @@ const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-//const flash = require('flash-message');
-
 
 const app = express();
 app.use(express.json());
@@ -32,6 +29,7 @@ app.use((req, res, next) => {
   res.locals.messages = req.flash();
   next();
 });
+
 // Set views directory
 app.set('views', path.join(__dirname, 'views'));
 

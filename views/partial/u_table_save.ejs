@@ -1,16 +1,19 @@
 <style>
     /* Set fixed height and make tbody scrollable */
     .table-bordered {
-        max-height: 550px; /* Set the maximum height for the table */
+        max-height: 500px; /* Set the maximum height for the table */
         overflow-y: auto; /* Enable vertical scrollbar */
     }
 </style> 
 
 <% if (Array.isArray(dt) && dt.length > 0) { %> 
  <strong class="mt-5"  style="text-align: center;">Data from upload files   </strong> 
- <button type="button" class="btn btn-success" id="saveButton" onclick="saveTable()" data-toggle="modal" data-target="#exampleModal">
-    <i class="fas fa-save"></i>Save
-</button>
+ <div class="d-flex justify-content-end"> <!-- Add a flex container to align the button to the right -->
+    <button type="button" class="btn btn-success" id="saveButton" onclick="saveTable()" data-toggle="modal" data-target="#exampleModal">
+        <i class="fas fa-save"></i> Save table modification
+    </button>
+</div>
+
     <%- include('table_choice') %>
     <div class="table-bordered">
         <table class="table"   >

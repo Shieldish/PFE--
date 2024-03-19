@@ -1,29 +1,7 @@
-/* const jwt = require('jsonwebtoken');
-
-const authenticate = (req, res, next) => {
-  const token = req.session.token;
-
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, 'your_secret_key');
-    req.userId = decoded.userId;
-    next();
-  } catch (err) {
-    res.status(403).json({ error: 'Invalid token' });
-  } 
-};
-
-module.exports = authenticate; */
-
 const jwt = require('jsonwebtoken');
-
 // Authentication middleware
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
-
   if (!token) {
 
     // Store the original URL in session or cookie
