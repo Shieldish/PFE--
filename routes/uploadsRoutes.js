@@ -44,17 +44,18 @@ let items=[]
  */
 
 router.get('/upload', (req, res) => {
+  // Assuming you have a MySQL connection named 'connection' already established
+
   // Query MySQL for table names
   connection.query('SHOW TABLES', (err, results) => {
     if (err) {
       console.error('Error fetching table names:', err);
-      res.status(500).send('Error fetching table names');
-      return;
+      return res.status(500).send('Error fetching table names');
     }
 
     const tables = {};
 
-    // Get the structure for each table
+    // Function to get the structure for each table
     const getTableStructure = (tableName) => {
       return new Promise((resolve, reject) => {
         connection.query(`DESCRIBE ${tableName}`, (err, columns) => {
@@ -62,7 +63,6 @@ router.get('/upload', (req, res) => {
             reject(err);
             return;
           }
-
           const columnNames = columns.map(column => column.Field);
           resolve(columnNames);
         });
@@ -79,10 +79,11 @@ router.get('/upload', (req, res) => {
 
     Promise.all(tableStructurePromises)
       .then(() => {
-        console.log(tables)
-        let items=tables
-       // res.render('index', { tables });
-        res.render('uploads', {dt:data, items: items });
+        items=tables
+
+        // res.render('index', { tables });
+ 
+        return res.render('uploads', {dt:data, items: items });
       })
       .catch(err => {
         console.error('Error fetching table structures:', err);
@@ -90,7 +91,6 @@ router.get('/upload', (req, res) => {
       });
   });
 });
-
 
 router.post('/upload', upload.single('file'), async (req, res) => {
     const file = req.file;
@@ -125,7 +125,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 data=transformedRow
                 return transformedRow;
             });
+           // res.render('uploads', {dt:data, items: items });
             return res.render('uploads', { dt: excelData , items : items });
+           
         } else if (fileType === '.csv') {
             // Read CSV file asynchronously
             const csvData = [];
@@ -143,7 +145,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                     data=csvData
                 })
                 .on('end', () => {
-                    res.render('uploads', { dt: csvData ,items: items });
+                 // res.render('uploads', {dt:data, items: items });
+                  return res.render('uploads', { dt: csvData ,items: items });
                 })
                 .on('error', (err) => {
                     console.error('Error:', err);
