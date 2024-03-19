@@ -233,9 +233,8 @@ router.post('/login', async (req, res) => {
       req.flash('error', 'Email not found');
       return res.render('../connection/login', { messages: req.flash() });
     }
-    if(!user.ISVALIDATED){
-      
-      req.flash('info', ' Account not activated. Please check your email and confirm your registration before logging in.!');
+    if (!user.ISVALIDATED) {
+      req.flash('info', 'Account not activated. Please check your email and confirm your registration before logging in!');
       return res.render('../connection/login', { messages: req.flash() });
     }
 
@@ -244,12 +243,22 @@ router.post('/login', async (req, res) => {
       return res.render('../connection/login', { messages: req.flash() });
     }
     
+    const NAME = user.NOM;
+    const PRENOM = user.PRENOM;
+    const EMAIL = user.EMAIL;
+    console.log(EMAIL, NAME, PRENOM);
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
-
+     
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     req.flash('success', 'Login successful!');
+    
+    // Redirect to home page after successful login
     res.redirect('/home');
+
+    // Render the navbar with user profile information
+    res.render('/common/navbar', { NAME, PRENOM, EMAIL });
+
   } catch (err) {
     req.flash('error', err.message);
     res.render('../connection/login', { messages: req.flash() });

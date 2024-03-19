@@ -1,4 +1,4 @@
-ID,Nom,Prenom,Departement,Email,Date
+ID,Nom,Prénom,Departement,émail,Date
 1,Dupont,Jean,Ventes,jean.dupont@example.com,2/27/2024 8:00
 2,Martin,Marie,RH,marie.martin@example.com,2/27/2024 8:30
 3,Dubois,Pierre,Marketing,pierre.dubois@example.com,2/27/2024 9:00

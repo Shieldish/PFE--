@@ -1,0 +1,53 @@
+<style>.profile-info {
+    display: none;
+    /* Additional styling for profile information */
+}
+
+.profile-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card h2 {
+    margin-top: 0;
+}
+</style>
+<nav class="navbar">
+    <div class="search-bar">
+        <input type="text" placeholder="Rechercher...">
+        <i class="fas fa-search"></i>
+    </div>
+    <div class="user-info">
+        <i class="fas fa-bell"></i>
+        <div class="user-avatar" id="userAvatar">
+            <img src="avatar.jpg" alt="Avatar">
+        </div>
+        <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
+    </div>
+</nav>
+<div class="profile-info" id="profileInfo">
+    <!-- Profile information as cards -->
+    <div class="profile-card">
+        <h2>User Profile</h2>
+        <p>Name: John Doe</p>
+        <p>Email: johndoe@example.com</p>
+        <!-- Add more profile information as needed -->
+    </div>
+</div>
+<script>document.addEventListener("DOMContentLoaded", function() {
+    var userAvatar = document.getElementById("userAvatar");
+    var profileInfo = document.getElementById("profileInfo");
+
+    userAvatar.addEventListener("click", function() {
+        if (profileInfo.style.display === "none") {
+            profileInfo.style.display = "block";
+        } else {
+            profileInfo.style.display = "none";
+        }
+    });
+});
+</script>

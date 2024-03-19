@@ -1,15 +1,92 @@
-
-    <nav class="navbar">
-        <div class="search-bar">
-            <input type="text" placeholder="Rechercher...">
-            <i class="fas fa-search"></i>
-        </div>
-        <div class="user-info">
-            <i class="fas fa-bell"></i>
-            <div class="user-avatar">
-                <img src="https://via.placeholder.com/40" alt="Avatar">
-            </div>
-            <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
-        </div>
-    </nav>
+<style>.profile-info {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    z-index: 1;
+  }
   
+  .profile-card {
+    background-color: rgb(18, 15, 15);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 16px;
+    min-width: 200px;
+    max-width: 300px;
+  }
+  
+  .profile-card p {
+    margin: 8px 0;
+  }
+  .user-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+  </style>
+
+
+<nav class="navbar">
+    <div class="search-bar">
+      <input type="text" placeholder="Rechercher...">
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="user-info">
+      <i class="fas fa-bell"></i>
+      <div class="user-avatar">
+        <img src="" alt="Avatar" id="avatar-image">
+        <div class="profile-info">
+          <div class="profile-card">
+            <!-- Profile Information HTML -->
+           
+            
+            <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
+            <!-- Add more profile information as needed -->
+          </div>
+        </div>
+      </div>
+     <!--  <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i> -->
+    </div>
+  </nav>
+  <script src="https://unpkg.com/@dicebear/browser/dist/browser.js"></script>
+
+  <script>
+    function generateAvatar() {
+      const avatarImage = document.getElementById('avatar-image');
+      const seed = Math.floor(Math.random() * 1000);
+      const avatarOptions = {
+        style: 'avataaars',
+        seed: seed,
+      };
+      const avatar = DiceBear.create(avatarOptions);
+      avatarImage.src = avatar.png;
+    }
+  
+    window.addEventListener('load', generateAvatar);
+  </script>
+  
+  <style>
+    /* CSS styles */
+  </style>
+  
+  <nav class="navbar">
+    <!-- HTML structure -->
+  </nav>
+  
+  <script>
+    const userAvatar = document.querySelector('.user-avatar');
+    const profileInfo = document.querySelector('.profile-info');
+  
+    userAvatar.addEventListener('click', () => {
+      profileInfo.style.display = profileInfo.style.display === 'none' ? 'block' : 'none';
+    });
+  
+    function generateRandomAvatar() {
+      const avatarImage = document.getElementById('avatar-image');
+      const randomString = Math.random().toString(36).substring(2, 7); // Generate a random string
+      const avatarUrl = `https://robohash.org/${randomString}?set=set4&size=80x80`;
+      avatarImage.src = avatarUrl;
+    }
+    window.addEventListener('load', generateRandomAvatar);
+  </script>

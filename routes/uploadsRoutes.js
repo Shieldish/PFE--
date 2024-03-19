@@ -29,7 +29,7 @@ let data=[]
 let items=[]
 
 
-router.get('/upload', (req, res) => {
+/* router.get('/upload', (req, res) => {
     getAllTablesAndStructure()
         .then(tablesStructure => {
             items=tablesStructure ;
@@ -41,6 +41,56 @@ router.get('/upload', (req, res) => {
             res.status(500).send('Error occurred while fetching tables and their structures');
         });
 });
+ */
+
+router.get('/upload', (req, res) => {
+  // Query MySQL for table names
+  connection.query('SHOW TABLES', (err, results) => {
+    if (err) {
+      console.error('Error fetching table names:', err);
+      res.status(500).send('Error fetching table names');
+      return;
+    }
+
+    const tables = {};
+
+    // Get the structure for each table
+    const getTableStructure = (tableName) => {
+      return new Promise((resolve, reject) => {
+        connection.query(`DESCRIBE ${tableName}`, (err, columns) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          const columnNames = columns.map(column => column.Field);
+          resolve(columnNames);
+        });
+      });
+    };
+
+    // Fetch table structures in parallel
+    const tableStructurePromises = results.map(row => {
+      const tableName = row[`Tables_in_${connection.config.database}`];
+      return getTableStructure(tableName).then(columns => {
+        tables[tableName] = columns;
+      });
+    });
+
+    Promise.all(tableStructurePromises)
+      .then(() => {
+        console.log(tables)
+        let items=tables
+       // res.render('index', { tables });
+        res.render('uploads', {dt:data, items: items });
+      })
+      .catch(err => {
+        console.error('Error fetching table structures:', err);
+        res.status(500).send('Error fetching table structures');
+      });
+  });
+});
+
 
 router.post('/upload', upload.single('file'), async (req, res) => {
     const file = req.file;
