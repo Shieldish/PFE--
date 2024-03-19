@@ -5,13 +5,8 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'fss'
+  database: 'test'
 });
-
-
-
-
-
 
 connection.connect(err => {
   if (err) {

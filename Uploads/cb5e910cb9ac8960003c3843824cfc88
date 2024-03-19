@@ -1,0 +1,47 @@
+ID,Nom,Email,Prenom,Departament,Date
+1,María,mariagonzalez@example.com,González,Ventas,2024-03-08
+2,José,josemartinez@example.com,Martínez,Marketing,2024-03-08
+3,Ana,anafernandez@example.com,Fernández,Recursos Humanos,2024-03-08
+4,Carlos,carlosgarcia@example.com,García,Desarrollo de Producto,2024-03-08
+5,Laura,lauraruiz@example.com,Ruiz,Operaciones,2024-03-08
+6,Francisco,franciscoalvarez@example.com,Álvarez,Finanzas,2024-03-08
+7,Paula,paulasilva@example.com,Silva,Desarrollo de Producto,2024-03-08
+8,David,davidlopez@example.com,López,Marketing,2024-03-08
+9,Sofía,sofiaperez@example.com,Pérez,Recursos Humanos,2024-03-08
+10,Marcos,marcosrodriguez@example.com,Rodríguez,Ventas,2024-03-08
+11,Andrea,andreagonzalez@example.com,González,Operaciones,2024-03-08
+12,Alejandro,alejandromartin@example.com,Martín,Finanzas,2024-03-08
+13,Marta,martinez@example.com,Martínez,Desarrollo de Producto,2024-03-08
+14,Elena,elenagarcia@example.com,García,Marketing,2024-03-08
+15,Adrián,adrianfernandez@example.com,Fernández,Recursos Humanos,2024-03-08
+16,Julia,juliaruiz@example.com,Ruiz,Ventas,2024-03-08
+17,Javier,javiergomez@example.com,Gómez,Operaciones,2024-03-08
+18,Lucía,luciamartin@example.com,Martín,Desarrollo de Producto,2024-03-08
+19,Sergio,sergioalonso@example.com,Alonso,Finanzas,2024-03-08
+20,Natalia,nataliasanchez@example.com,Sánchez,Marketing,2024-03-08
+21,Iván,ivanperez@example.com,Pérez,Recursos Humanos,2024-03-08
+22,Sara,sararuiz@example.com,Ruiz,Ventas,2024-03-08
+23,Rubén,rubengarcia@example.com,García,Operaciones,2024-03-08
+24,Isabel,isabelfernandez@example.com,Fernández,Desarrollo de Producto,2024-03-08
+25,Diego,diegolopez@example.com,López,Finanzas,2024-03-08
+26,Ana,anamartinez@example.com,Martínez,Marketing,2024-03-08
+27,Alejandro,alejandrogonzalez@example.com,González,Recursos Humanos,2024-03-08
+28,Sofía,sofiaruiz@example.com,Ruiz,Operaciones,2024-03-08
+29,Pablo,pablogomez@example.com,Gómez,Desarrollo de Producto,2024-03-08
+30,María,mariaalonso@example.com,Alonso,Finanzas,2024-03-08
+31,Andrea,andreaperez@example.com,Pérez,Marketing,2024-03-08
+32,Javier,javiernunez@example.com,Núñez,Recursos Humanos,2024-03-08
+33,Sara,saragarcia@example.com,García,Operaciones,2024-03-08
+34,Carlos,carlostorres@example.com,Torres,Desarrollo de Producto,2024-03-08
+35,Marina,marinagonzalez@example.com,González,Finanzas,2024-03-08
+36,Juan,juangomez@example.com,Gómez,Marketing,2024-03-08
+37,Lucía,luciaperez@example.com,Pérez,Recursos Humanos,2024-03-08
+38,Antonio,antoniosanchez@example.com,Sánchez,Operaciones,2024-03-08
+39,Elena,elenaruiz@example.com,Ruiz,Desarrollo de Producto,2024-03-08
+40,Pablo,pablogarcia@example.com,García,Finanzas,2024-03-08
+41,Ana,anamartin@example.com,Martín,Marketing,2024-03-08
+42,Manuel,manuelfernandez@example.com,Fernández,Recursos Humanos,2024-03-08
+43,Natalia,natalialopez@example.com,López,Ventas,2024-03-08
+44,David,davidsanchez@example.com,Sánchez,Operaciones,2024-03-08
+45,Irene,irenefernandez@example.com,Fernández,Desarrollo de Producto,2024-03-08
+46,Pedro,pedrogonzalez@example.com,González,Finanzas,2024-03

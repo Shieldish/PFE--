@@ -79,7 +79,7 @@ router.post('/register', async function(req, res) {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+   // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate registration token
     const registrationToken = generateRegistrationToken(email);
@@ -89,7 +89,7 @@ router.post('/register', async function(req, res) {
       NOM: nom.trim().toUpperCase(),
       PRENOM: prenom.trim(),
       EMAIL: email.trim().toLowerCase(),
-      PASSWORD: hashedPassword,
+      PASSWORD: password,
       TOKEN: registrationToken
     });
            

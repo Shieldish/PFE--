@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 
 // Replace 'database_name', 'username', 'password', and 'host' with your MySQL database credentials
-const sequelize = new Sequelize('fss', 'root', '', {
+const sequelize = new Sequelize('test', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
   port: 3306
@@ -37,7 +37,7 @@ const Employer = sequelize.define('Employer', {
     allowNull: true
   }
 }, {
-  tableName: 'Chef',
+  tableName: 'ETUDIANT',
   timestamps: false
 });
 
@@ -71,7 +71,7 @@ const Etudiant = sequelize.define('Etudiant', {
     allowNull: true
   },
 }, {
-  tableName: 'Docteur',
+  tableName: 'ENSEIGANT',
   timestamps: false
 });
 
