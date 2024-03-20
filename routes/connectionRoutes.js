@@ -278,7 +278,7 @@ router.post('/login', async (req, res) => {
 // In your backend route
 router.get('/profiles', (req, res) => {
   const userInfo = req.session.user;
-  console.log('user :',userInfo)
+ 
   res.json(userInfo)
      
 });

@@ -158,9 +158,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         return res.status(500).send('Error while processing file.');
     }
 });
-
-
-
 router.post('/saveToDatabase', async (req, res) => {
   const { Data, Options, TableName } = req.body;
   let d = Data;
@@ -227,6 +224,7 @@ router.post('/saveToDatabase', async (req, res) => {
     res.render('uploads',{dt : data, items:items });
 });
 
+
 router.get('/pages/:pageName', (req, res) => {
   const pageName = req.params.pageName;
   // Define data for each page dynamically
@@ -241,7 +239,6 @@ router.get('/pages/:pageName', (req, res) => {
       }
       res.send(html);
   });
-
   }  else if (pageName === 'etudiant') {
    
     ejs.renderFile(`views/etudiant.ejs`,{ layout: 'layouts/main', sidebar: true }, (err, html) => {
@@ -251,18 +248,13 @@ router.get('/pages/:pageName', (req, res) => {
       }
       res.send(html);
   });
-
   } 
-  
-  
   else {
     // Handle unknown page names
     console.error('Unknown page:');
     return res.status(404).send('Page not found');
   }
-  
   // Render the EJS file with dynamic data
-  
 });
 
 module.exports = router;

@@ -7,7 +7,7 @@
   }
   
   .profile-card {
-    background-color: rgb(37, 37, 41);
+    background-color: rgb(32, 99, 44);
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(155, 14, 66, 0.3);
@@ -90,7 +90,7 @@
   </script>
  <!-- Your HTML code remains unchanged -->
 
- <!-- <script>
+  <script>
       fetch('/connection/profiles')
     .then(response => response.json())
     .then(data => {
@@ -132,30 +132,4 @@
 
     profileCard.appendChild(logoutContainer);
   }
-</script> -->
-<script>
-  fetch('/connection/profiles')
-    .then(response => response.json())
-    .then(data => {
-      // Handle the JSON data
-      console.log('data:', data);
-      
-      const profileCard = document.querySelector('.profile-card');
-      const profileInfo = document.querySelector('.profile-info');
-
-      // Update profile information
-      profileCard.innerHTML = `
-        <p>Nom: ${data.NAME}</p>
-        <p>Prenom: ${data.PRENOM}</p>
-        <p>Email: ${data.EMAIL}</p>
-        <!-- Add more profile information fields as needed -->
-        <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
-      `;
-      
-      // Display the profile information
-      profileInfo.style.display = 'block';
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-</script>
+</script> 
