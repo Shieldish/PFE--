@@ -34,7 +34,7 @@ let items=[]
         .then(tablesStructure => {
             items=tablesStructure ;
            console.log('items from upload : ',items);
-            res.render('uploads', {dt:data, items: tablesStructure });
+          return  res.render('uploads', {dt:data, items: tablesStructure });
         })
         .catch(error => {
             console.error('Error:', error);
@@ -264,8 +264,5 @@ router.get('/pages/:pageName', (req, res) => {
   // Render the EJS file with dynamic data
   
 });
-
-
-
 
 module.exports = router;

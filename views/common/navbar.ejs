@@ -7,13 +7,13 @@
   }
   
   .profile-card {
-    background-color: rgb(18, 15, 15);
+    background-color: rgb(37, 37, 41);
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(155, 14, 66, 0.3);
     padding: 16px;
     min-width: 200px;
-    max-width: 300px;
+    max-width: 400px;
   }
   
   .profile-card p {
@@ -25,8 +25,6 @@
   border-radius: 50%;
 }
   </style>
-
-
 <nav class="navbar">
     <div class="search-bar">
       <input type="text" placeholder="Rechercher...">
@@ -40,7 +38,7 @@
           <div class="profile-card">
             <!-- Profile Information HTML -->
            
-            
+           
             <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
             <!-- Add more profile information as needed -->
           </div>
@@ -90,3 +88,74 @@
     }
     window.addEventListener('load', generateRandomAvatar);
   </script>
+ <!-- Your HTML code remains unchanged -->
+
+ <!-- <script>
+      fetch('/connection/profiles')
+    .then(response => response.json())
+    .then(data => {
+      // Update the profile card with the received data
+      updateProfileCard(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+  function updateProfileCard(userData) {
+    const profileCard = document.querySelector('.profile-card');
+
+    // Clear the existing content of the profile card
+    profileCard.innerHTML = '';
+
+    // Create HTML elements to display the user data
+    const nameElement = document.createElement('p');
+    nameElement.textContent = `Name: ${userData.NAME}`;
+
+    const prenomElement = document.createElement('p');
+    prenomElement.textContent = `First Name: ${userData.PRENOM}`;
+
+    const emailElement = document.createElement('p');
+    emailElement.textContent = `Email: ${userData.EMAIL}`;
+
+    // Append the elements to the profile card
+    profileCard.appendChild(nameElement);
+    profileCard.appendChild(prenomElement);
+    profileCard.appendChild(emailElement);
+
+    // Add a logout link
+    const logoutLink = document.createElement('a');
+    logoutLink.href = '/connection/logout';
+    logoutLink.textContent = 'Logout';
+
+    const logoutContainer = document.createElement('div');
+    logoutContainer.appendChild(logoutLink);
+
+    profileCard.appendChild(logoutContainer);
+  }
+</script> -->
+<script>
+  fetch('/connection/profiles')
+    .then(response => response.json())
+    .then(data => {
+      // Handle the JSON data
+      console.log('data:', data);
+      
+      const profileCard = document.querySelector('.profile-card');
+      const profileInfo = document.querySelector('.profile-info');
+
+      // Update profile information
+      profileCard.innerHTML = `
+        <p>Nom: ${data.NAME}</p>
+        <p>Prenom: ${data.PRENOM}</p>
+        <p>Email: ${data.EMAIL}</p>
+        <!-- Add more profile information fields as needed -->
+        <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
+      `;
+      
+      // Display the profile information
+      profileInfo.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+</script>

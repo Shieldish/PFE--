@@ -11,9 +11,14 @@ const crypto = require('crypto');
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const cookieParser = require('cookie-parser');
-const {sendUserRegistrationMail,sendUserResetPasswordMail,sendUserLoginInfoMail}=require('../utils/emailUtils');
+const {sendUserRegistrationMail,sendUserResetPasswordMail}=require('../utils/emailUtils');
 const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const flash = require('connect-flash');
+const { LocalStorage } = require('node-localstorage');
+
+// Initialize a new instance of LocalStorage
+const localStorage = new LocalStorage('./scratch');
+const { userInfo } = require('os');
 //const flash = require('flash-message');
 require('dotenv').config();
 
@@ -243,26 +248,39 @@ router.post('/login', async (req, res) => {
       return res.render('../connection/login', { messages: req.flash() });
     }
     
-    const NAME = user.NOM;
-    const PRENOM = user.PRENOM;
-    const EMAIL = user.EMAIL;
-    console.log(EMAIL, NAME, PRENOM);
+    let NAME = user.NOM;
+    let PRENOM = user.PRENOM;
+    let EMAIL = user.EMAIL;
+          
+    const userInfo = { NAME, PRENOM, EMAIL };
+    req.session.user = userInfo;
+    // Set user information in session
+    //localStorage.setItem('user', JSON.stringify(userInfo));
+  
+    
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
      
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     req.flash('success', 'Login successful!');
     
-    // Redirect to home page after successful login
-    res.redirect('/home');
-
-    // Render the navbar with user profile information
-    res.render('/common/navbar', { NAME, PRENOM, EMAIL });
+  
+   
+   
+   res.redirect('/');
 
   } catch (err) {
     req.flash('error', err.message);
     res.render('../connection/login', { messages: req.flash() });
   }
+});
+
+// In your backend route
+router.get('/profiles', (req, res) => {
+  const userInfo = req.session.user;
+  console.log('user :',userInfo)
+  res.json(userInfo)
+     
 });
 
 

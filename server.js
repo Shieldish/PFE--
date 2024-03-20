@@ -13,7 +13,10 @@ const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
+const { LocalStorage } = require('node-localstorage');
 
+// Initialize a new instance of LocalStorage
+const localStorage = new LocalStorage('./scratch');
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -22,8 +25,8 @@ app.use(flash());
 
 app.use(session ({
   secret : process.env.secretKey,
-  resave: true,
-  saveUninitialized: true
+  resave: false,
+  saveUninitialized: false
 }))
 app.use((req, res, next) => {
   res.locals.messages = req.flash();
@@ -55,8 +58,10 @@ app.use('/',authenticate,isUser,uploadsRoutes);
 app.use('/gestion',authenticate,isAdmin,databaseRoutes); 
 
 app.get(['/','/home'], authenticate,(req, res) => {
-  res.render('home');
+  const user = req.session.user;
+  res.render('home', { user, userJSON: JSON.stringify(user) });
 });
+
 
 // Start server
 const PORT = process.env.PORT || 3000;
