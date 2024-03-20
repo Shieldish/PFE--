@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
       if (err) {
         console.error('Error fetching table names:', err);
         res.status(500).send('Error fetching table names');
-        return;
+        return;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
       }
       const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }));
       table=tables;
@@ -99,7 +99,6 @@ router.get('/', (req, res) => {
     });
 });
 
-  
   // Route to handle deleting an entry
   router.get('/:tableName/delete/:email', (req, res) => {
     const tableName = req.params.tableName;

@@ -158,7 +158,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         return res.status(500).send('Error while processing file.');
     }
 });
-router.post('/saveToDatabase', async (req, res) => {
+
+
+ router.post('/saveToDatabase', async (req, res) => {
   const { Data, Options, TableName } = req.body;
   let d = Data;
 
@@ -215,46 +217,105 @@ router.post('/saveToDatabase', async (req, res) => {
     // Send appropriate error response to client
     res.status(500).json({ error: 'Internal server error.' });
   }
+}); 
+
+
+
+
+/* router.post('/saveToDatabase', async (req, res) => {
+  const { Data, Options, TableName } = req.body;
+
+  let d = Data;
+
+  try {
+    // Check if TableName is missing
+    if (!TableName) {
+      res.status(400).json({ error: 'Table name is required.' });
+      return;
+    }
+
+    // Check if Options is missing or invalid
+    if (Options !== '1' && Options !== '2') {
+      res.status(400).json({ error: 'Invalid Options value. Use 1 or 2.' });
+      return;
+    }
+
+    // Get the column names of the target table
+    let tableColumns;
+    try {
+      const [tableInfo] = await connection.query(`SHOW COLUMNS FROM ${TableName}`);
+      tableColumns = tableInfo.map(info => info.Field);
+    } catch (error) {
+      console.error('Error retrieving table columns:', error);
+      res.status(500).json({ error: 'Internal server error. Failed to retrieve table columns.' });
+      return;
+    }
+
+    // Handle data insertion based on the specified options
+    if (Options === '1') {
+      // Insert new data only
+      for (const item of d) {
+        try {
+          const filteredItem = filterDataByTableColumns(item, tableColumns);
+          const columns = Object.keys(filteredItem);
+          const query = `INSERT INTO ${TableName} (${columns.map(() => '??').join(', ')}) VALUES (${columns.map(() => '?').join(', ')})`;
+          await connection.query(query, [...columns, ...columns.map(key => filteredItem[key])]);
+        } catch (error) {
+          // Log error for debugging
+          console.error('Error inserting data:', error);
+
+          // Send appropriate error response to client
+          res.status(500).json({ error: 'Internal server error. Failed to insert data.' });
+          return;
+        }
+      }
+      // Send success response to client
+      res.status(200).json({ message: 'Data inserted successfully.' });
+    } else if (Options === '2') {
+      // Insert new data and update existing data
+      for (const item of d) {
+        const filteredItem = filterDataByTableColumns(item, tableColumns);
+        const columns = Object.keys(filteredItem);
+        const query = `INSERT INTO ${TableName} (${columns.map(() => '??').join(', ')}) VALUES (${columns.map(() => '?').join(', ')}) ON DUPLICATE KEY UPDATE ${columns.map(key => `?? = ?`).join(', ')}`;
+        try {
+          await connection.query(query, [...columns, ...columns.map(key => filteredItem[key]), ...columns.map(key => key), ...columns.map(key => filteredItem[key])]);
+        } catch (error) {
+          // Log error for debugging
+          console.error('Error inserting/updating data:', error);
+
+          // Send appropriate error response to client
+          res.status(500).json({ error: 'Internal server error. Failed to insert/update data.' });
+          return;
+        }
+      }
+      // Send success response to client
+      res.status(200).json({ message: 'Data inserted and updated successfully.' });
+    }
+  } catch (error) {
+    // Log error for debugging
+    console.error('Error saving data to database:', error);
+
+    // Send appropriate error response to client
+    res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
- 
-
+// Helper function to filter out keys not present in the table columns
+function filterDataByTableColumns(data, tableColumns) {
+  const filteredData = {};
+  for (const key of Object.keys(data)) {
+    if (tableColumns.includes(key)) {
+      filteredData[key] = data[key];
+    }
+  }
+  return filteredData;
+}
+ */
   router.get('/upload', (req, res) => { 
     console.log('items from uploads', items)
     res.render('uploads',{dt : data, items:items });
 });
 
 
-router.get('/pages/:pageName', (req, res) => {
-  const pageName = req.params.pageName;
-  // Define data for each page dynamically
-  let data = {};
-  
-   if (pageName === 'uploads') {
-    data = { dt: data, items: items };
-    ejs.renderFile(`views/uploads.ejs`, data,{items: items},{ layout: 'layouts/main', sidebar: true }, (err, html) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Internal Server Error');
-      }
-      res.send(html);
-  });
-  }  else if (pageName === 'etudiant') {
-   
-    ejs.renderFile(`views/etudiant.ejs`,{ layout: 'layouts/main', sidebar: true }, (err, html) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Internal Server Error');
-      }
-      res.send(html);
-  });
-  } 
-  else {
-    // Handle unknown page names
-    console.error('Unknown page:');
-    return res.status(404).send('Page not found');
-  }
-  // Render the EJS file with dynamic data
-});
 
 module.exports = router;
