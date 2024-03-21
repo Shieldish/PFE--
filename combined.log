@@ -1,0 +1,6 @@
+{"level":"info","message":"Application started","timestamp":"2024-03-21T22:43:51.274Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-03-21T22:43:51.282Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-03-21T22:43:51.283Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-03-21T22:43:51.295Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-03-21T22:43:51.360Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-03-21T22:43:51.433Z"}

@@ -28,8 +28,29 @@ const upload = multer({ dest: uploadFolderPath });
 let data=[]
 let items=[]
 
+router.get('/upload', (req, res) => {
+  getAllTablesAndStructure()
+    .then(tablesStructure => {
+      // List of table names you want to exclude
+      const excludedTables = ['userregistrations',];
 
-/* router.get('/upload', (req, res) => {
+      // Filter out the excluded table names
+      const filteredTablesStructure = Object.fromEntries(
+        Object.entries(tablesStructure).filter(([tableName]) => !excludedTables.includes(tableName))
+      );
+
+      items = filteredTablesStructure;
+      console.log('items from upload : ', items);
+
+      return res.render('uploads', { dt: data, items: filteredTablesStructure });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      res.status(500).send('Error occurred while fetching tables and their structures');
+    });
+});
+
+ /* router.get('/upload', (req, res) => {
     getAllTablesAndStructure()
         .then(tablesStructure => {
             items=tablesStructure ;
@@ -41,9 +62,9 @@ let items=[]
             res.status(500).send('Error occurred while fetching tables and their structures');
         });
 });
- */
+  */
 
-router.get('/upload', (req, res) => {
+/* router.get('/upload', (req, res) => {
   // Assuming you have a MySQL connection named 'connection' already established
 
   // Query MySQL for table names
@@ -88,7 +109,7 @@ router.get('/upload', (req, res) => {
         res.status(500).send('Error fetching table structures');
       });
   });
-});
+}); */
 
 router.post('/upload', upload.single('file'), async (req, res) => {
     const file = req.file;

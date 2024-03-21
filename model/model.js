@@ -2,7 +2,7 @@
 //model/model.js
 const { Sequelize, DataTypes } = require('sequelize');
 // Replace 'database_name', 'username', 'password', and 'host' with your MySQL database credentials
-const sequelize = new Sequelize('test', 'root', '', {
+const sequelize = new Sequelize('data', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
   port: 3306,
@@ -136,7 +136,7 @@ async function getDataFromTable(TableName) {
 async function connectToDatabase() {
   try {
     await sequelize.authenticate();
-    console.log('Connection to the database has been established successfully.');
+    console.log('Connection (Sequelize) to the database has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
