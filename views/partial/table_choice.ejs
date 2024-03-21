@@ -1,7 +1,4 @@
 
- 
-  <!-- Bootstrap CSS -->
-  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
   <style>
     #success-message {
         color: green;
@@ -11,13 +8,6 @@
         color: rgb(255, 0, 0);
     }
 </style>
-
-
-
-<!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Save
-</button> -->
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -68,18 +58,12 @@
   </div>
 </div>
 
-<!-- Bootstrap JS (Optional) -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
-
 <script>
            $('#exampleModal').on('hidden.bs.modal', function () {
     // Clear the success and error messages
     $('#success-message').text('').hide();
     $('#error-message').text('').hide();
 });
-
 
 function SaveAndSend() {
     var data = saveTable();
@@ -123,39 +107,6 @@ function SaveAndSend() {
     });
 }
 
-
-   /* function SaveAndSend() {
-    var data = saveTable();
-    var options = getSelectedOption();
-    var tableName = getSelectedValue();
-    console.log("data before save", data);
-    $.ajax({
-        url: '/uploadsfiles/saveToDatabase', // Replace with your server-side endpoint URL
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            Data: data,
-            Options: options,
-            TableName: tableName
-        }),
-        success: function (response) {
-            // Show success message
-            $('#success-message').text("Success : " + response.message).show();
-            // Hide error message if it's visible
-            $('#error-message').hide();
-        },
-        error: function (xhr, status, error) {
-            // Show error message
-            var errorMessage = JSON.parse(xhr.responseText).error;
-            $('#error-message').text("Error saving data : " + errorMessage).show();
-            // Hide success message if it's visible
-            $('#success-message').hide();
-        }
-    });
-}
- */
-   // }
-
     function getSelectedOption() {
         var selectedOption = document.querySelector('input[name="exampleRadios"]:checked').value;
         return selectedOption;
@@ -166,8 +117,6 @@ function SaveAndSend() {
         var selectedValue = menu.value;
         return selectedValue;
     }
-
-
 </script>
 
 

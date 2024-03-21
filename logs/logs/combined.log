@@ -139,3 +139,16 @@
 {"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T22:59:24.600Z"}
 {"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-03-21T23:00:43.650Z"}
 {"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-03-21T23:01:12.401Z"}
+{"level":"info","message":"Application started","timestamp":"2024-03-21T23:10:35.255Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-03-21T23:10:35.258Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-03-21T23:10:35.258Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-03-21T23:10:35.264Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-03-21T23:10:35.414Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-03-21T23:10:35.569Z"}
+{"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-03-21T23:11:15.090Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-03-21T23:12:21.675Z"}
+{"level":"info","message":"Registration confirmation email sent successfully","timestamp":"2024-03-21T23:12:21.677Z"}
+{"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-03-21T23:14:31.494Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-03-21T23:16:22.062Z"}
+{"level":"info","message":"Registration confirmation email sent successfully","timestamp":"2024-03-21T23:16:22.066Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-03-21T23:23:14.166Z"}
