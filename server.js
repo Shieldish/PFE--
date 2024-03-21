@@ -14,6 +14,7 @@ const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const { LocalStorage } = require('node-localstorage');
+const logger = require('./logs/logger');
 
 // Initialize a new instance of LocalStorage
 const localStorage = new LocalStorage('./scratch');
@@ -62,6 +63,13 @@ app.get(['/','/home'], authenticate,(req, res) => {
   res.render('home', { user, userJSON: JSON.stringify(user) });
 });
 
+
+
+
+// Your application code here
+logger.info('Application started');
+console.log('This message will be logged to the console and combined.log');
+console.error('This error will be logged to the console, error.log, and combined.log');
 
 // Start server
 const PORT = process.env.PORT || 3000;

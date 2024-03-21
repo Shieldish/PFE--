@@ -1,0 +1,45 @@
+{"level":"info","message":"Application started","timestamp":"2024-03-21T21:50:13.657Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-03-21T21:50:13.667Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-03-21T21:50:13.668Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-03-21T21:50:13.676Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-03-21T21:50:13.737Z"}
+{"level":"info","message":"Connection to the database has been established successfully.","timestamp":"2024-03-21T21:50:13.858Z"}
+{"level":"info","message":"Application started","timestamp":"2024-03-21T21:53:02.839Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-03-21T21:53:02.842Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-03-21T21:53:02.843Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-03-21T21:53:02.853Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-03-21T21:53:02.908Z"}
+{"level":"info","message":"Connection to the database has been established successfully.","timestamp":"2024-03-21T21:53:02.967Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.636Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.637Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.638Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.638Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.638Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.639Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.639Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.639Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.639Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.640Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.640Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.640Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.641Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.641Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.641Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.641Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.642Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.642Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.642Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.643Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.643Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.643Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.644Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.644Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.645Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.646Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.647Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.648Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.648Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.649Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.651Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.652Z"}
+{"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-03-21T21:55:10.653Z"}
