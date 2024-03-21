@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
       let count=results.length
       
       //remove password , token , and date :  
-      const keysToRemove = ['PASSWORD', 'TOKEN','DATE'];
+      const keysToRemove = ['PASSWORD', 'TOKEN',];
       const filteredArray = results.map(obj => {
         keysToRemove.forEach(key => delete obj[key]);
         return obj;

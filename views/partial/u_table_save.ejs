@@ -75,7 +75,7 @@
 
     // Get all table headers
     document.querySelectorAll('thead th').forEach(function(th) {
-        var headerText = th.innerText.trim(); // Trim to remove leading/trailing whitespace
+        var headerText = th.innerText.trim().toUpperCase(); // Trim to remove leading/trailing whitespace
         headers.push(headerText); // Push header text regardless of emptiness
     });
 

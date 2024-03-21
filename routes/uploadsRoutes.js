@@ -6,7 +6,7 @@ const xlsx = require('xlsx');
 const multer = require('multer');
 const csvParser = require('csv-parser');
 const bodyParser = require('body-parser');
-const { getDataFromTable, getAllTablesAndStructure } = require('../model/model');
+const {sequelize,   enseignant,  etudiant ,getDataFromTable, getAllTablesAndStructure } = require('../model/model');
 const unidecode = require('unidecode');
 const connection = require ('../model/dbConfig')
 
@@ -81,8 +81,6 @@ router.get('/upload', (req, res) => {
       .then(() => {
         items=tables
 
-        // res.render('index', { tables });
- 
         return res.render('uploads', {dt:data, items: items });
       })
       .catch(err => {
@@ -160,7 +158,86 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 
- router.post('/saveToDatabase', async (req, res) => {
+
+router.post('/saveToDatabase', async (req, res) => {
+  const { Data, Options, TableName } = req.body;
+
+  //console.log(Data, Options, TableName);
+
+  try {
+    // Check if TableName is missing
+    if (!TableName) {
+      res.status(400).json({ error: 'Table name is required.' });
+      return;
+    }
+
+    // Check if Options is missing or invalid
+    if (Options !== '1' && Options !== '2') {
+      res.status(400).json({ error: 'Invalid Options value. Use 1 or 2.' });
+      return;
+    }
+
+    // Get the model for the specified table
+    const Model = sequelize.models[TableName];
+
+    if (!Model) {
+      res.status(404).json({ error: `Table "${TableName}" not found.` });
+      return;
+    }
+
+    // Handle data insertion based on the specified options
+    if (Options === '1') {
+      // Insert new data only
+      const transaction = await sequelize.transaction();
+    
+      try {
+        const result = await Model.bulkCreate(Data, {
+          transaction,
+          ignoreDuplicates: true, // Ignore duplicate entry errors
+        });
+    
+        console.log(`${result.length} rows inserted successfully.`);
+        await transaction.commit();
+        res.status(200).json({ message: 'Data inserted successfully.' });
+      } catch (error) {
+        // Handle other errors, if any
+        await transaction.rollback();
+        console.error('Error inserting data:', error);
+        res.status(500).json({ error: 'Internal server error. Failed to insert data.' });
+      }
+    } else if (Options === '2') {
+      // Insert new data and update existing data
+      const transaction = await sequelize.transaction();
+    
+      try {
+        await Promise.all(
+          Data.map(async (item) => {
+            const [result, created] = await Model.findOrCreate({
+              where: { EMAIL: item.EMAIL }, // Use the unique key condition here
+              defaults: item,
+              transaction,
+            });
+    
+            if (!created) {
+              await result.update(item, { transaction });
+            }
+          })
+        );
+    
+        await transaction.commit();
+        res.status(200).json({ message: 'Data inserted and updated successfully.' });
+      } catch (error) {
+        await transaction.rollback();
+        console.error('Error inserting/updating data:', error);
+        res.status(500).json({ error: 'Internal server error. Failed to insert/update data.' });
+      }
+    }
+  } catch (error) {
+    console.error('Error saving data to database:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+/*  router.post('/saveToDatabase', async (req, res) => {
   const { Data, Options, TableName } = req.body;
   let d = Data;
 
@@ -218,7 +295,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 }); 
-
+ */
 
 
 

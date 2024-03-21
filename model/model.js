@@ -1,15 +1,15 @@
+
+//model/model.js
 const { Sequelize, DataTypes } = require('sequelize');
-
-
 // Replace 'database_name', 'username', 'password', and 'host' with your MySQL database credentials
 const sequelize = new Sequelize('test', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
-  port: 3306
+  port: 3306,
 });
 
 // Define the Employer model
-const Employer = sequelize.define('Employer', {
+const enseignant = sequelize.define('enseignant', {
   EMAIL: {
     type: DataTypes.STRING,
     primaryKey: true,
@@ -37,13 +37,13 @@ const Employer = sequelize.define('Employer', {
     allowNull: true
   }
 }, {
-  tableName: 'ETUDIANT',
+  tableName: 'enseignant',
   timestamps: false
 });
 
 
 // Define the Etudiant model
-const Etudiant = sequelize.define('Etudiant', {
+const etudiant = sequelize.define('etudiant', {
   EMAIL: {
     type: DataTypes.STRING, 
     primaryKey: true,
@@ -71,7 +71,7 @@ const Etudiant = sequelize.define('Etudiant', {
     allowNull: true
   },
 }, {
-  tableName: 'ENSEIGANT',
+  tableName: 'etudiant',
   timestamps: false
 });
 
@@ -145,8 +145,8 @@ async function connectToDatabase() {
 // Sync the model with the database
 async function syncModel() {
   try {
-    await Employer.sync({ alter: true });
-    await Etudiant.sync({ alter: true });
+    await enseignant.sync({ alter: true });
+    await etudiant.sync({ alter: true });
    // await UserRegistration.sync({ alter: true });
   } catch (error) {
     console.error('Error syncing models:', error);
@@ -166,8 +166,7 @@ connectToDatabase();
 syncModel();
 
 module.exports = {
-  Employer,
-  Etudiant,
+  enseignant,  etudiant,
 //  UserRegistration,
   getAllTablesAndStructure,
   getDataFromTable,

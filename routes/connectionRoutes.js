@@ -82,7 +82,7 @@ router.post('/register', async function(req, res) {
       req.flash('error', 'Email address already exists');
       return res.render('../connection/register', { messages: req.flash() });
     }
-
+    
     // Hash the password
    // const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -191,7 +191,6 @@ router.get('/reset-password', async (req, res) => {
 router.post('/reseting-password', async (req, res) => {
   const { email, password,confirmPassword, token } = req.body;
   const data=req.body;
-  console.log(data);
 
   if (password !== confirmPassword) {
     req.flash('error', 'Passwords do not correspond');
@@ -257,16 +256,12 @@ router.post('/login', async (req, res) => {
     // Set user information in session
     //localStorage.setItem('user', JSON.stringify(userInfo));
   
-    
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
      
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     req.flash('success', 'Login successful!');
-    
-  
-   
-   
+
    res.redirect('/');
 
   } catch (err) {
