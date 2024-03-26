@@ -50,19 +50,7 @@ router.get('/upload', (req, res) => {
     });
 });
 
- /* router.get('/upload', (req, res) => {
-    getAllTablesAndStructure()
-        .then(tablesStructure => {
-            items=tablesStructure ;
-           console.log('items from upload : ',items);
-          return  res.render('uploads', {dt:data, items: tablesStructure });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            res.status(500).send('Error occurred while fetching tables and their structures');
-        });
-});
-  */
+ 
 
 /* router.get('/upload', (req, res) => {
   // Assuming you have a MySQL connection named 'connection' already established
