@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
-const router = express.Router();
+const router = express.Router(); 
 
 // Use bodyParser middleware to parse request bodies
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -114,9 +114,5 @@ router.get('/', (req, res) => {
       res.redirect(`/gestion/${tableName}`);
     });
   });
-
-
-  
-
 
 module.exports = router;

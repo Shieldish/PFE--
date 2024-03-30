@@ -1,5 +1,3 @@
-const $ = require('jquery');
-global.jQuery = $;
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -255,7 +253,6 @@ router.post('/login', async (req, res) => {
     req.session.user = userInfo;
     // Set user information in session
     //localStorage.setItem('user', JSON.stringify(userInfo));
-  
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
      
