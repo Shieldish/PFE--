@@ -1,5 +1,4 @@
-const $ = require('jquery');
-global.jQuery = $;
+
 const session = require('express-session');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -16,8 +15,7 @@ const flash = require('connect-flash');
 const { LocalStorage } = require('node-localstorage');
 const logger = require('./logs/logger');
 
-// Initialize a new instance of LocalStorage
-const localStorage = new LocalStorage('./scratch');
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());

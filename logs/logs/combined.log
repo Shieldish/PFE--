@@ -1081,3 +1081,90 @@
 {"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T20:40:55.500Z"}
 {"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T20:40:55.548Z"}
 {"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T20:40:55.635Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:18:06.186Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:18:06.191Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:18:06.196Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:18:06.273Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:18:06.380Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:18:22.648Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:18:22.651Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:18:22.654Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:18:22.701Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:18:22.776Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:19:29.664Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:19:29.668Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:19:29.674Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:19:29.710Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:19:29.823Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:22:38.963Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:22:38.966Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:22:38.969Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:22:39.011Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:22:39.134Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:22:43.698Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:22:43.702Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:22:43.705Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:22:43.736Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:22:43.813Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:22:57.178Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:22:57.181Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:22:57.185Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:22:57.249Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:22:57.366Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:23:00.767Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:23:00.772Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:23:00.777Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:23:00.815Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:23:00.961Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:23:07.068Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:23:07.071Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:23:07.074Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:23:07.116Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:23:07.243Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:25:43.677Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:25:43.686Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:25:43.700Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:25:43.753Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:25:43.824Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:25:47.975Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:25:47.980Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:25:47.988Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:25:48.043Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:25:48.116Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:26:04.449Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:26:04.453Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:26:04.457Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:26:04.508Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:26:04.632Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:26:32.221Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:26:32.224Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:26:32.229Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:26:32.283Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:26:32.353Z"}
+{"level":"error","message":"ReferenceError: err is not defined\n    at isAdmin (C:\\Users\\gabia\\PFE---1\\middlewares\\roles.js:8:45)\n    at Layer.handle [as handle_request] (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at authenticate (C:\\Users\\gabia\\PFE---1\\middlewares\\auth.js:17:5)\n    at Layer.handle [as handle_request] (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:286:9","timestamp":"2024-04-02T21:26:49.571Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:27:07.417Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:27:07.420Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:27:07.423Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:27:07.463Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:27:07.590Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:27:20.410Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:27:20.414Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:27:20.422Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:27:20.492Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:27:20.604Z"}
+{"level":"error","message":"ReferenceError: C:\\Users\\gabia\\PFE---1\\views\\index.ejs:27\n    25|                      <select id=\"tableName\" class=\"form-control\" style=\"width: 150px;\">\r\n    26|                      <option value=\"\">select table</option> <!-- Empty option added -->\r\n >> 27|                      <% if (tables && tables.length > 0) { %>\r\n    28|                        <% tables.forEach(table => { %>\r\n    29|                                 <!-- Make sure to reference the correct property -->\r\n    30|                           <option value=\"<%= table.Tables_in_fss %>\"><%= table.Tables_in_fss %></option>\r\n\ntables is not defined\n    at eval (\"C:\\\\Users\\\\gabia\\\\PFE---1\\\\views\\\\index.ejs\":21:8)\n    at index (C:\\Users\\gabia\\PFE---1\\node_modules\\ejs\\lib\\ejs.js:703:17)\n    at tryHandleCache (C:\\Users\\gabia\\PFE---1\\node_modules\\ejs\\lib\\ejs.js:274:36)\n    at exports.renderFile [as engine] (C:\\Users\\gabia\\PFE---1\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\application.js:657:10)\n    at Function.render (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\response.js:1039:7)\n    at isAdmin (C:\\Users\\gabia\\PFE---1\\middlewares\\roles.js:9:16)\n    at Layer.handle [as handle_request] (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\layer.js:95:5)","timestamp":"2024-04-02T21:27:21.846Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:27:40.747Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:27:40.751Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:27:40.755Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:27:40.802Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:27:40.918Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T21:27:59.776Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T21:27:59.779Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T21:27:59.784Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T21:27:59.858Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T21:27:59.952Z"}
+{"encadrant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-04-02T21:29:08.413Z"}
+{"encadrant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-04-02T21:29:49.821Z"}
+{"encadrant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-04-02T21:29:58.914Z"}
+{"encadrant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-04-02T21:43:34.511Z"}
+{"encadrant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-04-02T21:43:37.165Z"}
