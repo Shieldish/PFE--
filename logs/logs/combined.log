@@ -865,3 +865,8 @@
 {"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-04-02T19:08:22.809Z"}
 {"level":"warn","message":"(sequelize) Warning: Unknown attributes (ID) passed to defaults option of findOrCreate","timestamp":"2024-04-02T19:08:22.809Z"}
 {"encadrant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"enseignant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"etudiant":["EMAIL","NOM","PRENOM","SEXE","DEPARTEMENT","DATE"],"level":"info","message":"items from upload : ","timestamp":"2024-04-02T19:08:27.888Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T19:11:35.498Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T19:11:35.501Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T19:11:35.504Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T19:11:35.576Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T19:11:35.727Z"}
