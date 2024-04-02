@@ -8,7 +8,7 @@ const sequelize = new Sequelize('data', 'root', '', {
   port: 3306,
 });
 
-// Define the Employer model
+// Define the  model
 const enseignant = sequelize.define('enseignant', {
   EMAIL: {
     type: DataTypes.STRING,
@@ -37,10 +37,41 @@ const enseignant = sequelize.define('enseignant', {
     allowNull: true
   }
 }, {
-  tableName: 'enseignant',
+  tableName: 'etudiant',
   timestamps: false
 });
 
+const encadrant = sequelize.define('encadrant', {
+  EMAIL: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    unique: true,
+    allowNull: false
+  },
+  NOM: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  PRENOM: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  SEXE: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  DEPARTEMENT: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  DATE: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }
+}, {
+  tableName: 'encadrant',
+  timestamps: false
+});
 
 // Define the Etudiant model
 const etudiant = sequelize.define('etudiant', {
@@ -146,6 +177,7 @@ async function connectToDatabase() {
 async function syncModel() {
   try {
     await enseignant.sync({ alter: true });
+    await encadrant.sync({ alter: true });
     await etudiant.sync({ alter: true });
    // await UserRegistration.sync({ alter: true });
   } catch (error) {
