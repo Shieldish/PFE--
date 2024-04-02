@@ -51,7 +51,7 @@ app.set('view cache',false)
 
 
 // Import routes
-app.use('/',routes);
+app.use('/people',authenticate,routes,);
 app.use('/connection',connectionRoutes);
 app.use('/',authenticate,isUser,uploadsRoutes);
 // Protect /gestion and its subroutes with authenticate middleware

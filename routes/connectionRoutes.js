@@ -15,7 +15,7 @@ const flash = require('connect-flash');
 const { LocalStorage } = require('node-localstorage');
 
 // Initialize a new instance of LocalStorage
-const localStorage = new LocalStorage('./scratch');
+//const localStorage = new LocalStorage('./scratch');
 const { userInfo } = require('os');
 //const flash = require('flash-message');
 require('dotenv').config();
@@ -253,7 +253,7 @@ router.post('/login', async (req, res) => {
     const userInfo = { NAME, PRENOM, EMAIL };
     req.session.user = userInfo;
     // Set user information in session
-    //localStorage.setItem('user', JSON.stringify(userInfo));
+    //localStorage.setItem('user.json', JSON.stringify(userInfo));
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
      
