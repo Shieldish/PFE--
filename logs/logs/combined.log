@@ -870,3 +870,27 @@
 {"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T19:11:35.504Z"}
 {"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T19:11:35.576Z"}
 {"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T19:11:35.727Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-04-02T19:14:55.817Z"}
+{"level":"info","message":"Registration confirmation email sent successfully","timestamp":"2024-04-02T19:14:55.823Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T19:16:48.133Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T19:16:48.139Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T19:16:48.151Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T19:16:48.219Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T19:16:48.339Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-04-02T19:19:35.993Z"}
+{"level":"error","message":"Unhandled Rejection at: TypeError: Cannot read properties of undefined (reading 'toLowerCase')\n    at C:\\Users\\gabia\\PFE---1\\routes\\connectionRoutes.js:185:58\n    at Layer.handle [as handle_request] (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:175:3)\n    at router (C:\\Users\\gabia\\PFE---1\\node_modules\\express\\lib\\router\\index.js:47:12)","timestamp":"2024-04-02T19:20:37.027Z"}
+{"code":"ESOCKET","command":"CONN","errno":-4077,"level":"error","message":"Error sending email: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:217:20)","syscall":"read","timestamp":"2024-04-02T19:21:25.987Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-04-02T19:32:22.229Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-04-02T19:37:36.019Z"}
+{"level":"info","message":"Registration confirmation email sent successfully","timestamp":"2024-04-02T19:37:36.026Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T19:41:27.557Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T19:41:27.562Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T19:41:27.566Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T19:41:27.622Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T19:41:27.692Z"}
+{"level":"info","message":"This message will be logged to the console and combined.log","timestamp":"2024-04-02T19:41:36.997Z"}
+{"level":"error","message":"This error will be logged to the console, error.log, and combined.log","timestamp":"2024-04-02T19:41:37.087Z"}
+{"level":"info","message":"Server is running on port http://localhost:3000","timestamp":"2024-04-02T19:41:37.107Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2024-04-02T19:41:37.187Z"}
+{"level":"info","message":"Connection (Sequelize) to the database has been established successfully.","timestamp":"2024-04-02T19:41:37.320Z"}
+{"level":"info","message":"Email sent:","timestamp":"2024-04-02T19:44:44.069Z"}

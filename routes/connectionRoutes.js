@@ -60,6 +60,7 @@ const limiter = rateLimit({
  
 let NAME;
 let EMAIL;
+
 router.post('/register', async function(req, res) {
   try {
     const { nom, prenom, email, password, repeatPassword } = req.body;
@@ -126,7 +127,7 @@ router.get('/confirm-email', async (req, res) => {
 
     // If user registration not found or account already validated
     if (!userRegistration || userRegistration.ISVALIDATED) {
-      return res.send('Account already activated or token expired');
+      return res.send('Account already activated or token expired go to login pages');
     }
 
     // Check if token is expired
