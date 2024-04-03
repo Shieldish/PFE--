@@ -33,7 +33,7 @@ const enseignant = sequelize.define('enseignant', {
     allowNull: true
   },
   DATE: {
-    type: DataTypes.DATE,
+   type:DataTypes.STRING,
     allowNull: true
   }
 }, {
@@ -65,7 +65,7 @@ const encadrant = sequelize.define('encadrant', {
     allowNull: true
   },
   DATE: {
-    type: DataTypes.DATE,
+   type:DataTypes.STRING,
     allowNull: true
   }
 }, {
@@ -98,7 +98,7 @@ const etudiant = sequelize.define('etudiant', {
     allowNull: true
   },
   DATE: {
-    type: DataTypes.DATE,
+   type:DataTypes.STRING,
     allowNull: true
   },
 }, {
