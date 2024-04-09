@@ -1,27 +1,103 @@
 
-    <div class="sidebar-nav">
-        <div class="logo">
-            <a href="/">Gestion des Stages</a>
-        </div>
-        <ul>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-users"></i> Étudiants</a></li>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Enseignants</a></li>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-building"></i> Entreprises</a></li>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-file-alt"></i> Liste des stages</a></li>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-calendar-alt"></i> Calendrier</a></li>
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-cog"></i> Paramètres</a></li>
-             <!--  <li><a href="/upload" class="sidebar-item"><i class="fas fa-upload"></i> Uploads files</a></li>
-            <li><a href="/gestion" class="sidebar-item"><i class="fas fa-database"></i> Databases</a></li> -->
-             <li>
-                <a href="#gestionSubmenu" class="sidebar-item dropdown-toggle" aria-expanded="false" data-toggle="collapse">
-                    <i class="fas fa-tasks"></i> Admin
-                </a>
-                <ul class="collapse list-unstyled" id="gestionSubmenu">
-                    <li><a href="/upload" class="sidebar-item"><i class="fas fa-upload"></i> Uploads files</a></li>
-                    <li><a href="/gestion" class="sidebar-item"><i class="fas fa-database"></i> Databases</a></li>
-                </ul>
-            </li> 
-            <li><a href="/#" class="sidebar-item"><i class="fas fa-file-alt"></i> Encadrement</a></li>
-        </ul>
-    </div>
+
+
+<div class="sidebar-nav">
+  <div class="logo">
+    <a href="/">Gestion des Stages</a>
+  </div>
+  <ul id="sidebarItems">
+    <!-- Sidebar items will be dynamically generated here -->
+  </ul>
+</div>
+
+<script>
+
+  // Function to generate the sidebar menu
+  function buildSidebar(sidebarItemsData) {
+    const sidebarItemsContainer = document.getElementById('sidebarItems');
+    sidebarItemsContainer.innerHTML = ''; // Clear existing sidebar items
+
+    sidebarItemsData.forEach(item => {
+      const listItem = document.createElement('li');
+      const link = document.createElement('a');
+      link.classList.add('sidebar-item');
+      link.href = item.link;
+      link.innerHTML = `<i class="${item.icon}"></i> ${item.name}`;
+      listItem.appendChild(link);
+
+      // If item has children, create submenu
+      if (item.children && item.children.length > 0) {
+        const submenu = document.createElement('ul');
+        submenu.classList.add('submenu', 'collapse');
+        submenu.setAttribute('id', `submenu-${item.id}`); // Unique ID for each submenu
+        item.children.forEach(child => {
+          const childItem = document.createElement('li');
+          const childLink = document.createElement('a');
+          childLink.classList.add('sidebar-subitem');
+          childLink.href = child.link;
+          childLink.innerHTML = `<i class="${child.icon}"></i> ${child.name}`;
+          childItem.appendChild(childLink);
+          submenu.appendChild(childItem);
+        });
+        listItem.appendChild(submenu);
+
+        // Add click event to toggle submenu
+        link.setAttribute('data-toggle', 'collapse');
+        link.setAttribute('href', `#submenu-${item.id}`);
+        link.setAttribute('aria-expanded', 'false');
+        link.setAttribute('aria-controls', `submenu-${item.id}`);
+      }
+
+      sidebarItemsContainer.appendChild(listItem);
+    });
+  }
+    document.addEventListener('DOMContentLoaded', function() {
+    var select = document.getElementById('language-select');
+    var storedLanguage = localStorage.getItem('selectedLanguage');
+    if (storedLanguage) {
+        select.value = storedLanguage;
+    } else {
+        // If no language is stored, default to English
+        select.value = 'en';
+    }
+
+    // Function to fetch sidebar items
+    function fetchSidebarItems(language) {
+        fetch('/gestion/sidebar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lang: language })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle response data if needed
+            console.log('Sidebar items from server:', data);
+            // Store selected language in local storage
+            localStorage.setItem('selectedLanguage', language);
+            localStorage.setItem('sidebarItems', JSON.stringify(data));
+            buildSidebar(data);  // Assuming you have a function to build the sidebar
+        })
+        .catch(error => {
+            console.error('Error fetching sidebar items:', error);
+        });
+    }
+
+    // Fetch sidebar items using the default language value
+    fetchSidebarItems(select.value);
+
+    // AJAX request when language is changed
+    select.addEventListener('change', function() {
+        const selectedLanguage = this.value;
+        console.log(selectedLanguage);
+        fetchSidebarItems(selectedLanguage);
+    });
+});
+
+</script>

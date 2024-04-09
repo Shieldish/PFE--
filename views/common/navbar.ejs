@@ -32,6 +32,13 @@
     </div>
     <div class="user-info">
       <i class="fas fa-bell"></i>
+      <div class="language-selector">
+        <select id="language-select" class="form-control">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="ar">العربية</option>
+        </select>
+      </div>
       <div class="user-avatar">
         <img src="" alt="Avatar" id="avatar-image">
         <div class="profile-info">
@@ -49,7 +56,13 @@
   </nav>
   <script src="https://unpkg.com/@dicebear/browser/dist/browser.js"></script>
 
+  
+
   <script>
+
+
+
+
     function generateAvatar() {
       const avatarImage = document.getElementById('avatar-image');
       const seed = Math.floor(Math.random() * 1000);

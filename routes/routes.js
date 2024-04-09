@@ -33,9 +33,6 @@ router.use((req, res, next) => {
   res.render('home');
 });
  */
-router.get('/etudiant', (req,res)=>
-{
-  res.render('etudiant')
-})
+
 
 module.exports = router;

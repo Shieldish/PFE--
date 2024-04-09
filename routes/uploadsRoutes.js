@@ -32,7 +32,7 @@ router.get('/upload', (req, res) => {
   getAllTablesAndStructure()
     .then(tablesStructure => {
       // List of table names you want to exclude
-      const excludedTables = ['userregistrations',];
+      const excludedTables = ['userregistrations','sidebar_items'];
 
       // Filter out the excluded table names
       const filteredTablesStructure = Object.fromEntries(

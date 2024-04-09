@@ -1,0 +1,78 @@
+[
+  {
+    "id": 1,
+    "name": "Tableau de bord",
+    "link": "/#",
+    "icon": "fas fa-tachometer-alt",
+    "children": []
+  },
+  {
+    "id": 2,
+    "name": "Étudiants",
+    "link": "/#",
+    "icon": "fas fa-users",
+    "children": []
+  },
+  {
+    "id": 3,
+    "name": "Enseignants",
+    "link": "/#",
+    "icon": "fas fa-chalkboard-teacher",
+    "children": []
+  },
+  {
+    "id": 4,
+    "name": "Entreprises",
+    "link": "/#",
+    "icon": "fas fa-building",
+    "children": []
+  },
+  {
+    "id": 5,
+    "name": "Liste des stages",
+    "link": "/#",
+    "icon": "fas fa-file-alt",
+    "children": []
+  },
+  {
+    "id": 6,
+    "name": "Calendrier",
+    "link": "/#",
+    "icon": "fas fa-calendar-alt",
+    "children": []
+  },
+  {
+    "id": 7,
+    "name": "Paramètres",
+    "link": "/#",
+    "icon": "fas fa-cog",
+    "children": []
+  },
+  {
+    "id": 8,
+    "name": "Admin",
+    "link": "#",
+    "icon": "fas fa-tasks",
+    "children": [
+      {
+        "id": 9,
+        "name": "Uploads files",
+        "link": "/upload",
+        "icon": "fas fa-upload"
+      },
+      {
+        "id": 10,
+        "name": "Databases",
+        "link": "/gestion",
+        "icon": "fas fa-database"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Encadrement",
+    "link": "/#",
+    "icon": "fas fa-file-alt",
+    "children": []
+  }
+]

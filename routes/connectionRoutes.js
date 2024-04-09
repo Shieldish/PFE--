@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 const {sendUserRegistrationMail,sendUserResetPasswordMail}=require('../utils/emailUtils');
 const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const flash = require('connect-flash');
+const fs = require('fs');
 const { LocalStorage } = require('node-localstorage');
 
 // Initialize a new instance of LocalStorage
@@ -254,12 +255,16 @@ router.post('/login', async (req, res) => {
     req.session.user = userInfo;
     // Set user information in session
     //localStorage.setItem('user.json', JSON.stringify(userInfo));
+ 
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
      
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     req.flash('success', 'Login successful!');
-
+              
+   
+    const cleanedEmail = removeSpecialCharacters(EMAIL);
+   // createConfigFileForUser(cleanedEmail);
    res.redirect('/');
 
   } catch (err) {
@@ -271,7 +276,7 @@ router.post('/login', async (req, res) => {
 // In your backend route
 router.get('/profiles', (req, res) => {
   const userInfo = req.session.user;
- 
+  // console.log(userInfo);
   res.json(userInfo)
      
 });
@@ -289,5 +294,30 @@ function generateResetToken(email) {
   const resetToken = hash.digest('hex');
   return secretKey+resetToken;
 }
+function removeSpecialCharacters(email) {
+  // Define a regular expression to match characters you want to remove
+  const regex = /[_\-.@]/g;
+  // Replace the matched characters with an empty string
+  const sanitizedEmail = email.replace(regex, '');
+  return sanitizedEmail;
+}
 
+function createConfigFileForUser(userId) {
+  // Get the file path for the user's configuration file
+  const configFilePath = path.join(__dirname, '../configs', `${userId}.json`);
+  
+  // Create an empty object to be written as JSON
+  const emptyObject = {};
+
+  // Write the empty object to the config file
+  fs.writeFileSync(configFilePath, JSON.stringify(emptyObject, null, 2));
+
+}
+
+
+// Function to remove a config file for a user
+function removeConfigFileForUser(userId) {
+  const configFilePath = path.join(__dirname, '../configs', `${userId}.json`);
+  fs.unlinkSync(configFilePath);
+}
   module.exports = router;

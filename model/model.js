@@ -37,7 +37,7 @@ const enseignant = sequelize.define('enseignant', {
     allowNull: true
   }
 }, {
-  tableName: 'etudiant',
+  tableName: 'enseignant',
   timestamps: false
 });
 
@@ -198,7 +198,7 @@ connectToDatabase();
 syncModel();
 
 module.exports = {
-  enseignant,  etudiant,
+  enseignant,  etudiant,encadrant,
 //  UserRegistration,
   getAllTablesAndStructure,
   getDataFromTable,
