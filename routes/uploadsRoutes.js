@@ -225,6 +225,7 @@ router.post('/saveToDatabase', async (req, res) => {
               where: { EMAIL: item.EMAIL }, // Use the unique key condition here
               defaults: item,
               transaction,
+             // ignoreDuplicates: true, // Ignore duplicate entry errors
             });
     
             if (!created) {

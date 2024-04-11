@@ -3,9 +3,6 @@ const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const { enseignant, encadrant, etudiant } = require('../model/model');
-
-const authenticate = require('../middlewares/auth');
-const { isAdmin, isUser } = require('../middlewares/roles');
 const util = require('util');
 const { exit } = require('process');
 const fs = require('fs').promises;
@@ -15,20 +12,24 @@ const router = express.Router();
 // Use bodyParser middleware to parse request bodies
 router.use(bodyParser.urlencoded({ extended: true }));
 
+
+let filteredArrayGlobal
+let countGlobal
 router.get('/', (req, res) => {
   // Query MySQL for table names
   connection.query('SHOW TABLES', (err, results) => {
     if (err) {
-      console.error('Error fetching table names:', err);
+
+      req.flash('error', 'Error fetching table names');
+      return res.render('index', { messages: req.flash() });
+     /*  console.error('Error fetching table names:', err);
       res.status(500).send('Error fetching table names');
-      return;
+      return; */
     }
     const tablesToRemove = ['sidebar_items'];
     
     const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
       .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
-
-    console.log(tables);
 
     // Render the index page with the table names
     res.render('index', { tables });
@@ -40,9 +41,11 @@ router.get('/', (req, res) => {
     // Query MySQL for table data
     connection.query(`SELECT * FROM ${tableName}`, (err, results) => {
         if (err) {
-            console.error(`Error fetching data from table ${tableName}:`, err);
+          req.flash('error', `Error fetching data from table ${tableName}:`);
+          return res.render('crud', { messages: req.flash() });
+           /*  console.error(`Error fetching data from table ${tableName}:`, err);
             res.status(500).send('Error fetching data');
-            return;
+            return; */
         }
 
         let count = results.length;
@@ -76,11 +79,24 @@ router.get('/', (req, res) => {
                     second: '2-digit'
                 });
             }
+            if (obj.DATE) {
+              obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', { 
+                  month: '2-digit',
+                  day: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+              });
+          }
         });
-        res.render('crud', { data: filteredArray, tableName, count });
+        req.flash('success', ` data successfully fetched from table ${tableName}:`);
+       // return res.render('crud', { messages: req.flash() });
+          filteredArrayGlobal=filteredArray;
+          countGlobal=count;
+        res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , messages: req.flash()});
     });
 });
-
 
   router.post('/:tableName/add', async (req, res) => {
     const tableName = req.params.tableName;
@@ -111,34 +127,40 @@ router.get('/', (req, res) => {
     }
   });
 
-router.post('/:tableName/update/:email', async (req, res) => {
-  const tableName = req.params.tableName;
-  const email = req.params.email;
-  const { EMAIL, ...otherFields } = req.body;
-
-  try {
+  router.post('/:tableName/update/:email', async (req, res) => {
+    const tableName = req.params.tableName;
+    const email = req.params.email;
+    const { EMAIL, ...otherFields } = req.body;
+  
+    try {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
-                    tableName === 'encadrant' ? encadrant :
-                    tableName === 'userregistrations' ? UserRegistration :
-                    tableName === 'etudiant' ? etudiant : null;
-
+        tableName === 'encadrant' ? encadrant :
+        tableName === 'userregistrations' ? UserRegistration :
+        tableName === 'etudiant' ? etudiant : null;
+  
       if (!Model) {
-          throw new Error(`Model not found for table ${tableName}`);
+        throw new Error(`Model not found for table ${tableName}`);
       }
-
+  
       // Update the entry in the table using Sequelize
       await Model.update(otherFields, {
-          where: { EMAIL }
+        where: { EMAIL }
       });
-
-      // Redirect the user to the appropriate route after successful update
-      res.redirect(`/gestion/${tableName}`);
-  } catch (err) {
+  
+      // Set the flash message
+      req.flash('success', `Data successfully updated in table: ${tableName}`);
+  
+      // Redirect with the flash message
+       res.redirect(`/gestion/${tableName}`,);
+     //  res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , messages: req.flash()});
+    
+    } catch (err) {
       console.error(`Error updating data in table ${tableName}:`, err);
-      res.status(500).send('Error updating entry');
-  }
-});
+      req.flash('error', 'Error updating entry');
+      res.redirect(`/gestion/${tableName}`);
+    }
+  });
 
   // Route to handle deleting an entry
   router.get('/:tableName/delete/:email', (req, res) => {

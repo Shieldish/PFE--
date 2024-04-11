@@ -16,7 +16,7 @@ const UserRegistration = sequelize.define('UserRegistration', {
     EMAIL: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique :true
+      //unique :true
     },
     PASSWORD: {
       type: DataTypes.STRING,

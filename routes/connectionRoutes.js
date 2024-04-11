@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
@@ -7,13 +6,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const authenticate = require('../middlewares/auth');
-const { isAdmin, isUser } = require('../middlewares/roles');
 const cookieParser = require('cookie-parser');
 const {sendUserRegistrationMail,sendUserResetPasswordMail}=require('../utils/emailUtils');
 const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const flash = require('connect-flash');
 const fs = require('fs');
-const { LocalStorage } = require('node-localstorage');
+
 
 // Initialize a new instance of LocalStorage
 //const localStorage = new LocalStorage('./scratch');
