@@ -264,8 +264,10 @@ router.post('/login', async (req, res) => {
               
    
     const cleanedEmail = removeSpecialCharacters(EMAIL);
-   // createConfigFileForUser(cleanedEmail);
-   res.redirect('/');
+    const returnTo = req.session.returnTo || '/';
+    delete req.session.returnTo; // Clear the stored return URL
+    res.redirect(returnTo);
+    //res.redirect('/');
 
   } catch (err) {
     req.flash('error', err.message);

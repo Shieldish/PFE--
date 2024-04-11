@@ -8,6 +8,7 @@ const routes = require('./routes/routes');
 const connectionRoutes=require('./routes/connectionRoutes')
 const uploadsRoutes=require('./routes/uploadsRoutes')
 const databaseRoutes=require('./routes/databaseRoutes')
+const UserProfilesRoutes=require('./routes/UserProfilesRoutes')
 const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
@@ -55,6 +56,7 @@ app.use('/',authenticate,isUser,uploadsRoutes);
 // Protect /gestion and its subroutes with authenticate middleware
 //app.use('/gestion', authenticate, databaseRoutes); 
 app.use('/gestion',authenticate,isAdmin,databaseRoutes); 
+app.use('/settings',authenticate,UserProfilesRoutes);
 
 app.get(['/','/home'], authenticate,(req, res) => {
   const user = req.session.user;

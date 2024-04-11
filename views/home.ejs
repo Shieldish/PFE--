@@ -46,39 +46,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-   <!--  <script>
-        // JavaScript for highlighting active items in the sidebar and navbar
-        const currentLocation = location.pathname + location.hash;
-        const sidebarItems = document.querySelectorAll('.sidebar-item');
-
-        sidebarItems.forEach(item => {
-            if (item.getAttribute('href') === currentLocation) {
-                item.classList.add('active');
-            }
-        });
-    </script> -->
-   
-   <!--  <script>
-        // JavaScript for highlighting active items in the sidebar and navbar
-        const currentLocation = location.pathname + location.hash;
-        const sidebarItems = document.querySelectorAll('.sidebar-item');
-    
-        sidebarItems.forEach(item => {
-            if (item.getAttribute('href') === currentLocation) {
-                item.classList.add('active');
-            }
-    
-            item.addEventListener('click', function() {
-                // Remove 'active' class from all sidebar items
-                sidebarItems.forEach(item => {
-                    item.classList.remove('active');
-                });
-    
-                // Add 'active' class to the clicked item
-                this.classList.add('active');
-            });
-        });
-    </script> -->
+ 
     <script>document.addEventListener('DOMContentLoaded', function() {
         var select = document.getElementById('language-select');
         var storedLanguage = localStorage.getItem('selectedLanguage');
@@ -91,7 +59,7 @@
     
         // Function to fetch sidebar items
         function fetchSidebarItems(language) {
-            fetch('/gestion/sidebar', {
+            fetch('/people/sidebar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -106,7 +74,7 @@
             })
             .then(data => {
                 // Handle response data if needed
-                console.log('Sidebar items from server:', data);
+                //console.log('Sidebar items from server:', data);
                 // Store selected language in local storage
                 localStorage.setItem('selectedLanguage', language);
                 localStorage.setItem('sidebarItems', JSON.stringify(data));

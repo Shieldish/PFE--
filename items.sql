@@ -20,3 +20,16 @@ INSERT INTO `sidebar_items` (`id`, `name_fr`, `name_en`, `link`, `icon`, `parent
 (9, 'Uploads files', 'Uploads files', '/upload', 'fas fa-upload', 8),
 (10, 'Databases', 'Databases', '/gestion', 'fas fa-database', 8),
 (11, 'Encadrement', 'Supervision', '/#', 'fas fa-file-alt', NULL);
+
+{
+"id": 1,
+"NOM": "GABIAM",
+"PRENOM": "kossi samuel",
+"EMAIL": "kossisamuel.gabiam@fss.u-sfax.tn",
+"PASSWORD": "$2b$10$jZkUZG1/or0dEudrstbLM.4kEko/XphA29ffyG4FqBe8iWqaaR49C",
+"role": "ADMIN",
+"ISVALIDATED": true,
+"TOKEN": "0",
+"createdAt": "2024-04-07T22:05:03.000Z",
+"updatedAt": "2024-04-07T22:05:43.000Z"
+}

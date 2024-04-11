@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Settings : my profiles </title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../public/css/dashboard.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <!-- Your other CSS files -->
+        <style>
+            /* Set a fixed height for the card */
+            .custom-card {
+                height: 350px; 
+                Width : 50%;/* Adjust the height as needed */
+                overflow-y: auto; /* Add scrollbar if content exceeds height */
+            }
+        </style>
+    </head>
+    
+</head>
+<body>
+    <div class="container">
+                     
+        <%-include('./common/sidebar') %>
+
+        
+        <div class="main-content">
+         
+            <%-include('./common/navbar') %>
+            <strong>My Profile</strong>
+            <div id="flash-message">    
+                <% if (messages && messages.error) { %>
+                  <div  id="flash-message2" class="alert alert-danger"><%= messages.error %></div>
+                <% } %>
+                
+                <% if (messages && messages.success) { %>
+                  <div id="flash-message1" class="alert alert-success"><%= messages.success %></div>
+                <% } %>
+                <% if (messages && messages.info) { %>
+                  <div id="flash-message3" class="alert alert-warning"><%= messages.info %></div>
+                <% } %>
+            </div>
+       
+            <div class="container">
+            
+                <% if (userData) { %>
+                   
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            
+                            <p><strong>ID:</strong> <%= userData.id %></p>
+                            <p><strong>Last Name:</strong> <%= userData.NOM %></p>
+                            <p><strong>First Name:</strong> <%= userData.PRENOM %></p>
+                            <p><strong>Email:</strong> <%= userData.EMAIL %></p>
+                            <p><strong>Status:</strong> <%= userData.role %></p>
+                            <p><strong>Is Validated:</strong> <%= userData.ISVALIDATED ? 'Yes' : 'No' %></p>
+                            <p><strong>createdAt :</strong> <%= userData.createdAt %></p>
+                            <p><strong>updatedAt :</strong> <%= userData.updatedAt %></p> 
+                            <!-- Add more fields as needed -->
+                        </div>
+                    </div>
+             
+                 
+                    <div class="container-fluid">
+                        <form id="userEditForm" action="/settings/updateUserData" method="POST">
+
+                          <div class="form-data">
+                            <div class="form-group">
+                              <label for="email"><strong>Email:</strong></label>
+                              <input type="email" class="form-control" id="email" name="EMAIL" value="<%= userData.EMAIL %>" readonly>
+                            </div>
+                            <div class="form-group">
+                              <label for="nom"><strong>Last Name:</strong></label>
+                              <input type="text" class="form-control" id="nom" name="NOM" value="<%= userData.NOM %>">
+                            </div>
+                            <div class="form-group">
+                              <label for="prenom"><strong>First Name:</strong></label>
+                              <input type="text" class="form-control" id="prenom" name="PRENOM" value="<%= userData.PRENOM %>">
+                            </div>
+                            <div class="form-row">
+                              <div class="form-group col-md-6">
+                                <label for="inputPassword4"><strong>New Password:</strong></label>
+                                <input type="password" class="form-control" id="Password" name="PASSWORD" placeholder="Password" required>
+                              </div>
+                              <div class="form-group col-md-6">
+                                <label for="inputPassword4"><strong>Repeat new Password:</strong></label>
+                                <input type="password" class="form-control" id="Password" name="PASSWORD2" placeholder="Repeate Password" required>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Update Profiles</button>
+                          </div>
+                        </form>
+                      </div>
+
+
+  <% } %>
+            </div>
+            
+    </div>
+
+    </div>
+    <!-- Scripts -->
+    <script src="../public/js/script.js"></script>
+    <!-- Include Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+   setTimeout(function() {
+        var flashMessage = document.getElementById('flash-message1');
+        if (flashMessage) {
+          flashMessage.style.display = 'none';
+        }
+      }, 2500);
+
+      setTimeout(function() {
+        var flashMessage = document.getElementById('flash-message2');
+        if (flashMessage) {
+          flashMessage.style.display = 'none';
+        }
+      }, 5000);
+
+      setTimeout(function() {
+        var flashMessage = document.getElementById('flash-message3');
+        if (flashMessage) {
+          flashMessage.style.display = 'none';
+        }
+      }, 10000);
+ </script> 
+
+</body>
+</html>
