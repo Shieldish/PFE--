@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
+const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
+const { enseignant, encadrant, etudiant } = require('../model/model');
+
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const util = require('util');
@@ -36,75 +39,105 @@ router.get('/', (req, res) => {
     const tableName = req.params.tableName;
     // Query MySQL for table data
     connection.query(`SELECT * FROM ${tableName}`, (err, results) => {
-      if (err) {
-        console.error(`Error fetching data from table ${tableName}:`, err);
-        res.status(500).send('Error fetching data');
-        return;
-      }
-      let count=results.length
-      
-      //remove password , token , and date :  
-      const keysToRemove = ['PASSWORD', 'TOKEN',];
-      const filteredArray = results.map(obj => {
-        keysToRemove.forEach(key => delete obj[key]);
-        return obj;
-      });
-
-      res.render('crud', { data: filteredArray, tableName, count  });
-    });
-  });
-  
-  
-  // Route to handle form submission for creating a new entry
-  router.post('/:tableName/add', (req, res) => {
-    const tableName = req.params.tableName;
-    const { EMAIL, ...otherFields } = req.body;
-  
-    // Extract column names from the request body keys
-    const columns = Object.keys(otherFields);
-  
-    // Construct the SQL query dynamically
-    const sql = `INSERT INTO ${tableName} (EMAIL, ${columns.join(', ')}) VALUES (?, ${Array(columns.length).fill('?').join(', ')})`;
-  
-    // Extract values from otherFields
-    const values = [EMAIL, ...columns.map(column => otherFields[column])];
-  
-    // Insert new entry into the table
-    connection.query(sql, values, (err, result) => {
-      if (err) {
-        console.error(`Error inserting data into table ${tableName}:`, err);
-        res.status(500).send('Error creating entry');
-        return;
-      }
-      res.redirect(`/gestion/${tableName}`);
-    });
-  });
-  
-
-  // Route to handle form submission for updating an existing entry
-  router.post('/:tableName/update/:email', (req, res) => {
-    const tableName = req.params.tableName;
-    const email = req.params.email;
-    const { EMAIL, ...otherFields } = req.body;
-
-    // Extract column names from the request body keys
-    const columns = Object.keys(otherFields);
-
-    // Construct the SQL query dynamically
-    const sql = `UPDATE ${tableName} SET ${columns.map(column => `${column} = ?`).join(', ')} WHERE EMAIL = ?`;
-
-    // Extract values from otherFields
-    const values = [...columns.map(column => otherFields[column]), email];
-
-    // Update the entry in the table
-    connection.query(sql, values, (err, result) => {
         if (err) {
-            console.error(`Error updating data in table ${tableName}:`, err);
-            res.status(500).send('Error updating entry');
+            console.error(`Error fetching data from table ${tableName}:`, err);
+            res.status(500).send('Error fetching data');
             return;
         }
-        res.redirect(`/gestion/${tableName}`);
+
+        let count = results.length;
+
+        // Remove password, token, and date
+        const keysToRemove = ['PASSWORD', 'TOKEN', ];
+        const filteredArray = results.map(obj => {
+            keysToRemove.forEach(key => delete obj[key]);
+            return obj;
+        });
+
+        // Format createdAt and updatedAt properties
+        filteredArray.forEach(obj => {
+            if (obj.createdAt) {
+                obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', { 
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            }
+            if (obj.updatedAt) {
+                obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', { 
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            }
+        });
+        res.render('crud', { data: filteredArray, tableName, count });
     });
+});
+
+
+  router.post('/:tableName/add', async (req, res) => {
+    const tableName = req.params.tableName;
+    const { EMAIL, ...otherFields } = req.body;
+  
+    try {
+      // Get the Sequelize model based on the table name
+      const Model = tableName === 'enseignant' ? enseignant :
+                    tableName === 'encadrant' ? encadrant :
+                    tableName === 'userregistrations' ? UserRegistration :
+                    tableName === 'etudiant' ? etudiant : null;
+  
+      if (!Model) {
+        throw new Error(`Model not found for table ${tableName}`);
+      }
+  
+      // Create a new instance of the model with the data from the request body
+      const newEntry = await Model.create({
+        EMAIL,
+        ...otherFields
+      });
+  
+      // Redirect the user to the appropriate route after successful creation
+      res.redirect(`/gestion/${tableName}`);
+    } catch (err) {
+      console.error(`Error creating entry in table ${tableName}:`, err);
+      res.status(500).send('Error creating entry');
+    }
+  });
+
+router.post('/:tableName/update/:email', async (req, res) => {
+  const tableName = req.params.tableName;
+  const email = req.params.email;
+  const { EMAIL, ...otherFields } = req.body;
+
+  try {
+      // Get the Sequelize model based on the table name
+      const Model = tableName === 'enseignant' ? enseignant :
+                    tableName === 'encadrant' ? encadrant :
+                    tableName === 'userregistrations' ? UserRegistration :
+                    tableName === 'etudiant' ? etudiant : null;
+
+      if (!Model) {
+          throw new Error(`Model not found for table ${tableName}`);
+      }
+
+      // Update the entry in the table using Sequelize
+      await Model.update(otherFields, {
+          where: { EMAIL }
+      });
+
+      // Redirect the user to the appropriate route after successful update
+      res.redirect(`/gestion/${tableName}`);
+  } catch (err) {
+      console.error(`Error updating data in table ${tableName}:`, err);
+      res.status(500).send('Error updating entry');
+  }
 });
 
   // Route to handle deleting an entry

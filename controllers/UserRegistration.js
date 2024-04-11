@@ -6,7 +6,8 @@ const { sequelize } = require('../model/model'); // Adjust the path as needed
 const UserRegistration = sequelize.define('UserRegistration', {
     NOM: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      
     },
     PRENOM: {
       type: DataTypes.STRING,
@@ -14,11 +15,12 @@ const UserRegistration = sequelize.define('UserRegistration', {
     },
     EMAIL: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique :true
     },
     PASSWORD: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     role: {
       type: DataTypes.ENUM('USER', 'ADMIN'),
