@@ -25,6 +25,17 @@
     .container {
       max-width: 400px;
     }
+    .password-input-container {
+  position: relative;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
   </style>
 </head>
 
@@ -57,12 +68,15 @@
           <label class="form-label" for="loginEmail" >email </label>
         </div>
 
-        <!-- Password input -->
-        <div class="form-outline position-relative mb-4">
-          <input type="password" id="loginPassword" class="form-control" name="password" required/>
-          <label class="form-label" for="loginPassword">password</label>
-        </div>
-        
+       <!-- Password input -->
+<div class="form-outline position-relative mb-4 password-input-container">
+  <input type="password" id="loginPassword" class="form-control" name="password" required/>
+  <label class="form-label" for="loginPassword">Password</label>
+  <!-- Eye icon for toggling password visibility -->
+  <span class="password-toggle-icon" onclick="togglePasswordVisibility('loginPassword')">
+    <i class="fas fa-eye"></i>
+  </span>
+</div>
         <!-- 2 column grid layout -->
         <div class="row mb-4">
           <div class="col-md-6 d-flex justify-content-center">
@@ -151,6 +165,17 @@
        var input = document.getElementById(inputId);
        input.type = input.type === 'password' ? 'text' : 'password';
      }
+
+     function togglePasswordVisibility(inputId) {
+  const passwordInput = document.getElementById(inputId);
+  const currentType = passwordInput.getAttribute('type');
+  const newType = currentType === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', newType);
+
+  const toggleIcon = passwordInput.parentElement.querySelector('.password-toggle-icon i');
+  toggleIcon.classList.toggle('fa-eye');
+  toggleIcon.classList.toggle('fa-eye-slash');
+}
    </script>
   
 </body>

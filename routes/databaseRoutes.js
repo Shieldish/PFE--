@@ -61,7 +61,7 @@ router.get('/', (req, res) => {
         filteredArray.forEach(obj => {
             if (obj.createdAt) {
                 obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', { 
-                    month: '2-digit',
+                    month: 'long',
                     day: '2-digit',
                     year: 'numeric',
                     hour: '2-digit',
@@ -71,7 +71,7 @@ router.get('/', (req, res) => {
             }
             if (obj.updatedAt) {
                 obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', { 
-                    month: '2-digit',
+                    month: 'long',
                     day: '2-digit',
                     year: 'numeric',
                     hour: '2-digit',
@@ -81,7 +81,7 @@ router.get('/', (req, res) => {
             }
             if (obj.DATE) {
               obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', { 
-                  month: '2-digit',
+                  month: 'long',
                   day: '2-digit',
                   year: 'numeric',
                   hour: '2-digit',
