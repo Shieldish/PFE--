@@ -13,7 +13,7 @@
         <style>
             /* Set a fixed height for the card */
             .custom-card {
-                height: 350px; 
+                height: 380px; 
                 Width : 50%;/* Adjust the height as needed */
                 overflow-y: auto; /* Add scrollbar if content exceeds height */
             }
@@ -50,7 +50,7 @@
                    
                     <div class="card custom-card">
                         <div class="card-body">
-                            
+                            <h5 class="card-title" style="text-align: center;"><strong>User Information</strong></h5>
                             <p><strong>ID:</strong> <%= userData.id %></p>
                             <p><strong>Last Name:</strong> <%= userData.NOM %></p>
                             <p><strong>First Name:</strong> <%= userData.PRENOM %></p>
@@ -63,40 +63,52 @@
                         </div>
                     </div>
              
-                 
                     <div class="container-fluid">
                         <form id="userEditForm" action="/settings/updateUserData" method="POST">
-
-                          <div class="form-data">
-                            <div class="form-group">
-                              <label for="email"><strong>Email:</strong></label>
-                              <input type="email" class="form-control" id="email" name="EMAIL" value="<%= userData.EMAIL %>" readonly>
+                            <div class="form-data">
+                                <div class="form-group">
+                                    <label for="email"><strong>Email:</strong></label>
+                                    <input type="email" class="form-control" id="email" name="EMAIL" value="<%= userData.EMAIL %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nom"><strong>Last Name:</strong></label>
+                                    <input type="text" class="form-control" id="nom" name="NOM" value="<%= userData.NOM %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prenom"><strong>First Name:</strong></label>
+                                    <input type="text" class="form-control" id="prenom" name="PRENOM" value="<%= userData.PRENOM %>">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputPassword4"><strong>New Password:</strong></label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="Password" name="PASSWORD" placeholder="Password" required>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary reveal-password" type="button">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="inputPassword4"><strong>Repeat new Password:</strong></label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="Password2" name="PASSWORD2" placeholder="Repeate Password" required>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary reveal-password" type="button">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                              <label for="nom"><strong>Last Name:</strong></label>
-                              <input type="text" class="form-control" id="nom" name="NOM" value="<%= userData.NOM %>">
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Update Profiles</button>
                             </div>
-                            <div class="form-group">
-                              <label for="prenom"><strong>First Name:</strong></label>
-                              <input type="text" class="form-control" id="prenom" name="PRENOM" value="<%= userData.PRENOM %>">
-                            </div>
-                            <div class="form-row">
-                              <div class="form-group col-md-6">
-                                <label for="inputPassword4"><strong>New Password:</strong></label>
-                                <input type="password" class="form-control" id="Password" name="PASSWORD" placeholder="Password" required>
-                              </div>
-                              <div class="form-group col-md-6">
-                                <label for="inputPassword4"><strong>Repeat new Password:</strong></label>
-                                <input type="password" class="form-control" id="Password" name="PASSWORD2" placeholder="Repeate Password" required>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">Update Profiles</button>
-                          </div>
                         </form>
-                      </div>
-
+                    </div>
+                    
 
   <% } %>
             </div>
@@ -118,7 +130,7 @@
         if (flashMessage) {
           flashMessage.style.display = 'none';
         }
-      }, 2500);
+      }, 5500);
 
       setTimeout(function() {
         var flashMessage = document.getElementById('flash-message2');
@@ -133,6 +145,22 @@
           flashMessage.style.display = 'none';
         }
       }, 10000);
+
+
+      $(document).ready(function() {
+    // Function to toggle password visibility
+    $('.reveal-password').click(function() {
+        var $passwordField = $(this).closest('.input-group').find('input');
+        var fieldType = $passwordField.attr('type');
+        
+        if (fieldType === 'password') {
+            $passwordField.attr('type', 'text');
+        } else {
+            $passwordField.attr('type', 'password');
+        }
+    });
+});
+
  </script> 
 
 </body>
