@@ -13,7 +13,7 @@ const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-const { LocalStorage } = require('node-localstorage');
+const { v4: uuidv4 } = require('uuid');
 //const logger = require('./logs/logger');
 
 

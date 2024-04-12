@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const {sendUserRegistrationMail,sendUserResetPasswordMail}=require('../utils/emailUtils');
 const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const flash = require('connect-flash');
+const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
 
@@ -88,12 +89,15 @@ router.post('/register', async function(req, res) {
     const registrationToken = generateRegistrationToken(email);
 
     // Create a new user
+    const uuid = uuidv4();
+
     const newUser = await UserRegistration.create({
       NOM: nom.trim().toUpperCase(),
       PRENOM: prenom.trim(),
       EMAIL: email.trim().toLowerCase(),
       PASSWORD: password,
-      TOKEN: registrationToken
+      TOKEN: registrationToken,
+      UUID: uuid
     });
            
 
@@ -105,7 +109,7 @@ router.post('/register', async function(req, res) {
     })
 
     
-    console.log('Registration confirmation email sent successfully');
+   // console.log('Registration confirmation email sent successfully');
 
     //res.status(201).send('User registered successfully, Registration confirmation email sent successfully to : ' + email);
   } catch (error) {

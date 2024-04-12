@@ -40,7 +40,7 @@ router.get('/upload', (req, res) => {
       );
 
       items = filteredTablesStructure;
-      console.log('items from upload : ', items);
+     // console.log('items from upload : ', items);
 
       return res.render('uploads', { dt: data, items: filteredTablesStructure });
     })

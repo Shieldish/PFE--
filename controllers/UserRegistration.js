@@ -4,7 +4,10 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../model/model'); // Adjust the path as needed
 
 const UserRegistration = sequelize.define('UserRegistration', {
-    NOM: {
+  UUID: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }, NOM: {
       type: DataTypes.STRING,
       allowNull: false,
       
@@ -13,6 +16,7 @@ const UserRegistration = sequelize.define('UserRegistration', {
       type: DataTypes.STRING,
       allowNull: false
     },
+   
     EMAIL: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -24,7 +28,12 @@ const UserRegistration = sequelize.define('UserRegistration', {
     },
     DEPARTEMENT: {
       type: DataTypes.STRING,
-      allowNull: true
+      defaultValue : 'NA'
+    
+    },
+    ADRESS: {
+      type: DataTypes.STRING,
+      defaultValue : 'NA'
     },
     DATE: {
       type: DataTypes.DATE,

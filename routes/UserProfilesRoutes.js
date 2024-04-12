@@ -48,10 +48,6 @@ router.post('/updateUserData', async (req, res) => {
     
     const { EMAIL, ...otherFields } = req.body;
 
-          
-
-    console.log(otherFields)
-
     const p1 = otherFields.PASSWORD;
     const p2 = otherFields.PASSWORD2;
 
@@ -72,7 +68,7 @@ router.post('/updateUserData', async (req, res) => {
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(p1, salt);
     otherFields.PASSWORD = hashedPassword;
-    
+        console.log(otherFields)
     await UserRegistration.update(
         otherFields,
         { where: { EMAIL: EMAIL } }
