@@ -51,7 +51,7 @@
     <div class=" table-responsive " >
         <table class=" table table-striped table-bordered table-hover table-sm searchable sortable">
             <thead class="thead-dark">
-            <tr>
+            <tr class="text-center">
                 <% Object.keys(data[0]).forEach(key => { %>
                 <th ><%= key %></th>
                 <% }); %>
@@ -62,7 +62,7 @@
             </thead>
             <tbody id="tableBody"  >
             <% data.forEach(row => { %>
-            <tr>
+            <tr class="text-center">
                 <% Object.values(row).forEach(value => { %>
                 <td ><%= value %></td>
                 <% }); %>
