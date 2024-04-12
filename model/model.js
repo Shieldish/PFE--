@@ -38,7 +38,7 @@ const enseignant = sequelize.define('enseignant', {
   }
 }, {
   tableName: 'enseignant',
-  timestamps: false
+  timestamps: true
 });
 
 const encadrant = sequelize.define('encadrant', {
@@ -65,12 +65,12 @@ const encadrant = sequelize.define('encadrant', {
     allowNull: true
   },
   DATE: {
-   type:DataTypes.STRING,
+    type:DataTypes.STRING,
     allowNull: true
   }
 }, {
   tableName: 'encadrant',
-  timestamps: false
+  timestamps: true
 });
 
 // Define the Etudiant model
@@ -98,12 +98,12 @@ const etudiant = sequelize.define('etudiant', {
     allowNull: true
   },
   DATE: {
-   type:DataTypes.STRING,
+    type:DataTypes.STRING,
     allowNull: true
   },
 }, {
   tableName: 'etudiant',
-  timestamps: false
+  timestamps: true
 });
 
 // Function to get all tables and their structures

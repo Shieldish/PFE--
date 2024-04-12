@@ -112,7 +112,13 @@ router.get('/', (req, res) => {
       if (!Model) {
         throw new Error(`Model not found for table ${tableName}`);
       }
-  
+      
+               if(otherFields.DATE)
+               {
+                otherFields.DATE= getFormattedDateTime();
+               // console.log(otherFields.DATE)
+               }
+      delete otherFields.createdAt;
       // Create a new instance of the model with the data from the request body
       const newEntry = await Model.create({
         EMAIL,
@@ -129,7 +135,6 @@ router.get('/', (req, res) => {
 
   router.post('/:tableName/update/:email', async (req, res) => {
     const tableName = req.params.tableName;
-    const email = req.params.email;
     const { EMAIL, ...otherFields } = req.body;
   
     try {
@@ -142,8 +147,15 @@ router.get('/', (req, res) => {
       if (!Model) {
         throw new Error(`Model not found for table ${tableName}`);
       }
-  
+              
+      if(otherFields.DATE)
+      {
+       otherFields.DATE= getFormattedDateTime();
+      
+      }
+      delete otherFields.createdAt;
       // Update the entry in the table using Sequelize
+
       await Model.update(otherFields, {
         where: { EMAIL }
       });
@@ -177,6 +189,23 @@ router.get('/', (req, res) => {
       res.redirect(`/gestion/${tableName}`);
     });
   });
+  function getFormattedDateTime() {
+    // Get current date and time
+    const currentDate = new Date();
 
+    // Extracting individual date components
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Note: January is 0
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    const hours = currentDate.getHours().toString().padStart(2, '0');
+    const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+    const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+    // Formatting date and time
+    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+    // Returning formatted date and time
+    return formattedDateTime;
+}
 
 module.exports = router;

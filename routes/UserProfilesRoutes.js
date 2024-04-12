@@ -26,7 +26,7 @@ router.get('/',async (req, res) => {
           if(userData)
           { 
             data=userData
-
+       
              req.flash('success','Data was retrieve successfully')
             return res.render('UserSettingsProfiles', { userData , messages: req.flash() }); 
            
@@ -47,7 +47,11 @@ router.get('/',async (req, res) => {
 router.post('/updateUserData', async (req, res) => {
     
     const { EMAIL, ...otherFields } = req.body;
-    
+
+          
+
+    console.log(otherFields)
+
     const p1 = otherFields.PASSWORD;
     const p2 = otherFields.PASSWORD2;
 
