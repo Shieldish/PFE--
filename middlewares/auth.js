@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 // Authentication middleware
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
-  if (!token) {
+  const token2=req.session.user
+  if (!token2) {
     // Store the original URL in session or cookie
     req.session.returnTo = req.originalUrl;
     

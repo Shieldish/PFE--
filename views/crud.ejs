@@ -49,11 +49,11 @@
             <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
         </div>
     <div class=" table-responsive " >
-        <table class=" table table-striped table-bordered  searchable sortable">
+        <table class=" table table-striped table-bordered table-hover searchable sortable">
             <thead class="thead-dark">
             <tr>
                 <% Object.keys(data[0]).forEach(key => { %>
-                <th><%= key %></th>
+                <th ><%= key %></th>
                 <% }); %>
                 <th>Views</th>
                 <th>Edit</th>
