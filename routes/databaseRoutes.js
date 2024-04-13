@@ -4,6 +4,7 @@ const connection = require('../model/dbConfig');
 const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const util = require('util');
+const { v4: uuidv4 } = require('uuid');
 const { exit } = require('process');
 const fs = require('fs').promises;
 
@@ -52,6 +53,7 @@ router.get('/', (req, res) => {
 
         // Remove password, token, and date
         const keysToRemove = ['PASSWORD', 'TOKEN','UUID' ];
+       
         const filteredArray = results.map(obj => {
             keysToRemove.forEach(key => delete obj[key]);
             return obj;
@@ -84,9 +86,9 @@ router.get('/', (req, res) => {
                   month: 'long',
                   day: '2-digit',
                   year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit'
+                 // hour: '2-digit',
+                 // minute: '2-digit',
+                 // second: '2-digit'
               });
           }
         });
@@ -113,12 +115,15 @@ router.get('/', (req, res) => {
         throw new Error(`Model not found for table ${tableName}`);
       }
       
-               if(otherFields.DATE)
+               /* if(otherFields.DATE)
                {
                 otherFields.DATE= getFormattedDateTime();
-               // console.log(otherFields.DATE)
-               }
+              
+               } */
+    
+      otherFields.UUID= uuidv4();
       delete otherFields.createdAt;
+      console.log( otherFields)
       // Create a new instance of the model with the data from the request body
       const newEntry = await Model.create({
         EMAIL,
@@ -147,14 +152,22 @@ router.get('/', (req, res) => {
       if (!Model) {
         throw new Error(`Model not found for table ${tableName}`);
       }
-              
-      if(otherFields.DATE)
+           console.log(otherFields)   
+     /*  if(otherFields.DATE)
       {
        otherFields.DATE= getFormattedDateTime();
       
-      }
+      } */
       delete otherFields.createdAt;
+      delete otherFields.updatedAt;
+
+      for (let key in otherFields) {
+        if (otherFields[key] === '') {
+          delete otherFields[key];
+        }
+      }
       // Update the entry in the table using Sequelize
+      console.log(otherFields) 
 
       await Model.update(otherFields, {
         where: { EMAIL }

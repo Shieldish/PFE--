@@ -12,25 +12,29 @@ body {
 
 /* Override Bootstrap's Container Width */
 .container {
-    display: flex;
+    display:flex;
     height: 100vh;
   /*   max-width: 100%; */
-    max-width: none; 
+     margin: 0;
+     padding: 0;
+     max-width: none; 
 }
 
 /* Adjust Sidebar Width */
 .sidebar-nav {
     background-color: rgb(0, 0, 0);
     color: #fff;
-    width: 250px; /* Adjust the width as needed */
-    height: 100vh;
-    padding: 20px 0;
+    width: 300px; /* Adjust the width as needed */
+    height: auto;
+    position: sticky;
+    top: 0;
+   
 }
 
 
 .logo {
     background-color: rgb(0, 0, 0);
-    padding: 10px 20px;
+    padding: 20px 20px;
 }
 
 .logo a {
@@ -42,12 +46,14 @@ body {
 
 .sidebar-nav ul {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 0px;
+    margin: 0px;
+  
 }
 
 .sidebar-nav ul li {
     margin-bottom: 0;
+
 }
 
 .sidebar-nav ul li a {
@@ -69,19 +75,19 @@ body {
 
 /* Styles du navbar */
 .navbar {
-    background-color: rgba(0, 0, 0, 0.845);
-    color: #eeeeee;
+    background-color:rgb(30, 28, 28);
+    color: #fdf9f9;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
-    width: 100%;
+    padding: 10px 20px; 
+    width: auto;
 }
 
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: #0a0a0a;
+    background-color: #f0efef;
     padding: 5px 10px;
     border-radius: 20px;
 }
@@ -89,13 +95,14 @@ body {
 .search-bar input {
     background-color: transparent;
     border: none;
-    color: #fff;
+    color: #100f0f;
+    width: 600px;
     padding: 5px;
     outline: none;
 }
 
 .search-bar i {
-    color: #fff;
+    color: #077c19;
     margin-right: 5px;
 }
 
@@ -124,5 +131,6 @@ body {
 /* Styles du contenu principal */
 .main-content {
     flex: 1;
-    padding: 20px;
+   /*  margin:  10px; */
+    padding: 0px;
 }

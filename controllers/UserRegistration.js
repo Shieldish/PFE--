@@ -7,7 +7,12 @@ const UserRegistration = sequelize.define('UserRegistration', {
   UUID: {
     type: DataTypes.STRING,
     allowNull: false
-  }, NOM: {
+  }, 
+  EMAIL: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    //unique :true
+  },NOM: {
       type: DataTypes.STRING,
       allowNull: false,
       
@@ -17,11 +22,7 @@ const UserRegistration = sequelize.define('UserRegistration', {
       allowNull: false
     },
    
-    EMAIL: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      //unique :true
-    },
+    
     PASSWORD: {
       type: DataTypes.STRING,
       allowNull: true
@@ -31,7 +32,7 @@ const UserRegistration = sequelize.define('UserRegistration', {
       defaultValue : 'NA'
     
     },
-    ADRESS: {
+    ADDRESS: {
       type: DataTypes.STRING,
       defaultValue : 'NA'
     },

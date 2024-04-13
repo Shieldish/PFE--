@@ -29,12 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `sidebar_items` (
   `id` int(11) NOT NULL,
-  `name_fr` varchar(255) DEFAULT NULL,
-  `name_en` varchar(255) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
-  `parent_id` int(11) DEFAULT NULL,
-  `name_ar` varchar(255) DEFAULT NULL
+  `name_ar` varchar(255) DEFAULT NULL,
+  `name_fr` varchar(255) DEFAULT NULL,
+  `name_en` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
