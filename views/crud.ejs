@@ -42,7 +42,7 @@
         
           <h5>
              <a href="/gestion">
-            <i class="fas fa-home"></i>  <button class="btn btn-sm"> Back to Home</button>
+            <i class="fas fa-home"></i>  <button class="btn btn-outline-danger btn-sm"> Back to Home</button>
             </a>
          </h5> 
               
@@ -54,7 +54,7 @@
         <i class="fas fa-plus"></i> Add New <%= tableName %>
     </button>
     <div class="button-container">
-        <button class="btn btn-secondary btn-sm">
+        <button class="btn btn-outline-info btn-sm" >
          <h6>Les Données - <%= tableName.toUpperCase() %> <strong style="color:rgb(0, 0, 0);"> (<%= count %>)</strong></h6> 
           
         </button>
@@ -95,7 +95,7 @@
                         <div class="modal-dialog modal-dialog-scrollable" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button class="btn btn-dark  btn-block " class="modal-title" id="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>"> About :  <%= row.EMAIL%></button>
+                                    <button class="btn btn-outline-dark  btn-block " class="modal-title" id="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>"> About :  <%= row.EMAIL%></button>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
