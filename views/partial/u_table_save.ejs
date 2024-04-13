@@ -1,23 +1,44 @@
 <style>
     /* Set fixed height and make tbody scrollable */
     .table-bordered {
-        max-height: 500px; /* Set the maximum height for the table */
-        overflow-y: auto; /* Enable vertical scrollbar */
+        max-height: 420px; /* Set the maximum height for the table */
+        overflow-y: auto;
+        overflow-x: auto; /* Enable vertical scrollbar */
     }
+
+  /*   .table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background-color: #f9f6f6;
+}
+
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+} */
 </style> 
 
 <% if (Array.isArray(dt) && dt.length > 0) { %> 
- <strong class="mt-5"  style="text-align: center;">Data from upload files   </strong> 
+    <% if (fileName) { %>
+        <strong class="mt-5" style="text-align: center;">Data from upload files: <%= fileName %></strong>
+      <% } %>
+    
  <div class="d-flex justify-content-end"> <!-- Add a flex container to align the button to the right -->
     <button type="button" class="btn btn-success" id="saveButton" onclick="saveTable()" data-toggle="modal" data-target="#exampleModal">
         <i class="fas fa-save"></i> Save table modification
     </button>
 </div>
+           <hr>
 
     <%- include('table_choice') %>
-    <div class="table-bordered">
-        <table class="table"   >
-            <thead bgcolor="#f0f0f0" style="font-weight: bold;">
+    <div class="table-bordered ">
+        <table class="table" style="background-color: beige;" >
+            <thead bgcolor="#f0f0f0" style="font-weight: bold;" >
                 <tr>
                     <% Object.keys(dt[0]).forEach(function(key) { %>
                         <th scope="col" onclick="makeEditable(this)">

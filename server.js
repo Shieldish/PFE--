@@ -18,10 +18,10 @@ const { v4: uuidv4 } = require('uuid');
 
 
 const app = express();
-app.use(express.json());
 app.use(cookieParser());
 app.use(flash());
-
+app.use(express.json({ limit: '50mb' })); // For JSON requests
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(session ({
   secret : process.env.secretKey,
@@ -40,7 +40,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '')));
 
 // Parse URL-encoded bodies (as sent by HTML forms)
-app.use(bodyParser.urlencoded({ extended: true }));
+
+
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');

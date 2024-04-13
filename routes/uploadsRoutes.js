@@ -13,8 +13,9 @@ const connection = require ('../model/dbConfig')
 const router = express.Router();
 
 // Middleware
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
+router.use(bodyParser.json({ limit: '50mb' }));
+router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 // Initialize multer
 const uploadFolder = 'Uploads';
@@ -101,6 +102,9 @@ router.get('/upload', (req, res) => {
 
 router.post('/upload', upload.single('file'), async (req, res) => {
     const file = req.file;
+    const fileName = req.file.originalname;
+
+
     if (!file) {
         return res.status(400).send('No file uploaded.');
     }
@@ -133,7 +137,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 return transformedRow;
             });
            // res.render('uploads', {dt:data, items: items });
-            return res.render('uploads', { dt: excelData , items : items });
+            return res.render('uploads', { dt: excelData , items : items  ,fileName:fileName});
            
         } else if (fileType === '.csv') {
             // Read CSV file asynchronously
@@ -153,7 +157,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 })
                 .on('end', () => {
                  // res.render('uploads', {dt:data, items: items });
-                  return res.render('uploads', { dt: csvData ,items: items });
+                  return res.render('uploads', { dt: csvData ,items: items,fileName:fileName });
                 })
                 .on('error', (err) => {
                     console.error('Error:', err);
@@ -398,9 +402,12 @@ function filterDataByTableColumns(data, tableColumns) {
   return filteredData;
 }
  */
+
   router.get('/upload', (req, res) => { 
-    console.log('items from uploads', items)
-    res.render('uploads',{dt : data, items:items });
+    
+    let fileName='';
+
+    res.render('uploads',{dt : data, items:items ,fileName:fileName });
 });
 
 

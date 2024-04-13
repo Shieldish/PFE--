@@ -9,7 +9,17 @@
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
 
  <style>
-    /* Set fixed height and make tbody scrollable */
+ .input-wrapper {
+    display: flex;
+    gap: 8px; /* Adjust spacing as needed */
+}
+
+/* Optional: Style the upload button */
+.btn-primary {
+    width: 250px;
+    height: 40px;
+}
+
 </style>
 </head>
 <body>
@@ -17,23 +27,31 @@
         <%-include('./common/sidebar') %>
          <div class="main-content">
             <%-include('./common/navbar') %>
-          <main>
+          <main >
+            <div class="my-custom-class">
+             <hr>
             <strong class="mt-5">Upload Excel File</strong>
             <form class="mt-3" id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-                <div class="form-group">
+
+                <div class="form-group col-md-6">
                     <label for="file">
-                        <i class="fas fa-file-excel"></i> Choose Excel File:
+                        <i class="fa fa-file"></i>     <button> Choose Excel File : </button>
                     </label>
-                    <input type="file" class="form-control-file" id="file" name="file" required accept=".csv, .xlsx">
+                    <div class="input-wrapper">
+                        <input type="file" class="form-control form-control-lg form-control-file" id="file" name="file" required accept=".csv, .xlsx">
+                        <button type="button" class="btn btn-primary" id="uploadButton" onclick="validateAndUpload()">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-dark" id="uploadButton" onclick="validateAndUpload()">
-                    <i class="fas fa-upload"></i> Upload
-                </button>
+                
+               
                   <!-- Include the table -->
                   <%- include('./partial/schemaInfo') %>
                   <%- include('./partial/u_table_save') %>
                   <%- include('./partial/fadeError') %>
-            </form>       
+            </form> 
+            </div>      
           </main>  
         </div>
     </div>

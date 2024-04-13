@@ -13,7 +13,7 @@
         <style>
             /* Set a fixed height for the card */
             .custom-card {
-                height: 500px; 
+                height: 550px; 
                 Width : 40%;/* Adjust the height as needed */
                 overflow-y: auto; /* Add scrollbar if content exceeds height */
                 
@@ -59,13 +59,13 @@
                             
                             <hr width="100%" size="5">
                             
-                            <p style="font-size: x-small;"><strong>ID :</strong> <strong><%= userData.UUID.toUpperCase() %></strong></p>
-                            <p style="font-size: x-small;"><strong>FIRST NAME :</strong><strong class="text-uppercase fw-bolder"  style="color: green;">  <%= userData.NOM %></strong></p>
-                            <p style="font-size: x-small;"><strong>LAST NAME :</strong><strong class="text-uppercase fw-bolder" style="color: green;">  <%= userData.PRENOM %></strong> </p>
-                            <p style="font-size: x-small;"><strong>EMAIL ADDRESS :</strong> <strong style="color:green;">  <%= userData.EMAIL %></strong></p>
-                            <p style="font-size: x-small;"><strong>DEPARTMENT :</strong><strong style="color: black">  <%= userData.DEPARTEMENT %></strong> </p>
-                            <p style="font-size: x-small;"><strong>ADDRESS :</strong><strong style="color: black">  <%= userData.ADDRESS %></strong> </p>
-                            <p style="font-size: x-small;"><strong>BIRTHDAY DATE :</strong><strong style="color: black">
+                            <p style="font-size: small;"><strong>ID :</strong> <strong><%= userData.UUID.toUpperCase() %></strong></p>
+                            <p style="font-size: small;"><strong>FIRST NAME :</strong><strong class="text-uppercase fw-bolder"  style="color: green;">  <%= userData.NOM %></strong></p>
+                            <p style="font-size: small;"><strong>LAST NAME :</strong><strong class="text-uppercase fw-bolder" style="color: green;">  <%= userData.PRENOM %></strong> </p>
+                            <p style="font-size: small;"><strong>EMAIL ADDRESS :</strong> <strong style="color:green;">  <%= userData.EMAIL %></strong></p>
+                            <p style="font-size: small;"><strong>DEPARTMENT :</strong><strong style="color: black">  <%= userData.DEPARTEMENT %></strong> </p>
+                            <p style="font-size: small;"><strong>ADDRESS :</strong><strong style="color: black">  <%= userData.ADDRESS %></strong> </p>
+                            <p style="font-size: small;"><strong>BIRTHDAY DATE :</strong><strong style="color: black">
                                 <% if (userData.DATE) { %>
                                   <%= userData.DATE.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric' }) %>
                                 <% } else { %>
@@ -73,10 +73,10 @@
                                 <% } %>
                             </strong></p>
                             <hr width="100%" size="5">
-                            <p style="font-size: x-small;"><strong>ACCOUNT TYPE :</strong><strong style="color: rgb(208, 39, 30)">  <%= userData.role %></strong> </p>
-                            <p style="font-size: x-small;"><strong>VALIDITY :</strong><strong style="color: red;">  <%= userData.ISVALIDATED ? 'Yes' : 'No' %></strong> </p>
-                            <p style="font-size: x-small;"><strong>CREATED :</strong><strong style="color:blue">  <%= userData.createdAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></strong> </p>
-                            <p style="font-size: x-small;"><strong>UPDATED :</strong><strong style="color: blue;">  <%= userData.updatedAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })%></strong> </p>
+                            <p style="font-size: small;"><strong>ACCOUNT TYPE :</strong><strong style="color: rgb(208, 39, 30)">  <%= userData.role %></strong> </p>
+                            <p style="font-size: small;"><strong>VALIDITY :</strong><strong style="color: red;">  <%= userData.ISVALIDATED ? 'Yes' : 'No' %></strong> </p>
+                            <p style="font-size: small;"><strong>CREATED :</strong><strong style="color:blue">  <%= userData.createdAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></strong> </p>
+                            <p style="font-size: small;"><strong>UPDATED :</strong><strong style="color: blue;">  <%= userData.updatedAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })%></strong> </p>
                             <!-- Add more fields as needed -->
                         </div>
                     </div>

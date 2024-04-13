@@ -123,7 +123,7 @@ router.get('/', (req, res) => {
     
       otherFields.UUID= uuidv4();
       delete otherFields.createdAt;
-      console.log( otherFields)
+     // console.log( otherFields)
       // Create a new instance of the model with the data from the request body
       const newEntry = await Model.create({
         EMAIL,
@@ -152,7 +152,7 @@ router.get('/', (req, res) => {
       if (!Model) {
         throw new Error(`Model not found for table ${tableName}`);
       }
-           console.log(otherFields)   
+          // console.log(otherFields)   
      /*  if(otherFields.DATE)
       {
        otherFields.DATE= getFormattedDateTime();
@@ -167,7 +167,7 @@ router.get('/', (req, res) => {
         }
       }
       // Update the entry in the table using Sequelize
-      console.log(otherFields) 
+     // console.log(otherFields) 
 
       await Model.update(otherFields, {
         where: { EMAIL }
