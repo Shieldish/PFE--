@@ -42,9 +42,9 @@
         
           <h5>
              <a href="/gestion">
-            <i class="fas fa-home"></i>  <button class="btn btn-outline-danger btn-sm"> Back to Home</button>
+            <i class="fas fa-home"></i>  <button class="btn btn-outline-ligth btn-sm"> Back to Home</button>
             </a>
-         </h5> 
+         </h5>
               
           
        
@@ -80,7 +80,7 @@
             </thead>
             <tbody id="tableBody"  >
             <% data.forEach(row => { %>
-            <tr class="text-center fw-bold">
+            <tr > <!-- class="font-weight-bold text-center" -->
                 <% Object.values(row).forEach(value => { %>
                 <td ><%= value %></td>
                 <% }); %>
