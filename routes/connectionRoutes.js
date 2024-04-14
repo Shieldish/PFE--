@@ -58,7 +58,7 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.'
 });
  
-let NAME;
+let NOM;
 let EMAIL;
 
 router.post('/register', async function(req, res) {
@@ -103,7 +103,7 @@ router.post('/register', async function(req, res) {
 
     // Send registration confirmation email
     await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken).then(()=>{
-      NAME=nom.trim().toUpperCase();
+      NOM=nom.trim().toUpperCase();
       EMAIL=email.trim().toLowerCase();
       return res.render('../connection/messages', { NAME:NAME,EMAIL:EMAIL });
     })
@@ -254,11 +254,11 @@ router.post('/login', async (req, res) => {
       return res.render('../connection/login', { messages: req.flash() });
     }
     
-    let NAME = user.NOM;
+    let NOM = user.NOM;
     let PRENOM = user.PRENOM;
     let EMAIL = user.EMAIL;
           
-    const userInfo = { NAME, PRENOM, EMAIL };
+    const userInfo = { NOM, PRENOM, EMAIL };
     req.session.user = userInfo;
     // Set user information in session
     //localStorage.setItem('user.json', JSON.stringify(userInfo));
