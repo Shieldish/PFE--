@@ -177,6 +177,8 @@ body {
   .my-color { 
     background-color: white;
     font-weight:small;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .dashed-line {
     border: none;

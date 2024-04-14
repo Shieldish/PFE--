@@ -141,7 +141,7 @@ router.get('/', (req, res) => {
   router.post('/:tableName/update/:email', async (req, res) => {
     const tableName = req.params.tableName;
     const { EMAIL, ...otherFields } = req.body;
-  
+   console.log(EMAIL)
     try {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
@@ -167,7 +167,7 @@ router.get('/', (req, res) => {
         }
       }
       // Update the entry in the table using Sequelize
-     // console.log(otherFields) 
+      console.log(otherFields) 
 
       await Model.update(otherFields, {
         where: { EMAIL }

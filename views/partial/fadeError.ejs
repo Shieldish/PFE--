@@ -1,19 +1,42 @@
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content  my-color">
-            <div class="modal-header">
-                <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="errorMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
+  
+  <!-- Modal for invalid file type -->
+  <div class="modal" id="invalidFileModal" tabindex="-1" role="dialog" aria-labelledby="invalidFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="invalidFileModalLabel">Invalid File Type</h5>
+          <button type="button" class="close" id="invalidFileModalClose">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Please select a .csv or .xlsx file.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="invalidFileModalCloseBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal for no file selected -->
+  <div class="modal" id="noFileSelectedModal" tabindex="-1" role="dialog" aria-labelledby="noFileSelectedModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="noFileSelectedModalLabel">No File Selected</h5>
+          <button type="button" class="close" id="noFileSelectedModalClose">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Please select an Excel file (.csv or .xlsx) to upload.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="noFileSelectedModalCloseBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

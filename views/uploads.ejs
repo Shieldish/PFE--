@@ -30,30 +30,29 @@
             <div class="my-custom-class">
              <hr>
             <strong class="mt-5">Upload Excel File</strong>
+
             <form class="mt-3" id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-
                 <div class="form-group col-md-6">
-                    <label for="file">
-                        <i class="fa fa-file"></i>   <strong> Choose Excel File : </strong> 
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="file" class="form-control form-control-sm form-control-file" id="file" name="file" required accept=".csv, .xlsx">
-                        <button type="button" class="btn btn-primary" id="uploadButton" onclick="validateAndUpload()">
-                            <i class="fas fa-upload"></i> Upload files
-                        </button>
-                            
-                        
-
-                    </div>
+                  <label for="file">
+                    <i class="fa fa-file"></i> <strong> Choose Excel File: </strong>
+                  </label>
+                  <div class="input-wrapper">
+                    <input type="file" class="form-control form-control-sm form-control-file" id="file" name="file" required accept=".csv, .xlsx">
+                    <button type="button" class="btn btn-primary" id="uploadButton">
+                      <i class="fas fa-upload"></i> Upload files
+                    </button>
+                  </div>
                 </div>
+
                 
                
-                  <!-- Include the table -->
-                  <%- include('./partial/schemaInfo') %>
-                  <%- include('./partial/u_table_save') %>
-                  <%- include('./partial/fadeError') %>
+</form>
 
-            </form> 
+<%- include('./partial/schemaInfo') %>
+<%- include('./partial/u_table_save') %>
+<%- include('./partial/fadeError') %>
+
+           
             </div>      
           </main>  
         </div>
@@ -68,28 +67,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
    
-    <script>
-        function validateAndUpload() {
-            var fileInput = document.getElementById('file');
-            var filePath = fileInput.value;
-            var allowedExtensions = /(\.csv|\.xlsx)$/i;
-    
-            if (!allowedExtensions.exec(filePath)) {
-                displayError("Please choose a .csv or .xlsx file.");
-            } else {
-                // Proceed with file upload
-                document.getElementById('uploadForm').submit();
-            }
-        }
-    
-        function displayError(message) {
-            var errorMessageElement = document.getElementById('errorMessage');
-            errorMessageElement.textContent = message;
-            $('#errorModal').modal('show');
-        }
-        
-    </script>
-    
   
+
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', function() {
+          const fileInput = document.getElementById('file');
+          const file = fileInput.files[0];
+      
+          if (!file) {
+            showModal('noFileSelectedModal');
+          } else if (!['csv', 'xlsx'].includes(file.name.split('.').pop().toLowerCase())) {
+            showModal('invalidFileModal');
+          } else {
+            document.getElementById('uploadForm').submit();
+          }
+        });
+      
+        function showModal(modalId) {
+          const modal = document.getElementById(modalId);
+          modal.style.display = 'block';
+          modal.classList.add('show');
+      
+          const closeBtn = document.getElementById(`${modalId}Close`);
+          const closeModalBtn = document.getElementById(`${modalId}CloseBtn`);
+      
+          closeBtn.addEventListener('click', () => {
+            hideModal(modalId);
+          });
+      
+          closeModalBtn.addEventListener('click', () => {
+            hideModal(modalId);
+          });
+      
+          window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+              hideModal(modalId);
+            }
+          });
+        }
+      
+        function hideModal(modalId) {
+          const modal = document.getElementById(modalId);
+          modal.style.display = 'none';
+          modal.classList.remove('show');
+        }
+      </script>
 </body>
 </html>

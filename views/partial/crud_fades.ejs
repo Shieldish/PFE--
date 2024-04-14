@@ -133,7 +133,7 @@
                             <input type="date" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">
                         <% } else { %>
                             <% if (key === 'EMAIL' || key === 'id') { %>
-                                <input type="text" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>" disabled>
+                                <input type="text" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>" readonly>
                             <% } else { %>
                                 <input type="text" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">
                             <% } %>
