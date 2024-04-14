@@ -50,7 +50,7 @@ INSERT INTO `sidebar_items` (`id`, `name_fr`, `name_en`, `link`, `icon`, `parent
 (6, 'Calendrier', 'Calendar', '/#', 'fas fa-calendar-alt', NULL, 'تقويم'),
 (7, 'Paramètres', 'Settings', '/#', 'fas fa-cog', NULL, 'الإعدادات'),
 (8, 'Admin', 'Admin', '#', 'fas fa-tasks', NULL, 'المسؤول'),
-(9, 'Uploads files', 'Uploads files', '/upload', 'fas fa-upload', 8, 'تحميل الملفات'),
+(9, 'Uploads files', 'Uploads files', '/files/upload', 'fas fa-upload', 8, 'تحميل الملفات'),
 (10, 'Databases', 'Databases', '/gestion', 'fas fa-database', 8, 'قواعد البيانات'),
 (11, 'Encadrement', 'Supervision', '/#', 'fas fa-file-alt', NULL, 'الإشراف'),
 (12, 'Mon Profiles', 'My Profiles', '/settings', 'fas fa-address-card', 7, 'ملفاتي الشخصية');
