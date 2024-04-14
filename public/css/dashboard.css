@@ -1,4 +1,7 @@
 /* Réinitialisation des styles */
+
+
+
 * {
     margin: 0;
     padding: 0;
@@ -11,13 +14,18 @@ body {
 }
 
 /* Override Bootstrap's Container Width */
-.container {
+.container 
+{
     display:flex;
     height: 100vh;
-  /*   max-width: 100%; */
+  /*    max-width: 100%;  */
      margin: 0;
-     padding: 0;
-     max-width: none; 
+     padding: 0 !important;
+      max-width: none;  
+}
+.container-fluid {
+    padding: 0;
+    margin: 0;
 }
 
 /* Adjust Sidebar Width */
@@ -28,6 +36,11 @@ body {
     height: auto;
     position: sticky;
     top: 0;
+    /* Override Bootstrap's default padding */
+    padding: 0;
+    margin: 0;
+    
+    
    
 }
 
@@ -81,7 +94,11 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px; 
-    width: auto;
+     width: auto; 
+    /* Adjust the width as needed */
+    
+   
+    
 }
 
 .search-bar {
@@ -156,4 +173,19 @@ body {
   
   .my-custom-class button {
     margin-right: 10px; /* Add some space between the button and the select */
+  }
+  .my-color { 
+    background-color: white;
+    font-weight:small;
+  }
+  .dashed-line {
+    border: none;
+    border-top: 1px dashed #000;
+}
+.custom-container {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    padding: 0 !important;
+    max-width: none;
   }

@@ -1,3 +1,5 @@
+
+
 function validateAndUpload() {
     var fileInput = document.getElementById('file');
     var filePath = fileInput.value;
@@ -91,3 +93,5 @@ function logout() {
     // Add logout logic here
     alert("Logged out successfully!");
 }
+
+

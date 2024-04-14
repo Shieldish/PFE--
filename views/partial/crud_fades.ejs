@@ -1,9 +1,9 @@
 <!-- Add New Record Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
+      <div class="modal-content  my-color">
         <div class="modal-header">
-          <button class="btn btn-outline-dark btn-block" class="modal-title" id="addModalLabel"> NEW  <%= tableName.toUpperCase() %></button>
+          <button class="btn btn-success btn-block" disabled class="modal-title" id="addModalLabel"> NEW  <%= tableName.toUpperCase() %></button>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -21,24 +21,24 @@
           <div class="form-group">
             <label for="<%= key %>"><%= key %></label>
             <% if (key === 'DATE') { %>
-              <input type="date" class="form-control" id="<%= key %>" name="<%= key %>" required>
+              <input type="date" class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
             <% } else if (key === 'role') { %>
-              <select class="form-control" id="<%= key %>" name="<%= key %>" required>
+              <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
                 <option value="USER">USER</option>
                 <option value="ADMIN">ADMIN</option>
               </select>
             <% } else if (key === 'ISVALIDATED') { %>
-              <select class="form-control" id="<%= key %>" name="<%= key %>" required>
+              <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
                 <option value="0">0</option>
                 <option value="1">1</option>
               </select>
               <% } else if (key === 'SEXE') { %>
-                <select class="form-control" id="<%= key %>" name="<%= key %>" required>
+                <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
                   <option value="M">M</option>
                   <option value="F">F</option>
                 </select>
             <% } else if (key === 'ADDRESS') { %>
-              <select class="form-control" id="<%= key %>" name="<%= key %>" required>
+              <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
                 <option value="Tunis, Tunisie">Tunis, Tunisie</option>
                 <option value="Ariana, Tunisie">Ariana, Tunisie</option>
                 <option value="Ben Arous, Tunisie">Ben Arous, Tunisie</option>
@@ -65,7 +65,7 @@
                 <option value="Tataouine, Tunisie">Tataouine, Tunisie</option>
               </select>
             <% } else { %>
-              <input type="text" class="form-control" id="<%= key %>" name="<%= key %>" required>
+              <input type="text" class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
             <% } %>
           </div>
         <% } %>
@@ -88,9 +88,9 @@
   <% data.forEach(row => { %>
     <div class="modal fade" id="editModal<%= row.EMAIL %>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content  my-color">
           <div class="modal-header">
-            <button  class="btn btn-outline-dark btn-block" class="modal-title" id="editModalLabel">Edit <%= tableName %></button>
+            <button  class="btn btn-primary btn-block" disabled class="modal-title" id="editModalLabel"> Edit <%= tableName %> : <strong style="color: black;"><%= row.EMAIL %></strong> </button>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -100,26 +100,26 @@
                
               <% Object.keys(data[0]).forEach(key => { %>
                 <% if (key !== 'createdAt' && key !== 'updatedAt') { %>
-                    <div class="form-group">
+                    <div class="form-group  my-color">
                         <label for="<%= key %>"><%= key %></label>
                         <% if (key === 'ISVALIDATED') { %>
-                            <select class="form-control" id="<%= key %>" name="<%= key %>">
+                            <select class="form-control  my-color" id="<%= key %>" name="<%= key %>">
                                 <option value="0" <% if (row[key] == 0) { %> selected <% } %>>0</option>
                                 <option value="1" <% if (row[key] == 1) { %> selected <% } %>>1</option>
                             </select>
                         <% } else if (key === 'role') { %>
-                            <select class="form-control" id="<%= key %>" name="<%= key %>">
+                            <select class="form-control  my-color" id="<%= key %>" name="<%= key %>">
                                 <option value="USER" <% if (row[key] === 'USER') { %> selected <% } %>>USER</option>
                                 <option value="ADMIN" <% if (row[key] === 'ADMIN') { %> selected <% } %>>ADMIN</option>
                                 
                             </select>
                         <% } else if (key === 'SEXE') { %>
-                              <select class="form-control" id="<%= key %>" name="<%= key %>" >
+                              <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" >
                                 <option value="M" <% if (row[key] === 'M') { %> selected <% } %>>M</option>
                                 <option value="F" <% if (row[key] === 'F') { %> selected <% } %>>F</option>
                               </select>
                         <% } else if (key === 'ADDRESS') { %>
-                            <select class="form-control" id="<%= key %>" name="<%= key %>">
+                            <select class="form-control  my-color" id="<%= key %>" name="<%= key %>">
                                 <% const addressOptions = ['Tunis, Tunisie', 'Ariana, Tunisie', 'Ben Arous, Tunisie', 'Manouba, Tunisie', 'Nabeul, Tunisie', 'Zaghouan, Tunisie', 'Bizerte, Tunisie', 'Béja, Tunisie', 'Jendouba, Tunisie', 'Kef, Tunisie', 'Siliana, Tunisie', 'Kairouan, Tunisie', 'Kasserine, Tunisie', 'Sidi Bouzid, Tunisie', 'Sousse, Tunisie', 'Monastir, Tunisie', 'Mahdia, Tunisie', 'Sfax, Tunisie', 'Gafsa, Tunisie', 'Tozeur, Tunisie', 'Kebili, Tunisie', 'Gabès, Tunisie', 'Medenine, Tunisie', 'Tataouine, Tunisie']; %>
                                 <% addressOptions.forEach(option => { %>
                                     <% if (row[key] === option) { %>
@@ -130,12 +130,12 @@
                                 <% }); %>
                             </select>
                         <% } else if (key === 'DATE') { %>
-                            <input type="date" class="form-control" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">
+                            <input type="date" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">
                         <% } else { %>
                             <% if (key === 'EMAIL' || key === 'id') { %>
-                                <input type="text" class="form-control" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>" readonly>
+                                <input type="text" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>" disabled>
                             <% } else { %>
-                                <input type="text" class="form-control" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">
+                                <input type="text" class="form-control  my-color" id="<%= key %>" name="<%= key %>" value="<%= row[key] %>">
                             <% } %>
                         <% } %>
                     </div>

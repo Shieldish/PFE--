@@ -28,6 +28,7 @@ const upload = multer({ dest: uploadFolderPath });
 
 let data=[]
 let items=[]
+let fileName;
 
 router.get('/upload', (req, res) => {
   getAllTablesAndStructure()
@@ -53,57 +54,11 @@ router.get('/upload', (req, res) => {
 
  
 
-/* router.get('/upload', (req, res) => {
-  // Assuming you have a MySQL connection named 'connection' already established
-
-  // Query MySQL for table names
-  connection.query('SHOW TABLES', (err, results) => {
-    if (err) {
-      console.error('Error fetching table names:', err);
-      return res.status(500).send('Error fetching table names');
-    }
-
-    const tables = {};
-
-    // Function to get the structure for each table
-    const getTableStructure = (tableName) => {
-      return new Promise((resolve, reject) => {
-        connection.query(`DESCRIBE ${tableName}`, (err, columns) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          const columnNames = columns.map(column => column.Field);
-          resolve(columnNames);
-        });
-      });
-    };
-
-    // Fetch table structures in parallel
-    const tableStructurePromises = results.map(row => {
-      const tableName = row[`Tables_in_${connection.config.database}`];
-      return getTableStructure(tableName).then(columns => {
-        tables[tableName] = columns;
-      });
-    });
-
-    Promise.all(tableStructurePromises)
-      .then(() => {
-        items=tables
-
-        return res.render('uploads', {dt:data, items: items });
-      })
-      .catch(err => {
-        console.error('Error fetching table structures:', err);
-        res.status(500).send('Error fetching table structures');
-      });
-  });
-}); */
 
 router.post('/upload', upload.single('file'), async (req, res) => {
     const file = req.file;
     const fileName = req.file.originalname;
-
+    this.fileName=fileName;
 
     if (!file) {
         return res.status(400).send('No file uploaded.');
@@ -251,161 +206,10 @@ router.post('/saveToDatabase', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
-/*  router.post('/saveToDatabase', async (req, res) => {
-  const { Data, Options, TableName } = req.body;
-  let d = Data;
-
-  try {
-    // Check if TableName is missing
-    if (!TableName) {
-      res.status(400).json({ error: 'Table name is required.' });
-      return;
-    }
-
-    // Check if Options is missing or invalid
-    if (Options !== '1' && Options !== '2') {
-      res.status(400).json({ error: 'Invalid Options value. Use 1 or 2.' });
-      return;
-    }
-
-    // Handle data insertion based on the specified options
-    if (Options === '1') {
-      // Insert new data only
-      for (const item of d) {
-        try {
-          const query = 'INSERT INTO ?? SET ?';
-          await connection.query(query, [TableName, item]);
-        } catch (error) {
-          // Log error for debugging
-          console.error('Error inserting data:', error);
-          // Send appropriate error response to client
-          res.status(500).json({ error: 'Internal server error. Failed to insert data.' });
-          return;
-        }
-      }
-      // Send success response to client
-      res.status(200).json({ message: 'Data inserted successfully.' });
-    } else if (Options === '2') {
-      // Insert new data and update existing data
-      for (const item of d) {
-        const query = 'INSERT INTO ?? SET ? ON DUPLICATE KEY UPDATE ?';
-        try {
-          await connection.query(query, [TableName, item, item]);
-        } catch (error) {
-          // Log error for debugging
-          console.error('Error inserting/updating data:', error);
-          // Send appropriate error response to client
-          res.status(500).json({ error: 'Internal server error. Failed to insert/update data.' });
-          return;
-        }
-      }
-      // Send success response to client
-      res.status(200).json({ message: 'Data inserted and updated successfully.' });
-    }
-  } catch (error) {
-    // Log error for debugging
-    console.error('Error saving data to database:', error);
-    // Send appropriate error response to client
-    res.status(500).json({ error: 'Internal server error.' });
-  }
-}); 
- */
-
-
-
-/* router.post('/saveToDatabase', async (req, res) => {
-  const { Data, Options, TableName } = req.body;
-
-  let d = Data;
-
-  try {
-    // Check if TableName is missing
-    if (!TableName) {
-      res.status(400).json({ error: 'Table name is required.' });
-      return;
-    }
-
-    // Check if Options is missing or invalid
-    if (Options !== '1' && Options !== '2') {
-      res.status(400).json({ error: 'Invalid Options value. Use 1 or 2.' });
-      return;
-    }
-
-    // Get the column names of the target table
-    let tableColumns;
-    try {
-      const [tableInfo] = await connection.query(`SHOW COLUMNS FROM ${TableName}`);
-      tableColumns = tableInfo.map(info => info.Field);
-    } catch (error) {
-      console.error('Error retrieving table columns:', error);
-      res.status(500).json({ error: 'Internal server error. Failed to retrieve table columns.' });
-      return;
-    }
-
-    // Handle data insertion based on the specified options
-    if (Options === '1') {
-      // Insert new data only
-      for (const item of d) {
-        try {
-          const filteredItem = filterDataByTableColumns(item, tableColumns);
-          const columns = Object.keys(filteredItem);
-          const query = `INSERT INTO ${TableName} (${columns.map(() => '??').join(', ')}) VALUES (${columns.map(() => '?').join(', ')})`;
-          await connection.query(query, [...columns, ...columns.map(key => filteredItem[key])]);
-        } catch (error) {
-          // Log error for debugging
-          console.error('Error inserting data:', error);
-
-          // Send appropriate error response to client
-          res.status(500).json({ error: 'Internal server error. Failed to insert data.' });
-          return;
-        }
-      }
-      // Send success response to client
-      res.status(200).json({ message: 'Data inserted successfully.' });
-    } else if (Options === '2') {
-      // Insert new data and update existing data
-      for (const item of d) {
-        const filteredItem = filterDataByTableColumns(item, tableColumns);
-        const columns = Object.keys(filteredItem);
-        const query = `INSERT INTO ${TableName} (${columns.map(() => '??').join(', ')}) VALUES (${columns.map(() => '?').join(', ')}) ON DUPLICATE KEY UPDATE ${columns.map(key => `?? = ?`).join(', ')}`;
-        try {
-          await connection.query(query, [...columns, ...columns.map(key => filteredItem[key]), ...columns.map(key => key), ...columns.map(key => filteredItem[key])]);
-        } catch (error) {
-          // Log error for debugging
-          console.error('Error inserting/updating data:', error);
-
-          // Send appropriate error response to client
-          res.status(500).json({ error: 'Internal server error. Failed to insert/update data.' });
-          return;
-        }
-      }
-      // Send success response to client
-      res.status(200).json({ message: 'Data inserted and updated successfully.' });
-    }
-  } catch (error) {
-    // Log error for debugging
-    console.error('Error saving data to database:', error);
-
-    // Send appropriate error response to client
-    res.status(500).json({ error: 'Internal server error.' });
-  }
-});
-
-// Helper function to filter out keys not present in the table columns
-function filterDataByTableColumns(data, tableColumns) {
-  const filteredData = {};
-  for (const key of Object.keys(data)) {
-    if (tableColumns.includes(key)) {
-      filteredData[key] = data[key];
-    }
-  }
-  return filteredData;
-}
- */
 
   router.get('/upload', (req, res) => { 
-    
-    let fileName='';
+
+   
 
     res.render('uploads',{dt : data, items:items ,fileName:fileName });
 });

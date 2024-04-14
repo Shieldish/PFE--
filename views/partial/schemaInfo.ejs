@@ -1,21 +1,44 @@
-<hr>
+<hr class="dashed-line">
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              See others Tables :
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                            
+                <div class="form-group">
+                    <label for="menus" style="display: inline-block; width: 200px;">All tables and schemaInfo:</label>
+                         <select id="menus" class="form-control form-control-sm" style="width: 150px; display: inline-block;" onchange="showContents()" onchange=" getSelectedValue()">
+                    
+                        <option value=" " selected disabled>Selectionner  la table</option>
+                        <% if (items) { %>
+                            <% Object.keys(items).forEach(function(key) { %>
+                                <option value="<%= key %>"><%= key %></option>
+                            <% }); %>
+                        <% } %> 
+                    </select>
+                </div>
+                <div id="contents">
+                    <!-- Contents will be displayed here -->
+                </div>
+            </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
  <div>
-        <div class="form-group">
-            <label for="menus"><strong>Voir les tables existants et leurs schemas : </strong></label>
-            <select id="menus" onchange="showContents()" onchange=" getSelectedValue()">
-                <option value="" selected disabled>Selectionner  la table</option>
-                <% if (items) { %>
-                    <% Object.keys(items).forEach(function(key) { %>
-                        <option value="<%= key %>"><%= key %></option>
-                    <% }); %>
-                <% } %> 
-            </select>
-        </div>
-        <div id="contents">
-            <!-- Contents will be displayed here -->
-        </div>
-    </div>
-<hr>
+
+
+     
+
+    <hr class="dashed-line">
+
     <script>
         function showContents() {
             var menus = document.getElementById("menus");
@@ -31,7 +54,7 @@
             var contents = items[selectedValue];
 
             if (contents) {
-                var contentsHTML =  "</strong><div ><table class='table table-bordered table-sm'><tr>";
+                var contentsHTML =  "</strong><div ><table class='table table-bordered table-sm  ' ><tr>";
                 contents.forEach(function(item) {
                     contentsHTML += "<td>" + item + "</td>";
                 });
@@ -44,5 +67,4 @@
             return selectedValue;
         }
     </script>
-               
 
