@@ -67,7 +67,7 @@ const fetchSidebarItems = (lang, connection, callback) => {
 
 // Usage of fetchSidebarItems function
 router.post('/sidebar', (req, res) => {
-  const language = req.body.lang || 'fr'; // Default to English if no language is provided
+  const language = req.body.lang || 'en'; // Default to English if no language is provided
   
   fetchSidebarItems(language, connection, (error, sidebarItems) => {
     if (error) {

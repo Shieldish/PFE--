@@ -4,7 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
-const UserRegistration  = require('../controllers/UserRegistration');
+const UserRegistrations  = require('../controllers/UserRegistration');
 const router = express.Router();
 const app=express();
 app.use(express.urlencoded({extended : true}));
@@ -22,7 +22,7 @@ router.get('/',async (req, res) => {
        {
           let user = req.session.user;
           let email = user.EMAIL;
-          const userData = await UserRegistration.findOne({ where: {email } });
+          const userData = await UserRegistrations.findOne({ where: {email } });
           if(userData)
           { 
             data=userData
@@ -69,13 +69,13 @@ router.post('/updateUserData', async (req, res) => {
     const hashedPassword = await bcrypt.hash(p1, salt);
     otherFields.PASSWORD = hashedPassword;
         console.log(otherFields)
-    await UserRegistration.update(
+    await UserRegistrations.update(
         otherFields,
         { where: { EMAIL: EMAIL } }
     );
 
     // Optionally, you can fetch updated user data after the update and send it to the frontend
-    const updatedUserData = await UserRegistration.findOne({ where: { EMAIL: EMAIL } });
+    const updatedUserData = await UserRegistrations.findOne({ where: { EMAIL: EMAIL } });
 
      
     // Redirect or render the page as needed

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 11 avr. 2024 à 06:16
+-- Généré le : dim. 14 avr. 2024 à 19:30
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `sidebar_items`
 --
 
-CREATE TABLE `sidebar_items` (
+CREATE TABLE IF NOT EXISTS  `sidebar_items` (
   `id` int(11) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
@@ -41,19 +41,19 @@ CREATE TABLE `sidebar_items` (
 -- Déchargement des données de la table `sidebar_items`
 --
 
-INSERT INTO `sidebar_items` (`id`, `name_fr`, `name_en`, `link`, `icon`, `parent_id`, `name_ar`) VALUES
-(1, 'Tableau de bord', 'Dashboard', '/#', 'fas fa-tachometer-alt', NULL, 'لوحة القيادة'),
-(2, 'Étudiants', 'Students', '/#', 'fas fa-users', NULL, 'طلاب'),
-(3, 'Enseignants', 'Instructors', '/#', 'fas fa-chalkboard-teacher', NULL, 'معلمون'),
-(4, 'Entreprises', 'Companies', '/#', 'fas fa-building', NULL, 'شركات'),
-(5, 'Liste des stages', 'Internship List', '/#', 'fas fa-file-alt', NULL, 'قائمة الدورات التدريبية'),
-(6, 'Calendrier', 'Calendar', '/#', 'fas fa-calendar-alt', NULL, 'تقويم'),
-(7, 'Paramètres', 'Settings', '/#', 'fas fa-cog', NULL, 'الإعدادات'),
-(8, 'Admin', 'Admin', '#', 'fas fa-tasks', NULL, 'المسؤول'),
-(9, 'Uploads files', 'Uploads files', '/files/upload', 'fas fa-upload', 8, 'تحميل الملفات'),
-(10, 'Databases', 'Databases', '/gestion', 'fas fa-database', 8, 'قواعد البيانات'),
-(11, 'Encadrement', 'Supervision', '/#', 'fas fa-file-alt', NULL, 'الإشراف'),
-(12, 'Mon Profiles', 'My Profiles', '/settings', 'fas fa-address-card', 7, 'ملفاتي الشخصية');
+INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name_fr`, `name_en`) VALUES
+(1, NULL, '/#', 'fas fa-tachometer-alt', 'لوحة القيادة', 'Tableau de bord', 'Dashboard'),
+(2, NULL, '/#', 'fas fa-users', 'طلاب', 'Étudiants', 'Students'),
+(3, NULL, '/#', 'fas fa-chalkboard-teacher', 'معلمون', 'Enseignants', 'Instructors'),
+(4, NULL, '/#', 'fas fa-building', 'شركات', 'Entreprises', 'Companies'),
+(5, NULL, '/#', 'fas fa-file-alt', 'قائمة الدورات التدريبية', 'Liste des stages', 'Internship List'),
+(6, NULL, '/#', 'fas fa-calendar-alt', 'تقويم', 'Calendrier', 'Calendar'),
+(7, NULL, '/#', 'fas fa-cog', 'الإعدادات', 'Paramètres', 'Settings'),
+(8, NULL, '#', 'fas fa-tasks', 'المسؤول', 'Admin', 'Admin'),
+(9, 8, '/files/upload', 'fas fa-upload', 'تحميل الملفات', 'Uploads files', 'Uploads files'),
+(10, 8, '/gestion', 'fas fa-database', 'قواعد البيانات', 'Databases', 'Databases'),
+(11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrement', 'Supervision'),
+(12, 7, '/settings', 'fas fa-address-card', 'ملفاتي الشخصية', 'Mon Profiles', 'My Profiles');
 
 --
 -- Index pour les tables déchargées

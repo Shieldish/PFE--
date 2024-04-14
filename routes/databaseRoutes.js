@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
-const UserRegistration  = require('../controllers/UserRegistration'); // Import UserRegistration model
+const UserRegistrations  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const util = require('util');
 const { v4: uuidv4 } = require('uuid');
@@ -108,7 +108,7 @@ router.get('/', (req, res) => {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
                     tableName === 'encadrant' ? encadrant :
-                    tableName === 'UserRegistrations' ? UserRegistration :
+                    tableName === 'UserRegistrations' ? UserRegistrations :
                     tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
@@ -146,7 +146,7 @@ router.get('/', (req, res) => {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
         tableName === 'encadrant' ? encadrant :
-        tableName === 'userregistrations' ? UserRegistration :
+        tableName === 'userregistrations' ? UserRegistrations :
         tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
