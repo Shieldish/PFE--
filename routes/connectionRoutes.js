@@ -139,7 +139,10 @@ router.get('/confirm-email', async (req, res) => {
     } */
 
     // Update isvalidated column to true
-    await UserRegistrations.update({ ISVALIDATED: true , TOKEN :'0'});
+    userRegistration.ISVALIDATED=true;
+    UserRegistration.TOKEN='0';
+    userRegistration.save();
+   // await UserRegistrations.update({ ISVALIDATED: true , TOKEN :'0'});
 
     // Respond with success message
     return res.render('../connection/login');
