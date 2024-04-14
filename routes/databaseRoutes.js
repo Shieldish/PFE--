@@ -146,7 +146,7 @@ router.get('/', (req, res) => {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
         tableName === 'encadrant' ? encadrant :
-        tableName === 'userregistrations' ? UserRegistrations :
+        tableName === 'UserRegistrations' ? UserRegistrations :
         tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
