@@ -78,8 +78,10 @@ router.post('/register', async function(req, res) {
 
     if (existingUser) {
      // return res.status(400).send('Email address already exists');
-      req.flash('error', 'Email address already exists');
-      return res.render('../connection/register', { messages: req.flash() });
+     req.flash('error', `Error email address : '${email}' already exists , try another address or login instead ! `);
+     return res.render('../connection/register', { messages: req.flash() });
+
+     
     }
     
     // Hash the password
@@ -105,7 +107,7 @@ router.post('/register', async function(req, res) {
     await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken).then(()=>{
       NOM=nom.trim().toUpperCase();
       EMAIL=email.trim().toLowerCase();
-      return res.render('../connection/messages', { NAME:NAME,EMAIL:EMAIL });
+      return res.render('../connection/messages', { NOM:NOM,EMAIL:EMAIL });
     })
 
     
