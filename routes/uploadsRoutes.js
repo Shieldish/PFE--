@@ -34,7 +34,7 @@ router.get('/upload', (req, res) => {
   getAllTablesAndStructure()
     .then(tablesStructure => {
       // List of table names you want to exclude
-      const excludedTables = ['userregistrations','sidebar_items'];
+      const excludedTables = ['userregistrations','sidebar_items','UserRegistrations'];
 
       // Filter out the excluded table names
       const filteredTablesStructure = Object.fromEntries(
@@ -44,7 +44,7 @@ router.get('/upload', (req, res) => {
       items = filteredTablesStructure;
      // console.log('items from upload : ', items);
 
-      return res.render('uploads', { dt: data, items: filteredTablesStructure });
+      return res.render('uploads', { dt: data, items: filteredTablesStructure ,fileName:fileName});
     })
     .catch(error => {
       console.error('Error:', error);

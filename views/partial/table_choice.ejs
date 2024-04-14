@@ -93,7 +93,7 @@ function SaveAndSend() {
     }, 100); // Adjust this value to control the speed of the progress bar
 
     $.ajax({
-        url: '/saveToDatabase', // Replace with your server-side endpoint URL
+        url: '/files/saveToDatabase', // Replace with your server-side endpoint URL
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({

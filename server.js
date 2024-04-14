@@ -53,10 +53,10 @@ app.set('view cache',false)
 // Import routes
 app.use('/people',authenticate,routes,);
 app.use('/connection',connectionRoutes);
-app.use('/',authenticate,isUser,uploadsRoutes);
+app.use('/files',authenticate,isUser,uploadsRoutes);
 // Protect /gestion and its subroutes with authenticate middleware
 //app.use('/gestion', authenticate, databaseRoutes); 
-app.use('/gestion',authenticate,isAdmin,databaseRoutes); 
+app.use('/gestion',authenticate,isUser,databaseRoutes); 
 app.use('/settings',authenticate,UserProfilesRoutes);
 
 app.get(['/','/home'], authenticate,(req, res) => {
