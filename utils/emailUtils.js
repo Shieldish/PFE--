@@ -30,7 +30,7 @@ const mailOptions = {
         .container {
           max-width: 600px;
           margin: 0 auto;
-          background-color: #ffffff;
+          background-color: #F5F5DC;
           padding: 20px;
           border-radius: 5px;
           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -111,7 +111,7 @@ const mailOptions = {
           .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #ffffff;
+            background-color: #F5F5DC;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
