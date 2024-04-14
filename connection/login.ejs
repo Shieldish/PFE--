@@ -133,7 +133,7 @@
             console.log(successMessage)
             var successModal = new mdb.Modal(document.getElementById('successModal'));
             successModal.show();
-            document.getElementById('resetEmailText').textContent = email;
+            document.getElementById('resetEmailText').textContent = email.toString().trim().toLowerCase();
             document.getElementById('successMessage').textContent = successMessage;
             
           } else {

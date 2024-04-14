@@ -151,10 +151,12 @@ router.get('/confirm-email', async (req, res) => {
 
 router.post('/reset-password', async (req, res) => {
   const { email } = req.body;
+     const EMAIL= email.toString().trim().toLowerCase();
+     console.log(EMAIL)
           
   try {
     // Find the user registration record by email
-    const userRegistration = await UserRegistrations.findOne({ where: { email } });
+    const userRegistration = await UserRegistrations.findOne({ where: { EMAIL } });
 
     // If user registration not found, send error response
     if (!userRegistration) {
@@ -162,14 +164,14 @@ router.post('/reset-password', async (req, res) => {
     }
 
     // Generate a new reset token
-    const resetToken = generateResetToken(email);
+    const resetToken = generateResetToken(EMAIL);
 
     // Update the user registration record with the new reset token
     userRegistration.TOKEN = resetToken;
-    await UserRegistrations.save();
+    await userRegistration.save();
 
     // Send reset password email
-    await sendUserResetPasswordMail(email, resetToken);
+    await sendUserResetPasswordMail(EMAIL, resetToken);
     
     // Send success response
     const message = 'Password reset instructions successfully sent to:';

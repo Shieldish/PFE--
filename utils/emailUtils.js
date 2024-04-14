@@ -46,16 +46,23 @@ const mailOptions = {
     </head>
     <body>
       <div class="container">
-        <h2>Registration Confirmation: Welcome to [Your Company]!</h2>
+        <h2>Registration Confirmation: Welcome </h2>
         <div class="message">
           <p>Dear ${name},</p>
-          <p>   Congratulations! We are delighted to confirm that your registration with [Your Company] was successful. Welcome to our community!</p>
+          <p>   Congratulations! We are delighted to confirm that your registration  was successful. Welcome to our community!</p>
           <strong><a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}">Confirm Email</a></strong>
           <p>Here are the details of your registration:</p>
           <ul>
             <li><strong>Username:</strong> ${name}</li>
             <li><strong>Email Address:</strong> ${email}</li>
-            <li><strong>Registration Date:</strong> ${new Date().toLocaleDateString()}</li>
+            <li><strong>Registration Date:</strong> ${new Date().toLocaleString('fr-FR', { 
+              month: 'long',
+              day: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+          })}</li>
           </ul>
           <p>Thank you for registering with our app!</p>
           <p>Please click the link below to confirm your email address:</p>
