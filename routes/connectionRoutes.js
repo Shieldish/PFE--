@@ -243,7 +243,7 @@ router.post('/login', async (req, res) => {
     const user = await UserRegistrations.findOne({ where: { email } });
 
     if (!user) {
-      req.flash('error', 'Email not found');
+      req.flash('error', `Address email : '${email} not found !`);
       return res.render('../connection/login', { messages: req.flash() });
     }
     if (!user.ISVALIDATED) {
@@ -252,7 +252,7 @@ router.post('/login', async (req, res) => {
     }
 
     if (!user.validPassword(password)) {
-      req.flash('error', 'Invalid password');
+      req.flash('error', 'Wrong password try again !');
       return res.render('../connection/login', { messages: req.flash() });
     }
     
