@@ -175,7 +175,7 @@ body {
     margin-right: 10px; /* Add some space between the button and the select */
   }
   .my-color { 
-    background-color: beige;
+    background-color: white;
     font-weight:small;
     word-wrap: break-word;
     overflow-wrap: break-word;
