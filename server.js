@@ -14,7 +14,7 @@ const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const { v4: uuidv4 } = require('uuid');
-//const logger = require('./logs/logger');
+const logger = require('./logs/logger');
 
 
 const app = express();
@@ -67,10 +67,10 @@ app.get(['/','/home'], authenticate,(req, res) => {
 
 
 
-/* 
+ 
 // Your application code herelogger.info('Application started');
 console.log('This message will be logged to the console and combined.log');
-console.error('This error will be logged to the console, error.log, and combined.log');  */
+console.error('This error will be logged to the console, error.log, and combined.log');  
 
 // Start server
 const PORT = process.env.PORT || 3000;
