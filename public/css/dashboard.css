@@ -1,16 +1,38 @@
 /* Réinitialisation des styles */
-
+/* Example responsive styles */
+@media (max-width: 767px) {
+    /* Styles for small screens (mobile) */
+    .my-element {
+      font-size: 16px;
+      padding: 10px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    /* Styles for larger screens (desktop) */
+    .my-element {
+      font-size: 18px;
+      padding: 15px;
+    }
+  }
 
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+   
 }
+
+
+
+
 
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #fdfdfd;
+    /*  overflow-x: hidden;  */
+      overflow-y: hidden;  
 }
 
 /* Override Bootstrap's Container Width */
@@ -39,7 +61,8 @@ body {
     /* Override Bootstrap's default padding */
     padding: 0;
     margin: 0;
-    
+    font-size: large;
+    font-weight: bold;
     
    
 }
@@ -96,6 +119,7 @@ body {
     padding: 10px 20px; 
      width: auto; 
     /* Adjust the width as needed */
+  
     
    
     
@@ -107,6 +131,7 @@ body {
     background-color: #f0efef;
     padding: 5px 10px;
     border-radius: 20px;
+   
 }
 
 .search-bar input {
@@ -125,12 +150,14 @@ body {
 
 .user-info {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    position:relative;
 }
 
 .user-info i {
     color: #fff;
     margin-right: 10px;
+    
 }
 
 .user-avatar img {
@@ -190,4 +217,5 @@ body {
     margin: 0;
     padding: 0 !important;
     max-width: none;
+    font-size: x-small;
   }

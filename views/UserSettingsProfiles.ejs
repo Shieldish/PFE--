@@ -9,10 +9,18 @@
         <style>
             /* Set a fixed height for the card */
             .custom-card {
-                height: 550px; 
+                position:static;
+                height:fit-content; 
                 Width : 40%;/* Adjust the height as needed */
                 overflow-y: auto; /* Add scrollbar if content exceeds height */
+                background-color:beige;
                 
+            }
+            .custumizero{
+                max-width: 50%;
+                max-height: 50%;
+            
+
             }
             
         </style>
@@ -25,43 +33,31 @@
         <%-include('./common/sidebar') %>
 
         
-        <div class="main-content">
+        <section class="main-content">
          
             <%-include('./common/navbar') %>
           <!-- <h3 style="text-align: center; color: black;" ><strong > Profiles</strong></h3>   -->
-          <div id="flash-message" class="text-center fw-bold fst-italic ">
-            <% if (messages && messages.error) { %>
-                <div id="flash-message2" class="alert alert-danger"><%= messages.error %></div>
-            <% } %>
-        
-            <% if (messages && messages.success) { %>
-                <div id="flash-message1" class="alert alert-success "><%= messages.success %></div>
-            <% } %>
-            
-            <% if (messages && messages.info) { %>
-                <div id="flash-message3" class="alert alert-warning"><%= messages.info %></div>
-            <% } %>
-        </div>
+          
      
             <div class="custom-container ">
-            
+                
                 <% if (userData) { %>
                    
                     <div class="card custom-card " style="margin: 15px ; margin: 15px;;">
                         <div class="card-header">
                             <button class="btn btn-success btn-block "disabled><strong>User Information</strong></button>
                         </div>
-                        <div class="card-body  " style="background-color: beige;">
+                        <div class="card-body">
                             
                             <hr width="100%" size="5">
                             
-                            <p style="font-size: small;"><strong>ID :</strong> <strong><%= userData.UUID.toUpperCase() %></strong></p>
-                            <p style="font-size: small;"><strong>FIRST NAME :</strong><strong class="text-uppercase fw-bolder"  style="color: green;">  <%= userData.NOM %></strong></p>
-                            <p style="font-size: small;"><strong>LAST NAME :</strong><strong class="text-uppercase fw-bolder" style="color: green;">  <%= userData.PRENOM %></strong> </p>
-                            <p style="font-size: small;"><strong>EMAIL ADDRESS :</strong> <strong style="color:green;">  <%= userData.EMAIL %></strong></p>
-                            <p style="font-size: small;"><strong>DEPARTMENT :</strong><strong style="color: black">  <%= userData.DEPARTEMENT %></strong> </p>
-                            <p style="font-size: small;"><strong>ADDRESS :</strong><strong style="color: black">  <%= userData.ADDRESS %></strong> </p>
-                            <p style="font-size: small;"><strong>BIRTHDAY DATE :</strong><strong style="color: black">
+                            <p ><strong>ID :</strong> <strong><%= userData.UUID.toUpperCase() %></strong></p>
+                            <p ><strong>FIRST NAME :</strong><strong class="text-uppercase "  style="color: green;">  <%= userData.NOM %></strong></p>
+                            <p ><strong>LAST NAME :</strong><strong class="text-uppercase " style="color: green;">  <%= userData.PRENOM %></strong> </p>
+                            <p ><strong>EMAIL ADDRESS :</strong> <strong class="text-uppercase " style="color:green;">  <%= userData.EMAIL %></strong></p>
+                            <p ><strong>DEPARTMENT :</strong><strong style="color: black">  <%= userData.DEPARTEMENT %></strong> </p>
+                            <p ><strong>ADDRESS :</strong><strong style="color: black">  <%= userData.ADDRESS %></strong> </p>
+                            <p ><strong>BIRTHDAY DATE :</strong><strong style="color: black">
                                 <% if (userData.DATE) { %>
                                   <%= userData.DATE.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric' }) %>
                                 <% } else { %>
@@ -69,23 +65,38 @@
                                 <% } %>
                             </strong></p>
                             <hr width="100%" size="5">
-                            <p style="font-size: small;"><strong>ACCOUNT TYPE :</strong><strong style="color: rgb(208, 39, 30)">  <%= userData.role %></strong> </p>
-                            <p style="font-size: small;"><strong>VALIDITY :</strong><strong style="color: red;">  <%= userData.ISVALIDATED ? 'Yes' : 'No' %></strong> </p>
-                            <p style="font-size: small;"><strong>CREATED :</strong><strong style="color:blue">  <%= userData.createdAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></strong> </p>
-                            <p style="font-size: small;"><strong>UPDATED :</strong><strong style="color: blue;">  <%= userData.updatedAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })%></strong> </p>
+                            <p ><strong>ACCOUNT TYPE :</strong><strong style="color: rgb(208, 39, 30)">  <%= userData.role %></strong> </p>
+                            <p ><strong>VALIDITY :</strong><strong style="color: red;">  <%= userData.ISVALIDATED ? 'Yes' : 'No' %></strong> </p>
+                            <p ><strong>CREATED :</strong><strong style="color:blue">  <%= userData.createdAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></strong> </p>
+                            <p ><strong>UPDATED :</strong><strong style="color: blue;">  <%= userData.updatedAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })%></strong> </p>
                             <!-- Add more fields as needed -->
                         </div>
                     </div>
                     
                     
              
-                    <div class="container-fluid" style="padding-top: 15px;margin-right: 20px;" >
+                    <div class="container-fluid  custumizer " style="padding-top: 15px;margin-right: 20px;" >
+
+                        <div id="flash-message" class="text-center fw-bold fst-italic ">
+                            <% if (messages && messages.error) { %>
+                                <div id="flash-message2" class="alert alert-danger"><%= messages.error %></div>
+                            <% } %>
+                        
+                            <% if (messages && messages.success) { %>
+                                <div id="flash-message1" class="alert alert-success "><%= messages.success %></div>
+                            <% } %>
+                            
+                            <% if (messages && messages.info) { %>
+                                <div id="flash-message3" class="alert alert-warning"><%= messages.info %></div>
+                            <% } %>
+                        </div>
+
                          
                         <button class="btn btn-dark btn-block" disabled><strong>Edit Information</strong></button>
                          
                         <form id="userEditForm" action="/settings/updateUserData" method="POST">
                            
-                            <div class="form-data" style="font-size: small;">
+                            <div class="form-data" >
                          <div class="form-row " >     
                             <div class="form-group col-md-6">
                                     <label for="UIID"><strong>ID:</strong></label>
@@ -201,11 +212,14 @@
                     </div>
                     
   <% } %>
-            </div>
-            
+                </section> 
+                
+              
     </div>
 
-    </div>
+    <hr>
+            
+
     <!-- Scripts -->
     <script src="../public/js/script.js"></script>
     <!-- Include Bootstrap JS -->

@@ -243,7 +243,7 @@ router.post('/login', async (req, res) => {
     const user = await UserRegistrations.findOne({ where: { email } });
 
     if (!user) {
-      req.flash('error', `Address email : '${email} not found !`);
+      req.flash('error', `Address email : "${email}" not found !`);
       return res.render('../connection/login', { messages: req.flash() });
     }
     if (!user.ISVALIDATED) {
