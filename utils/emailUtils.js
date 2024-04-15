@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 async function sendUserRegistrationMail(email, name,confirmationToken) {
 const mailOptions = {
-    from: 'Gestions Stages', // Sender address
+    from: 'Gestions Stages <gabiamsamuelnathan@gmail.com>', // Sender address
     to: email, // Recipient address
     subject: 'Registration Confirmation', // Subject line
     html: `
@@ -95,7 +95,7 @@ const mailOptions = {
 
 async function sendUserResetPasswordMail(email, resetToken) {
 const mailOptions = {
-  from: 'Gestions Stages', // Sender address
+  from: 'Gestions Stages <gabiamsamuelnathan@gmail.com>', // Sender address
   to: email, // Recipient address
   subject: 'Reset Your Password', // Subject line
   html: `
