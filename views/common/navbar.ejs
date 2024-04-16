@@ -1,148 +1,135 @@
-<style>.profile-info {
-    display: none;
-    position: absolute;
-    right: 10px;
-    top: 60px;
-    z-index: 1;
+<style>
+  .myNav {
+      background-color: royalblue;
+      
   }
-  
-  .profile-card {
-    background-color: rgb(0, 0, 0);
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(155, 14, 66, 0.3);
-    padding: 16px;
-    min-width: 200px;
-    max-width: 400px;
+
+  .navbar-nav {
+      flex-direction: row;
+      align-items: center;
+      margin: 10px;
   }
-  
-  .profile-card p {
-    margin: 8px 0;
+
+  .nav-item {
+      margin-left: 25px;
   }
-  .user-avatar img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-  </style>
-<nav class="navbar">
-    <div class="search-bar">
-      <input type="text" placeholder="Rechercher...">
-      <i class="fas fa-search"></i>
-    </div>
-    <div class="user-info">
-      <i class="fas fa-bell"></i>
-      <div class="language-selector">
-        <select id="language-select" class="form-control">
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-          <option value="ar">العربية</option>
-        </select>
+
+  .form-control,
+  .btn {
+      border-radius: 10px;
+  }
+
+  .btn-outline-light {
+      border-color: #fff;
+      color: #fff;
+      margin-left: 10px; /* Add space between the input and button */
+  }
+
+  .btn-outline-light:hover {
+      background-color: #f9f9f9;
+      color: #000000;
+  }
+
+  .user-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+  }
+
+  /* Adjust dropdown menu width and overflow */
+  .dropdown-menu {
+      position: relative;
+      min-width: 200px; /* Adjust width as needed */
+      max-width: 300px; /* Adjust width as needed */
+      overflow-wrap: break-word; /* Wrap long content */
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark myNav">
+  <div class="container-fluid">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <form class="d-flex me-2" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 300px;">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+      </form>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item">
+                  <div class="language-selector">
+                      <select id="language-select" class="form-control">
+                          <option value="en">English</option>
+                          <option value="fr">Français</option>
+                          <option value="ar">العربية</option>
+                      </select>
+                  </div>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled">Disabled</a>
+              </li>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <img src="../public/images/user/2.png" alt="User Logo" class="user-logo">
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                      <li><div class="dropdown-item user-info text-center">user-info</div></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><div class="dropdown-item user-name"></div></li>
+                      <li><div class="dropdown-item user-prenom"></div></li>
+                      <li><div class="dropdown-item user-email"></div></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="/settings">Edit Profiles</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item">
+                  <button class="btn btn-outline-danger" onclick="window.location.href='/connection/logout'">
+                      <i class="fas fa-sign-out-alt"></i> Logout
+                  </button>
+              </li>
+          </ul>
       </div>
-      <div class="user-avatar">
-        <img src="" alt="Avatar" id="avatar-image">
-        <div class="profile-info">
-          <div class="profile-card">
-            <!-- Profile Information HTML -->
-           
-           
-            <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i>
-            <!-- Add more profile information as needed -->
-          </div>
-        </div>
-      </div>
-     <!--  <i class="fas fa-sign-out-alt"><a href="/connection/logout">logout</a></i> -->
-    </div>
-  </nav>
-<!-- <script src="https://unpkg.com/@dicebear/browser/dist/browser.js"></script> -->
+  </div>
+</nav>
 
-  
-
-  <script>
-
-
-
-
-    function generateAvatar() {
-      const avatarImage = document.getElementById('avatar-image');
-      const seed = Math.floor(Math.random() * 1000);
-      const avatarOptions = {
-        style: 'avataaars',
-        seed: seed,
-      };
-      const avatar = DiceBear.create(avatarOptions);
-      avatarImage.src = avatar.png;
-    }
-  
-    window.addEventListener('load', generateAvatar);
-  </script>
-  
-  <style>
-    /* CSS styles */
-  </style>
-  
-  <nav class="navbar">
-    <!-- HTML structure -->
-  </nav>
-  
-  <script>
-    const userAvatar = document.querySelector('.user-avatar');
-    const profileInfo = document.querySelector('.profile-info');
-  
-    userAvatar.addEventListener('click', () => {
-      profileInfo.style.display = profileInfo.style.display === 'none' ? 'block' : 'none';
-    });
-  
-    function generateRandomAvatar() {
-      const avatarImage = document.getElementById('avatar-image');
-      const randomString = Math.random().toString(36).substring(2, 7); // Generate a random string
-      const avatarUrl = `https://robohash.org/${randomString}?set=set4&size=80x80`;
-      avatarImage.src = avatarUrl;
-    }
-    window.addEventListener('load', generateRandomAvatar);
-  </script>
- <!-- Your HTML code remains unchanged -->
-
-  <script>
-      fetch('/connection/profiles')
-    .then(response => response.json())
-    .then(data => {
-      // Update the profile card with the received data
-      updateProfileCard(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+<script>
+  fetch('/connection/profiles')
+      .then(response => response.json())
+      .then(data => {
+          // Update the profile card with the received data
+          updateProfileCard(data);
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
 
   function updateProfileCard(userData) {
-    const profileCard = document.querySelector('.profile-card');
+      const userNameElement = document.querySelector('.user-name');
+      const userEmailElement = document.querySelector('.user-email');
+      const userPrenomElement = document.querySelector('.user-prenom');
 
-    // Clear the existing content of the profile card
-    profileCard.innerHTML = '';
+      // Update the user name
+      userNameElement.textContent = `Name: ${userData.NOM}`;
 
-    // Create HTML elements to display the user data
-    const nameElement = document.createElement('p');
-    nameElement.textContent = `Name: ${userData.NOM}`;
+      // Update the user prenom
+      userPrenomElement.textContent = `Prenom: ${userData.PRENOM}`;
 
-    const prenomElement = document.createElement('p');
-    prenomElement.textContent = `First Name: ${userData.PRENOM}`;
-
-    const emailElement = document.createElement('p');
-    emailElement.textContent = `Email: ${userData.EMAIL}`;
-
-    // Append the elements to the profile card
-    profileCard.appendChild(nameElement);
-    profileCard.appendChild(prenomElement);
-    profileCard.appendChild(emailElement);
-
-    // Add a logout link
-    const logoutLink = document.createElement('a');
-    logoutLink.href = '/connection/logout';
-    logoutLink.textContent = 'Logout';
-
-    const logoutContainer = document.createElement('div');
-    logoutContainer.appendChild(logoutLink);
-
-    profileCard.appendChild(logoutContainer);
+      // Update the user email
+      userEmailElement.textContent = `Email: ${userData.EMAIL}`;
   }
-</script> 
+</script>
