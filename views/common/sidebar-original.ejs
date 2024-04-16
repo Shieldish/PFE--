@@ -1,120 +1,4 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-<style>
- /* Sidebar Navigation */
-.sidebar-nav {
-  background-color:  #14191D;
-  height: 100%;
-  width: 250px;
-  position:sticky;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
 
-  display:inline-block;
-}
-
-.sidebar-nav .logo {
-  padding: 20px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.sidebar-nav .logo a {
-  color: #ffffff;
-  text-decoration: none;
-}
-
-.sidebar-nav ul#sidebarItems {
-  list-style-type:none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar-nav .sidebar-item {
-  display: block;
-  color: #fefefe;
-  padding: 10px;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.sidebar-nav .sidebar-item:hover {
-  background-color: #ddd;
-  color: #000;
-}
-
-.sidebar-nav .sidebar-item i {
-  margin-right: 10px;
-}
-
-.sidebar-nav .sidebar-subitem {
-  display: block;
-  color: #ffffff;
-  padding: 12px 16px 12px 36px;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.sidebar-nav .sidebar-subitem:hover {
-  background-color: #ccc;
-  color: #000;
-}
-
-.sidebar-nav .submenu {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Sidebar Animations */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.sidebar-nav,
-.sidebar-nav .sidebar-item,
-.sidebar-nav .sidebar-subitem {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.sidebar-nav .sidebar-item[data-toggle="collapse"] {
-  position: relative;
-}
-
-.sidebar-nav .sidebar-item[data-toggle="collapse"]:after {
-  content: "\f107";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  position: absolute;
-  right: 16px;
-  transition: transform 0.3s ease-in-out;
-}
-
-.sidebar-nav .sidebar-item[aria-expanded="true"]:after {
-  transform: rotate(180deg);
-}
-
-.sidebar-nav .submenu {
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 0.3s ease-in-out;
-}
-
-.sidebar-nav .submenu.show {
-  max-height: 500px; /* Adjust the max-height value as needed */
-}
-</style>
 
 
 <div class="sidebar-nav">
@@ -158,21 +42,13 @@
         listItem.appendChild(submenu);
 
         // Add click event to toggle submenu
-        listItem.classList.add('has-submenu'); // Add class to indicate item has submenu
+        link.setAttribute('data-toggle', 'collapse');
+        link.setAttribute('href', `#submenu-${item.id}`);
+        link.setAttribute('aria-expanded', 'false');
+        link.setAttribute('aria-controls', `submenu-${item.id}`);
       }
 
       sidebarItemsContainer.appendChild(listItem);
-    });
-
-    // Add event listener to toggle submenu
-    const sidebarItemsWithSubmenu = document.querySelectorAll('.has-submenu');
-    sidebarItemsWithSubmenu.forEach(item => {
-      const link = item.querySelector('.sidebar-item');
-      link.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default anchor tag behavior
-        const submenu = item.querySelector('.submenu');
-        submenu.classList.toggle('show');
-      });
     });
   }
     document.addEventListener('DOMContentLoaded', function() {

@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `sidebar_items`
 --
-DROP TABLE IF EXISTS `sidebar_items`;
+/* DROP TABLE IF EXISTS `sidebar_items`; */
 
 
 

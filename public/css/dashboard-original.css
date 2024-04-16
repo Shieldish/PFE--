@@ -31,8 +31,69 @@ body {
     /*   overflow-y: hidden;   */
 }
 
+/* Override Bootstrap's Container Width */
 
 
+/* Adjust Sidebar Width */
+.sidebar-nav {
+    background-color:  #14191D;
+    color: #fff;
+    max-width :15%;
+    min-width: 15%;
+    min-height: 85%;
+    max-height: 85%;
+  /*   width: auto */ /* Adjust the width as needed */
+   /*  height: auto; */
+  /*   position: absolute; */
+    top: 0; 
+    /* Override Bootstrap's default padding */
+    padding: 0;
+    margin: 0;
+  /*   font-size: large; */  
+}
+
+
+.logo {
+    background-color: #14191D;
+    padding: 20px 20px;
+}
+
+.logo a {
+    color: #fffffffd;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+  
+}
+
+.sidebar-nav ul li {
+    margin-bottom: 0px;
+   
+
+}
+
+.sidebar-nav ul li a {
+    color: #afa0a0;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-nav ul li a i {
+    margin-right: 10px;
+}
+
+.sidebar-nav ul li a:hover {
+    background-color: #ffffff;
+}
 
 /* Styles du navbar */
 .navbar {
