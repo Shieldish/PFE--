@@ -8,11 +8,11 @@
     <%- include('./partial/crud_header') %>
 
     <style>
-           /*  .table-responsive {
-        max-height: 630px; 
+              .table-responsive {
+        max-height: 400px; 
         overflow-y: auto;
         overflow-x:auto; 
-    } */
+    } 
     .modal-dialog {
     max-width: calc(30% - 15px); /* Adjust as needed */
     margin: 1rem auto;
@@ -152,7 +152,8 @@
    
           </div>
      </div>
-    
+     <%-include('./common/footer') %>
+   
 </div>
 <%-include('./partial/crud_fades') %>
 <!-- Include Bootstrap JS -->
@@ -172,5 +173,5 @@
         });
     });
 </script>
-         <%-include('./common/footer') %>
+        
 </body>

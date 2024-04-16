@@ -26,6 +26,9 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `sidebar_items`
 --
+DROP TABLE IF EXISTS `sidebar_items`;
+
+
 
 CREATE TABLE IF NOT EXISTS  `sidebar_items` (
   `id` int(11) NOT NULL,
@@ -54,6 +57,7 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (10, 8, '/gestion', 'fas fa-database', 'قواعد البيانات', 'Databases', 'Databases'),
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrement', 'Supervision'),
 (12, 7, '/settings', 'fas fa-address-card', 'ملفاتي الشخصية', 'Mon Profiles', 'My Profiles');
+
 
 --
 -- Index pour les tables déchargées
