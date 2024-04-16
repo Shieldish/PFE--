@@ -1,10 +1,7 @@
 
      
         <title>Settings : my profiles </title>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-      
-        <link rel="stylesheet" href="../public/css/dashboard.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <%-include('./common/head') %>
         <!-- Your other CSS files -->
         <style>
             /* Set a fixed height for the card */
@@ -28,12 +25,13 @@
     
 </head>
 <body>
+    <main>
     <div class="custom-container">
                      
         <%-include('./common/sidebar') %>
 
         
-        <section class="main-content">
+        <div class="main-content">
          
             <%-include('./common/navbar') %>
           <!-- <h3 style="text-align: center; color: black;" ><strong > Profiles</strong></h3>   -->
@@ -212,7 +210,7 @@
                     </div>
                     
   <% } %>
-                </section> 
+                </div> 
                 
               
     </div>
@@ -287,6 +285,8 @@
 });
 
  </script> 
+           </main>
+           <%-include('./common/footer') %>
 
 </body>
 

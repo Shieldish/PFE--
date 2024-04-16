@@ -207,7 +207,7 @@ router.post('/saveToDatabase', async (req, res) => {
   }
 });
 
-  router.get('/upload', (req, res) => { 
+  router.get(['/','/upload'], (req, res) => { 
 
    
 
