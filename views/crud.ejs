@@ -3,7 +3,6 @@
 
     <title>Table- <%= tableName.toUpperCase() %></title>
    
-
     <%-include('./common/head') %>
     <%- include('./partial/crud_header') %>
 
@@ -41,8 +40,8 @@
            <i class="fas fa-plus"></i> Add New <%= tableName %>
        </button>
        <div class="button-container">
-           <button class="btn btn-info btn-sm" disabled>
-            <h6>Les Données - <%= tableName.toUpperCase() %> <strong style="color:rgb(0, 0, 0);"> (<%= count %>)</strong></h6> 
+           <button class="btn btn-outline-light btn-sm" >
+            <h6> <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %>  : [<%= count %>]</strong></h6> 
              
            </button>
          </div>

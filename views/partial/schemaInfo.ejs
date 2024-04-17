@@ -1,10 +1,14 @@
-<hr class="dashed-line">
+<style>
+    .accordion {
+  width: 100%;
+}
 
-    <div class="accordion" id="accordionExample">
+</style>
+   <div class="accordion" id="accordionExample">
         <div class="accordion-item">
           <h2 class="accordion-header" id="headingThree">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-              See others Tables :
+              cheick others Tables and structure :
             </button>
           </h2>
           <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
@@ -14,7 +18,7 @@
                     <label for="menus" style="display: inline-block; width: 200px;">All tables and schemaInfo:</label>
                          <select id="menus" class="form-control form-control-sm" style="width: 150px; display: inline-block;" onchange="showContents()" onchange=" getSelectedValue()">
                     
-                        <option value=" " selected disabled>Selectionner  la table</option>
+                        <option value=" " selected disabled>Selectionner la table</option>
                         <% if (items) { %>
                             <% Object.keys(items).forEach(function(key) { %>
                                 <option value="<%= key %>"><%= key %></option>
@@ -35,9 +39,6 @@
  <div>
 
 
-     
-
-    <hr class="dashed-line">
 
     <script>
         function showContents() {
