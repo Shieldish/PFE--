@@ -54,77 +54,73 @@ router.get('/upload', (req, res) => {
 
  
 
-
 router.post('/upload', upload.single('file'), async (req, res) => {
-    const file = req.file;
-    const fileName = req.file.originalname;
-    this.fileName=fileName;
+  const file = req.file;
+  let fileName = req.file.originalname;
 
-    if (!file) {
-        return res.status(400).send('No file uploaded.');
-    }
+  if (!file) {
+      return res.status(400).send('No file uploaded.');
+  }
 
-    // Check file type synchronously
-    const fileType = path.extname(file.originalname).toLowerCase();
-    if (fileType !== '.xlsx' && fileType !== '.csv') {
-        return res.status(400).send('Unsupported file format. Please upload an Excel file (xlsx) or CSV file.');
-    }
+  // Check file type synchronously
+  const fileType = path.extname(file.originalname).toLowerCase();
+  if (fileType !== '.xlsx' && fileType !== '.csv') {
+      return res.status(400).send('Unsupported file format. Please upload an Excel file (xlsx) or CSV file.');
+  }
 
-    try {
-        // Read and process file asynchronously
-        if (fileType === '.xlsx') {
-            // Read Excel file
-            const workbook = await xlsx.readFile(file.path);
-            // Convert first sheet to JSON
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            let excelData = xlsx.utils.sheet_to_json(worksheet);
-            // Apply unidecode to keys
-            excelData = excelData.map((row) => {
-                const transformedRow = {};
-                for (const key in row) {
-                    if (row.hasOwnProperty(key)) {
-                        const newKey = unidecode(key).replace(/[^\w\s]/gi, ''); // Remove special characters and convert accented characters
-                        transformedRow[newKey] = row[key];
-                    }
-                }
-                data=transformedRow
-                return transformedRow;
-            });
-           // res.render('uploads', {dt:data, items: items });
-            return res.render('uploads', { dt: excelData , items : items  ,fileName:fileName});
-           
-        } else if (fileType === '.csv') {
-            // Read CSV file asynchronously
-            const csvData = [];
-            fs.createReadStream(file.path, { encoding: 'latin1' })
-                .pipe(csvParser())
-                .on('data', (row) => {
-                    const transformedRow = {};
-                    for (const key in row) {
-                        if (row.hasOwnProperty(key)) {
-                            const newKey = unidecode(key).replace(/[^\w\s]/gi, ''); // Remove special characters and convert accented characters
-                            transformedRow[newKey] = row[key];
-                        }
-                    }
-                    csvData.push(transformedRow);
-                    data=csvData
-                })
-                .on('end', () => {
-                 // res.render('uploads', {dt:data, items: items });
-                  return res.render('uploads', { dt: csvData ,items: items,fileName:fileName });
-                })
-                .on('error', (err) => {
-                    console.error('Error:', err);
-                    return res.status(500).send('Error while processing file.');
-                });
-        }
-    } catch (err) {
-        console.error('Error:', err);
-        return res.status(500).send('Error while processing file.');
-    }
+  try {
+      // Read and process file asynchronously
+      if (fileType === '.xlsx') {
+          // Read Excel file
+          const workbook = await xlsx.readFile(file.path);
+          // Convert first sheet to JSON
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          let excelData = xlsx.utils.sheet_to_json(worksheet);
+          // Apply unidecode to keys
+          excelData = excelData.map((row) => {
+              const transformedRow = {};
+              for (const key in row) {
+                  if (row.hasOwnProperty(key)) {
+                      const newKey = unidecode(key).replace(/[^\w\s]/gi, ''); // Remove special characters and convert accented characters
+                      transformedRow[newKey] = row[key];
+                  }
+              }
+              return transformedRow;
+          });
+          const rowCount = excelData.length;
+          fileName += `: ${rowCount} Rows`;
+          return res.render('uploads', { dt: excelData, items: items, fileName: fileName });
+      } else if (fileType === '.csv') {
+          // Read CSV file asynchronously
+          const csvData = [];
+          fs.createReadStream(file.path, { encoding: 'latin1' })
+              .pipe(csvParser())
+              .on('data', (row) => {
+                  const transformedRow = {};
+                  for (const key in row) {
+                      if (row.hasOwnProperty(key)) {
+                          const newKey = unidecode(key).replace(/[^\w\s]/gi, ''); // Remove special characters and convert accented characters
+                          transformedRow[newKey] = row[key];
+                      }
+                  }
+                  csvData.push(transformedRow);
+              })
+              .on('end', () => {
+                  const rowCount = csvData.length;
+                  fileName += `: ${rowCount} Rows`;
+                  return res.render('uploads', { dt: csvData, items: items, fileName: fileName });
+              })
+              .on('error', (err) => {
+                  console.error('Error:', err);
+                  return res.status(500).send('Error while processing file.');
+              });
+      }
+  } catch (err) {
+      console.error('Error:', err);
+      return res.status(500).send('Error while processing file.');
+  }
 });
-
 
 
 router.post('/saveToDatabase', async (req, res) => {
