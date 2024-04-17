@@ -50,7 +50,7 @@ const mailOptions = {
         <div class="message">
           <p>Dear ${name},</p>
           <p>   Congratulations! We are delighted to confirm that your registration  was successful. Welcome to our community!</p>
-          <strong><a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}">Confirm Email</a></strong>
+          <strong><a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}"> &#x1F449;  Confirm Email  &#x1F448;</a></strong>
           <p>Here are the details of your registration:</p>
           <ul>
             <li><strong>Username:</strong> ${name}</li>
@@ -66,7 +66,7 @@ const mailOptions = {
           </ul>
           <p>Thank you for registering with our app!</p>
           <p>Please click the link below to confirm your email address:</p>
-          <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}">Confirm Email</a>
+          <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}"> &#x1F449;  Confirm Email  &#x1F448;</a>
           <p>This link will expire in 24 hours.</p>
           <p>As a registered member, you now have access to [briefly mention key features or benefits of your product/service]. We are confident that you'll find [Your Company] to be a valuable resource.</p>
           <p>Should you have any questions or need assistance, feel free to reach out to our support team at [Support Email/Contact Information]. We're here to help!</p>
@@ -132,7 +132,7 @@ const mailOptions = {
             <p>Dear User,</p>
             <p>We received a request to reset your password. If this was not you, please ignore this email.</p>
             <p>To reset your password, click the link below:</p>
-            <a  href="${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}">Reset Password</a>
+            <a  href="${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}"> &#x1F449; Reset Password  &#x1F448;</a>
             <p>The link will expire in 24 hours for security reasons.</p>
           </div>
           <div class="signature">

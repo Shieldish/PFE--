@@ -4,7 +4,10 @@ const isAdmin = (req, res, next) => {
       next();
     } else {
    
-     return res.status(403).json({ error: 'Access denied, Admin only' });
+       req.flash('error', `error(403) : Access denied `);
+       return res.render('AccessDenied',{ messages: req.flash()}) 
+   /*   return res.status(403).json({ error: 'Access denied, Admin only' }); */
+
    
     }
   };
