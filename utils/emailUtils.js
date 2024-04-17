@@ -7,14 +7,14 @@ const transporter = nodemailer.createTransport({
   port: 465, // Your SMTP port
   secure: true, // true for 465, false for other ports
   auth: {
-    user: "gabiamsamuelnathan@gmail.com", // Your email address
-    pass: "fkjo fycc cmgy oses"// Your email password
+    user: process.env.NODEMAILER_USER, // Your email address
+    pass: process.env.NODEMAILER_PASS// Your email password
   }
 });
 
 async function sendUserRegistrationMail(email, name,confirmationToken) {
 const mailOptions = {
-    from: 'Gestions Stages <gabiamsamuelnathan@gmail.com>', // Sender address
+    from: `Gestions Stages <${process.env.NODEMAILER_USER}>`,  // Sender address
     to: email, // Recipient address
     subject: 'Registration Confirmation', // Subject line
     html: `
