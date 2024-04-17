@@ -4,21 +4,27 @@
         <%-include('./common/head') %>
         <!-- Your other CSS files -->
         <style>
-            /* Set a fixed height for the card */
-            .custom-card {
-               
-                height:fit-content; 
-                Width : 40%;/* Adjust the height as needed */
-                overflow-y: auto; /* Add scrollbar if content exceeds height */
-                background-color:beige;
-                
-            }
-            .custumizero{
-                max-width: 50%;
-                max-height: 50%;
-            
+      .mycontainer {
+            display: inline-block;
+            flex-direction: row; /* Arrange items vertically */
+            align-items: flex-start; /* Align items to the start of the cross axis */
+            top: 0;
 
-            }
+        }
+
+        .card {
+            right: 0;
+            width: 30%;
+            height: fit-content;
+             margin : 15px; ;
+            background-color: beige;
+            /* Add margin for spacing between card and container */
+        }
+
+        .container {
+            width:65% /* Adjusted width */
+          
+        }
             
         </style>
     </head>
@@ -37,11 +43,11 @@
      
           
      
-            <div class="custom-container ">
+            <div >
                 
                 <% if (userData) { %>
-                   
-                    <div class="card custom-card " style="margin: 15px ; margin: 15px;;">
+                
+                    <div class="card custom-card mycontainer" >
                         <div class="card-header">
                             <button class="btn btn-success btn-block "disabled><strong>User Information</strong></button>
                         </div>
@@ -73,7 +79,7 @@
                     
                     
              
-                    <div class="container-fluid   " style="padding-top: 15px;margin-right: 20px;" >
+                    <div class="container mycontainer">
 
                         <div id="flash-message" class="text-center fw-bold fst-italic ">
                             <% if (messages && messages.error) { %>
@@ -215,33 +221,9 @@
               
     </div>
  
-
-    </div>
     <hr>
             
 
-    <!-- Scripts -->
- <!--    <script src="../public/js/script.js"></script> -->
-   
- 
-
-<!-- <script>
-    // Initialize datepicker
-    $(document).ready(function() {
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd' // Set the desired date format
-        });
-    });
-
-    function formatDate(dateString) {
-    const dateObject = new Date(dateString);
-    const year = dateObject.getFullYear();
-    const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
-    const day = dateObject.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-</script> -->
   <script>
    setTimeout(function() {
         var flashMessage = document.getElementById('flash-message1');

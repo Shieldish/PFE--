@@ -1,10 +1,12 @@
 <style>
   .myNav {
       background-color: royalblue;
+      position: static;
       
   }
 
   .navbar-nav {
+  
       flex-direction: row;
       align-items: center;
       margin: 10px;
@@ -16,7 +18,7 @@
 
   .form-control,
   .btn {
-      border-radius: 10px;
+      border-radius: 5px;
   }
 
   .btn-outline-light {
@@ -94,7 +96,7 @@
                       <li><div class="dropdown-item user-prenom"></div></li>
                       <li><div class="dropdown-item user-email"></div></li>
                       <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="/settings">Edit Profiles</a></li>
+                      <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
                   </ul>
               </li>
               <li class="nav-item">
