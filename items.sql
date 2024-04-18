@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 14 avr. 2024 à 19:30
+-- Généré le : mer. 17 avr. 2024 à 12:50
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -26,11 +26,8 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `sidebar_items`
 --
-/* DROP TABLE IF EXISTS `sidebar_items`; */
 
-
-
-CREATE TABLE IF NOT EXISTS  `sidebar_items` (
+CREATE TABLE `sidebar_items` (
   `id` int(11) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
@@ -53,11 +50,10 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (6, NULL, '/#', 'fas fa-calendar-alt', 'تقويم', 'Calendrier', 'Calendar'),
 (7, NULL, '/#', 'fas fa-cog', 'الإعدادات', 'Paramètres', 'Settings'),
 (8, NULL, '#', 'fas fa-tasks', 'المسؤول', 'Admin', 'Admin'),
-(9, 8, '/files/upload', 'fas fa-upload', 'تحميل الملفات', 'Uploads files', 'Uploads files'),
+(9, 8, '/upload', 'fas fa-upload', 'تحميل الملفات', 'Uploads files', 'Uploads files'),
 (10, 8, '/gestion', 'fas fa-database', 'قواعد البيانات', 'Databases', 'Databases'),
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrement', 'Supervision'),
 (12, 7, '/settings', 'fas fa-address-card', 'ملفاتي الشخصية', 'Mon Profiles', 'My Profiles');
-
 
 --
 -- Index pour les tables déchargées
