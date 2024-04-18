@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `sidebar_items`
 --
 
-CREATE TABLE `sidebar_items` (
+CREATE TABLE IF NOT EXISTS  `sidebar_items`  (
   `id` int(11) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
