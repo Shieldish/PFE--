@@ -131,8 +131,10 @@ router.get('/confirm-email', async (req, res) => {
     const userRegistration = await UserRegistrations.findOne({ where: { TOKEN } });
 
     // If user registration not found or account already validated
-    if (!userRegistration || userRegistration.ISVALIDATED) {
-      return res.send('Account already activated or token expired go to login pages');
+    if (!userRegistration || userRegistration.ISVALIDATED) { 
+      
+      req.flash('error', 'Account already activated or token expired , try to login instead !');
+      return res.render('../connection/login', { messages: req.flash() });
     }
 
     // Check if token is expired

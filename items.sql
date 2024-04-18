@@ -7,6 +7,9 @@
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
+
+
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -20,6 +23,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `data`
 --
+
+DROP TABLE IF EXISTS sidebar_items;
 
 -- --------------------------------------------------------
 
@@ -50,10 +55,11 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (6, NULL, '/#', 'fas fa-calendar-alt', 'تقويم', 'Calendrier', 'Calendar'),
 (7, NULL, '/#', 'fas fa-cog', 'الإعدادات', 'Paramètres', 'Settings'),
 (8, NULL, '#', 'fas fa-tasks', 'المسؤول', 'Admin', 'Admin'),
-(9, 8, '/upload', 'fas fa-upload', 'تحميل الملفات', 'Uploads files', 'Uploads files'),
-(10, 8, '/gestion', 'fas fa-database', 'قواعد البيانات', 'Databases', 'Databases'),
+(9, 8, '/files/upload', 'fas fa-upload', ' تحميل الملفات', ' Uploads files ', ' Uploads files '),
+(10, 8, '/gestion', 'fas fa-database', ' قواعد البيانات', ' Databases ', ' Databases '),
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrement', 'Supervision'),
-(12, 7, '/settings', 'fas fa-address-card', 'ملفاتي الشخصية', 'Mon Profiles', 'My Profiles');
+(12, 7, '/settings', 'bi bi-person-lines-fill', ' ملفاتي الشخصية', ' Mon Profiles', ' My Profiles'),
+(13, 7, '/settings', 'bi bi-folder-symlink-fill', ' مشاريعي', ' Mes Projets', ' My Projects');
 
 --
 -- Index pour les tables déchargées
