@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
         let count = results.length;
 
         // Remove password, token, and date
-        const keysToRemove = ['PASSWORD', 'TOKEN','UUID' ];
+        const keysToRemove = ['PASSWORD', 'TOKEN','UUID' ,'lastEmailSentTime'];
        
         const filteredArray = results.map(obj => {
             keysToRemove.forEach(key => delete obj[key]);

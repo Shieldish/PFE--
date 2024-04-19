@@ -19,9 +19,23 @@
       justify-content: center;
       align-items: center;
     }
-
+    .content-wrapper {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+  
+    width: 90%;
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
     .container {
-      max-width: 400px;
+      max-width: 500px;
     }
 
     /* Custom CSS for eye icon */
@@ -37,34 +51,40 @@
 
 <body>
   <div class="container">
-    <% if (messages && messages.error) { %>
-      <div class="alert alert-danger"><%= messages.error %></div>
-    <% } %>
+   
    <!--  <form action="/connection/register"  method="POST" > -->
+    <div class="content-wrapper">
     <form  action="/connection/register" method="POST">
 
       <div class="text-center">
-        <h3>Inscription</h3>
+
+        <h1>Register</h1>
       </div>
-      <div class="form-outline mb-4">
+                  <div class="text-center">
+                    <% if (messages && messages.error) { %>
+                      <div class="alert alert-danger"><%= messages.error %></div>
+                    <% } %>
+                  </div>
+
+      <div class="form-outline mb-3">
         <input type="text" id="registerName" class="form-control" name="nom" required />
         <label class="form-label" for="registerName">Name</label>
       </div>
     
       <!-- Username input -->
-      <div class="form-outline mb-4">
+      <div class="form-outline mb-3">
         <input type="text" id="registerUsername" class="form-control" name="prenom" required/>
         <label class="form-label" for="registerUsername">Username</label>
       </div>
     
       <!-- Email input -->
-      <div class="form-outline mb-4">
+      <div class="form-outline mb-3">
         <input type="email" id="registerEmail" class="form-control" name="email" required/>
         <label class="form-label" for="registerEmail">Email</label>
       </div>
                  
       <!-- Password input -->
-      <div class="form-outline position-relative mb-4">
+      <div class="form-outline position-relative mb-3">
         <input type="password" id="registerPassword" class="form-control" name="password" required/>
         <label class="form-label" for="registerPassword">Password</label>
         <!-- Eye icon to show/hide password -->
@@ -72,7 +92,7 @@
       </div>
     
       <!-- Repeat Password input -->
-      <div class="form-outline position-relative mb-4">
+      <div class="form-outline position-relative mb-3">
         <input type="password" id="registerRepeatPassword" class="form-control" name="repeatPassword" required/>
         <label class="form-label" for="registerRepeatPassword">Repeat password</label>
         <!-- Eye icon to show/hide password -->
@@ -80,7 +100,7 @@
       </div>
     
       <!-- Checkbox -->
-      <div class="form-check d-flex justify-content-center mb-4">
+      <div class="form-check d-flex justify-content-center mb-3">
         <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked aria-describedby="registerCheckHelpText" required/>
         <label class="form-check-label" for="registerCheck">
           I have read and agree to the terms
@@ -96,7 +116,7 @@
         <p>Already have an account ? <a href="login">Login</a></p>
       </div>
     </form>
-    
+    </div>
   </div>
 
   <!-- MDB JavaScript -->

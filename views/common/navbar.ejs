@@ -100,7 +100,7 @@
                   </ul>
               </li>
               <li class="nav-item">
-                  <button class="btn btn-outline-danger" onclick="window.location.href='/connection/logout'">
+                  <button class="btn btn-outline-danger" id="logoutButton">
                       <i class="fas fa-sign-out-alt"></i> Logout
                   </button>
               </li>
@@ -135,3 +135,22 @@
       userEmailElement.textContent = `Email: ${userData.EMAIL}`;
   }
 </script>
+<script>
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      // Make an AJAX request to the backend logout endpoint
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/connection/logout', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // Logout successful, redirect to login page
+            window.location.href = '/connection/login';
+          } else {
+            // Handle error response if needed
+            console.error('Error logging out:', xhr.responseText);
+          }
+        }
+      };
+      xhr.send();
+    });
+    </script>

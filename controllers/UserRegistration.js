@@ -51,7 +51,14 @@ const UserRegistrations = sequelize.define('UserRegistrations', {
     TOKEN:{
       type: DataTypes.STRING,
       allowNull: true
+    },
+
+    lastEmailSentTime :{
+      type: DataTypes.DATE,
+     defaultValue:0
+
     }
+
   }, {
     timestamps: true, 
     hooks: {

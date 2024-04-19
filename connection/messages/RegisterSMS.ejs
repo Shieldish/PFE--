@@ -1,0 +1,174 @@
+<style>
+  /* General Styles */
+  .flash-message {
+    text-align: center; /* Center-align text */
+    padding: 10px; /* Add padding for better visibility */
+    margin-bottom: 10px; /* Add margin between flash messages */
+}
+
+.flash-message.success {
+    background-color: #dff0d8; /* Green background color for success messages */
+    color: #3c763d; /* Dark green text color for success messages */
+}
+
+.flash-message.error {
+    background-color: #f2dede; /* Red background color for error messages */
+    color: #a94442; /* Dark red text color for error messages */
+}
+
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+  }
+
+  /* Container Styles */
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .content-wrapper {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+  }
+
+  /* Typography */
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .email {
+    font-weight: bold;
+    color: black;
+  }
+
+  /* Button Styles */
+  .button-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .logout-btn {
+    background-color: #f2f2f2;
+    color: #333;
+  }
+
+  .resend-btn {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .resend-btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Flash Message Styles */
+  .flash-message {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 4px;
+  }
+
+  .success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="content-wrapper">
+      <h1 >Email Validation</h1>
+      <p>Thank you <strong style="color: rgb(0, 0, 0);"> <%= NOM %> </strong> for signing up.</p>
+      <p>An email with a validation link was sent to your email <span class="email"> <%= EMAIL %> </span>. Please open your email inbox and click on the validation link to proceed with signing up.</p>
+      <p>If you have not received an email, please check your spam folder, or click the "Resend Validation Link Email" button below to have it sent again.</p>
+      <!-- Flash message container -->
+      <div id="flashMessages"></div>
+      <div class="button-wrapper">
+        <button class="logout-btn" onclick="window.location.href='/connection/login'">Login</button>
+        <button id="resendButton" class="resend-btn">Resend Validation Link Email</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('resendButton').addEventListener('click', function() {
+        // Disable the button to prevent multiple clicks
+        document.getElementById('resendButton').disabled = true;
+    
+        // Retrieve NOM and EMAIL from server-side variables
+        var NOM = '<%= NOM %>';
+        var EMAIL = '<%= EMAIL %>';
+    
+        // Send data to backend endpoint using AJAX
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/connection/resendmail', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                // Re-enable the button regardless of the response
+                document.getElementById('resendButton').disabled = false;
+    
+                if (xhr.status === 200) {
+                    // Handle successful response
+                    var response = JSON.parse(xhr.responseText);
+                    fetchFlashMessages(response);
+                } else {
+                    // Handle error response
+                    document.getElementById('resendButton').disabled = true;
+                    console.error('Failed to resend email');
+                    var errorResponse = JSON.parse(xhr.responseText);
+                    fetchFlashMessages(errorResponse);
+                }
+            }
+        };
+        xhr.send(JSON.stringify({ NOM: NOM, EMAIL: EMAIL }));
+    });
+    
+    function fetchFlashMessages(response) {
+        var flashMessagesContainer = document.getElementById('flashMessages');
+        flashMessagesContainer.innerHTML = '';
+    
+        var div = document.createElement('div');
+        div.textContent = response.message;
+        if (response.message.includes('success')) {
+            div.classList.add('flash-message', 'success');
+        } else {
+            div.classList.add('flash-message', 'error');
+        }
+        flashMessagesContainer.appendChild(div);
+    }
+    </script>
+    

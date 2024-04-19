@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const authenticate = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
-const {sendUserRegistrationMail,sendUserResetPasswordMail}=require('../utils/emailUtils');
+const {sendUserRegistrationMail,sendUserResetPasswordMail,resendRegistrationMail}=require('../utils/emailUtils');
 const UserRegistrations  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const flash = require('connect-flash');
 const { v4: uuidv4 } = require('uuid');
@@ -88,7 +88,7 @@ router.post('/register', async function(req, res) {
    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate registration token
-    const registrationToken = generateRegistrationToken(email);
+    const registrationToken = generateRandomToken(50);
 
     // Create a new user
     const uuid = uuidv4();
@@ -102,13 +102,15 @@ router.post('/register', async function(req, res) {
       UUID: uuid
     });
            
-
+    
     // Send registration confirmation email
     await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken).then(()=>{
       NOM=nom.trim().toUpperCase();
-      EMAIL=email.trim().toLowerCase();
-      return res.render('../connection/messages', { NOM:NOM,EMAIL:EMAIL });
-    })
+      EMAIL=email.trim().toLowerCase();     
+      //console.log('Registration confirmation email sent successfully');
+
+      return res.render('../connection/messages/RegisterSMS', { NOM:NOM,EMAIL:EMAIL });
+    }) 
 
     
    // console.log('Registration confirmation email sent successfully');
@@ -121,6 +123,74 @@ router.post('/register', async function(req, res) {
     return res.render('../connection/register', { messages: req.flash() });
   }
 });
+
+
+
+ router.post('/resendmail', async (req, res) => {
+  const { NOM, EMAIL } = req.body;
+
+  // Check if the user's email has been validated
+  const userRegistration = await UserRegistrations.findOne({ where: { EMAIL } });
+
+  if (!userRegistration) {
+    req.flash('error', 'Unknown error, please try again later!');
+    return res.status(404).send({ message: 'User registration not found' });
+  }
+
+  if (userRegistration.ISVALIDATED) {
+    req.flash('error', 'Your email has already been validated. No need to resend the validation email.');
+    return res.status(400).send({ message: 'Email already validated' });
+  }
+
+  // Check if the user has requested a validation email within the last 5 minutes
+
+  const now = new Date();
+  const fiveMinutesAgo = new Date(now.getTime() - (1 * 60 * 1000));
+
+  console.log('5min',fiveMinutesAgo);
+  console.log('updatedAt',userRegistration.lastEmailSentTime);
+
+  if (userRegistration.lastEmailSentTime > fiveMinutesAgo) {
+    req.flash('error', 'You have already requested a validation email within the last 5 minutes. Please try again later.');
+    return res.status(429).send({ message: 'Too many requests. You have already requested a validation email within the last 5 minutes. Please  try again later.!' });
+  }
+
+  // Generate a new token and update the user's record
+  const registrationToken = generateRandomToken(50);
+  userRegistration.TOKEN = registrationToken;
+  userRegistration.updatedAt = now;
+  await userRegistration.save();
+
+  // Attempt to resend the registration email
+  let status;
+  try {
+    status = await resendRegistrationMail(EMAIL, NOM, registrationToken);
+  } catch (error) {
+    console.error('Error sending email:', error);
+    status = false;
+  }
+
+  if (status) {
+
+    console.log('Email sent successfully');
+    userRegistration.lastEmailSentTime=now;
+    await userRegistration.save();
+
+    req.flash('success', 'Email resent successfully!');
+    return res.status(200).send({ message: 'Email resent successfully' });
+  } else {
+    console.error('Failed to send email');
+    req.flash('error', 'Failed to send email. Please try again later.');
+    return res.status(500).send({ message: 'Failed to resend email. Please try again later!' });
+  }
+});
+ 
+
+async function wait5Seconds() {
+ 
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+ 
+}
 
 router.get('/confirm-email', async (req, res) => {
   try {
@@ -171,7 +241,7 @@ router.post('/reset-password', async (req, res) => {
     }
 
     // Generate a new reset token
-    const resetToken = generateResetToken(email);
+    const resetToken = generateRandomToken(50);
 
     // Update the user registration record with the new reset token
     userRegistration.TOKEN = resetToken;
@@ -299,14 +369,19 @@ function generateRegistrationToken(email) {
   return jwt.sign({ email }, process.env.secretKey, { expiresIn: '1d' }); // Expires in 1 
   
 }// 
-function generateResetToken(email) {
-  const hash = crypto.createHash('sha256');
-  hash.update(email);
-  hash.push(crypto.randomBytes(32).toString('hex'))
-  const secretKey = crypto.randomBytes(16).toString('hex');
-  const resetToken = hash.digest('hex');
-  return secretKey+resetToken;
+
+
+function generateRandomToken(length) {
+  return crypto.randomBytes(Math.ceil(length / 2))
+    .toString('hex')
+    .slice(0, length)
+    .replace(/[^a-zA-Z0-9]/g, (match) => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      return chars[Math.floor(Math.random() * chars.length)];
+    });
 }
+
+
 function removeSpecialCharacters(email) {
   // Define a regular expression to match characters you want to remove
   const regex = /[_\-.@]/g;
