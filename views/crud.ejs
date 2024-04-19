@@ -1,6 +1,8 @@
 
 <head>
 
+   
+
     <title>Table- <%= tableName.toUpperCase() %></title>
    
     <%-include('./common/head') %>
@@ -36,15 +38,23 @@
                 </a>
              </h5>    
                
-       <button type="button" class="btn btn-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
-           <i class="fas fa-plus"></i> Add New <%= tableName %>
-       </button>
-       <div class="button-container">
-           <button class="btn btn-outline-light btn-sm" >
-            <h6> <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %>  : [<%= count %>]</strong></h6> 
-             
-           </button>
-         </div>
+             <% if (tableName !== null && typeof tableName !== 'undefined') { %>
+
+                <script>
+                    const globalTableName = '<%= tableName %>';
+                </script>
+                <!-- Button to add new entry -->
+                <button type="button" class="btn btn-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
+                  <i class="fas fa-plus"></i> Add New <%= tableName %>
+                </button>
+                <!-- Button container for displaying table name and count -->
+                <div class="button-container">
+                  <button class="btn btn-outline-light btn-sm" >
+                    <h6> <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %> : [<%= count %>]</strong></h6> 
+                  </button>
+                </div>
+              <% } %>
+              
         
        <% if (data.length > 0) { %>
            <div class="mb-6">
@@ -64,7 +74,7 @@
                    <th>Delete</th>
                </tr>
                </thead>
-               <tbody id="tableBody"  >
+               <tbody id="tableBody" >
                <% data.forEach(row => { %>
                <tr > <!-- class="font-weight-bold text-center" -->
                    <% Object.values(row).forEach(value => { %>
@@ -172,5 +182,7 @@
         });
     });
 </script>
-        
+
+
+
 </body>

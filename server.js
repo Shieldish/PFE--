@@ -61,7 +61,7 @@ app.use('/settings',authenticate,UserProfilesRoutes);
 
 app.get(['/','/home'], authenticate,(req, res) => {
   const user = req.session.user;
-  console.log('user connected :', user)
+
   res.render('home', { user, userJSON: JSON.stringify(user) });
 });
 

@@ -12,10 +12,14 @@ const router = express.Router();
 
 // Use bodyParser middleware to parse request bodies
 router.use(bodyParser.urlencoded({ extended: true }));
-
+router.use(bodyParser.json());
 
 let filteredArrayGlobal
 let countGlobal
+
+
+
+
 router.get('/', (req, res) => {
   // Query MySQL for table names
   connection.query('SHOW TABLES', (err, results) => {
@@ -108,7 +112,7 @@ router.get('/', (req, res) => {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
                     tableName === 'encadrant' ? encadrant :
-                    tableName === 'UserRegistrations' ? UserRegistrations :
+                    tableName === 'userregistrations' ? UserRegistrations :
                     tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
@@ -146,7 +150,7 @@ router.get('/', (req, res) => {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
         tableName === 'encadrant' ? encadrant :
-        tableName === 'UserRegistrations' ? UserRegistrations :
+        tableName === 'userregistrations' ? UserRegistrations :
         tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {

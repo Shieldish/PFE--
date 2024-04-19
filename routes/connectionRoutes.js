@@ -146,10 +146,7 @@ router.post('/register', async function(req, res) {
 
   const now = new Date();
   const fiveMinutesAgo = new Date(now.getTime() - (1 * 60 * 1000));
-
-  console.log('5min',fiveMinutesAgo);
-  console.log('updatedAt',userRegistration.lastEmailSentTime);
-
+  
   if (userRegistration.lastEmailSentTime > fiveMinutesAgo) {
     req.flash('error', 'You have already requested a validation email within the last 5 minutes. Please try again later.');
     return res.status(429).send({ message: 'Too many requests. You have already requested a validation email within the last 5 minutes. Please  try again later.!' });

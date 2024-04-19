@@ -55,7 +55,7 @@ const UserRegistrations = sequelize.define('UserRegistrations', {
 
     lastEmailSentTime :{
       type: DataTypes.DATE,
-     defaultValue:0
+     // defaultValue: DataTypes.NOW
 
     }
 
