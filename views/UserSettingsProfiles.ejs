@@ -6,23 +6,32 @@
         <style>
       .mycontainer {
             display: inline-block;
-            flex-direction: row; /* Arrange items vertically */
+            flex-direction: column; /* Arrange items vertically */
             align-items: flex-start; /* Align items to the start of the cross axis */
             top: 0;
+
+
 
         }
 
         .card {
             right: 0;
-            width: 30%;
+            width: 250px;
             height: fit-content;
-             margin : 15px; ;
+            
+
+            min-width: 30%;
+            min-height: fit-content;
+            margin : 15px; ;
             background-color: beige;
             /* Add margin for spacing between card and container */
         }
 
         .container {
-            width:65% /* Adjusted width */
+            min-height: 30%;
+            min-width: 30%;
+            width: 65%;/* Adjusted width */
+           
           
         }
             

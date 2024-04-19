@@ -1,12 +1,13 @@
 <style>
   .myNav {
       background-color: royalblue;
-      position: static;
+     
+       width: auto;
       
   }
 
   .navbar-nav {
-  
+       display: flex;
       flex-direction: row;
       align-items: center;
       margin: 10px;
@@ -26,6 +27,13 @@
       color: #fff;
       margin-left: 10px; /* Add space between the input and button */
   }
+
+  .btn-outline-dark{
+    border-radius: 5px;
+    
+  }
+
+  
 
   .btn-outline-light:hover {
       background-color: #f9f9f9;
@@ -49,7 +57,14 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark myNav">
   <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+   
+       <div class="toggle-sidebar-btn">
+      
+            <span class="navbar-toggler-icon"></span>
+            <button class=" btn-outline-dark">sidebar</button>
+        
+       </div>
+      <a class="navbar-brand" href="#"></a>
       <form class="d-flex me-2" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 300px;">
           <button class="btn btn-outline-light" type="submit">Search</button>
@@ -57,12 +72,12 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto">
               <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link" href="#">Link</a>
               </li>
-              <li class="nav-item dropdown">
+              <!-- <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Dropdown
                   </a>
@@ -72,7 +87,7 @@
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="#">Something else here</a></li>
                   </ul>
-              </li>
+              </li> -->
               <li class="nav-item">
                   <div class="language-selector">
                       <select id="language-select" class="form-control">
@@ -82,9 +97,9 @@
                       </select>
                   </div>
               </li>
-              <li class="nav-item">
+             <!--  <li class="nav-item">
                   <a class="nav-link disabled">Disabled</a>
-              </li>
+              </li> -->
               <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       <img src="../public/images/user/2.png" alt="User Logo" class="user-logo">
