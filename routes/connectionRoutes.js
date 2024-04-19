@@ -146,7 +146,7 @@ router.post('/register', async function(req, res) {
 
   const now = new Date();
   const fiveMinutesAgo = new Date(now.getTime() - (1 * 60 * 1000));
-  
+
   if (userRegistration.lastEmailSentTime > fiveMinutesAgo) {
     req.flash('error', 'You have already requested a validation email within the last 5 minutes. Please try again later.');
     return res.status(429).send({ message: 'Too many requests. You have already requested a validation email within the last 5 minutes. Please  try again later.!' });
@@ -226,7 +226,7 @@ router.get('/confirm-email', async (req, res) => {
 router.post('/reset-password', async (req, res) => {
   const { email } = req.body;
      const EMAIL= email.toString().trim().toLowerCase();
-     console.log(EMAIL)
+    
           
   try {
     // Find the user registration record by email
@@ -356,7 +356,7 @@ router.post('/login', async (req, res) => {
 // In your backend route
 router.get('/profiles', (req, res) => {
   const userInfo = req.session.user;
-   console.log(userInfo);
+
   res.json(userInfo)
      
 });
