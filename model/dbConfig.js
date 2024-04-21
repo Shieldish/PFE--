@@ -39,20 +39,28 @@ connection.connect(err => {
   console.log('Connected to MySQL database');
 
   const sqlFilePath = path.join(__dirname, '../items.sql');
-  const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
-  const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
+  try {
+    const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
+    const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
 
-  // Execute each SQL command
-  sqlCommands.forEach(sql => {
-    console.log(sql)
-    connection.query(sql, (err, result) => {
-      if (err) {
-        console.error('Error executing SQL query:', err);
-        return;
+    // Execute each SQL command
+    sqlCommands.forEach(sql => {
+      console.log(sql)
+      try {
+        connection.query(sql, (err, result) => {
+          if (err) {
+            console.error('Error executing SQL query:', err);
+            return;
+          }
+          console.log('SQL query executed successfully');
+        });
+      } catch (error) {
+        console.error('Error executing SQL query:', error);
       }
-      console.log('SQL query executed successfully');
     });
-  });
+  } catch (error) {
+    console.error('Error reading SQL file:', error);
+  }
 });
 
 module.exports = connection;

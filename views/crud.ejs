@@ -3,7 +3,8 @@
 
    
 
-    <title>Table- <%= tableName.toUpperCase() %></title>
+    <title>Table- <%= tableName ? tableName.toUpperCase() : 'Unknown' %></title>
+
    
     <%-include('./common/head') %>
     <%- include('./partial/crud_header') %>

@@ -98,6 +98,7 @@ router.get('/', (req, res) => {
         });
         req.flash('success', ` data successfully fetched from table ${tableName}:`);
        // return res.render('crud', { messages: req.flash() });
+         
           filteredArrayGlobal=filteredArray;
           countGlobal=count;
         res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , /* messages: req.flash() */});
@@ -107,6 +108,7 @@ router.get('/', (req, res) => {
 router.post('/:tableName/add', async (req, res) => {
   const tableName = req.params.tableName;
   const { EMAIL, ...otherFields } = req.body;
+  const email = EMAIL.trim();
 
   try {
       // Get the Sequelize model based on the table name
@@ -118,15 +120,20 @@ router.post('/:tableName/add', async (req, res) => {
       if (!Model) {
           req.flash('success', `Model not found for table ${tableName}`);
           // Redirect the user to the appropriate route after successful creation
-          res.redirect(`/gestion/${tableName}`);
-          throw new Error(`Model not found for table ${tableName}`);
-        
+          return res.redirect(`/gestion/${tableName}`);
       }
 
       /* if(otherFields.DATE)
       {
           otherFields.DATE= getFormattedDateTime();
       } */
+
+      const existingUser = await UserRegistrations.findOne({ where: { EMAIL: email } });
+      if (existingUser) {
+          req.flash('error', `User with email ${EMAIL} already exists`);
+          // Redirect the user to the appropriate route after successful creation
+          return res.redirect(`/gestion/${tableName}`);
+      }
 
       otherFields.UUID = uuidv4();
       delete otherFields.createdAt;
@@ -141,15 +148,16 @@ router.post('/:tableName/add', async (req, res) => {
       req.flash('success', 'Entry successfully added.');
 
       // Redirect the user to the appropriate route after successful creation
-      res.redirect(`/gestion/${tableName}`);
+      return res.redirect(`/gestion/${tableName}`);
   } catch (err) {
       console.error(`Error creating entry in table ${tableName}:`, err);
 
-      req.flash('error', ` creating entry ${tableName} : `+err);
-      res.redirect(`/gestion/${tableName}`);
-      res.status(500).send('Error creating entry');
+      req.flash('error', ` creating entry ${tableName} : ` + err);
+      return res.redirect(`/gestion/${tableName}`);
   }
 });
+
+
   router.post('/:tableName/update/:email', async (req, res) => {
     const tableName = req.params.tableName;
     const { EMAIL, ...otherFields } = req.body;
@@ -175,6 +183,7 @@ router.post('/:tableName/add', async (req, res) => {
       } */
       delete otherFields.createdAt;
       delete otherFields.updatedAt;
+      delete otherFields.id;
 
       for (let key in otherFields) {
         if (otherFields[key] === '') {

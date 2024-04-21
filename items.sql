@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- Base de données : `data`
 --
 
-DROP TABLE IF EXISTS sidebar_items;
+/* DROP TABLE IF EXISTS sidebar_items; */;
 
 -- --------------------------------------------------------
 
