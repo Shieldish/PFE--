@@ -6,11 +6,6 @@ const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
 
-
-
-
-
-// Define fetchSidebarItems function
 // Define fetchSidebarItems function
 const fetchSidebarItems = (lang, connection, callback) => {
   
@@ -78,8 +73,5 @@ router.post('/sidebar', (req, res) => {
   });
 });
 
-
-  
- 
  
 module.exports = router;

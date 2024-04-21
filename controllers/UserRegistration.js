@@ -57,7 +57,17 @@ const UserRegistrations = sequelize.define('UserRegistrations', {
       type: DataTypes.DATE,
      // defaultValue: DataTypes.NOW
 
-    }
+    },
+    lastEmailResetTime :{
+      type: DataTypes.DATE,
+     // defaultValue: DataTypes.NOW
+
+    },
+    lastEmailResetSent: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+
 
   }, {
     timestamps: true, 

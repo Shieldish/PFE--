@@ -45,45 +45,60 @@ router.get('/',async (req, res) => {
 
 
 router.post('/updateUserData', async (req, res) => {
-    
-    const { EMAIL, ...otherFields } = req.body;
+  const { EMAIL, ...otherFields } = req.body;
+  const UUID = otherFields.UUID;
 
-    const p1 = otherFields.PASSWORD;
-    const p2 = otherFields.PASSWORD2;
+  try {
+      const { PASSWORD, PASSWORD2, ...fieldsWithoutPasswords } = otherFields;
 
-    if (p1 && p2) {
-        if (p1 !== p2) {
-            req.flash('error', 'Passwords do not match, please try again.');
-            return res.render('UserSettingsProfiles', { userData: data, messages: req.flash() });
-        }
-        if (p1.length < 8 || p2.length < 8) {
-            req.flash('info', 'Password is too weak, it must be at least 8 characters long, please try again.');
-            return res.render('UserSettingsProfiles', { userData: data, messages: req.flash() });
-        }
-    }
+      if (PASSWORD && PASSWORD2) {
+          if (PASSWORD !== PASSWORD2) {
+              req.flash('error', 'Passwords do not match, please try again.');
+              return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+          }
+          if (PASSWORD.length < 8 || PASSWORD2.length < 8) {
+              req.flash('info', 'Password is too weak, it must be at least 8 characters long, please try again.');
+              return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+          }
+      }
 
-    delete otherFields.PASSWORD2;
+      delete fieldsWithoutPasswords.PASSWORD2;
 
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPassword = await bcrypt.hash(p1, salt);
-    otherFields.PASSWORD = hashedPassword;
-     
-    await UserRegistrations.update(
-        otherFields,
-        { where: { EMAIL: EMAIL } }
-    );
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hashedPassword = await bcrypt.hash(PASSWORD, salt);
+      fieldsWithoutPasswords.PASSWORD = hashedPassword;
 
-    // Optionally, you can fetch updated user data after the update and send it to the frontend
-    const updatedUserData = await UserRegistrations.findOne({ where: { EMAIL: EMAIL } });
+      const existingUser = await UserRegistrations.findOne({ where: { EMAIL } });
+      if (!existingUser) {
+          req.flash('error', `User with email ( ${EMAIL}) not found.`);
+          return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+      }
 
-     
-    // Redirect or render the page as needed
-    userData=updatedUserData.toJSON();
-    req.session.user=userData;
+      const existingUUID = await UserRegistrations.findOne({ where: { UUID } });
+      if (!existingUUID) {
+          req.flash('error', `User with provided UUID ( ${UUID}) not found.`);
+          return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+      }
 
-        req.flash('success', 'Edited profiles is updated successfully . ');
-        return res.render('UserSettingsProfiles', {userData, messages: req.flash() });
+      await UserRegistrations.update(fieldsWithoutPasswords, { where: { EMAIL } });
+
+      const updatedUserData = await UserRegistrations.findOne({ where: { EMAIL } });
+      if (updatedUserData) {
+          const userData = updatedUserData.toJSON();
+          req.session.user = userData;
+          req.flash('success', 'Profile updated successfully.');
+          return res.render('UserSettingsProfiles', { userData, messages: req.flash() });
+      }
+
+      req.flash('error', `An error occurred while finding user ${EMAIL} data.`);
+      return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+
+  } catch (error) {
+      console.error('Error occurred during update:', error);
+      req.flash('error', `An error occurred during update: ${error.message}`);
+      return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+  }
 });
 
 

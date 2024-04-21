@@ -56,7 +56,7 @@ router.get('/', (req, res) => {
         let count = results.length;
 
         // Remove password, token, and date
-        const keysToRemove = ['PASSWORD', 'TOKEN','UUID' ,'lastEmailSentTime'];
+        const keysToRemove = ['PASSWORD', 'TOKEN','UUID' ,'lastEmailSentTime', 'lastEmailResetSent','lastEmailResetTime'];
        
         const filteredArray = results.map(obj => {
             keysToRemove.forEach(key => delete obj[key]);
@@ -100,48 +100,56 @@ router.get('/', (req, res) => {
        // return res.render('crud', { messages: req.flash() });
           filteredArrayGlobal=filteredArray;
           countGlobal=count;
-        res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , messages: req.flash()});
+        res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , /* messages: req.flash() */});
     });
 });
 
-  router.post('/:tableName/add', async (req, res) => {
-    const tableName = req.params.tableName;
-    const { EMAIL, ...otherFields } = req.body;
-  
-    try {
+router.post('/:tableName/add', async (req, res) => {
+  const tableName = req.params.tableName;
+  const { EMAIL, ...otherFields } = req.body;
+
+  try {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
-                    tableName === 'encadrant' ? encadrant :
-                    tableName === 'userregistrations' ? UserRegistrations :
-                    tableName === 'etudiant' ? etudiant : null;
-  
+          tableName === 'encadrant' ? encadrant :
+              tableName === 'UserRegistrations' ? UserRegistrations :
+                  tableName === 'etudiant' ? etudiant : null;
+
       if (!Model) {
-        throw new Error(`Model not found for table ${tableName}`);
+          req.flash('success', `Model not found for table ${tableName}`);
+          // Redirect the user to the appropriate route after successful creation
+          res.redirect(`/gestion/${tableName}`);
+          throw new Error(`Model not found for table ${tableName}`);
+        
       }
-      
-               /* if(otherFields.DATE)
-               {
-                otherFields.DATE= getFormattedDateTime();
-              
-               } */
-    
-      otherFields.UUID= uuidv4();
+
+      /* if(otherFields.DATE)
+      {
+          otherFields.DATE= getFormattedDateTime();
+      } */
+
+      otherFields.UUID = uuidv4();
       delete otherFields.createdAt;
-     // console.log( otherFields)
+
       // Create a new instance of the model with the data from the request body
       const newEntry = await Model.create({
-        EMAIL,
-        ...otherFields
+          EMAIL,
+          ...otherFields
       });
-  
+
+      // Set flash message
+      req.flash('success', 'Entry successfully added.');
+
       // Redirect the user to the appropriate route after successful creation
       res.redirect(`/gestion/${tableName}`);
-    } catch (err) {
+  } catch (err) {
       console.error(`Error creating entry in table ${tableName}:`, err);
-      res.status(500).send('Error creating entry');
-    }
-  });
 
+      req.flash('error', ` creating entry ${tableName} : `+err);
+      res.redirect(`/gestion/${tableName}`);
+      res.status(500).send('Error creating entry');
+  }
+});
   router.post('/:tableName/update/:email', async (req, res) => {
     const tableName = req.params.tableName;
     const { EMAIL, ...otherFields } = req.body;
@@ -154,6 +162,9 @@ router.get('/', (req, res) => {
         tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
+        req.flash('success', `Model not found for table ${tableName}`);
+          // Redirect the user to the appropriate route after successful creation
+          res.redirect(`/gestion/${tableName}`);
         throw new Error(`Model not found for table ${tableName}`);
       }
           // console.log(otherFields)   
@@ -182,11 +193,11 @@ router.get('/', (req, res) => {
   
       // Redirect with the flash message
        res.redirect(`/gestion/${tableName}`,);
-     //  res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , messages: req.flash()});
+   
     
     } catch (err) {
       console.error(`Error updating data in table ${tableName}:`, err);
-      req.flash('error', 'Error updating entry');
+      req.flash('error', ` updating entry  ${tableName} : `+err);
       res.redirect(`/gestion/${tableName}`);
     }
   });
@@ -197,32 +208,25 @@ router.get('/', (req, res) => {
     const email = req.params.email;
   
     // Delete entry from the table
-    connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email], (err, result) => {
-      if (err) {
-        console.error(`Error deleting data from table ${tableName}:`, err);
-        res.status(500).send('Error deleting entry');
-        return;
-      }
+    try {
+      connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email], (err, result) => {
+        if (err) {
+          console.error(`Error deleting data from table ${tableName}:`, err);
+          req.flash('error', `Error deleting entry from table: ${tableName} : `+err);
+          res.redirect(`/gestion/${tableName}`);
+          return;
+        }
+        // Set the flash message
+        req.flash('info', `Data of ${email} successfully removed from table: ${tableName}`);
+        res.redirect(`/gestion/${tableName}`);
+      });
+    } catch (error) {
+      console.error(`Error deleting data from table ${tableName}:`, error);
+      req.flash('error', `Error deleting entry from table: ${tableName} : `+error);
       res.redirect(`/gestion/${tableName}`);
-    });
+    }
+    
   });
-  function getFormattedDateTime() {
-    // Get current date and time
-    const currentDate = new Date();
 
-    // Extracting individual date components
-    const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Note: January is 0
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    const hours = currentDate.getHours().toString().padStart(2, '0');
-    const minutes = currentDate.getMinutes().toString().padStart(2, '0');
-    const seconds = currentDate.getSeconds().toString().padStart(2, '0');
-
-    // Formatting date and time
-    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-    // Returning formatted date and time
-    return formattedDateTime;
-}
 
 module.exports = router;

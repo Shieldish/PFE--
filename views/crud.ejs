@@ -13,6 +13,7 @@
      /*    max-height: 400px;  */
         overflow-y: auto;
         overflow-x:auto; 
+        border-collapse: collapse;
     } 
     .modal-dialog {
     max-width: calc(30% - 15px); /* Adjust as needed */
@@ -21,6 +22,15 @@
  .button-container {
   text-align: center;
    }
+
+   th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    overflow: hidden; /* Couper le texte si trop long */
+    word-wrap: break-word; /* Forcer le retour à la ligne */
+    max-width: 200px; /* Limiter la largeur maximale de la cellule */
+  }
    
     </style>
     
@@ -32,6 +42,7 @@
         <%-include('./common/navbar') %>
 
          <div class="my-custom-class">
+            <%-include('./partial/flaskMessages')  %>
             <h5 >
                 <a href="/gestion">
                 <i class="fas fa-home"></i>  <button class="btn btn-outline-li btn-sm"> Back to Home</button>
@@ -60,14 +71,14 @@
            <div class="mb-6">
                <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
            </div>
-                           <p> <%-include('./partial/flaskMessages')  %></p>
+                       
    
        <div class=" table-responsive  my-color " style=" border-radius: 5px;" >
            <table class=" table table-hover  searchable sortable">
-               <thead class="thead-dark">
-               <tr class="text-center">
+               <thead class="thead-dark ">
+               <tr>
                    <% Object.keys(data[0]).forEach(key => { %>
-                   <th ><%= key %></th>
+                   <th   class="text-center"><%= key %></th>
                    <% }); %>
                    <th>Views</th>
                    <th>Edit</th>
@@ -76,9 +87,9 @@
                </thead>
                <tbody id="tableBody" >
                <% data.forEach(row => { %>
-               <tr > <!-- class="font-weight-bold text-center" -->
+               <tr  > <!-- class="font-weight-bold text-center" -->
                    <% Object.values(row).forEach(value => { %>
-                   <td ><%= value %></td>
+                   <td  class="text-center" ><%= value %></td>
                    <% }); %>
                    <td>
                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
@@ -141,7 +152,7 @@
                                </button>
                            </div>
                            <div class="modal-body">
-                               <p class="text-center"> You sure you want to  <em style="color: red;">permanently delete</em> : <strong  style="color:#007bff;" ><%=row.EMAIL %></strong>  and his informations from  <strong><em><%= tableName %></em> </strong>  ?   </p>
+                               <p class="text-center"> You sure you want to  <em style="color: rgb(255, 0, 0);">permanently remove</em> : <strong  style="color:#007bff;" ><%=row.EMAIL %></strong>  and his informations from  <strong><em><%= tableName %></em> </strong>  ?   </p>
                            </div>
                            <div class="modal-footer">
                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

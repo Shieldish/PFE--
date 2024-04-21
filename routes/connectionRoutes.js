@@ -12,6 +12,7 @@ const UserRegistrations  = require('../controllers/UserRegistration'); // Import
 const flash = require('connect-flash');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
+const fetch = require('node-fetch');
 
 
 // Initialize a new instance of LocalStorage
@@ -61,6 +62,9 @@ const limiter = rateLimit({
 let NOM;
 let EMAIL;
 
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+
+
 router.post('/register', async function(req, res) {
   try {
     const { nom, prenom, email, password, repeatPassword } = req.body;
@@ -78,7 +82,7 @@ router.post('/register', async function(req, res) {
 
     if (existingUser) {
      // return res.status(400).send('Email address already exists');
-     req.flash('error', `Error email address : '${email}' already exists , try another address or login instead ! `);
+     req.flash('error', `Error email address : [${email}] already exists , try another address or login instead ! `);
      return res.render('../connection/register', { messages: req.flash() });
 
      
@@ -153,7 +157,7 @@ router.post('/register', async function(req, res) {
   }
 
   // Generate a new token and update the user's record
-  const registrationToken = generateRandomToken(50);
+  const registrationToken = generateRandomToken(80);
   userRegistration.TOKEN = registrationToken;
   userRegistration.updatedAt = now;
   await userRegistration.save();
@@ -182,13 +186,6 @@ router.post('/register', async function(req, res) {
   }
 });
  
-
-async function wait5Seconds() {
- 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
- 
-}
-
 router.get('/confirm-email', async (req, res) => {
   try {
     // Extract token from the query parameters
@@ -225,9 +222,7 @@ router.get('/confirm-email', async (req, res) => {
 
 router.post('/reset-password', async (req, res) => {
   const { email } = req.body;
-     const EMAIL= email.toString().trim().toLowerCase();
-    
-          
+
   try {
     // Find the user registration record by email
     const userRegistration = await UserRegistrations.findOne({ where: { email } });
@@ -237,24 +232,40 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ error: "The email address you provided doesn't exist. Please try again." });
     }
 
+    const now = new Date();
+    const fiveMinutesAgo = new Date(now.getTime() - (5 * 60 * 1000)); // Changed to 5 minutes
+
+    if (userRegistration.lastEmailResetTime > fiveMinutesAgo) {
+      if (userRegistration.lastEmailResetSent) {
+      
+        return res.status(200).json({ message:'  Too many requests. Password reset instructions already sent to :'});
+      }
+      else {
+        return res.status(429).json({ error: ', Too many requests. You have already requested a reset email within the last 5 minutes. Please try again later!' });
+      }
+    } 
+
     // Generate a new reset token
-    const resetToken = generateRandomToken(50);
+    const resetToken = generateRandomToken(75);
 
     // Update the user registration record with the new reset token
-    userRegistration.TOKEN = resetToken;
+    userRegistration.TOKEN = resetToken; // Changed to lowercase
+    userRegistration.lastEmailResetSent = true;
+    userRegistration.lastEmailResetTime = new Date();
     await userRegistration.save();
 
     // Send reset password email
     await sendUserResetPasswordMail(email, resetToken);
-    
+
     // Send success response
     const message = 'Password reset instructions successfully sent to:';
-    res.status(200).json({ message: `${message} ` });  /* ${email} */
+    res.status(200).json({ message: `${message} ` });
   } catch (error) {
     console.error('Error sending reset password email:', error);
     res.status(500).send('An error occurred while sending reset password email');
   }
 });
+
 
 router.get('/reset-password', async (req, res) => {
   // Extract email and token from query parameters
@@ -308,11 +319,12 @@ router.post('/reseting-password', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
+
   try {
     const user = await UserRegistrations.findOne({ where: { email } });
 
     if (!user) {
-      req.flash('error', `Address email : "${email}" not found !`);
+      req.flash('error', `Address email : [${email}] not found !`);
       return res.render('../connection/login', { messages: req.flash() });
     }
     if (!user.ISVALIDATED) {
@@ -325,12 +337,13 @@ router.post('/login', async (req, res) => {
       return res.render('../connection/login', { messages: req.flash() });
     }
     
-    let NOM = user.NOM;
+   /*  let NOM = user.NOM;
     let PRENOM = user.PRENOM;
-    let EMAIL = user.EMAIL;
+    let EMAIL = user.EMAIL; */
           
-    const userInfo = { NOM, PRENOM, EMAIL };
-    req.session.user = userInfo;
+    /* const userInfo = { NOM, PRENOM, EMAIL }; */
+    /* req.session.user = userInfo; */
+    req.session.user=user;
     // Set user information in session
     //localStorage.setItem('user.json', JSON.stringify(userInfo));
  
@@ -340,8 +353,7 @@ router.post('/login', async (req, res) => {
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     req.flash('success', 'Login successful!');
               
-   
-    const cleanedEmail = removeSpecialCharacters(EMAIL);
+  
     const returnTo = req.session.returnTo || '/';
     delete req.session.returnTo; // Clear the stored return URL
     res.redirect(returnTo);
@@ -362,12 +374,6 @@ router.get('/profiles', (req, res) => {
 });
 
 
-function generateRegistrationToken(email) {
-  return jwt.sign({ email }, process.env.secretKey, { expiresIn: '1d' }); // Expires in 1 
-  
-}// 
-
-
 function generateRandomToken(length) {
   return crypto.randomBytes(Math.ceil(length / 2))
     .toString('hex')
@@ -378,31 +384,4 @@ function generateRandomToken(length) {
     });
 }
 
-
-function removeSpecialCharacters(email) {
-  // Define a regular expression to match characters you want to remove
-  const regex = /[_\-.@]/g;
-  // Replace the matched characters with an empty string
-  const sanitizedEmail = email.replace(regex, '');
-  return sanitizedEmail;
-}
-
-function createConfigFileForUser(userId) {
-  // Get the file path for the user's configuration file
-  const configFilePath = path.join(__dirname, '../configs', `${userId}.json`);
-  
-  // Create an empty object to be written as JSON
-  const emptyObject = {};
-
-  // Write the empty object to the config file
-  fs.writeFileSync(configFilePath, JSON.stringify(emptyObject, null, 2));
-
-}
-
-
-// Function to remove a config file for a user
-function removeConfigFileForUser(userId) {
-  const configFilePath = path.join(__dirname, '../configs', `${userId}.json`);
-  fs.unlinkSync(configFilePath);
-}
   module.exports = router;
