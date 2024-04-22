@@ -112,13 +112,14 @@ router.post('/:tableName/add', async (req, res) => {
 
   try {
       // Get the Sequelize model based on the table name
-      const Model = tableName === 'enseignant' ? enseignant :
+    /*   const Model = tableName === 'enseignant' ? enseignant :
           tableName === 'encadrant' ? encadrant :
               tableName === 'UserRegistrations' ? UserRegistrations :
-                  tableName === 'etudiant' ? etudiant : null;
+                  tableName === 'etudiant' ? etudiant : null; */
+          const Model = getModelFromTableName(tableName);
 
       if (!Model) {
-          req.flash('success', `Model not found for table ${tableName}`);
+          req.flash('error', `Model not found for table ${tableName}`);
           // Redirect the user to the appropriate route after successful creation
           return res.redirect(`/gestion/${tableName}`);
       }
@@ -158,7 +159,7 @@ router.post('/:tableName/add', async (req, res) => {
 });
 
 
-  router.post('/:tableName/update/:email', async (req, res) => {
+  /* router.post('/:tableName/update/:email', async (req, res) => {
     const tableName = req.params.tableName;
     const { EMAIL, ...otherFields } = req.body;
   
@@ -170,17 +171,12 @@ router.post('/:tableName/add', async (req, res) => {
         tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
-        req.flash('success', `Model not found for table ${tableName}`);
+        req.flash('error', `Model not found for table ${tableName}`);
           // Redirect the user to the appropriate route after successful creation
           res.redirect(`/gestion/${tableName}`);
         throw new Error(`Model not found for table ${tableName}`);
       }
-          // console.log(otherFields)   
-     /*  if(otherFields.DATE)
-      {
-       otherFields.DATE= getFormattedDateTime();
       
-      } */
       delete otherFields.createdAt;
       delete otherFields.updatedAt;
       delete otherFields.id;
@@ -211,7 +207,51 @@ router.post('/:tableName/add', async (req, res) => {
     }
   });
 
+ */
+  router.post('/:tableName/update/:email', async (req, res) => {
+    const tableName = req.params.tableName;
+    const { EMAIL, ...otherFields } = req.body;
+  
+    try {
+        const Model = getModelFromTableName(tableName);
+  
+        if (!Model) {
+            req.flash('error', `Model not found for table ${tableName}`);
+            return res.redirect(`/gestion/${tableName}`); // Return to avoid further execution
+        }
+      
+        delete otherFields.createdAt;
+        delete otherFields.updatedAt;
+        delete otherFields.id;
+
+        for (let key in otherFields) {
+            if (otherFields[key] === '') {
+                delete otherFields[key];
+            }
+        }
+
+        await Model.update(otherFields, {
+            where: { EMAIL }
+        });
+  
+        req.flash('success', `Data successfully updated in table: ${tableName}`);
+        return res.redirect(`/gestion/${tableName}`);
+    
+    } catch (err) {
+        console.error(`Error updating data in table ${tableName}:`, err);
+        req.flash('error', `Error updating entry in ${tableName}: ${err}`);
+        return res.redirect(`/gestion/${tableName}`);
+    }
+});
+
+// Function to get model based on table name
+
+
+
+
   // Route to handle deleting an entry
+
+
   router.get('/:tableName/delete/:email', (req, res) => {
     const tableName = req.params.tableName;
     const email = req.params.email;
@@ -236,6 +276,23 @@ router.post('/:tableName/add', async (req, res) => {
     }
     
   });
+
+  function getModelFromTableName(tableName) {
+    switch(tableName) {
+        case 'enseignant':
+            return enseignant;
+        case 'encadrant':
+            return encadrant;
+        case 'UserRegistrations':
+            return UserRegistrations;
+        case 'userregistrations':
+            return UserRegistrations;  
+        case 'etudiant':
+            return etudiant;
+        default:
+            return null;
+    }
+}
 
 
 module.exports = router;

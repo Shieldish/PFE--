@@ -40,6 +40,33 @@
     
 </head>
 <body>
+
+   
+    <script> 
+        setInterval(() => {
+            fetch('/check-update')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Compare data and update session if necessary
+                if (data) {
+                    <% if (userData) { %>
+                    // Update userData object with the received data
+                    <% Object.keys(userData).forEach(key => { %>
+                        userData[<%= key %>] = data[<%= key %>];
+                    <% }) %>
+                    <% } %>
+                }
+            })
+            .catch(error => console.error('Error checking for updates:', error));
+        }, 5000); // Check every 5 seconds (adjust as needed)
+    </script>
+    
+      
+
+
+
+
  
     <div class="custom-container">
                      

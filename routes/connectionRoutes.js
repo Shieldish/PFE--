@@ -92,7 +92,7 @@ router.post('/register', async function(req, res) {
    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate registration token
-    const registrationToken = generateRandomToken(50);
+    const registrationToken = generateRandomToken(100);
 
     // Create a new user
     const uuid = uuidv4();
@@ -157,7 +157,7 @@ router.post('/register', async function(req, res) {
   }
 
   // Generate a new token and update the user's record
-  const registrationToken = generateRandomToken(80);
+  const registrationToken = generateRandomToken(100);
   userRegistration.TOKEN = registrationToken;
   userRegistration.updatedAt = now;
   await userRegistration.save();
@@ -246,7 +246,7 @@ router.post('/reset-password', async (req, res) => {
     } 
 
     // Generate a new reset token
-    const resetToken = generateRandomToken(75);
+    const resetToken = generateRandomToken(100);
 
     // Update the user registration record with the new reset token
     userRegistration.TOKEN = resetToken; // Changed to lowercase
@@ -319,51 +319,46 @@ router.post('/reseting-password', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-
   try {
     const user = await UserRegistrations.findOne({ where: { email } });
 
     if (!user) {
-      req.flash('error', `Address email : [${email}] not found !`);
+      req.flash('error', `Email address ${email} not found.`);
       return res.render('../connection/login', { messages: req.flash() });
     }
+    
     if (!user.ISVALIDATED) {
       req.flash('info', 'Account not activated. Please check your email and confirm your registration before logging in!');
       return res.render('../connection/login', { messages: req.flash() });
     }
 
     if (!user.validPassword(password)) {
-      req.flash('error', 'Wrong password try again !');
+      req.flash('error', 'Incorrect password. Please try again.');
       return res.render('../connection/login', { messages: req.flash() });
     }
     
-   /*  let NOM = user.NOM;
-    let PRENOM = user.PRENOM;
-    let EMAIL = user.EMAIL; */
-          
-    /* const userInfo = { NOM, PRENOM, EMAIL }; */
-    /* req.session.user = userInfo; */
-    req.session.user=user;
-    // Set user information in session
-    //localStorage.setItem('user.json', JSON.stringify(userInfo));
- 
-
+    // Update session user data
+    req.session.user = user.toJSON();
+    
+    // Generate JWT token
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
-     
+    
+    // Update cookies with token and user data
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
+
     req.flash('success', 'Login successful!');
-              
-  
+    
     const returnTo = req.session.returnTo || '/';
     delete req.session.returnTo; // Clear the stored return URL
     res.redirect(returnTo);
-    //res.redirect('/');
 
   } catch (err) {
     req.flash('error', err.message);
     res.render('../connection/login', { messages: req.flash() });
   }
 });
+
 
 // In your backend route
 router.get('/profiles', (req, res) => {

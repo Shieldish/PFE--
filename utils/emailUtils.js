@@ -30,7 +30,7 @@ const mailOptions = {
         .container {
           max-width: 600px;
           margin: 0 auto;
-          background-color: #F5F5DC;
+          background-color: #FFFFFF;
           padding: 20px;
           border-radius: 5px;
           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -68,6 +68,7 @@ const mailOptions = {
           <p>Please click the link below to confirm your email address:</p>
           <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}"> &#x1F449;  Confirm Email  &#x1F448;</a>
           <p>This link will expire in 24 hours.</p>
+          <p> Click here : ${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}</p>
           <p>As a registered member, you now have access to [briefly mention key features or benefits of your product/service]. We are confident that you'll find [Your Company] to be a valuable resource.</p>
           <p>Should you have any questions or need assistance, feel free to reach out to our support team at [Support Email/Contact Information]. We're here to help!</p>
           <p>Thank you for choosing [Your Company]. We're excited to have you on board!</p>
@@ -112,7 +113,7 @@ async function resendRegistrationMail(email,name,token) {
         .container {
           max-width: 600px;
           margin: 0 auto;
-          background-color: #F5F5DC;
+          background-color: #FFFFFF;
           padding: 20px;
           border-radius: 5px;
           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -148,6 +149,7 @@ async function resendRegistrationMail(email,name,token) {
           <p>If this was not you, please ignore this email.</p>
           <p>To confirm your email address and complete the registration process, please click the link below:</p>
           <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}"> &#x1F449; Confirm Email &#x1F448;</a>
+          <p> Click here  :  ${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}</p>
         </div>
         <div class="signature">
           <p>Best regards,</p>
@@ -192,7 +194,7 @@ const mailOptions = {
           .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #F5F5DC;
+            background-color: #FFFFFF;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -215,6 +217,8 @@ const mailOptions = {
             <p>To reset your password, click the link below:</p>
             <a  href="${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}"> &#x1F449; Reset Password  &#x1F448;</a>
             <p>The link will expire in 24 hours for security reasons.</p>
+
+            <p>${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken} </p>
           </div>
           <div class="signature">
             <p>Best regards,</p>

@@ -13,7 +13,8 @@ const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-const { v4: uuidv4 } = require('uuid');
+const UserRegistrations  = require('./controllers/UserRegistration');
+
 /* const logger = require('./logs/logger'); */
 
 
@@ -65,9 +66,41 @@ app.get(['/','/home'], authenticate,(req, res) => {
   res.render('home', { user, userJSON: JSON.stringify(user) });
 });
 
+app.get('/check-update', async (req, res) => {
+  try {
+    if (req.session.user) {
+      const latestUserData = await UserRegistrations.findOne({ where: { UUID: req.session.user.UUID } });
 
+      // Update session user data
+      req.session.user = latestUserData.toJSON();
+      
+      // Update cookies with the latest user data
+      res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
 
- 
+      res.json(latestUserData);
+    } else {
+      res.json(null);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* app.get('/check-update', async (req, res) => {
+  try {
+      if (req.session.user) {
+          const latestUserData = await UserRegistrations.findOne({ where: { UUID: req.session.user.UUID } });
+          
+          req.session.user = latestUserData.toJSON();
+          res.json(latestUserData);
+      } else {
+          res.json(null);
+      }
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+}); */
+
 // Your application code herelogger.info('Application started');
 /* console.log('This message will be logged to the console and combined.log');
 console.error('This error will be logged to the console, error.log, and combined.log');   */

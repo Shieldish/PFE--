@@ -22,12 +22,13 @@ router.get('/',async (req, res) => {
        {
           let user = req.session.user;
           let email = user.EMAIL;
+          console.log(user)
           const userData = await UserRegistrations.findOne({ where: {email } });
           if(userData)
           { 
             data=userData
        
-             req.flash('success','Data was retrieve successfully')
+            req.flash('success','Data was retrieve successfully')
             return res.render('UserSettingsProfiles', { userData , messages: req.flash() }); 
            
           }
@@ -100,6 +101,7 @@ router.post('/updateUserData', async (req, res) => {
       return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
   }
 });
+
 
 
 module.exports = router;
