@@ -64,7 +64,8 @@
                         <button class="nav-link" id="stages-tab" data-bs-toggle="tab" data-bs-target="#stages-tab-pane" type="button" role="tab" aria-controls="stages-tab-pane" aria-selected="false">Mes stages</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="stages1-tab" data-bs-toggle="tab" data-bs-target="#stages1-tab-pane" type="button" role="tab" aria-controls="stages1-tab-pane" aria-selected="false">Edit stages</button>
+                        <button class="nav-link" id="stages1-tab" data-bs-toggle="tab" data-bs-target="#stages1-tab-pane" type="button" role="tab" aria-controls="stages1-tab-pane" aria-selected="false">Edit stages</button> 
+                      
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
@@ -95,7 +96,9 @@
                     <div class="tab-pane fade" id="stages1-tab-pane" role="tabpanel" aria-labelledby="stages1-tab" tabindex="0">
                         <!-- Content for Créer un stage tab -->
                         <!-- Add your form, grid, text, or container content here -->
-                               ça vas etres editer c'est un crud
+                        
+                        <%-include('./partial/entrepriseTemplate/StagesCRUD') %>  
+
                     </div>
                     <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
                         <!-- Content for Contact tab -->

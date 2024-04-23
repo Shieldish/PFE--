@@ -85,6 +85,11 @@ const Stages = sequelize.define('Stages', {
     type: DataTypes.BOOLEAN,
     allowNull: false
   }
+  ,
+  CreatedBy: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
 }, {
   // Add timestamps
   timestamps: true

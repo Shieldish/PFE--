@@ -1,0 +1,28 @@
+<div class="container">
+    <h2>Liste des Stages</h2>
+    <hr>
+    <div id="stageTable" class="table-responsive">
+        <% if (stages && stages.length > 0) { %>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <% Object.keys(stages[0]).forEach(key => { %>
+                            <th><%= key %></th>
+                        <% }); %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% stages.forEach(stage => { %>
+                        <tr>
+                            <% Object.values(stage).forEach(value => { %>
+                                <td><%= value %></td>
+                            <% }); %>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Aucun stage trouvé.</p>
+        <% } %>
+    </div>
+</div>
