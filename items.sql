@@ -23,8 +23,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `data`
 --
-
-/* DROP TABLE IF EXISTS sidebar_items; */;
+DROP TABLE IF EXISTS sidebar_items ;
 
 -- --------------------------------------------------------
 
@@ -50,7 +49,7 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (1, NULL, '/#', 'fas fa-tachometer-alt', 'لوحة القيادة', 'Tableau de bord', 'Dashboard'),
 (2, NULL, '/#', 'fas fa-users', 'طلاب', 'Étudiants', 'Students'),
 (3, NULL, '/#', 'fas fa-chalkboard-teacher', 'معلمون', 'Enseignants', 'Instructors'),
-(4, NULL, '/#', 'fas fa-building', 'شركات', 'Entreprises', 'Companies'),
+(4, NULL, '/entreprise', 'fas fa-building', 'شركات', 'Entreprises', 'Companies'),
 (5, NULL, '/#', 'fas fa-file-alt', 'قائمة الدورات التدريبية', 'Liste des stages', 'Internship List'),
 (6, NULL, '/#', 'fas fa-calendar-alt', 'تقويم', 'Calendrier', 'Calendar'),
 (7, NULL, '/#', 'fas fa-cog', 'الإعدادات', 'Paramètres', 'Settings'),
@@ -61,6 +60,7 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (12, 7, '/settings', 'bi bi-person-lines-fill', ' ملفاتي الشخصية', ' Mon Profiles', ' My Profiles'),
 (13, 7, '/settings', 'bi bi-folder-symlink-fill', ' مشاريعي', ' Mes Projets', ' My Projects'),
 (14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management');
+
 --
 -- Index pour les tables déchargées
 --

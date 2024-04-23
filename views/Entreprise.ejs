@@ -1,0 +1,184 @@
+
+<head>
+ 
+    <head>
+     
+        <title>Entreprise</title>
+        <%-include('./common/head') %>
+        <!-- Your other CSS files -->
+ 
+         <style>
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-align: center;
+        }
+
+        .content-wrapper {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 50%;
+            margin: 0 auto; /* Center the container */
+            overflow-y: auto; /* Add vertical scroll if content exceeds wrapper height */
+            max-height: 550px; /* Example max height, adjust as needed */
+        }
+    </style>
+
+     
+       
+    </head> 
+    
+</head>
+<body>
+    <div class="custom-container">
+                     
+        <%-include('./common/sidebar') %>
+
+        
+        <div class="main-content">
+           
+            <%-include('./common/navbar') %>
+            <div style="text-align: center;">
+                <h3 style="margin: 15px; padding: 15px;">Entreprise</h3>
+              </div>
+              
+                 
+              <div class="container">
+                       
+                <%-include('./partial/flaskMessages')  %>
+                
+                <ul class="nav nav-tabs d-flex justify-content-center" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="postulant-tab" data-bs-toggle="tab" data-bs-target="#postulant-tab-pane" type="button" role="tab" aria-controls="postulant-tab-pane" aria-selected="true">Postulant(e)s</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="stage-tab" data-bs-toggle="tab" data-bs-target="#stage-tab-pane" type="button" role="tab" aria-controls="stage-tab-pane" aria-selected="false">Créer un stage</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="stages-tab" data-bs-toggle="tab" data-bs-target="#stages-tab-pane" type="button" role="tab" aria-controls="stages-tab-pane" aria-selected="false">Mes stages</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="stages1-tab" data-bs-toggle="tab" data-bs-target="#stages1-tab-pane" type="button" role="tab" aria-controls="stages1-tab-pane" aria-selected="false">Edit stages</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profiles</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="postulant-tab-pane" role="tabpanel" aria-labelledby="postulant-tab" tabindex="0">
+                        <!-- Content for Postulant(e)s tab -->
+                        <!-- Add your form, grid, text, or container content here -->
+                    </div>
+                    <div class="tab-pane fade" id="stage-tab-pane" role="tabpanel" aria-labelledby="stage-tab" tabindex="0">
+                        <!-- Content for Créer un stage tab -->
+                        <!-- Add your form, grid, text, or container content here -->
+
+                        <div class="content-wrapper">
+                            <%-include('./partial/entrepriseTemplate/formulaire') %>   
+                        </div> 
+
+                    </div>
+                    <div class="tab-pane fade" id="stages-tab-pane" role="tabpanel" aria-labelledby="stages-tab" tabindex="0">
+                        <!-- Content for Créer un stage tab -->
+                        <!-- Add your form, grid, text, or container content here -->
+                        <%-include('./partial/entrepriseTemplate/MesStages') %>   
+                    </div>
+                    <div class="tab-pane fade" id="stages1-tab-pane" role="tabpanel" aria-labelledby="stages1-tab" tabindex="0">
+                        <!-- Content for Créer un stage tab -->
+                        <!-- Add your form, grid, text, or container content here -->
+                               ça vas etres editer c'est un crud
+                    </div>
+                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+                        <!-- Content for Contact tab -->
+                        <!-- Add your form, grid, text, or container content here -->
+                    </div>
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                        <!-- Content for Profiles tab -->
+                        <!-- Add your form, grid, text, or container content here -->
+                           
+                    
+
+                    </div>
+                </div>
+            </div>
+            
+            
+             <%-include('./common/footer') %>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+    
+     <script>
+    document.getElementById("stageForm").addEventListener("submit", function(event) {
+        // Prevent the form from submitting
+        event.preventDefault();
+        
+        // Validate the form fields
+        var domaine = document.getElementById("inputDomaine").value;
+        var titre = document.getElementById("inputTitre").value;
+        var description = document.getElementById("inputDescription").value;
+        // Add similar lines for other fields
+        
+        if (domaine.trim() === "" || titre.trim() === "" || description.trim() === "") {
+            // If any required field is empty, display an error message
+            alert("Veuillez remplir tous les champs obligatoires.");
+            return false; // Prevent form submission
+        }
+        
+        // If all fields are filled, submit the form
+        this.submit();
+    });
+</script>
+
+    
+<script>
+    // Function to save the selected tab to local storage
+    document.addEventListener('DOMContentLoaded', () => {
+  const tabButtons = document.querySelectorAll('.nav-link');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+
+  // Deactivate all tabs and tab panes initially
+  tabButtons.forEach(button => button.classList.remove('active'));
+  tabPanes.forEach(pane => pane.classList.remove('active', 'show'));
+
+  const selectedTabId = localStorage.getItem('selectedTab');
+  const selectedTab = document.getElementById(selectedTabId);
+
+  if (selectedTab) {
+    selectedTab.classList.add('active');
+
+    const selectedTabPane = document.getElementById(`${selectedTabId}-pane`);
+    selectedTabPane.classList.add('active', 'show');
+  } else {
+    // If no tab is stored in localStorage, activate the first tab
+    const firstTab = document.querySelector('.nav-link');
+    firstTab.classList.add('active');
+
+    const firstTabPane = document.getElementById(`${firstTab.id}-pane`);
+    firstTabPane.classList.add('active', 'show');
+  }
+});
+
+const tabButtons = document.querySelectorAll('.nav-link');
+
+tabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    localStorage.setItem('selectedTab', button.id);
+  });
+});
+</script>
+</body>
+

@@ -9,6 +9,7 @@ const connectionRoutes=require('./routes/connectionRoutes')
 const uploadsRoutes=require('./routes/uploadsRoutes')
 const databaseRoutes=require('./routes/databaseRoutes')
 const UserProfilesRoutes=require('./routes/UserProfilesRoutes')
+const entrepriseRoutes=require('./routes/entrepriseRoutes')
 const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
@@ -59,6 +60,7 @@ app.use('/files',authenticate,isAdmin,uploadsRoutes);
 //app.use('/gestion', authenticate, databaseRoutes); 
 app.use('/gestion',authenticate,isUser,databaseRoutes); 
 app.use('/settings',authenticate,UserProfilesRoutes);
+app.use('/entreprise',authenticate,entrepriseRoutes);
 
 app.get(['/','/home'], authenticate,(req, res) => {
   const user = req.session.user;
@@ -66,7 +68,7 @@ app.get(['/','/home'], authenticate,(req, res) => {
   res.render('home', { user, userJSON: JSON.stringify(user) });
 });
 
-app.get('/check-update', async (req, res) => {
+/* app.get('/check-update', async (req, res) => {
   try {
     if (req.session.user) {
       const latestUserData = await UserRegistrations.findOne({ where: { UUID: req.session.user.UUID } });
@@ -85,25 +87,7 @@ app.get('/check-update', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-/* app.get('/check-update', async (req, res) => {
-  try {
-      if (req.session.user) {
-          const latestUserData = await UserRegistrations.findOne({ where: { UUID: req.session.user.UUID } });
-          
-          req.session.user = latestUserData.toJSON();
-          res.json(latestUserData);
-      } else {
-          res.json(null);
-      }
-  } catch (error) {
-      res.status(500).json({ error: error.message });
-  }
-}); */
-
-// Your application code herelogger.info('Application started');
-/* console.log('This message will be logged to the console and combined.log');
-console.error('This error will be logged to the console, error.log, and combined.log');   */
+ */
 
 // Start server
 const PORT = process.env.PORT || 3000;

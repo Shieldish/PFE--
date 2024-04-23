@@ -1,0 +1,73 @@
+<div class="container">
+  <!--   <h2>Liste des Stages</h2> -->
+  <hr>
+    <div id="stageGrid" class="row">
+        <!-- Stage grid will be dynamically populated here -->
+    </div>
+</div>
+</div>
+
+<script>
+    // Fetch all stages from the server
+    fetch('/entreprise/stages')
+        .then(response => response.json())
+        .then(stages => {
+            // Reference to the stageGrid container
+            const stageGrid = document.getElementById('stageGrid');
+
+            // Loop through each stage and create grid item
+            stages.forEach(stage => {
+                const stageItem = document.createElement('div');
+                stageItem.classList.add('col-md-4'); // Adjust column width as needed
+
+                 const descriptionLines = stage.Description.split('\n').slice(0, 3).join('\n');
+                const showMore = stage.Description.split('\n').length > 3 ? `<span class="show-more">... <a href="#">Show more</a></span>` : ''; 
+
+                const dateFin = new Date(stage.DateFin);
+                const dateDebut=new Date(stage.DateDebut);
+                const formattedDateFin = dateFin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                const formattedDateDebut = dateDebut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+
+
+
+
+
+                stageItem.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" style="text-transform: uppercase;"> ID : ${stage.id}</h5>
+                            <hr>
+                            <h5 class="card-title"> Titre : ${stage.Titre}</h5>
+                            <p class="card-text"><strong>Domaine:</strong> ${stage.Domaine}</p>
+                            <p class="card-text"><strong>Description:</strong> ${descriptionLines}${showMore}</p>
+                            <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau }</p>
+                            <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
+                            <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
+                            <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
+                            <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
+                            <!-- Add more stage properties as needed -->
+                        </div>
+                    </div>
+                `;
+     
+                // Append grid item to the stageGrid container
+                stageGrid.appendChild(stageItem);
+            });
+
+ 
+
+            // Add event listener for "Show more" links
+           // Add event listener for "Show more" links
+ stageGrid.addEventListener('click', function(event) {
+    if (event.target.tagName === 'A') {
+        event.preventDefault();
+        const descriptionText = event.target.parentElement.previousSibling.textContent;
+        const originalContent = descriptionText.replace('...', '');
+        event.target.parentElement.innerHTML = originalContent;
+    }
+});
+ 
+        })
+        .catch(error => console.error('Error fetching stages:', error));
+</script>

@@ -1,0 +1,94 @@
+<hr>
+<h1>Formulaire de creation de stage</h1>
+<hr>
+<div  >
+<form id="stageForm" action="/entreprise/creactionStage" method="POST" class="row g-3">
+    <div class="col-md-12">
+        <label for="inputDomaine" class="form-label">Domaine :</label>
+        <input type="text" class="form-control" id="inputDomaine" name="Domaine" >
+    </div>
+    <div class="col-md-6">
+        <label for="inputTitre" class="form-label">Titre</label>
+        <input type="text" class="form-control" id="inputTitre" name="Titre">
+    </div>
+    <div class="col-md-6">
+        <label for="inputDescription" class="form-label">Libellé</label>
+        <input type="text" class="form-control" id="inputDescription" name="Libelle">
+    </div>
+    <div class="col-md-12">
+        <label for="inputLibelle" class="form-label">Description</label>
+        <textarea class="form-control" id="inputLibelle" name="Description" rows="5"></textarea>
+    </div>
+    <div class="col-md-6">
+        <label for="inputNiveau" class="form-label">Niveau d'étude :</label>
+        <input type="text" class="form-control" id="inputNiveau" name="Niveau">
+    </div>
+    <div class="col-md-6">
+        <label for="inputExperience" class="form-label">Experience :</label>
+        <input type="text" class="form-control" id="inputExperience" name="Experience">
+    </div>
+    <div class="col-md-6">
+        <label for="inputLangue" class="form-label">Langue :</label>
+        <input type="text" class="form-control" id="inputLangue" name="Langue">
+    </div>
+    <div class="col-md-6">
+        <label for="inputPlace" class="form-label">Postes vacants:</label>
+        <input type="text" class="form-control" id="inputPlace" name="PostesVacants">
+    </div>
+    <div class="col-md-6">
+        <label for="inputTel1" class="form-label">Téléphone </label>
+        <input type="number" class="form-control" id="inputTel1" name="Telephone">
+    </div>
+    <div class="col-md-6">
+        <label for="inputTel2" class="form-label">Fax:</label>
+        <input type="number" class="form-control" id="inputTel2" name="Fax">
+    </div>
+    <div class="col-md-6">
+        <label for="inputEmail" class="form-label">Email :</label>
+        <input type="email" class="form-control" id="inputEmail" name="Email">
+    </div>
+    <div class="col-md-6">
+        <label for="inputEmail2" class="form-label">Email 2 :</label>
+        <input type="email" class="form-control" id="inputEmail2" name="Email2">
+    </div>
+    <div class="col-md-6">
+        <label for="inputdate" class="form-label">Date debut:</label>
+        <input type="date" class="form-control" id="inputdate" name="DateDebut">
+    </div>
+    <div class="col-md-6">
+        <label for="inputdate2" class="form-label">Date fin:</label>
+        <input type="date" class="form-control" id="inputdate2" name="DateFin">
+    </div>
+    <div class="col-12">
+        <label for="inputAddress" class="form-label">Address</label>
+        <input type="text" class="form-control" id="inputAddress" name="Address" placeholder="1234 Main St">
+    </div>
+    <div class="col-md-6">
+        <label for="inputRue" class="form-label">Rue :</label>
+        <input type="text" class="form-control" id="inputRue" name="Rue" placeholder="Apartment, studio, or floor">
+    </div>
+    <div class="col-md-4">
+        <label for="inputState" class="form-label">State</label>
+        <select id="inputState" class="form-select" name="State">
+            <option selected>choisir emplacement...</option>
+                      <%-include('tunisie') %>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="inputZip" class="form-label">Zip</label>
+        <input type="text" class="form-control" id="inputZip" name="Zip">
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck" name="gridCheck">
+            <label class="form-check-label" for="gridCheck">
+                Check me out
+            </label>
+        </div>
+    </div>
+    <div class="col-12 text-right">
+        <button type="submit" class="btn btn-primary">Créer stages</button>
+    </div>
+</form>
+
+</div>
