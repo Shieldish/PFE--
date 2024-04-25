@@ -58,7 +58,7 @@
                     const globalTableName = '<%= tableName %>';
                 </script>
                 <!-- Button to add new entry -->
-                <button type="button" class="btn btn-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
+                <button type="button" class="btn btn-outline-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
                   <i class="fas fa-plus"></i> Add New <%= tableName %>
                 </button>
                 <!-- Button container for displaying table name and count -->
@@ -79,7 +79,7 @@
       <!--  <div class=" table-responsive  my-color " style=" border-radius: 5px;" > -->
        <div  class="table-responsive " style="padding-left: 15px; padding-right: 15px; padding-top: 20px;">
            <table class=" table table-hover  searchable sortable">
-               <thead class="thead-dark ">
+               <thead class="thead-dark">
                <tr>
                    <% Object.keys(data[0]).forEach(key => { %>
                    <th   class="text-center"><%= key %></th>
@@ -96,7 +96,7 @@
                    <td  class="text-center" ><%= value %></td>
                    <% }); %>
                    <td>
-                       <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                       <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="modal"
                                data-target="#viewsModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
                            <i class="fas fa-eye"></i>Views
                        </button>
@@ -132,13 +132,13 @@
                   
                    </td>
                    <td>
-                       <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                       <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
                                data-target="#editModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
                            <i class="fas fa-edit"></i> Edit
                        </button>
                    </td>
                    <td>
-                       <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                       <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal"
                                data-target="#deleteModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
                            <i class="fas fa-trash"></i> Delete
                        </button>

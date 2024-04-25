@@ -13,6 +13,10 @@ const Stages = sequelize.define('Stages', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  Nom: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   Titre: {
     type: DataTypes.STRING,
     allowNull: false

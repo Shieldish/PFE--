@@ -1,5 +1,7 @@
 <div class="container">
-  <!--   <h2>Liste des Stages</h2> -->
+    <div style="text-align: center;">
+        <h3 style="margin: 5px; padding: 5px;">Les Stages</h3>
+    </div>
   <hr>
     <div id="stageGrid" class="row">
         <!-- Stage grid will be dynamically populated here -->
@@ -36,10 +38,12 @@
                 stageItem.innerHTML = `
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title" style="text-transform: uppercase;"> ID : ${stage.id}</h5>
+                            <h5 class="card-title" style="text-transform: uppercase; text-align: center;"> <strong >${stage.Domaine}</strong> </h5>
                             <hr>
+                            <h5 class="card-title"> Entreprise/Société/Start-up : ${stage.Nom}</h5>
                             <h5 class="card-title"> Titre : ${stage.Titre}</h5>
-                            <p class="card-text"><strong>Domaine:</strong> ${stage.Domaine}</p>
+
+                            <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
                             <p class="card-text"><strong>Description:</strong> ${descriptionLines}${showMore}</p>
                             <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau }</p>
                             <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>

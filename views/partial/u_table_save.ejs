@@ -49,9 +49,9 @@
          <% } %>
 
     <%- include('table_choice') %>
-    <div class="table-bordered " style="padding-left: 15px; padding-right: 15px;">
+    <div class="table-bordered table-responsive" style="padding-left: 15px; padding-right: 15px;">
         <table class="table  my-color"  >
-            <thead bgcolor="#f0f0f0" style="font-weight: bold;" >
+            <thead class="bg-info" style="font-weight: bold;" >
                 <tr>
                     <% Object.keys(dt[0]).forEach(function(key) { %>
                         <th scope="col" onclick="makeEditable(this)" >

@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
+app.use(express.json());
 
 
 /* router.get('/', (req,res)=>{
@@ -101,6 +102,9 @@ router.get('/', async (req, res) => {
       // Convert stages array to JSON
     
       const stagesJSON = stages.map(stage => stage.toJSON());
+
+       await  normalizeDate(stagesJSON)
+
       console.log(stagesJSON)
       // Render the page with the fetched stages
       return res.render('Entreprise', { stages: stagesJSON });
@@ -112,11 +116,134 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/edit_stages/:id', async (req, res) => {
+router.get('/edit/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    // Fetch the stage with the given ID
+    const stage = await Stages.findByPk(id); 
+
+    delete stage.CreatedBy;
+    delete stage.CreatedBy;
+    delete stage.updatedAt;
+    delete stage.createdAt;
+
+    const formattedDateDebut = stage.DateDebut.toISOString().slice(0, 10);
+      const formattedDateFin = stage.DateFin.toISOString().slice(0, 10);
+    // Render the edit page with the stage data
+    return res.render('edit', { data:stage, formattedDateDebut, formattedDateFin });
+  } 
+  catch (error) {
+    // Handle any errors
+    console.error('Error fetching stage:', error);
+    req.flash('error', 'An error occurred while fetching stage data: ' + error.message);
+    return res.redirect('/entreprise');
+  }
          
 });
 
+router.delete('/delete/:id', async (req, res) => {
+  const stageId = req.params.id;
+  try {
+    // Example deletion logic using Sequelize with async/await
+    await Stages.destroy({
+      where: {
+        id: stageId
+      }
+    });
+    // Send a success response
+    console.log(' deleted successfully')
+    req.flash('info', `Stage with id : ${stageId} deleted successfully`);
+    return res.redirect('/entreprise');
+  } catch (err) {
+    // Send an error response if deletion fails
+    console.error('Error deleting stage:', err);
+    req.flash('error', `Error deleting stage with id : ${stageId}: ${err.message}`);
+    return res.redirect('/entreprise');
+  }
+});
 
+
+router.post('/edit/:id', function (req, res) {
+  const id = req.params.id;
+  const updatedData = req.body; 
+  console.log(updatedData); 
+
+  for (let key in updatedData) {
+    if (updatedData[key] === '') {
+        delete updatedData[key];
+    }
+  }
+
+        const existStages= Stages.findByPk(id);
+
+        if(!existStages)
+        {
+          req.flash('error', 'An error occurred while updating stage data: ' + error.message);
+          return res.redirect('/entreprise');
+        }
+
+        try {
+          Stages.update(updatedData, {
+            where: {
+              id: id
+            }
+          }).then(function () {
+            req.flash('success', 'Stage updated successfully!');
+            return res.redirect('/entreprise');
+          });
+          
+        } catch (error) {
+          req.flash('error', 'An error occurred while updating stage data: ' + error.message);
+          return res.redirect('/entreprise');
+          
+        }
+});
+
+async function normalizeDate(filteredArray)
+{
+  filteredArray.forEach(obj => {
+    if (obj.createdAt) {
+        obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', { 
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+    if (obj.updatedAt) {
+        obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', { 
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+    if (obj.DateDebut) {
+      obj.DateDebut = new Date(obj.DateDebut).toLocaleString('fr-FR', { 
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+         // hour: '2-digit',
+         // minute: '2-digit',
+         // second: '2-digit'
+      });
+  }
+  if (obj.DateFin) {
+    obj.DateFin = new Date(obj.DateFin).toLocaleString('fr-FR', { 
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric',
+       // hour: '2-digit',
+       // minute: '2-digit',
+       // second: '2-digit'
+    });
+}
+});
+}
 
 
 module.exports = router;
