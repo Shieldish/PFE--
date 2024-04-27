@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS  `sidebar_items`  (
 
 INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name_fr`, `name_en`) VALUES
 (1, NULL, '/#', 'fas fa-tachometer-alt', 'لوحة القيادة', 'Tableau de bord', 'Dashboard'),
-(2, NULL, '/#', 'fas fa-users', 'طلاب', 'Étudiants', 'Students'),
+(2, NULL, '/etudiant', 'fas fa-users', 'طلاب', 'Étudiants', 'Students'),
 (3, NULL, '/#', 'fas fa-chalkboard-teacher', 'معلمون', 'Enseignants', 'Instructors'),
 (4, NULL, '/entreprise', 'fas fa-building', 'شركات', 'Entreprises', 'Companies'),
 (5, NULL, '/#', 'fas fa-file-alt', 'قائمة الدورات التدريبية', 'Liste des stages', 'Internship List'),

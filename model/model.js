@@ -97,6 +97,10 @@ const etudiant = sequelize.define('etudiant', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  SPECIALITE: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   DATE: {
     type:DataTypes.STRING,
     allowNull: true

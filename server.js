@@ -10,6 +10,7 @@ const uploadsRoutes=require('./routes/uploadsRoutes')
 const databaseRoutes=require('./routes/databaseRoutes')
 const UserProfilesRoutes=require('./routes/UserProfilesRoutes')
 const entrepriseRoutes=require('./routes/entrepriseRoutes')
+const etudiantsRoutes=require('./routes/etudiantsRoutes')
 const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
@@ -61,9 +62,14 @@ app.use('/files',authenticate,isAdmin,uploadsRoutes);
 app.use('/gestion',authenticate,isUser,databaseRoutes); 
 app.use('/settings',authenticate,UserProfilesRoutes);
 app.use('/entreprise',authenticate,entrepriseRoutes);
+app.use('/etudiant',authenticate,etudiantsRoutes);
 
 app.get(['/','/home'], authenticate,(req, res) => {
   const user = req.session.user;
+           if(user)
+           {
+            delete user.PASSWORD;
+           }
 
   res.render('home', { user, userJSON: JSON.stringify(user) });
 });

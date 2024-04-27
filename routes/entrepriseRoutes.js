@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const Stages=require('../model/stagesModel')
+const StagePostulation=require('../model/stagePostulationModel');
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
@@ -66,20 +67,37 @@ router.post('/creactionStage', async (req, res) => {
 
 
 
+router.get('/stages', async (req, res) => {
+  try {
+      const user = req.session.user;
+      if (!user) {
+          req.flash('info', 'Session lost, please reconnect to fetch data');
+          return res.status(401).end();
+      }
 
-  router.get('/stages', async (req, res) => {
-    try {
-        // Fetch all stages from the database
-        const allStages = await Stages.findAll();
+      const entrepriseEmail = user.EMAIL;
 
-        // Send the stages as JSON response
-        res.json(allStages);
-    } catch (error) {
-        console.error('Error fetching stages:', error);
-       /*  res.status(500).json({ error: 'Internal server error' }); */
-       req.flash('error', 'An error occurred while fetching stages data '+error);
-    }
+      if (!entrepriseEmail) {
+          req.flash('info', 'Session lost, please reconnect to fetch data');
+          return res.status(401).end();
+      }
+
+      const allStages = await Stages.findAll({ where: { Createdby: entrepriseEmail } });
+
+      if (!allStages || allStages.length === 0) {
+          req.flash('info', 'No stages found for the user');
+          return res.status(404).end();
+      }
+
+      res.json(allStages);
+  } catch (error) {
+      console.error('Error fetching stages:', error);
+      req.flash('error', 'An error occurred while fetching stages data: ' + error.message);
+      res.status(500).end();
+  }
 });
+
+
 router.get('/', async (req, res) => {
   try {
       // Check if the user is authenticated and get their email
