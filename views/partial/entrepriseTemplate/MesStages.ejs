@@ -79,67 +79,57 @@
             // Reference to the stageGrid container
             const stageGrid = document.getElementById('stageGrid');
             // Loop through each stage and create grid item
-            stages.forEach(stage => {
-                const stageItem = document.createElement('div');
-                stageItem.classList.add('col-md-4'); // Adjust column width as needed
 
-                stageItem.classList.add('card', 'animate__animated', 'animate__fadeInUp');
+          // Loop through each stage and create grid item
+stages.forEach(stage => {
+    const stageItem = document.createElement('div');
+    stageItem.classList.add('col-md-4'); // Adjust column width as needed
+    stageItem.classList.add('card', 'animate__animated', 'animate__fadeInUp');
 
-                const descriptionLines = stage.Description.split('\n');
-                const shortDescription = descriptionLines.slice(0, 5).join('\n');
-                const longDescription = stage.Description; // Use the original description for full text
-                const showMore = descriptionLines.length > 5 ? `<span class="show-more">... <a href="#">Show more</a></span>` : '';
-                const dateFin = new Date(stage.DateFin);
-                const dateDebut = new Date(stage.DateDebut);
-                const formattedDateFin = dateFin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-                const formattedDateDebut = dateDebut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const descriptionLines = stage.Description.split('\n');
+    const shortDescription = descriptionLines.slice(0, 5).join('\n');
+    const longDescription = stage.Description; // Use the original description for full text
+    const dateFin = new Date(stage.DateFin);
+    const dateDebut = new Date(stage.DateDebut);
+    const formattedDateFin = dateFin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const formattedDateDebut = dateDebut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-                const createdAt = new Date(stage.createdAt);
-                const updatedAt= new Date(stage.updatedAt);
-                const timeSinceCreated = getTimeSinceCreated(createdAt);
-                const timeSinceUpdate = getTimeSinceCreated(updatedAt);
+    const createdAt = new Date(stage.createdAt);
+    const updatedAt = new Date(stage.updatedAt);
+    const timeSinceCreated = getTimeSinceCreated(createdAt);
+    const timeSinceUpdate = getTimeSinceCreated(updatedAt);
 
-                stageItem.innerHTML = `
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title" style="text-transform: uppercase; text-align: center;"> <strong >${stage.Domaine}</strong> </h5>
-                            <hr>
-                            <h5 class="card-title"> Chez : ${stage.Nom}</h5>
-                            <h5 class="card-title"> Titre : ${stage.Titre}</h5>
-                            <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
-                            <div class="description-wrapper"><strong> Description : </strong>
-                                <p class="short-description">${shortDescription}</p>
-                                <p class="long-description" style="display: none;">${longDescription}</p>
-                                ${showMore}
-                            </div>
-                            <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau }</p>
-                            <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
-                            <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
-                            <hr>
-                            <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
-                            <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
-                            <!-- Add more stage properties as needed -->
-                        </div>
-                    </div>
-                           <div class="card-footer">
-                             <span class="published-time">Publié  ${timeSinceCreated}</span> <br>
-                             <span class="published-time">mettre à jours ${timeSinceUpdate}</span>
-                           </div>
-                `;
-                // Append grid item to the stageGrid container
-                stageGrid.appendChild(stageItem);
-                // Add event listener for "Show more" links if present
-                const showMoreLink = stageItem.querySelector('.show-more a');
-                if (showMoreLink) {
-                    showMoreLink.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        const descriptionWrapper = stageItem.querySelector('.description-wrapper');
-                        descriptionWrapper.querySelector('.short-description').style.display = 'none';
-                        descriptionWrapper.querySelector('.long-description').style.display = 'block';
-                        showMoreLink.style.display = 'none'; // Hide the "Show more" link after displaying full description
-                    });
-                }
-            });
+    stageItem.innerHTML = `
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="text-transform: uppercase; text-align: center;"> <strong >${stage.Domaine}</strong> </h5>
+                <hr>
+                <h5 class="card-title"> Chez : ${stage.Nom}</h5>
+                <h5 class="card-title"> Titre : ${stage.Titre}</h5>
+                <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
+                <details class="description-wrapper">
+                    <summary><strong>Description :</strong></summary>
+                  
+                    <p class="long-description">${longDescription}</p>
+                </details>
+                <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau }</p>
+                <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
+                <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
+                <hr>
+                <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
+                <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span class="published-time">Publié  ${timeSinceCreated}</span> <br>
+            <span class="published-time">mettre à jours ${timeSinceUpdate}</span>
+        </div>
+    `;
+
+    // Append grid item to the stageGrid container
+    stageGrid.appendChild(stageItem);
+});
+
         })
         .catch(error => console.error('Error fetching stages:', error.message));
 

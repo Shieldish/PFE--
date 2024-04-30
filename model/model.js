@@ -202,7 +202,7 @@ connectToDatabase();
 syncModel();
 
 module.exports = {
-  enseignant,  etudiant,encadrant,
+  enseignant,  etudiant ,encadrant,
 //  UserRegistration,
   getAllTablesAndStructure,
   getDataFromTable,

@@ -1,0 +1,99 @@
+// Import Sequelize and database connection
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database'); // Modify this path according to your project structure
+
+// Define the model
+const ApplicationForm = sequelize.define('ApplicationForm', {
+    nom: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    prenom: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    date_naissance: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    adresse: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    telephone: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    niveau_etudes: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    institution: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    domaine_etudes: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    annee_obtention: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    experience: {
+        type: DataTypes.ENUM('oui', 'non'),
+        allowNull: false
+    },
+    experience_description: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    motivation: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    langues: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    logiciels: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    competences_autres: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    date_debut: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    duree_stage: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    cv: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    lettre_motivation: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    releves_notes: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+}, {
+    // Other model options
+});
+
+// Sync the model with the database
+ApplicationForm.sync({ alter: true }); // Use `alter: true` to avoid dropping the table
+
+// Export the model
+module.exports = ApplicationForm;

@@ -41,3 +41,6 @@ Veuillez joindre vos derniers relevés de notes (optionnel)
 En soumettant ce formulaire, j'atteste que les informations fournies sont exactes et complètes.
 
 [Bouton Soumettre]
+
+
+invalid-feedback

@@ -13,9 +13,15 @@ const entrepriseRoutes=require('./routes/entrepriseRoutes')
 const etudiantsRoutes=require('./routes/etudiantsRoutes')
 const authenticate = require('./middlewares/auth');
 const { isAdmin, isUser } = require('./middlewares/roles');
+
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const UserRegistrations  = require('./controllers/UserRegistration');
+const Stages=require('./model/stagesModel');
+const { Candidature, StagePostulation } = require('./model/stagePostulationModel');
+const  etudiant =require('./model/model')
+
+
 
 /* const logger = require('./logs/logger'); */
 
@@ -25,6 +31,9 @@ app.use(cookieParser());
 app.use(flash());
 app.use(express.json({ limit: '50mb' })); // For JSON requests
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Serve static files from the /stockages directory
+app.use('/stockages', express.static(path.join(__dirname, 'stockages')));
 
 app.use(session ({
   secret : process.env.secretKey,
@@ -94,6 +103,57 @@ app.get(['/','/home'], authenticate,(req, res) => {
   }
 });
  */
+
+app.get('/postulate/:id', async (req , res)=>{
+  const id = req.params.id;
+  const Onestage = await Stages.findByPk(id);
+  if(Onestage){
+      res.render('postuler',{stage:Onestage})
+  }else{
+    res.render('404')
+  }
+
+}) 
+
+app.get('/postulant_detail/:etudiantEmail', async (req, res) => {
+  const etudiantEmail = req.params.etudiantEmail;
+  try {
+      let candidature = await Candidature.findOne({
+          where: {
+              email: etudiantEmail
+          }
+      });
+
+      if (!candidature) {
+          // Handle the case where no candidature is found
+          return res.status(404).send('Candidature not found');
+      }
+
+      const modifiedCandidature = {
+          ...candidature.toJSON(),
+          cv: `/stockages/${candidature.email}/${path.basename(candidature.cv)}`,
+          lettre_motivation: `/stockages/${candidature.email}/${path.basename(candidature.lettre_motivation)}`,
+          releves_notes: `/stockages/${candidature.email}/${path.basename(candidature.releves_notes)}`
+      };
+      const StageData= await StagePostulation.findOne({
+        where : {
+        stageId : candidature.id,
+        etudiantEmail : candidature.email
+
+        }
+      })
+
+      const stageDataJSON = StageData.toJSON();
+
+      return res.render('postulant_details', {
+          candidature: modifiedCandidature , stage: stageDataJSON
+      });
+  } catch (error) {
+      // Handle errors
+      console.error(error);
+      return res.status(500).send('Internal Server Error');
+  }
+});
 
 // Start server
 const PORT = process.env.PORT || 3000;

@@ -94,7 +94,7 @@
             </div>
               
            
-
+            <%-include('./partial/flaskMessages') %>
            <hr>
                       
            <div  class="">
@@ -244,11 +244,11 @@
                             <h5 class="card-title"> Chez : ${stage.Nom}</h5>
                             <h5 class="card-title"> Titre : ${stage.Titre}</h5>
                             <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
-                            <div class="description-wrapper"><strong> Description : </strong>
-                                <p class="short-description">${shortDescription}</p>
-                                <p class="long-description" style="display: none;">${longDescription}</p>
-                                ${showMore}
-                            </div>
+                            <details class="description-wrapper">
+                             <summary><strong>Description :</strong></summary>
+                  
+                                <p class="long-description">${longDescription}</p>
+                            </details>
                             <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau }</p>
                             <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
                             <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
@@ -258,7 +258,7 @@
                             <!-- Add more stage properties as needed -->
                             <hr>
                           
-                            <a href="etudiant/postuler/${stage.id}" class="btn btn btn-outline-success mybtn">Postuler maintenant</a>
+                            <a href="/postulate/${stage.id}" class="btn btn btn-outline-success mybtn">Postuler maintenant</a>
                            
                         </div>
                     </div>

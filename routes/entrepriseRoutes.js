@@ -4,7 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const Stages=require('../model/stagesModel')
-const StagePostulation=require('../model/stagePostulationModel');
+const { Candidature, StagePostulation } = require('../model/stagePostulationModel');
+
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
@@ -123,7 +124,7 @@ router.get('/', async (req, res) => {
 
        await  normalizeDate(stagesJSON)
 
-      console.log(stagesJSON)
+      
       // Render the page with the fetched stages
       return res.render('Entreprise', { stages: stagesJSON });
   } catch (error) {
@@ -255,13 +256,127 @@ async function normalizeDate(filteredArray)
         month: 'long',
         day: '2-digit',
         year: 'numeric',
-       // hour: '2-digit',
+       // hour: '2-digit',postulatedAt
        // minute: '2-digit',
        // second: '2-digit'
     });
 }
+if (obj.postulatedAt) {
+  obj.postulatedAt = new Date(obj.postulatedAt).toLocaleString('fr-FR', { 
+      month: 'long',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+  });
+}
 });
 }
+
+router.get('/postulant', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  let entreprise = req.session.user.EMAIL;
+
+  if (!entreprise) {
+    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
+    return res.status(400).json({ error: 'An error occurred while fetching postulant data' });
+  }
+
+  try {
+    const postulant = await StagePostulation.findAll({
+      where: {
+        entrepriseEmail: entreprise
+      }
+    });
+
+    if (postulant.length == 0) {
+      req.flash('error', 'No postulant found');
+      return res.status(404).json({ error: 'No postulant found' });
+    }
+
+    let postulantJson = postulant.map(postulant => postulant.toJSON());
+
+    await normalizeDate(postulantJson);
+
+    // Assuming postulant is an array of postulant objects
+    postulantJson = postulantJson.map(postulantObj => {
+      const modifiedPostulant = { ...postulantObj };
+      modifiedPostulant.CVPath = `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`; // Construct the CV path
+      return modifiedPostulant;
+    });
+
+    console.log(postulantJson);
+
+    return res.status(200).json({ postulant: postulantJson });
+  } catch (error) {
+    console.log(error);
+    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
+    return res.status(500).json({ error: 'An error occurred while fetching postulant data' });
+  }
+});
+
+router.get('/postulant_detail/:etudiantEmail', async (req,res)=>{
+  const etudiantEmail = req.params.etudiantEmail;
+  try {
+       const candidature=await Candidature.findOne({
+        where:{
+          email:etudiantEmail
+        }
+       })
+     /*  res.json(candidature); */
+     return res.render('postulant_details')
+  } catch (error) {
+    
+  }
+})
+
+router.post('/decision', async (req, res) => {
+  try {
+      const { decision, stageId, stageEmail } = req.body;
+
+      // Find the stage postulation with the given stageId and stageEmail
+      const existingStage = await StagePostulation.findOne({
+          where: {
+              stageId: stageId,
+              etudiantEmail: stageEmail
+          }
+      });
+
+      // If the stage postulation doesn't exist, return an error
+      if (!existingStage) {
+          req.flash('error', 'Stage not found');
+          return res.status(400).json({ error: 'Stage not found' });
+      }
+
+      // Update the decision status of the stage postulation
+      const updateDecision = await StagePostulation.update({
+          status: decision
+      }, {
+          where: {
+              stageId: stageId,
+              etudiantEmail: stageEmail
+          }
+      });
+
+      // If the decision update fails, return an error
+      if (!updateDecision) {
+          req.flash('error', 'Decision not updated');
+          return res.status(400).json({ error: 'Decision not updated' });
+      }
+
+      // Flash success message and redirect to the page showing postulant details
+      req.flash('success', 'Decision is updated');
+      return res.redirect('/admin/postulant_detail/' + stageEmail);
+  } catch (error) {
+      // If any error occurs, handle it and return an error response
+      req.flash('error', 'Error: ' + error.message);
+      return res.status(500).json({ error: 'Error: ' + error.message });
+  }
+});
 
 
 module.exports = router;

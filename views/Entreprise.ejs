@@ -1,189 +1,296 @@
-
 <head>
- 
+
     <head>
-     
+
         <title>Entreprise</title>
         <%-include('./common/head') %>
-        <!-- Your other CSS files -->
- 
-         <style>
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #007bff;
-            text-align: center;
-        }
+            <!-- Your other CSS files -->
 
-        .content-wrapper {
-            font-weight: bold;
-            border: -1px solid #000;
-            background-color: white;
-            padding: 30px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            max-width: 50%;
-            margin: 0 auto; /* Center the container */
-            overflow-y: auto; /* Add vertical scroll if content exceeds wrapper height */
-            max-height: 550px; /* Example max height, adjust as needed */
-        }
-    </style>
+            <style>
+                .card-title-custom {
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-align: center;
+                }
 
-     
-       
-    </head> 
-    
-</head>
+
+                h1 {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-bottom: 20px;
+                    color: #007bff;
+                    text-align: center;
+                }
+
+                .content-wrapper {
+                    font-weight: bold;
+                    border: -1px solid #000;
+                    background-color: white;
+                    padding: 30px;
+                    margin-top: 20px;
+                    padding-top: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                    max-width: 50%;
+                    margin: 0 auto;
+                    /* Center the container */
+                    overflow-y: auto;
+                    /* Add vertical scroll if content exceeds wrapper height */
+                    max-height: 550px;
+                    /* Example max height, adjust as needed */
+                }
+            </style>
+
+
+
+    </head>
+
+
+
 <body>
     <div class="custom-container">
-                     
+
         <%-include('./common/sidebar') %>
 
-        
-        <div class="main-content">
-           
-            <%-include('./common/navbar') %>
-            <div style="text-align: center;">
-                <h3 style="margin: 15px; padding: 15px;">Entreprise</h3>
+
+            <div class="main-content">
+
+                <%-include('./common/navbar') %>
+                    <div style="text-align: center;">
+                        <h3 style="margin: 15px; padding: 15px;">Entreprise</h3>
+                    </div>
+
+
+                    <div class="container">
+
+                        <%-include('./partial/flaskMessages') %>
+
+                            <ul class="nav nav-tabs d-flex justify-content-center" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="postulant-tab" data-bs-toggle="tab"
+                                        data-bs-target="#postulant-tab-pane" type="button" role="tab"
+                                        aria-controls="postulant-tab-pane" aria-selected="true"
+                                        onclick=" renderPostulantTab()">Postulant(e)s</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="stage-tab" data-bs-toggle="tab"
+                                        data-bs-target="#stage-tab-pane" type="button" role="tab"
+                                        aria-controls="stage-tab-pane" aria-selected="false">Créer un stage</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="stages-tab" data-bs-toggle="tab"
+                                        data-bs-target="#stages-tab-pane" type="button" role="tab"
+                                        aria-controls="stages-tab-pane" aria-selected="false">Mes stages</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="stages1-tab" data-bs-toggle="tab"
+                                        data-bs-target="#stages1-tab-pane" type="button" role="tab"
+                                        aria-controls="stages1-tab-pane" aria-selected="false">Edit stages</button>
+
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                                        data-bs-target="#contact-tab-pane" type="button" role="tab"
+                                        aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#profile-tab-pane" type="button" role="tab"
+                                        aria-controls="profile-tab-pane" aria-selected="false">Profiles</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="postulant-tab-pane" role="tabpanel"
+                                    aria-labelledby="postulant-tab" tabindex="0">
+                                    <!-- Content for Postulant(e)s tab -->
+
+
+                                    <!-- Add your form, grid, text, or container content here -->
+                                </div>
+                                <div class="tab-pane fade" id="stage-tab-pane" role="tabpanel"
+                                    aria-labelledby="stage-tab" tabindex="0">
+                                    <!-- Content for Créer un stage tab -->
+                                    <!-- Add your form, grid, text, or container content here -->
+                                    <p></p>
+                                    <div class="content-wrapper">
+                                        <%-include('./partial/entrepriseTemplate/formulaire') %>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane fade" id="stages-tab-pane" role="tabpanel"
+                                    aria-labelledby="stages-tab" tabindex="0">
+                                    <!-- Content for Créer un stage tab -->
+                                    <!-- Add your form, grid, text, or container content here -->
+                                    <%-include('./partial/entrepriseTemplate/MesStages') %>
+                                </div>
+                                <div class="tab-pane fade " id="stages1-tab-pane" role="tabpanel"
+                                    aria-labelledby="stages1-tab" tabindex="0">
+                                    <!-- Content for Créer un stage tab -->
+                                    <!-- Add your form, grid, text, or container content here -->
+
+                                    <%-include('./partial/entrepriseTemplate/StagesCRUD') %>
+
+                                </div>
+                                <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel"
+                                    aria-labelledby="contact-tab" tabindex="0">
+                                    <!-- Content for Contact tab -->
+                                    <!-- Add your form, grid, text, or container content here -->
+                                </div>
+                                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+                                    aria-labelledby="profile-tab" tabindex="0">
+                                    <!-- Content for Profiles tab -->
+                                    <!-- Add your form, grid, text, or container content here -->
+
+
+
+                                </div>
+                            </div>
+                    </div>
+
+
+                    <%-include('./common/footer') %>
+
             </div>
-              
-                 
-              <div class="container">
-                       
-                <%-include('./partial/flaskMessages')  %>
-                
-                <ul class="nav nav-tabs d-flex justify-content-center" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="postulant-tab" data-bs-toggle="tab" data-bs-target="#postulant-tab-pane" type="button" role="tab" aria-controls="postulant-tab-pane" aria-selected="true">Postulant(e)s</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="stage-tab" data-bs-toggle="tab" data-bs-target="#stage-tab-pane" type="button" role="tab" aria-controls="stage-tab-pane" aria-selected="false">Créer un stage</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="stages-tab" data-bs-toggle="tab" data-bs-target="#stages-tab-pane" type="button" role="tab" aria-controls="stages-tab-pane" aria-selected="false">Mes stages</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="stages1-tab" data-bs-toggle="tab" data-bs-target="#stages1-tab-pane" type="button" role="tab" aria-controls="stages1-tab-pane" aria-selected="false">Edit stages</button> 
-                      
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profiles</button>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="postulant-tab-pane" role="tabpanel" aria-labelledby="postulant-tab" tabindex="0">
-                        <!-- Content for Postulant(e)s tab -->
-                        <!-- Add your form, grid, text, or container content here -->
-                    </div>
-                    <div class="tab-pane fade" id="stage-tab-pane" role="tabpanel" aria-labelledby="stage-tab" tabindex="0">
-                        <!-- Content for Créer un stage tab -->
-                        <!-- Add your form, grid, text, or container content here -->
-                        <p></p>
-                        <div class="content-wrapper">
-                            <%-include('./partial/entrepriseTemplate/formulaire') %>   
-                        </div> 
 
-                    </div>
-                    <div class="tab-pane fade" id="stages-tab-pane" role="tabpanel" aria-labelledby="stages-tab" tabindex="0">
-                        <!-- Content for Créer un stage tab -->
-                        <!-- Add your form, grid, text, or container content here -->
-                        <%-include('./partial/entrepriseTemplate/MesStages') %>   
-                    </div>
-                    <div class="tab-pane fade" id="stages1-tab-pane" role="tabpanel" aria-labelledby="stages1-tab" tabindex="0">
-                        <!-- Content for Créer un stage tab -->
-                        <!-- Add your form, grid, text, or container content here -->
-                        
-                        <%-include('./partial/entrepriseTemplate/StagesCRUD') %>  
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-                    </div>
-                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
-                        <!-- Content for Contact tab -->
-                        <!-- Add your form, grid, text, or container content here -->
-                    </div>
-                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                        <!-- Content for Profiles tab -->
-                        <!-- Add your form, grid, text, or container content here -->
-                           
-                    
 
+            <script>
+                document.getElementById("stageForm").addEventListener("submit", function (event) {
+                    // Prevent the form from submitting
+                    event.preventDefault();
+
+                    // Validate the form fields
+                    var domaine = document.getElementById("inputDomaine").value;
+                    var titre = document.getElementById("inputTitre").value;
+                    var description = document.getElementById("inputDescription").value;
+                    // Add similar lines for other fields
+
+                    if (domaine.trim() === "" || titre.trim() === "" || description.trim() === "") {
+                        // If any required field is empty, display an error message
+                        alert("Veuillez remplir tous les champs obligatoires.");
+                        return false; // Prevent form submission
+                    }
+
+                    // If all fields are filled, submit the form
+                    this.submit();
+                });
+            </script>
+
+
+            <script>
+                // Function to save the selected tab to local storage
+                document.addEventListener('DOMContentLoaded', () => {
+                    const tabButtons = document.querySelectorAll('.nav-link');
+                    const tabPanes = document.querySelectorAll('.tab-pane');
+
+                    // Deactivate all tabs and tab panes initially
+                    tabButtons.forEach(button => button.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.remove('active', 'show'));
+
+                    const selectedTabId = localStorage.getItem('selectedTab');
+                    const selectedTab = document.getElementById(selectedTabId);
+
+                    if (selectedTab) {
+                        selectedTab.classList.add('active');
+
+                        const selectedTabPane = document.getElementById(`${selectedTabId}-pane`);
+                        selectedTabPane.classList.add('active', 'show');
+                    } else {
+                        // If no tab is stored in localStorage, activate the first tab
+                        const firstTab = document.querySelector('.nav-link');
+                        firstTab.classList.add('active');
+
+                        const firstTabPane = document.getElementById(`${firstTab.id}-pane`);
+                        firstTabPane.classList.add('active', 'show');
+                    }
+                });
+
+                const tabButtons = document.querySelectorAll('.nav-link');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        localStorage.setItem('selectedTab', button.id);
+                    });
+                });
+            </script>
+
+            <script>
+                // Define a function to fetch postulant data
+                async function fetchPostulantData() {
+                    try {
+                        const response = await fetch('/entreprise/postulant');
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch postulant data');
+                        }
+                        const data = await response.json();
+                        return data.postulant;
+                    } catch (error) {
+                        console.error('Error fetching postulant data:', error);
+                        return [];
+                    }
+                }
+
+                // Define a function to render postulant data in the tab
+                async function renderPostulantTab() {
+                    const postulantTabPane = document.getElementById('postulant-tab-pane');
+                    const postulantList = await fetchPostulantData();
+
+                    // Clear existing content
+                    postulantTabPane.innerHTML = '';
+
+                    // Render postulant data
+                    const container = document.createElement('div');
+                    container.classList.add('container', 'mt-4');
+                    container.innerHTML = `
+    <div class="container-cc">
+        <h3 class="text-center">List des Postulant(e)s</h3>
+      
+   <hr>
+        <div class="row">
+            ${postulantList.map(postulant => `
+                <div class="col-md-4">
+                    <div class="card mb-4" style="background-color: white;">
+
+                        <div class="card-body">
+                            <h5 class="card-title card-title-custom ">${postulant.etudiantName}</h5>
+                              <hr>
+                            <p class="card-text"><strong>Email :</strong> ${postulant.etudiantEmail}</p>
+                            <p class="card-text"><strong>Institue :</strong> ${postulant.etudiantInstitue}</p>
+                            <p class="card-text"><strong>Domaine :</strong> ${postulant.stageDomaine}</p>
+                            <p class="card-text"><strong>Sujet :</strong> ${postulant.stageSujet}</p>
+                            <p class="card-text"><strong>Entreprise :</strong> ${postulant.entrepriseName}</p>
+                            <p class="card-text">
+                                 <strong>Status :</strong> 
+                                   <span style=" font-weight: bold;  color: 
+                                        ${postulant.status === 'a attente' ? 'rgb(200, 130, 13)' :
+                                          postulant.status === 'accepté' ? 'green' : 'red'}">
+                                         ${postulant.status}
+                                  </span>
+                            </p>
+
+                            <p class="card-text"><strong>Date de postulatxion :</strong> le ${postulant.postulatedAt}</p>
+                            <p class="card-text"><strong>CV :</strong> <a href="${postulant.CVPath}" target="_blank">Ouvrir CV</a></p>
+                            <a href="/postulant_detail/${postulant.etudiantEmail}" class="btn btn-outline-dark">View more Details</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            
-             <%-include('./common/footer') %>
-
+            `).join('')}
+        </div>
     </div>
+    `;
+                    postulantTabPane.appendChild(container);
+                }
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
- 
-    
-     <script>
-    document.getElementById("stageForm").addEventListener("submit", function(event) {
-        // Prevent the form from submitting
-        event.preventDefault();
-        
-        // Validate the form fields
-        var domaine = document.getElementById("inputDomaine").value;
-        var titre = document.getElementById("inputTitre").value;
-        var description = document.getElementById("inputDescription").value;
-        // Add similar lines for other fields
-        
-        if (domaine.trim() === "" || titre.trim() === "" || description.trim() === "") {
-            // If any required field is empty, display an error message
-            alert("Veuillez remplir tous les champs obligatoires.");
-            return false; // Prevent form submission
-        }
-        
-        // If all fields are filled, submit the form
-        this.submit();
-    });
-</script>
+                // Call the renderPostulantTab function when the page loads
+                document.addEventListener('DOMContentLoaded', () => {
+                    renderPostulantTab();
+                });
 
-    
-<script>
-    // Function to save the selected tab to local storage
-    document.addEventListener('DOMContentLoaded', () => {
-  const tabButtons = document.querySelectorAll('.nav-link');
-  const tabPanes = document.querySelectorAll('.tab-pane');
+            </script>
 
-  // Deactivate all tabs and tab panes initially
-  tabButtons.forEach(button => button.classList.remove('active'));
-  tabPanes.forEach(pane => pane.classList.remove('active', 'show'));
 
-  const selectedTabId = localStorage.getItem('selectedTab');
-  const selectedTab = document.getElementById(selectedTabId);
 
-  if (selectedTab) {
-    selectedTab.classList.add('active');
-
-    const selectedTabPane = document.getElementById(`${selectedTabId}-pane`);
-    selectedTabPane.classList.add('active', 'show');
-  } else {
-    // If no tab is stored in localStorage, activate the first tab
-    const firstTab = document.querySelector('.nav-link');
-    firstTab.classList.add('active');
-
-    const firstTabPane = document.getElementById(`${firstTab.id}-pane`);
-    firstTabPane.classList.add('active', 'show');
-  }
-});
-
-const tabButtons = document.querySelectorAll('.nav-link');
-
-tabButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    localStorage.setItem('selectedTab', button.id);
-  });
-});
-</script>
 </body>
-

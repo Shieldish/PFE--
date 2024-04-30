@@ -5,84 +5,185 @@ const Stages=require('./stagesModel');
 const { enseignant, encadrant, etudiant } = require('./model');
 
 const StagePostulation = sequelize.define('StagePostulation', {
-    id: {
+  id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
-    },
-    stageId: {
+  },
+  stageId: {
       type: DataTypes.STRING(36),
       allowNull: false,
-      references: {
-        model: Stages, // Use the model itself, not a string
-        key: 'id'
-      }
-    },
-    etudiantEmail: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      references: {
-        model: etudiant, // Use the model itself, not a string
-        key: 'EMAIL'
-      }
-    } ,
-       StageDomaine: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    
-    },
-    stageSujet: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    
-    }
-    ,
+  },
+  etudiantName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
 
-    entrepriseName: {
+etudiantInstitue: {
+  type: DataTypes.STRING,
+  allowNull: false,
+},
+
+
+  etudiantEmail: {
       type: DataTypes.STRING,
       allowNull: false,
-    
-    },
-    entrepriseEmail: {
+     // unique: true, // Ensure uniqueness
+  },
+  stageDomaine: {
       type: DataTypes.STRING,
       allowNull: false,
-    
-    },
-  
-    status: {
+  },
+  stageSujet: {
+      type: DataTypes.STRING,
+      allowNull: false,
+  },
+  entrepriseName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+  },
+  entrepriseEmail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+  },
+  status: {
       type: DataTypes.ENUM('a attente', 'accepté', 'refusé'),
       allowNull: false,
       defaultValue: 'a attente'
-    },
-    CV: {
-      type: DataTypes.BLOB,
+  },
+  CV: {
+      type: DataTypes.STRING,
       allowNull: true
-    },
-    postulatedAt: {
+  },
+  postulatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW
+  }
+}, {
+  timestamps: false
+});
+
+
+
+const Candidature = sequelize.define('Candidature', {
+  candidatureId: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: false
+  },
+  id: {
+    type: DataTypes.STRING(36),
+    allowNull: false
+  },
+  nom: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  prenom: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  date_naissance: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+  adresse: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  telephone: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  niveau_etudes: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  institution: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  domaine_etudes: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  annee_obtention: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  experience: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false
+  },
+  experience_description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  motivation: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  langues: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  logiciels: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  competences_autres: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  date_debut: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+  duree_stage: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  cv: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  lettre_motivation: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  releves_notes: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
+}, {
+  tableName: 'candidature',
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
+  indexes: [
+    {
+      unique: true,
+      fields: ['id', 'email']
     }
-  }, {
-    timestamps: false
-  });
-  // Define associations
-/*   StagePostulation.belongsTo(Stages, { foreignKey: 'stageId' });
-  StagePostulation.belongsTo(etudiant, { foreignKey: 'etudiantEmail' }); */
-Stages.hasMany(StagePostulation, { foreignKey: 'stageId' });
-StagePostulation.belongsTo(Stages, { foreignKey: 'stageId' });
-
-etudiant.hasMany(StagePostulation, { foreignKey: 'etudiantEmail' });
-StagePostulation.belongsTo(etudiant, { foreignKey: 'etudiantEmail' });
+  ]
+});
 
 
-sequelize.sync({ alter: true })
-  .then(() => {
-    console.log('Tables have been synced');
-  })
-  .catch((err) => {
-    console.error('Error syncing database:', err);
-  });
 
 
-  module.exports = StagePostulation;
+
+
+(async () => {
+  await StagePostulation.sync({ alter: true });
+  await Candidature.sync({ alter: true }); 
+  console.log("Model:StagePostulation , Candidature are synced successfully");
+})();
+
+
+module.exports = { Candidature, StagePostulation };
