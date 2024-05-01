@@ -3,8 +3,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
-const Stages=require('../model/stagesModel')
-const { Candidature, StagePostulation } = require('../model/stagePostulationModel');
+const stage=require('../model/stagesModel')
+const { candidature, stagepostulation } = require('../model/stagepostulationModel');
 
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
@@ -22,10 +22,6 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 
-/* router.get('/', (req,res)=>{
-     let stages=[];
-   return  res.render('Entreprise', { stages: stages });
-}) */
 
 router.post('/creactionStage', async (req, res) => {
   try {
@@ -53,7 +49,7 @@ router.post('/creactionStage', async (req, res) => {
       stageData.CreatedBy = createdBy;
 
       // Save stage data to the database
-      const newStage = await Stages.create(stageData);
+      const newStage = await stage.create(stageData);
 
       // Respond with success message and redirect
       req.flash('success', 'New stage successfully added.');
@@ -83,17 +79,17 @@ router.get('/stages', async (req, res) => {
           return res.status(401).end();
       }
 
-      const allStages = await Stages.findAll({ where: { Createdby: entrepriseEmail } });
+      const allstage = await stage.findAll({ where: { Createdby: entrepriseEmail } });
 
-      if (!allStages || allStages.length === 0) {
-          req.flash('info', 'No stages found for the user');
+      if (!allstage || allstage.length === 0) {
+          req.flash('info', 'No stage found for the user');
           return res.status(404).end();
       }
 
-      res.json(allStages);
+      res.json(allstage);
   } catch (error) {
-      console.error('Error fetching stages:', error);
-      req.flash('error', 'An error occurred while fetching stages data: ' + error.message);
+      console.error('Error fetching stage:', error);
+      req.flash('error', 'An error occurred while fetching stage data: ' + error.message);
       res.status(500).end();
   }
 });
@@ -111,26 +107,26 @@ router.get('/', async (req, res) => {
 
      
       const entrepriseEMAIL=user.EMAIL;
-      // Fetch stages for the authenticated user
+      // Fetch stage for the authenticated user
       if(!entrepriseEMAIL){
         req.flash('info', 'the session is lost , reconnect to fetch data  ');
         return res.render('Entreprise', { stages: [] });
       }
-      const stages = entrepriseEMAIL ? await Stages.findAll({ where: { Createdby: entrepriseEMAIL } }) : [];
+      const stages = entrepriseEMAIL ? await stage.findAll({ where: { Createdby: entrepriseEMAIL } }) : [];
 
-      // Convert stages array to JSON
+      // Convert stage array to JSON
     
-      const stagesJSON = stages.map(stage => stage.toJSON());
+      const stageJSON = stages.map(stages => stages.toJSON());
 
-       await  normalizeDate(stagesJSON)
+       await  normalizeDate(stageJSON)
 
       
-      // Render the page with the fetched stages
-      return res.render('Entreprise', { stages: stagesJSON });
+      // Render the page with the fetched stage
+      return res.render('Entreprise', { stages: stageJSON });
   } catch (error) {
       // Handle any errors
-      console.error('Error fetching stages:', error);
-      req.flash('error', 'An error occurred while fetching stages data: ' + error.message);
+      console.error('Error fetching stage:', error);
+      req.flash('error', 'An error occurred while fetching stage data: ' + error.message);
     return  res.redirect('/entreprise');
   }
 });
@@ -139,17 +135,17 @@ router.get('/edit/:id', async (req, res) => {
   const id = req.params.id;
   try {
     // Fetch the stage with the given ID
-    const stage = await Stages.findByPk(id); 
+    const stages = await stage.findByPk(id); 
 
-    delete stage.CreatedBy;
-    delete stage.CreatedBy;
-    delete stage.updatedAt;
-    delete stage.createdAt;
+    delete stages.CreatedBy;
+    delete stages.CreatedBy;
+    delete stages.updatedAt;
+    delete stages.createdAt;
 
-    const formattedDateDebut = stage.DateDebut.toISOString().slice(0, 10);
-      const formattedDateFin = stage.DateFin.toISOString().slice(0, 10);
+    const formattedDateDebut = stages.DateDebut.toISOString().slice(0, 10);
+      const formattedDateFin = stages.DateFin.toISOString().slice(0, 10);
     // Render the edit page with the stage data
-    return res.render('edit', { data:stage, formattedDateDebut, formattedDateFin });
+    return res.render('edit', { data:stages, formattedDateDebut, formattedDateFin });
   } 
   catch (error) {
     // Handle any errors
@@ -164,7 +160,7 @@ router.delete('/delete/:id', async (req, res) => {
   const stageId = req.params.id;
   try {
     // Example deletion logic using Sequelize with async/await
-    await Stages.destroy({
+    await stage.destroy({
       where: {
         id: stageId
       }
@@ -193,16 +189,16 @@ router.post('/edit/:id', function (req, res) {
     }
   }
 
-        const existStages= Stages.findByPk(id);
+        const existstage= stage.findByPk(id);
 
-        if(!existStages)
+        if(!existstage)
         {
           req.flash('error', 'An error occurred while updating stage data: ' + error.message);
           return res.redirect('/entreprise');
         }
 
         try {
-          Stages.update(updatedData, {
+          stage.update(updatedData, {
             where: {
               id: id
             }
@@ -287,7 +283,7 @@ router.get('/postulant', async (req, res) => {
   }
 
   try {
-    const postulant = await StagePostulation.findAll({
+    const postulant = await stagepostulation.findAll({
       where: {
         entrepriseEmail: entreprise
       }
@@ -319,27 +315,30 @@ router.get('/postulant', async (req, res) => {
   }
 });
 
-router.get('/postulant_detail/:etudiantEmail', async (req,res)=>{
-  const etudiantEmail = req.params.etudiantEmail;
+router.get('/postulant_detail', async (req, res) => {
+  const etudiantEmail = req.query.etudiantEmail;
+  const stageId = req.query.stageId;
   try {
-       const candidature=await Candidature.findOne({
-        where:{
-          email:etudiantEmail
-        }
-       })
-     /*  res.json(candidature); */
-     return res.render('postulant_details')
+      const candidatures = await candidature.findOne({
+          where: {
+              email: etudiantEmail,
+              id: stageId
+          }
+      });
+      /* res.json(candidature); */
+      return res.render('postulant_details', { candidature:candidatures });
   } catch (error) {
-    
+      // Handle errors
   }
-})
+});
+
 
 router.post('/decision', async (req, res) => {
   try {
       const { decision, stageId, stageEmail } = req.body;
 
       // Find the stage postulation with the given stageId and stageEmail
-      const existingStage = await StagePostulation.findOne({
+      const existingStage = await stagepostulation.findOne({
           where: {
               stageId: stageId,
               etudiantEmail: stageEmail
@@ -353,7 +352,7 @@ router.post('/decision', async (req, res) => {
       }
 
       // Update the decision status of the stage postulation
-      const updateDecision = await StagePostulation.update({
+      const updateDecision = await stagepostulation.update({
           status: decision
       }, {
           where: {

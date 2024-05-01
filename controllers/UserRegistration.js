@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../model/model'); // Adjust the path as needed
 
-const UserRegistrations = sequelize.define('UserRegistrations', {
+const user_registration = sequelize.define('user_registration', {
   UUID: {
     type: DataTypes.STRING,
     allowNull: false
@@ -72,15 +72,15 @@ const UserRegistrations = sequelize.define('UserRegistrations', {
   }, {
     timestamps: true, 
     hooks: {
-      beforeCreate: async (UserRegistrations) => {
-        if (UserRegistrations.PASSWORD) {
+      beforeCreate: async (user_registration) => {
+        if (user_registration.PASSWORD) {
           const salt = await bcrypt.genSalt(10); // Removed the second argument
-          UserRegistrations.PASSWORD = await bcrypt.hash(UserRegistrations.PASSWORD, salt); // Used await here
+          user_registration.PASSWORD = await bcrypt.hash(user_registration.PASSWORD, salt); // Used await here
         }
       }
     }
   });
-  UserRegistrations.prototype.validPassword = function(PASSWORD) {
+  user_registration.prototype.validPassword = function(PASSWORD) {
     return bcrypt.compareSync(PASSWORD, this.PASSWORD);
   };
   
@@ -88,7 +88,7 @@ const UserRegistrations = sequelize.define('UserRegistrations', {
 async function syncModel() {
     try {
       
-     await UserRegistrations.sync({ alter: true });
+     await user_registration.sync({ alter: true });
     } catch (error) {
       console.error('Error syncing models:', error);
     }
@@ -106,6 +106,6 @@ async function syncModel() {
   syncModel();
 
 
-module.exports = UserRegistrations
+module.exports = user_registration
   
 

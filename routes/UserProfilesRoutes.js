@@ -4,7 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
-const UserRegistrations  = require('../controllers/UserRegistration');
+const user_registration  = require('../controllers/UserRegistration');
 const router = express.Router();
 const app=express();
 app.use(express.urlencoded({extended : true}));
@@ -23,7 +23,7 @@ router.get('/',async (req, res) => {
           let user = req.session.user;
           let email = user.EMAIL;
           console.log(user)
-          const userData = await UserRegistrations.findOne({ where: {email } });
+          const userData = await user_registration.findOne({ where: {email } });
           if(userData)
           { 
             data=userData
@@ -70,21 +70,21 @@ router.post('/updateUserData', async (req, res) => {
       const hashedPassword = await bcrypt.hash(PASSWORD, salt);
       fieldsWithoutPasswords.PASSWORD = hashedPassword;
 
-      const existingUser = await UserRegistrations.findOne({ where: { EMAIL } });
+      const existingUser = await user_registration.findOne({ where: { EMAIL } });
       if (!existingUser) {
           req.flash('error', `User with email ( ${EMAIL}) not found.`);
           return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
       }
 
-      const existingUUID = await UserRegistrations.findOne({ where: { UUID } });
+      const existingUUID = await user_registration.findOne({ where: { UUID } });
       if (!existingUUID) {
           req.flash('error', `User with provided UUID ( ${UUID}) not found.`);
           return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
       }
 
-      await UserRegistrations.update(fieldsWithoutPasswords, { where: { EMAIL } });
+      await user_registration.update(fieldsWithoutPasswords, { where: { EMAIL } });
 
-      const updatedUserData = await UserRegistrations.findOne({ where: { EMAIL } });
+      const updatedUserData = await user_registration.findOne({ where: { EMAIL } });
       if (updatedUserData) {
           const userData = updatedUserData.toJSON();
           req.session.user = userData;

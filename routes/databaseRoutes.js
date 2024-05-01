@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
-const UserRegistrations  = require('../controllers/UserRegistration'); // Import UserRegistration model
+const user_registration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const util = require('util');
 const { v4: uuidv4 } = require('uuid');
@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
       res.status(500).send('Error fetching table names');
       return; */
     }
-    const tablesToRemove = ['sidebar_items','stages'];
+    const tablesToRemove = ['sidebar_items','stages','stagepostulations','candidature'];
     
     const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
       .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
@@ -114,7 +114,7 @@ router.post('/:tableName/add', async (req, res) => {
       // Get the Sequelize model based on the table name
     /*   const Model = tableName === 'enseignant' ? enseignant :
           tableName === 'encadrant' ? encadrant :
-              tableName === 'UserRegistrations' ? UserRegistrations :
+              tableName === 'user_registration' ? user_registration :
                   tableName === 'etudiant' ? etudiant : null; */
           const Model = getModelFromTableName(tableName);
 
@@ -129,7 +129,7 @@ router.post('/:tableName/add', async (req, res) => {
           otherFields.DATE= getFormattedDateTime();
       } */
 
-      const existingUser = await UserRegistrations.findOne({ where: { EMAIL: email } });
+      const existingUser = await user_registration.findOne({ where: { EMAIL: email } });
       if (existingUser) {
           req.flash('error', `User with email ${EMAIL} already exists`);
           // Redirect the user to the appropriate route after successful creation
@@ -167,7 +167,7 @@ router.post('/:tableName/add', async (req, res) => {
       // Get the Sequelize model based on the table name
       const Model = tableName === 'enseignant' ? enseignant :
         tableName === 'encadrant' ? encadrant :
-        tableName === 'UserRegistrations' ? UserRegistrations :
+        tableName === 'user_registration' ? user_registration :
         tableName === 'etudiant' ? etudiant : null;
   
       if (!Model) {
@@ -283,10 +283,10 @@ router.post('/:tableName/add', async (req, res) => {
             return enseignant;
         case 'encadrant':
             return encadrant;
-        case 'UserRegistrations':
-            return UserRegistrations;
-        case 'userregistrations':
-            return UserRegistrations;  
+        case 'user_registration':
+            return user_registration;
+        case 'user_registrations':
+            return user_registration;  
         case 'etudiant':
             return etudiant;
         default:

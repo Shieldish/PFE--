@@ -1,203 +1,178 @@
-
 <head>
-
-   
-
     <title>Table- <%= tableName ? tableName.toUpperCase() : 'Unknown' %></title>
-
-   
     <%-include('./common/head') %>
     <%- include('./partial/crud_header') %>
-
     <style>
-              .table-responsive {
-     /*    max-height: 400px;  */
-        overflow-y: auto;
-        overflow-x:auto; 
-        border-collapse: collapse;
-
-    
-    } 
-    .modal-dialog {
-    max-width: calc(30% - 15px); /* Adjust as needed */
-    margin: 1rem auto;
-    } 
- .button-container {
-  text-align: center;
-   }
-
-   th, td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-    overflow: hidden; /* Couper le texte si trop long */
-    word-wrap: break-word; /* Forcer le retour à la ligne */
-    max-width: 200px; /* Limiter la largeur maximale de la cellule */
-  }
-  
+       .table-responsive {
+       /*    max-height: 400px;  */
+       overflow-y: auto;
+       overflow-x:auto; 
+       border-collapse: collapse;
+       } 
+       .modal-dialog {
+       max-width: calc(30% - 15px); /* Adjust as needed */
+       margin: 1rem auto;
+       } 
+       .button-container {
+       text-align: center;
+       }
+       th, td {
+       border: 1px solid #dddddd;
+       text-align: left;
+       padding: 8px;
+       overflow: hidden; /* Couper le texte si trop long */
+       word-wrap: break-word; /* Forcer le retour à la ligne */
+       max-width: 200px; /* Limiter la largeur maximale de la cellule */
+       }
     </style>
-    
-</head>
-<body>
-<div class="custom-container " >
-    <%-include('./common/sidebar') %>
+ </head>
+ <body>
+    <div class="custom-container " >
+       <%-include('./common/sidebar') %>
        <div class="main-content">
-        <%-include('./common/navbar') %>
-
-         <div class="my-custom-class">
-            <%-include('./partial/flaskMessages')  %>
-            <h5 >
+          <%-include('./common/navbar') %>
+          <div class="my-custom-class">
+             <%-include('./partial/flaskMessages')  %>
+             <h5 >
                 <a href="/gestion">
                 <i class="fas fa-home"></i>  <button class="btn btn-outline-li btn-sm"> Back to Home</button>
                 </a>
-             </h5>    
-               
+             </h5>
              <% if (tableName !== null && typeof tableName !== 'undefined') { %>
-
-                <script>
-                    const globalTableName = '<%= tableName %>';
-                </script>
-                <!-- Button to add new entry -->
-                <button type="button" class="btn btn-outline-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
-                  <i class="fas fa-plus"></i> Add New <%= tableName %>
+             <script>
+                const globalTableName = '<%= tableName %>';
+             </script>
+             <!-- Button to add new entry -->
+             <button type="button" class="btn btn-outline-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
+             <i class="fas fa-plus"></i> Add New <%= tableName %>
+             </button>
+             <!-- Button container for displaying table name and count -->
+             <div class="button-container">
+                <button class="btn btn-outline-light btn-sm" >
+                   <h6> <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %> : [<%= count %>]</strong></h6>
                 </button>
-                <!-- Button container for displaying table name and count -->
-                <div class="button-container">
-                  <button class="btn btn-outline-light btn-sm" >
-                    <h6> <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %> : [<%= count %>]</strong></h6> 
-                  </button>
-                </div>
-              <% } %>
-              
-        
-       <% if (data.length > 0) { %>
-           <div class="mb-6">
-               <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
-           </div>
-                       
-   
-      <!--  <div class=" table-responsive  my-color " style=" border-radius: 5px;" > -->
-       <div  class="table-responsive " style="padding-left: 15px; padding-right: 15px; padding-top: 20px;">
-           <table class=" table table-hover  searchable sortable">
-               <thead class="thead-dark">
-               <tr>
-                   <% Object.keys(data[0]).forEach(key => { %>
-                   <th   class="text-center"><%= key %></th>
-                   <% }); %>
-                   <th>Views</th>
-                   <th>Edit</th>
-                   <th>Delete</th>
-               </tr>
-               </thead>
-               <tbody id="tableBody" >
-               <% data.forEach(row => { %>
-               <tr  > <!-- class="font-weight-bold text-center" -->
-                   <% Object.values(row).forEach(value => { %>
-                   <td  class="text-center" ><%= value %></td>
-                   <% }); %>
-                   <td>
-                       <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="modal"
+             </div>
+             <% } %>
+             <% if (data.length > 0) { %>
+             <div class="mb-6">
+                <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
+             </div>
+             <!--  <div class=" table-responsive  my-color " style=" border-radius: 5px;" > -->
+             <div  class="table-responsive " style="padding-left: 15px; padding-right: 15px; padding-top: 20px;">
+                <table class=" table table-hover  searchable sortable">
+                   <thead class="thead-dark">
+                      <tr>
+                         <% Object.keys(data[0]).forEach(key => { %>
+                         <th   class="text-center"><%= key %></th>
+                         <% }); %>
+                         <th>Views</th>
+                         <th>Edit</th>
+                         <th>Delete</th>
+                      </tr>
+                   </thead>
+                   <tbody id="tableBody" >
+                      <% data.forEach(row => { %>
+                      <tr  >
+                         <!-- class="font-weight-bold text-center" -->
+                         <% Object.values(row).forEach(value => { %>
+                         <td  class="text-center" ><%= value %></td>
+                         <% }); %>
+                         <td>
+                            <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="modal"
                                data-target="#viewsModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
-                           <i class="fas fa-eye"></i>Views
-                       </button>
-   
-                       <!-- modal fade for views -->
-                       <div class="modal fade" id="viewsModal<%= row.EMAIL %>" tabindex="-1" role="dialog" aria-labelledby="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" aria-hidden="true">
-                           <div class="modal-dialog modal-sm" role="document">
-                               <div class="modal-content my-color ">
-                                   <div class="modal-header">
-                                       <h5  class="modal-title " id="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" >Edit :  <%= row.EMAIL%></h5>
-                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                           <span aria-hidden="true">&times;</span>
-                                       </button>
-                                   </div>
-                                   <div class="modal-body" id="modalBody<%= row.EMAIL %>">
-                                       <!-- Display all the information about the row in read-only mode -->
-                                       <table class="table table-bordered" id="dataTable">
+                            <i class="fas fa-eye"></i>Views
+                            </button>
+                            <!-- modal fade for views -->
+                            <div class="modal fade" id="viewsModal<%= row.EMAIL %>" tabindex="-1" role="dialog" aria-labelledby="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" aria-hidden="true">
+                               <div class="modal-dialog modal-sm" role="document">
+                                  <div class="modal-content my-color ">
+                                     <div class="modal-header">
+                                        <h5  class="modal-title " id="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" >Edit :  <%= row.EMAIL%></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                     </div>
+                                     <div class="modal-body" id="modalBody<%= row.EMAIL %>">
+                                        <!-- Display all the information about the row in read-only mode -->
+                                        <table class="table table-bordered" id="dataTable">
                                            <% Object.keys(row).forEach(key => { %>
                                            <tr>
-                                               <th><%= key %></th>
-                                               <td><%= row[key] %></td>
+                                              <th><%= key %></th>
+                                              <td><%= row[key] %></td>
                                            </tr>
                                            <% }); %>
-                                       </table>
-                                   </div>
-                                   <div class="modal-footer">
-                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                   </div>
+                                        </table>
+                                     </div>
+                                     <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                     </div>
+                                  </div>
                                </div>
-                           </div>
-                       </div>
-                       
-                  
-                   </td>
-                   <td>
-                       <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
+                            </div>
+                         </td>
+                         <td>
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
                                data-target="#editModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
-                           <i class="fas fa-edit"></i> Edit
-                       </button>
-                   </td>
-                   <td>
-                       <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal"
+                            <i class="fas fa-edit"></i> Edit
+                            </button>
+                         </td>
+                         <td>
+                            <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal"
                                data-target="#deleteModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
-                           <i class="fas fa-trash"></i> Delete
-                       </button>
-                   </td>
-               </tr>
-               <!-- delete modal fade -->
-               <div class="modal fade" id="deleteModal<%= row.EMAIL %>" tabindex="-1" role="dialog"
-                    aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
-                   <div class="modal-dialog modal-sm">
-                       <div class="modal-content">
-                           <div class="modal-header">
-                               <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
-                               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                   <span aria-hidden="true">&times;</span>
-                               </button>
-                           </div>
-                           <div class="modal-body">
-                               <p class="text-center"> You sure you want to  <em style="color: rgb(255, 0, 0);">permanently remove</em> : <strong  style="color:#007bff;" ><%=row.EMAIL %></strong>  and his informations from  <strong><em><%= tableName %></em> </strong>  ?   </p>
-                           </div>
-                           <div class="modal-footer">
-                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                               <a href="/gestion/<%= tableName %>/delete/<%= row.EMAIL %>" class="btn btn-danger">Delete</a>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-               <% }); %>
-               </tbody>
-           </table>
-       </div>
-       <!-- Bootstrap Pagination -->
-       <% } else { %>
-       <h2><p style="text-align: center; color: red;"> <%= tableName.toUpperCase() %> has no records</p></h2>
-       <% } %>
-   
+                            <i class="fas fa-trash"></i> Delete
+                            </button>
+                         </td>
+                      </tr>
+                      <!-- delete modal fade -->
+                      <div class="modal fade" id="deleteModal<%= row.EMAIL %>" tabindex="-1" role="dialog"
+                         aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+                         <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                               <div class="modal-header">
+                                  <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                  </button>
+                               </div>
+                               <div class="modal-body">
+                                  <p class="text-center"> You sure you want to  <em style="color: rgb(255, 0, 0);">permanently remove</em> : <strong  style="color:#007bff;" ><%=row.EMAIL %></strong>  and his informations from  <strong><em><%= tableName %></em> </strong>  ?   </p>
+                               </div>
+                               <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                  <a href="/gestion/<%= tableName %>/delete/<%= row.EMAIL %>" class="btn btn-danger">Delete</a>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                      <% }); %>
+                   </tbody>
+                </table>
+             </div>
+             <!-- Bootstrap Pagination -->
+             <% } else { %>
+             <h2>
+                <p style="text-align: center; color: red;"> <%= tableName.toUpperCase() %> has no records</p>
+             </h2>
+             <% } %>
           </div>
-     </div>
-     <%-include('./common/footer') %>
-   
-</div>
-<%-include('./partial/crud_fades') %>
-<!-- Include Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-
-<script>
-    $(document).ready(function(){
-        $('#searchInput').on('keyup', function() {
-            var value = $(this).val().toLowerCase();
-            $('#tableBody tr').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
-
-
-
-</body>
+       </div>
+       <%-include('./common/footer') %>
+    </div>
+    <%-include('./partial/crud_fades') %>
+    <!-- Include Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script>
+       $(document).ready(function(){
+           $('#searchInput').on('keyup', function() {
+               var value = $(this).val().toLowerCase();
+               $('#tableBody tr').filter(function() {
+                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+               });
+           });
+       });
+    </script>
+ </body>

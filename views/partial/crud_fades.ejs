@@ -17,7 +17,7 @@
 
     <% if (data.length > 0) { %>
       <% Object.keys(data[0]).forEach(key => { %>
-        <% if (key !== 'createdAt' && key !== 'updatedAt' && key !== 'id') { %>
+        <% if (key !== 'createdAt' && key !== 'updatedAt' && key !== 'id' && key!=='ID') { %>
           <div class="form-group">
             <label for="<%= key %>"><%= key %></label>
             <% if (key === 'DATE') { %>
@@ -99,7 +99,7 @@
             <form action="/gestion/<%= tableName %>/update/<%= row.EMAIL %>" method="POST"> 
                
               <% Object.keys(data[0]).forEach(key => { %>
-                <% if (key !== 'createdAt' && key !== 'updatedAt') { %>
+                <% if (key !== 'createdAt' && key !== 'updatedAt' && key!=='ID') { %>
                     <div class="form-group  my-color">
                         <label for="<%= key %>"><%= key %></label>
                         <% if (key === 'ISVALIDATED') { %>

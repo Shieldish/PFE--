@@ -8,7 +8,7 @@ const crypto = require('crypto');
 const authenticate = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
 const {sendUserRegistrationMail,sendUserResetPasswordMail,resendRegistrationMail}=require('../utils/emailUtils');
-const UserRegistrations  = require('../controllers/UserRegistration'); // Import UserRegistration model
+const user_registration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const flash = require('connect-flash');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
@@ -78,7 +78,7 @@ router.post('/register', async function(req, res) {
 
 
     // Check if email already exists
-    const existingUser = await UserRegistrations.findOne({ where: { email } });
+    const existingUser = await user_registration.findOne({ where: { email } });
 
     if (existingUser) {
      // return res.status(400).send('Email address already exists');
@@ -97,7 +97,7 @@ router.post('/register', async function(req, res) {
     // Create a new user
     const uuid = uuidv4();
 
-    const newUser = await UserRegistrations.create({
+    const newUser = await user_registration.create({
       NOM: nom.trim().toUpperCase(),
       PRENOM: prenom.trim(),
       EMAIL: email.trim().toLowerCase(),
@@ -134,7 +134,7 @@ router.post('/register', async function(req, res) {
   const { NOM, EMAIL } = req.body;
 
   // Check if the user's email has been validated
-  const userRegistration = await UserRegistrations.findOne({ where: { EMAIL } });
+  const userRegistration = await user_registration.findOne({ where: { EMAIL } });
 
   if (!userRegistration) {
     req.flash('error', 'Unknown error, please try again later!');
@@ -192,7 +192,7 @@ router.get('/confirm-email', async (req, res) => {
     const TOKEN = req.query.TOKEN;
 
     // Find user registration by token
-    const userRegistration = await UserRegistrations.findOne({ where: { TOKEN } });
+    const userRegistration = await user_registration.findOne({ where: { TOKEN } });
 
     // If user registration not found or account already validated
     if (!userRegistration || userRegistration.ISVALIDATED) { 
@@ -210,7 +210,7 @@ router.get('/confirm-email', async (req, res) => {
     userRegistration.ISVALIDATED=true;
     userRegistration.TOKEN='0';
     userRegistration.save();
-   // await UserRegistrations.update({ ISVALIDATED: true , TOKEN :'0'});
+   // await user_registration.update({ ISVALIDATED: true , TOKEN :'0'});
 
     // Respond with success message
     return res.render('../connection/login');
@@ -225,7 +225,7 @@ router.post('/reset-password', async (req, res) => {
 
   try {
     // Find the user registration record by email
-    const userRegistration = await UserRegistrations.findOne({ where: { email } });
+    const userRegistration = await user_registration.findOne({ where: { email } });
 
     // If user registration not found, send error response
     if (!userRegistration) {
@@ -290,7 +290,7 @@ router.post('/reseting-password', async (req, res) => {
 
   try {
     // Find the user by email and token
-    const user = await UserRegistrations.findOne({ where: { EMAIL: email, TOKEN: token } });
+    const user = await user_registration.findOne({ where: { EMAIL: email, TOKEN: token } });
 
     // If user not found or token is expired
     if (!user || user.TOKEN === '0') {
@@ -304,7 +304,7 @@ router.post('/reseting-password', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Update the user's password and reset token
-    await UserRegistrations.update(
+    await user_registration.update(
       { PASSWORD: hashedPassword, TOKEN: '0',ISVALIDATED:true }, // Set token to '0' to mark it as used
       { where: { EMAIL: email } }
     );
@@ -320,7 +320,7 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserRegistrations.findOne({ where: { email } });
+    const user = await user_registration.findOne({ where: { email } });
 
     if (!user) {
       req.flash('error', `Email address ${email} not found.`);

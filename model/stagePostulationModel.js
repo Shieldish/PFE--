@@ -4,7 +4,7 @@ const { sequelize } = require('./model');
 const Stages=require('./stagesModel');
 const { enseignant, encadrant, etudiant } = require('./model');
 
-const StagePostulation = sequelize.define('StagePostulation', {
+const stagepostulation = sequelize.define('stagepostulation', {
   id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -14,6 +14,10 @@ const StagePostulation = sequelize.define('StagePostulation', {
       type: DataTypes.STRING(36),
       allowNull: false,
   },
+  etudiantID: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
   etudiantName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -61,12 +65,13 @@ etudiantInstitue: {
       defaultValue: DataTypes.NOW
   }
 }, {
+  tableName :'stagepostulation',
   timestamps: false
 });
 
 
 
-const Candidature = sequelize.define('Candidature', {
+const candidature = sequelize.define('candidature', {
   candidatureId: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -180,10 +185,10 @@ const Candidature = sequelize.define('Candidature', {
 
 
 (async () => {
-  await StagePostulation.sync({ alter: true });
-  await Candidature.sync({ alter: true }); 
-  console.log("Model:StagePostulation , Candidature are synced successfully");
+  await stagepostulation.sync({ alter: true });
+  await candidature.sync({ alter: true }); 
+  console.log("Model:stagepostulation , candidature are synced successfully");
 })();
 
 
-module.exports = { Candidature, StagePostulation };
+module.exports = { candidature, stagepostulation };

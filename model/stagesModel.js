@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const { sequelize } = require('./model');
 
-const Stages = sequelize.define('Stages', {
+const stage = sequelize.define('stage', {
   id: {
     type: DataTypes.STRING(36), // Use DataTypes.UUID instead of DataTypes.STRING
     primaryKey: true,
@@ -96,18 +96,19 @@ const Stages = sequelize.define('Stages', {
   }
 }, {
   // Add timestamps
+  tableName :'stage',
   timestamps: true
 });
 
 // Hook to generate UUID before creating a new stage
-Stages.beforeCreate((Stages, _) => {
-  Stages.id = uuidv4();
+stage.beforeCreate((stage, _) => {
+  stage.id = uuidv4();
 });
 
 // Sync the model with the database using alter method
 (async () => {
-  await Stages.sync({ alter: true }); // This will alter the table to match the model definition
+  await stage.sync({ alter: true }); // This will alter the table to match the model definition
   console.log("Model synced successfully");
 })();
 
-module.exports = Stages;
+module.exports = stage;

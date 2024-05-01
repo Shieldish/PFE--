@@ -1,5 +1,6 @@
 
 //model/model.js
+const { v4: uuidv4 } = require('uuid');
 const { Sequelize, DataTypes } = require('sequelize');
 // Replace 'database_name', 'username', 'password', and 'host' with your MySQL database credentials
 const sequelize = new Sequelize(process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, {
@@ -75,6 +76,11 @@ const encadrant = sequelize.define('encadrant', {
 
 // Define the Etudiant model
 const etudiant = sequelize.define('etudiant', {
+  ID: {
+    type: DataTypes.STRING(36), // Use DataTypes.UUID instead of DataTypes.STRING
+    allowNull: false,
+     defaultValue: DataTypes.UUIDV4  // Generate UUID for new records
+  },
   EMAIL: {
     type: DataTypes.STRING, 
     primaryKey: true,
@@ -108,6 +114,10 @@ const etudiant = sequelize.define('etudiant', {
 }, {
   tableName: 'etudiant',
   timestamps: true
+});
+
+etudiant.beforeCreate((etudiant, _) => {
+  etudiant.ID = uuidv4();
 });
 
 // Function to get all tables and their structures

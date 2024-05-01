@@ -4,7 +4,7 @@
     min-width: fit-content;
   }
 
-/*   .alert {
+  /*   .alert {
     width: 300px; 
     margin: 0 auto; 
   } */
@@ -12,19 +12,25 @@
 
 <div id="flash-message" class="text-center fw-bold fst-italic flash">
   <% if (messages && messages.error) { %>
-    <div class="alert alert-danger flash"><%= messages.error %></div>
-  <% } %>
+    <div class="alert alert-danger flash">
+      <%= messages.error %>
+    </div>
+    <% } %>
 
-  <% if (messages && messages.success) { %>
-    <div class="alert alert-success flash"><%= messages.success %></div>
-  <% } %>
-  <% if (messages && messages.info) { %>
-    <div class="alert alert-warning flash"><%= messages.info %></div>
-  <% } %>
+      <% if (messages && messages.success) { %>
+        <div class="alert alert-success flash">
+          <%= messages.success %>
+        </div>
+        <% } %>
+          <% if (messages && messages.info) { %>
+            <div class="alert alert-warning flash">
+              <%= messages.info %>
+            </div>
+            <% } %>
 </div>
 
 <script>
-  setTimeout(function() {
+  setTimeout(function () {
     var flashMessage = document.getElementById('flash-message');
     if (flashMessage) {
       flashMessage.style.display = 'none';
