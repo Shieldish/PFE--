@@ -20,7 +20,7 @@ const stages = require('./model/stagesModel')
 const {
     candidature,
     stagepostulation,
-} = require('./model/stagepostulationModel')
+} = require('./model/stagePostulationModel')
 const etudiant = require('./model/model')
 
 /* const logger = require('./logs/logger'); */
