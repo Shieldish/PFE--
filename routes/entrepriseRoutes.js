@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const stage=require('../model/stagesModel')
-const { candidature, stagepostulation } = require('../model/stagepostulationModel');
+const { candidature, stagepostulation } = require('../model/stagePostulationModel');
 
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
