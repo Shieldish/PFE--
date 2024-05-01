@@ -27,7 +27,7 @@
       font-size: 20px;
       padding: 20px;
       margin: 20px;
-      background-color: rgb(228, 228, 228);
+      background-color:beige;
   /*     max-width: 30%; */
       /* float: left; */
     }
@@ -66,7 +66,7 @@
 
     .application-form {
   width: 100%; /* Set the width of the application form */
-
+  font-weight: bold;
   padding: 20px;
   border: 1px solid #ccc;
   margin-top: 20px;
@@ -142,25 +142,30 @@
     <div class="main-content">
       <%- include('./common/navbar') %>
 
-      <h1 style="margin: 15px; padding: 15px;">Postulation</h1>
+      <h1 style="margin: 15px; padding: 15px;">Stage :</h1>
      
       <hr>
       <%-include('./partial/flaskMessages') %>
      
 
       <div class="job-details">
-        <h3 style="margin: 10px;"><%= stage.Titre %> (<%= stage.State %>)</h3>
+        <h3 style="margin: 10px; text-transform: uppercase;"><%= stage.Titre %> (<%= stage.State %>)</h3>
         <hr>
-        <h2> <%= stage.Nom %></h2>
-        <p> <%= stage.State %></p>
-        <p><%= stage.createdAt %> - <%= stage.DateFin %></p>
+        <h2 style="font-weight: bold;"> <%= stage.Nom %></h2>
+        <p style="font-weight: bold;"> <%= stage.State %></p>
+      <p>
+      du  <%= new Date(stage.createdAt).toLocaleString('fr-FR', { dateStyle: 'long' }) %> -
+      au  <%= new Date(stage.DateFin).toLocaleString('fr-FR', { dateStyle: 'long' }) %>
+      </p>
         <hr>
         <p> <strong>Postes vacants:</strong> <%= stage.PostesVacants %> poste(s) ouvert(s)</p>
         <p> <strong>Experience :</strong>  <%= stage.Experience %></p>
         <p> <strong>Niveau :</strong> <%= stage.Niveau %></p>
         <p><strong>Langue :</strong> <%= stage.Langue %></p>
-        <p><strong>Email :</strong> <%= stage.Email %></p>
-        <p><strong>Email :</strong><%= stage.Email2 %></p>
+        <hr>
+        <p><strong>Email :</strong><i style="font-weight: bold; color: green;"> <%= stage.Email %> /  <%= stage.Email2 %></i></p>
+        <p><strong>Tél :</strong> <%= stage.Telephone %></p>
+        <p><strong>Fax :</strong> <%= stage.Fax %></p>
         <hr>
         <p><strong>Description de l'emploi</strong></p>
         <p><%= stage.Description %></p>
@@ -200,7 +205,7 @@
                   <div class="form-group">
                     <label for="email">Email :</label>
                     <input type="email" class="form-control" id="email" name="email" required>
-                    <div id="email-feedback" class="invalid-feedback" style="display: none;">Email is already used to apply for this stage.</div>
+                    <div id="email-feedback" class="invalid-feedback" style="display: none;"><i style="font-weight: bold;"> this email is already used to apply for this stage.</i></div>
                   </div>
                 </div>
                 <hr>
@@ -326,7 +331,7 @@
                 <hr>
                 <div class="application-form-section">
                   <p>En soumettant ce formulaire, j'atteste que les informations fournies sont exactes et complètes.</p>
-                  <p>Après soumission il n'est plus possible de modifier !</p>
+                  <p style="color: #dc3545;">NB : Après soumission il n'est plus possible de modifier !</p>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
                     <label class="form-check-label" for="flexCheckDefault">
