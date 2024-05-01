@@ -6,7 +6,7 @@ const { sequelize, DataTypes, etudiant } = require('../model/model');
 const flash = require('connect-flash');
 
 const stage = require('../model/stagesModel');
-const { candidature, stagepostulation } = require('../model/stagepostulationModel');
+const { candidature, stagepostulation } = require('../model/stagePostulationModel');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
