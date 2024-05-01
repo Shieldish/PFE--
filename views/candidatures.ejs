@@ -1,5 +1,5 @@
 <head>
-    <title>Details</title>
+    <title>Candidature</title>
     <%- include('./common/head') %>
     <!-- Link Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -18,7 +18,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
+    transform: translate(-50%, -50%) rotate(-45deg);
     font-size:  5em;
     font-weight: bold;
     color: rgba(0, 0, 0, 0.1);
@@ -37,8 +37,8 @@
        .job-details {
        border: 1px solid #ccc;
        font-size: 20px;
-       padding: 20px;
-       margin: 20px;
+       padding: 10px;
+       margin: 10px;
        background-color: rgb(250, 250, 250);
        /*     max-width: 30%; */
        /* float: left; */
@@ -57,90 +57,21 @@
        <div class="main-content">
           <%- include('./common/navbar') %>
           <div class="container">
-             <h1 class="mt-4">Detail : </h1>
+            <p><h3>Details</h3></p>
+            <hr>
+             <h3 class="mt-4"  style="font-weight: bold; text-align: center; color: #007bff; padding-top: 50px;">Candidature : <%= stage.stageDomaine %> /<%= stage.stageSujet %>  /<%= stage.entrepriseName %> </h3>
              <hr>
              <%-include('./partial/flaskMessages')  %>
+
              <div class="row">
-                <div class="job-details">
-                   <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives de :<strong style="text-transform: uppercase;"> <%= candidature.nom %> <%= candidature.prenom %></strong></h5>
-                   <!-- You can add more elements to display other information -->
-                   <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank">Ouvrir CV</a></p>
-                   <% if (candidature.lettre_motivation) { %>
-                   <% if (candidature.lettre_motivation !== "document pas fournis") { %>
-                   <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank">Ouvrir Lettre de Motivation</a></p>
-                   <% } else { %>
-                   <p class="card-text" ><strong>Lettre de Motivation:</strong > <i  style="color: red;">document pas fournis</i></p>
-                   <% } %>
-                   <% } %>
-                   <% if (candidature.releves_notes) { %>
-                   <% if (candidature.releves_notes !== "document pas fournis") { %>
-                   <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank">Ouvrir Relevés de Notes</a></p>
-                   <% } else { %>
-                   <p class="card-text" ><strong>Relevés de Notes :</strong><i  style="color: red;">document pas fournis</i></p>
-                   <% } %>
-                   <% } %>
-                   <hr>
-                   <h5 class="card-subtitle mb-2 text-muted">Décision</h5>
-                   <% if (stage) { %>
-                     <p class="card-text">
-                       <strong>Status de Candidature :</strong>
-                       <span style="font-weight: bold; color: <%= stage.status === 'a attente' ? 'rgb(200, 130, 13)' : (stage.status === 'accepté' ? 'green' : 'red') %>">
-                         <%= stage.status %>
-                       </span>
-                     </p>
-                   <% } else { %>
-                     <p class="card-text">
-                       <strong>Status de Candidature :</strong>
-                       <span style="font-weight: bold; color: red">Aucune candidature en cours</span>
-                     </p>
-                   <% } %>
-                 
-                   <!-- Button to trigger modal -->
-                   <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">
-                   Modifier la Décision
-                   </button>
-                   <!-- Modal -->
-                   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                         <div class="modal-content">
-                            <div class="modal-header">
-                               <h5 class="modal-title" id="exampleModalLabel">Modifier la Décision</h5>
-                               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                               <span aria-hidden="true">&times;</span>
-                               </button>
-                            </div>
-                            <div class="modal-body">
-                               <!-- Form inside the modal -->
-                               <form id="decisionForm">
-                                  <div class="form-group">
-                                     <label for="decision">Choisir une option :</label>
-                                     <select class="form-control" id="decision" name="decision">
-                                        <option value="a attente">En Attente</option>
-                                        <option value="accepté">Accepté</option>
-                                        <option value="refusé">Refusé</option>
-                                     </select>
-                                  </div>
-                               </form>
-                               <!-- Hidden input fields to store stage id and email -->
-                               <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
-                               <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
-                            </div>
-                            <div class="modal-footer">
-                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                               <button type="button" class="btn btn-primary" onclick="submitDecision()" >Enregistrer</button>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+                <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
+                <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
 
-             
 
-            
                 <div class="col-md-8" >
 
                   <% if (candidature) { %>
-                  <div  class="card mb-4 watermark-container" style="background-color:beige;font-family: Verdana, Geneva, Tahoma, sans-serif; ">
+                  <div  class="card mb-4 watermark-container" style="background-color:rgb(217, 217, 217);font-family: Verdana, Geneva, Tahoma, sans-serif; ">
                       <div class="card-body" >
                           <h2 class="card-title " style="text-align: center; font-weight: bold; text-transform: uppercase ; margin: 20px; padding-bottom: 30px;"><%= candidature.nom %> <%= candidature.prenom %></h2>
                           <hr class="dashed-line" style="font-weight: bold; ">
@@ -190,11 +121,9 @@
                           <p class="card-text"><strong>Relevés de Notes :</strong>  <i  style="color: red;">document pas fournis</i></p>
                           <% } %>
                           <% } %>
-                          <% if (stage) { %>
-                           <div class="watermark">
-                             <%= stage.status %>
-                           </div>
-                         <% } %>
+                          <div class="watermark">
+                              <%= stage.status %>
+                          </div>
                       </div>
                   </div>
                 

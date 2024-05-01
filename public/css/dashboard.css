@@ -158,3 +158,19 @@ body {
   /*   flex-direction: column; */
     min-height: 100%;
   }
+
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    .col-md-8, .col-md-8 * {
+      visibility: visible;
+    }
+    .col-md-8 {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
+  

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
   const token2=req.session.user
-  if (!token) {
+  if (!token2) {
     // Store the original URL in session or cookie
     req.session.returnTo = req.originalUrl;
     
