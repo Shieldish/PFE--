@@ -3,7 +3,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const ejs = require('ejs')
+const zlib = require('node:zlib');
 const routes = require('./routes/routes')
+const connection = require('./model/dbConfig');
 const connectionRoutes = require('./routes/connectionRoutes')
 const uploadsRoutes = require('./routes/uploadsRoutes')
 const databaseRoutes = require('./routes/databaseRoutes')
@@ -16,7 +18,7 @@ const { isAdmin, isUser } = require('./middlewares/roles')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 const user_registration = require('./controllers/UserRegistration')
-const stages = require('./model/stagesModel')
+const stage = require('./model/stagesModel')
 const {
     candidature,
     stagepostulation,
@@ -80,30 +82,77 @@ app.get(['/', '/home'], authenticate, (req, res) => {
     res.render('home', { user, userJSON: JSON.stringify(user) })
 })
 
-/* app.get('/check-update', async (req, res) => {
-  try {
-    if (req.session.user) {
-      const latestUserData = await user_registration.findOne({ where: { UUID: req.session.user.UUID } });
+// Define fetchSidebarItems function
+const fetchSidebarItems = (lang, connection, callback) => {
+  
+  const sidebarSql = `
+    SELECT
+      s.id,
+      s.name_${lang} AS name,
+      s.link,
+      s.icon,
+      s.parent_id
+    FROM sidebar_items s
+    ORDER BY s.parent_id, s.id
+  `;
 
-      // Update session user data
-      req.session.user = latestUserData.toJSON();
-      
-      // Update cookies with the latest user data
-      res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
-
-      res.json(latestUserData);
-    } else {
-      res.json(null);
+  connection.query(sidebarSql, (sidebarErr, sidebarResults) => {
+    if (sidebarErr) {
+      console.error('Error fetching sidebar items:', sidebarErr);
+      if (typeof callback === 'function') {
+        callback('Error fetching sidebar items', null);
+      }
+      return;
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+
+    // Build the sidebar items structure
+    const sidebarItems = sidebarResults.reduce((acc, item) => {
+      if (item.parent_id === null) {
+        acc.push({
+          id: item.id,
+          name: item.name,
+          link: item.link,
+          icon: item.icon,
+          children: []
+        });
+      } else {
+        const parent = acc.find(i => i.id === item.parent_id);
+        if (parent) {
+          parent.children.push({
+            id: item.id,
+            name: item.name,
+            link: item.link,
+            icon: item.icon
+          });
+        }
+      }
+      return acc;
+    }, []);
+
+    //console.log("Sidebar Items : =>", sidebarItems);
+    if (typeof callback === 'function') {
+      callback(null, sidebarItems);
+    }
+  });
+};
+
+// Usage of fetchSidebarItems function
+app.post('/sidebar', (req, res) => {
+  const language = req.body.lang || 'en'; // Default to English if no language is provided
+  
+  fetchSidebarItems(language, connection, (error, sidebarItems) => {
+    if (error) {
+      res.status(500).send(error);
+    } else {
+      res.json(sidebarItems); // Sending sidebarItems to the frontend as JSON
+    }
+  });
 });
- */
+
 
 app.get('/postulate/:id', async (req, res) => {
     const id = req.params.id
-    const Onestage = await stages.findByPk(id)
+    const Onestage = await stage.findByPk(id)
     if (Onestage) {
         res.render('postuler', { stage: Onestage })
     } else {
@@ -111,7 +160,7 @@ app.get('/postulate/:id', async (req, res) => {
     }
 })
 
-app.get('/people/sidebar', (req, res) => {
+app.get('/sidebar', (req, res) => {
   res.redirect('/home');
 });
 

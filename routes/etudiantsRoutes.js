@@ -121,6 +121,7 @@ const storage = multer.diskStorage({
 // Configure multer with the disk storage
 const upload = multer({ storage: storage });
 
+
 router.post('/postulate/:id', upload.fields([
     { name: 'cv', maxCount: 1 },
     { name: 'lettre_motivation', maxCount: 1 },
@@ -218,6 +219,7 @@ router.post('/postulate/:id', upload.fields([
         return res.redirect(`/postulate/${id}`);
     }
 });
+
 
 
 router.get('/check-email', async (req, res) => {
@@ -407,7 +409,6 @@ router.get('/candidatures', async (req, res) => {
       return res.status(500).send('Internal Server Error')
   }
 })
-
 
 
 

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const { sequelize } = require('./model');
+const zlib = require('node:zlib');
 
 const stage = sequelize.define('stage', {
   id: {
@@ -28,6 +29,18 @@ const stage = sequelize.define('stage', {
   Description: {
     type: DataTypes.TEXT,
     allowNull: false
+    ,
+    set(value)
+    {
+      const compressed = zlib.deflateSync(value).toString('base64');
+      this.setDataValue('Description', compressed);
+    },
+    get() 
+    {
+      const value= this.getDataValue('Description');
+      const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
+      return uncompressed.toString();
+    }
   },
   Niveau: {
     type: DataTypes.STRING,

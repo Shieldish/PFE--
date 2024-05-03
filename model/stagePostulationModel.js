@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
+const zlib = require('node:zlib');
 const { sequelize } = require('./model');
 const Stages=require('./stagesModel');
 const { enseignant, encadrant, etudiant } = require('./model');
@@ -128,11 +129,34 @@ const candidature = sequelize.define('candidature', {
   },
   experience_description: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
+    set(value)
+    {
+      const compressed = zlib.deflateSync(value).toString('base64');
+      this.setDataValue('experience_description', compressed);
+    },
+    get() 
+    {
+      const value= this.getDataValue('experience_description');
+      const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
+      return uncompressed.toString();
+    }
   },
   motivation: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: true
+    ,
+    set(value)
+    {
+      const compressed = zlib.deflateSync(value).toString('base64');
+      this.setDataValue('motivation', compressed);
+    },
+    get() 
+    {
+      const value= this.getDataValue('motivation');
+      const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
+      return uncompressed.toString();
+    }
   },
   langues: {
     type: DataTypes.STRING,
@@ -140,7 +164,7 @@ const candidature = sequelize.define('candidature', {
   },
   logiciels: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   competences_autres: {
     type: DataTypes.STRING,
@@ -148,11 +172,11 @@ const candidature = sequelize.define('candidature', {
   },
   date_debut: {
     type: DataTypes.DATEONLY,
-    allowNull: false
+    allowNull: true
   },
   duree_stage: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   cv: {
     type: DataTypes.STRING,
