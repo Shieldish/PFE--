@@ -145,7 +145,7 @@ router.get('/edit/:id', async (req, res) => {
     const formattedDateDebut = stages.DateDebut.toISOString().slice(0, 10);
       const formattedDateFin = stages.DateFin.toISOString().slice(0, 10);
     // Render the edit page with the stage data
-    return res.render('edit', { data:stages, formattedDateDebut, formattedDateFin });
+    return res.render('partial/entrepriseTemplate/edit', { data:stages, formattedDateDebut, formattedDateFin });
   } 
   catch (error) {
     // Handle any errors
@@ -290,7 +290,7 @@ router.get('/postulant', async (req, res) => {
     });
 
     if (postulant.length == 0) {
-      req.flash('error', 'No postulant found');
+     // req.flash('error', 'No postulant found');
       return res.status(404).json({ error: 'No postulant found' });
     }
 
@@ -354,7 +354,7 @@ router.post('/decision', async (req, res) => {
 
       // Flash success message and redirect to the page showing postulant details
       req.flash('success', 'Decision is updated');
-      return res.redirect('/admin/postulant_detail/' + stageEmail);
+      return res.redirect('partial/entrepriseTemplate/postulant_detail' + stageEmail);
   } catch (error) {
       // If any error occurs, handle it and return an error response
       req.flash('error', 'Error: ' + error.message);
@@ -401,7 +401,7 @@ router.get('/postulant_detail', async (req, res) => {
       })
       const stageDataJSON = StageData.toJSON()
      
-      return res.render('postulant_details', {
+      return res.render('partial/entrepriseTemplate/postulant_details', {
           candidature: modifiedcandidature,
           stage: stageDataJSON,
       })

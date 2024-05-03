@@ -163,7 +163,13 @@
         <p> <strong>Niveau :</strong> <%= stage.Niveau %></p>
         <p><strong>Langue :</strong> <%= stage.Langue %></p>
         <hr>
-        <p><strong>Email :</strong><i style="font-weight: bold; color: green;"> <%= stage.Email %> /  <%= stage.Email2 %></i></p>
+        <p><strong>Email :</strong> 
+          <a href="mailto:<%= stage.Email %>"><%= stage.Email %></a>
+          <% if (stage.Email2) { %>
+              / <a href="mailto:<%= stage.Email2 %>"><%= stage.Email2 %></a>
+          <% } %>
+      </p>
+      
         <p><strong>Tél :</strong> <%= stage.Telephone %></p>
         <p><strong>Fax :</strong> <%= stage.Fax %></p>
         <hr>
@@ -171,7 +177,7 @@
         <p><%= stage.Description %></p>
       </div>
       
-      <%-include('./partial/flaskMessages') %>
+    
 
       <div class="container">
         <div class="row justify-content-center">
@@ -339,8 +345,9 @@
                     </label>
                     <div class="invalid-feedback" style="display: none;">Vous devez certifier l'exactitude des informations fournies avant de soumettre le formulaire.</div>
                   </div>
-                </div>
-                  <button type="submit" class="btn btn-primary">Soumettre</button>
+                  <hr>
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Soumettre</button>
                 </div>
               </form>
             </div>

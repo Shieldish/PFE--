@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const { sequelize, DataTypes, etudiant } = require('../model/model');
+const { Op } = require('sequelize');
 const flash = require('connect-flash');
 
 const stage = require('../model/stagesModel');
@@ -31,6 +32,50 @@ router.get('/', (req, res)=>
 
 router.get('/All', async (req, res) => {
     try {
+      const { search, sortBy, sortOrder, page, limit, ...filters } = req.query;
+      const options = {
+        where: filters,
+        order: sortBy && sortOrder ? [[sortBy, sortOrder]] : undefined,
+        offset: page && limit ? (page - 1) * limit : 0,
+        limit: limit ? parseInt(limit) : undefined,
+      };
+  
+      if (search) {
+        options.where = {
+          ...options.where,
+          [Op.or]: [
+            // Add search conditions for relevant fields here
+            { Domaine: { [Op.like]: `%${search}%` } },
+            { Nom: { [Op.like]: `%${search}%` } },
+            { Titre: { [Op.like]: `%${search}%` } },
+            { Niveau: { [Op.like]: `%${search}%` } },
+            { Libelle: { [Op.like]: `%${search}%` } },
+            { Description: { [Op.like]: `%${search}%` } },
+            { State: { [Op.like]: `%${search}%` } },
+            // Add more search conditions as needed
+          ],
+        };
+      }
+  
+      const { count, rows } = await stage.findAndCountAll(options);
+      const totalPages = limit ? Math.ceil(count / limit) : 1;
+  
+      res.json({
+        stages: rows,
+        pagination: {
+          currentPage: page ? parseInt(page) : 1,
+          totalPages,
+          totalItems: count,
+        },
+      });
+    } catch (error) {
+      console.error('Error retrieving stage:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
+/* router.get('/All', async (req, res) => {
+    try {
       const stages = await stage.findAll();
       res.json(stages);
     } catch (error) {
@@ -39,7 +84,7 @@ router.get('/All', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  
+   */
 
 
 router.get('/postuler/', async (req , res)=>{
@@ -235,7 +280,7 @@ router.get('/stage_postuler', async (req, res) => {
       });
   
       if (postulated.length === 0) {
-        req.flash('error', 'No postulated found');
+       // req.flash('info', 'No postulated found');
         return res.status(404).json({ error: 'No postulated found' });
       }
   

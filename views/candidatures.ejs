@@ -9,10 +9,13 @@
     <!-- Your other CSS files -->
     <style>
 
-
+.form-card {
+    animation: fadeInAnimation 1s ease-in-out; /* Add animation to card */
+}
       .watermark-container {
     position: relative;
 }
+
 
 .watermark {
     position: absolute;
@@ -25,7 +28,28 @@
     pointer-events: none;
     user-select: none;
     text-transform: uppercase;
+    animation: slideInWatermark 2s ease-in-out forwards;
     
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInWatermark {
+    from {
+        transform: translate(-50%, -70%) rotate(-45deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(-45deg);
+        opacity: 0.3;
+    }
 }
        /* Add any custom styles here */
        hr {
@@ -34,21 +58,8 @@
        .row {
        justify-content: center; /* Center the content of the row */
        }
-       .job-details {
-       border: 1px solid #ccc;
-       font-size: 20px;
-       padding: 10px;
-       margin: 10px;
-       background-color: rgb(250, 250, 250);
-       /*     max-width: 30%; */
-       /* float: left; */
-       .job-details h2 {
-       margin-top: 0;
-       }
-       .job-details p {
-       margin-bottom: 5px;
-       }
-       }
+      
+       
     </style>
  </head>
  <body>
@@ -71,7 +82,7 @@
                 <div class="col-md-8" >
 
                   <% if (candidature) { %>
-                  <div  class="card mb-4 watermark-container" style="background-color:rgb(217, 217, 217);font-family: Verdana, Geneva, Tahoma, sans-serif; ">
+                  <div  class="card mb-4 watermark-container  form-card" style="background-color:rgb(241, 241, 241);font-family: Verdana, Geneva, Tahoma, sans-serif; ">
                       <div class="card-body" >
                           <h2 class="card-title " style="text-align: center; font-weight: bold; text-transform: uppercase ; margin: 20px; padding-bottom: 30px;"><%= candidature.nom %> <%= candidature.prenom %></h2>
                           <hr class="dashed-line" style="font-weight: bold; ">

@@ -1,0 +1,221 @@
+<head>
+    <title>Candidature</title>
+    <%- include('./common/head') %>
+    <!-- Link Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>  
+
+    <!-- Your other CSS files -->
+    <style>
+
+.dashed-line {
+    border: none;
+    border-top: 2px dashed #000000;
+    margin: 1rem 0;
+}
+.card {
+    transition: all 0.3s ease;
+    border-radius: 10px; /* Add rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+    background-color: #fff; /* Set background color */
+    margin-bottom: 30px; /* Add margin */
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.form-card {
+    animation: fadeInAnimation 1s ease-in-out; /* Add animation to card */
+}
+      .watermark-container {
+    position: relative;
+}
+
+
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size:  5em;
+    font-weight: bold;
+    color: rgba(0, 0, 0,0.4);
+    pointer-events: none;
+    user-select: none;
+    text-transform: uppercase;
+    animation: slideInWatermark 2s ease-in-out forwards;
+    
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInWatermark {
+    from {
+        transform: translate(-50%, -70%) rotate(-0deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(-35deg);
+        opacity: 0.3;
+    }
+}
+       /* Add any custom styles here */
+       hr {
+       font-size: 2rem; /* Adjust the font size as needed */
+       }
+       .row {
+       justify-content: center; /* Center the content of the row */
+       }
+      
+       
+    </style>
+ </head>
+ <body>
+    <div class="custom-container">
+       <%- include('./common/sidebar') %>
+       <div class="main-content">
+          <%- include('./common/navbar') %>
+          <div class="container">
+            <p><h3>Details</h3></p>
+            <hr>
+             <h3 class="mt-4"  style="font-weight: bold; text-align: center; color: #007bff; padding-top: 50px;">Candidature : <%= stage.stageDomaine %> /<%= stage.stageSujet %>  /<%= stage.entrepriseName %> </h3>
+             <hr>
+             <%-include('./partial/flaskMessages')  %>
+
+             <div class="row">
+                <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
+                <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
+            
+                <div class="col-md-8">
+                    <% if (candidature) { %>
+                    <div class="card mb-4 watermark-container animate__animated animate__fadeInUp form-card" style="background-color: rgb(241, 241, 241); font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                        <div class="card-body">
+                            <h2 class="card-title" style="text-align: center; font-weight: bold; text-transform: uppercase; margin: 20px; padding-bottom: 30px;"><%= candidature.nom %> <%= candidature.prenom %></h2>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb-2 text-muted">Informations personnelles</h5>
+                            <p class="card-text"><strong>Date de naissance:</strong> <%= candidature.date_naissance %></p>
+                            <p class="card-text"><strong>Adresse:</strong> <%= candidature.adresse %></p>
+                            <p class="card-text"><strong>Téléphone:</strong> <%= candidature.telephone %></p>
+                            <p class="card-text"><strong>Email:</strong> <%= candidature.email %></p>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb-2 text-muted">Formation</h5>
+                            <p class="card-text"><strong>Niveau d'études:</strong> <%= candidature.niveau_etudes %></p>
+                            <p class="card-text"><strong>Institution:</strong> <%= candidature.institution %></p>
+                            <p class="card-text"><strong>Domaine d'études:</strong> <%= candidature.domaine_etudes %></p>
+                            <p class="card-text"><strong>Année d'obtention:</strong> <%= candidature.annee_obtention %></p>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb-2 text-muted">Expérience pertinente</h5>
+                            <p class="card-text"><strong>Expérience:</strong> <%= candidature.experience ? 'Oui' : 'Non' %></p>
+                            <% if (candidature.experience_description) { %>
+                            <p class="card-text"><strong>Description de l'expérience:</strong> <%= candidature.experience_description %></p>
+                            <% } %>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb-2 text-muted">Motivation pour ce stage</h5>
+                            <p class="card-text"><strong>Motivation:</strong> <%= candidature.motivation %></p>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb-2 text-muted">Compétences</h5>
+                            <p class="card-text"><strong>Langues:</strong> <%= candidature.langues %></p>
+                            <p class="card-text"><strong>Logiciels:</strong> <%= candidature.logiciels %></p>
+                            <p class="card-text"><strong>Autres compétences:</strong> <%= candidature.competences_autres %></p>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb -2 text-muted">Disponibilités</h5>
+                            <p class="card-text"><strong>Date de début:</strong> <%= candidature.date_debut %></p>
+                            <p class="card-text"><strong>Durée du stage:</strong> <%= candidature.duree_stage %> mois</p>
+                            <hr class="dashed-line" style="font-weight: bold;">
+                            <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives</h5>
+                            <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %>" target="_blank">Ouvrir CV</a></p>
+                            <% if (candidature.lettre_motivation) { %>
+                            <% if (candidature.lettre_motivation !== "document pas fournis") { %>
+                            <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %>" target="_blank">Ouvrir Lettre de Motivation</a></p>
+                            <% } else { %>
+                            <p class="card-text"><strong>Lettre de Motivation:</strong> <i style="color: red;">document pas fournis</i></p>
+                            <% } %>
+                            <% } %>
+                            <% if (candidature.releves_notes) { %>
+                            <% if (candidature.releves_notes !== "document pas fournis") { %>
+                            <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %>" target="_blank">Ouvrir Relevés de Notes</a></p>
+                            <% } else { %>
+                            <p class="card-text"><strong>Relevés de Notes :</strong> <i style="color: red;">document pas fournis</i></p>
+                            <% } %>
+                            <% } %>
+                            <div class="watermark">
+                                <%= stage.status %>
+                            </div>
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <p>No candidature found</p>
+                    <% } %>
+                </div>
+            </div>
+     
+          </div>
+          <%- include('./common/footer') %>
+       </div>
+    </div>
+
+ 
+  
+
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Your other JavaScript files -->
+    <script>
+       function submitDecision() {
+           // Get the selected decision from the form
+           const decision = document.getElementById('decision').value;
+           
+           // Get the stage id and email from the HTML attributes
+           const stageId = document.getElementById('stageId').getAttribute('data-stage-id');
+           const stageEmail = document.getElementById('stageEmail').getAttribute('data-stage-email');
+       
+           // Construct the data object to be sent to the backend
+           const data = {
+               decision: decision,
+               stageId: stageId,
+               stageEmail: stageEmail
+           };
+       
+           // Assuming you're using fetch API to send data to the backend
+           fetch('/entreprise/decision', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify(data)
+           })
+           .then(response => {
+               if (response.ok) {
+                   location.reload();
+                   // Optionally, you can close the modal after successful submission
+                   $('#myModal').modal('hide');
+                   // Perform any other actions after successful submission
+               } else {
+                   // Handle errors if any
+                   location.reload();
+                   console.error('Failed to submit decision');
+               }
+           })
+           .catch(error => {
+               location.reload();
+               console.error('Error submitting decision:', error);
+           });
+       }
+    </script>
+ </body>

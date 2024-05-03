@@ -69,7 +69,7 @@ app.use('/files', authenticate, isAdmin, uploadsRoutes)
 app.use('/gestion', authenticate, isUser, databaseRoutes)
 app.use('/settings', authenticate, UserProfilesRoutes)
 app.use('/entreprise', authenticate, entrepriseRoutes)
-app.use('/etudiant', authenticate, etudiantsRoutes)
+app.use('/etudiant', etudiantsRoutes)
 
 app.get(['/', '/home'], authenticate, (req, res) => {
     const user = req.session.user
@@ -111,7 +111,9 @@ app.get('/postulate/:id', async (req, res) => {
     }
 })
 
-
+app.get('/people/sidebar', (req, res) => {
+  res.redirect('/home');
+});
 
 // Start server
 const PORT = process.env.PORT || 3000

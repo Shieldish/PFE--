@@ -8,11 +8,13 @@
   height: auto; /* Set the desired height */
   max-height: fit-content;
   background-color: beige;
+  
 }
 
 .card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transform: translateY(-5px);
+ 
 }
 
 .card-body {
@@ -38,16 +40,13 @@
   grid-gap: 20px;
   grid-auto-rows: auto; /* Set the desired height for each row */
 }
-.show-more a {
-  color: #007bff;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.show-more a:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
+.mybtn {
+           font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                align-self: end;
+                font-size: 15px;
+                width: fit-content;
+                height: auto;
+            }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -82,8 +81,9 @@
 
           // Loop through each stage and create grid item
 stages.forEach(stage => {
+  console.log(stage.id)
     const stageItem = document.createElement('div');
-    stageItem.classList.add('col-md-4'); // Adjust column width as needed
+    stageItem.classList.add('col-md-8'); // Adjust column width as needed
     stageItem.classList.add('card', 'animate__animated', 'animate__fadeInUp');
 
     const descriptionLines = stage.Description.split('\n');
@@ -118,12 +118,16 @@ stages.forEach(stage => {
                 <hr>
                 <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
                 <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
-            </div>
-        </div>
-        <div class="card-footer">
+              
+             
+                <div class="card-footer">
             <span class="published-time">Publié  ${timeSinceCreated}</span> <br>
             <span class="published-time">mettre à jours ${timeSinceUpdate}</span>
+
         </div>
+            </div>
+        </div>
+       
     `;
 
     // Append grid item to the stageGrid container
@@ -153,3 +157,7 @@ stages.forEach(stage => {
   }
 }
 </script>
+<!-- <script>
+     <a href="/entreprise/edit/${stage.id}" class="btn btn btn-outline-success btn-sm mybtn"><i class="bi bi-pencil-square"></i> edit</a>
+                <a href="/entreprise/delete/${stage.id}" class="btn btn btn-outline-danger btn-sm mybtn">  <i class="bi bi-trash3-fill"></i> delete</a>
+</script> -->

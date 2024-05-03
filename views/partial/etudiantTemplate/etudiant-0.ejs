@@ -1,0 +1,378 @@
+<head>
+  <head>
+      <title>Etudiants</title>
+      <%-include('./common/head') %>
+      <!-- Your other CSS files -->
+      <style>
+          /* Card Styles */
+          .card-title-custom {
+              font-size: 16px;
+              font-weight: bold;
+              text-align: center;
+              text-transform: uppercase; /* Add this line to make the text uppercase */
+          }
+
+          .card {
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              transition: all 0.3s ease;
+              width: auto; /* Set the desired width */
+              height: auto; /* Set the desired height */
+           /*    max-height: fit-content; */
+              background-color: beige;
+          }
+
+          .card:hover {
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+              transform: translateY(-5px);
+          }
+
+          .card-body {
+              padding: 20px;
+              height: 100%; /* Make the card-body take up the full height of the card */
+              display: flex;
+              flex-direction: column; /* Stack the content vertically */
+          }
+
+          .card-body > * {
+              margin-bottom: 10px; /* Add some spacing between card elements */
+          }
+
+          .card-body > *:last-child {
+              margin-bottom: 0; /* Remove the bottom margin from the last element */
+          }
+
+          /* Grid Container */
+          #stageGrid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Minimum card width of 300px */
+              grid-gap: 20px;
+              grid-auto-rows: auto; /* Set the desired height for each row */
+          }
+          .show-more a {
+              color: #007bff;
+              text-decoration: none;
+              transition: all 0.3s ease;
+          }
+
+          .show-more a:hover {
+              color: #0056b3;
+              text-decoration: underline;
+          }
+
+          .mybtn {
+              font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+              align-self: end;
+              font-size: 15px;
+              width: fit-content;
+              height: auto;
+          }
+          .time-since-created {
+              display: none;
+          }
+/* 
+          .card:hover .time-since-created {
+              display: block;
+          } */
+      </style>
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  </head>
+</head>
+<body>
+  <div class="custom-container">
+      <%-include('./common/sidebar') %>
+
+      <div class="main-content">
+          <%-include('./common/navbar') %>
+          <div style="text-align: center;">
+              <h3 style="margin: 15px; padding: 15px;">Etudiant</h3>
+          </div>
+
+          <%-include('./partial/flaskMessages') %>
+          <hr />
+
+          <div class="">
+              <ul class="nav nav-pills mb-3 d-flex justify-content-center" id="pills-tab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-stage-tab" data-bs-toggle="pill" data-bs-target="#pills-stage" type="button" role="tab" aria-controls="pills-stage" aria-selected="false">Stage</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-stage-postule-tab" data-bs-toggle="pill" data-bs-target="#pills-stage-postule" type="button" role="tab" aria-controls="pills-stage-postule" aria-selected="false">
+                          Stage postulé
+                      </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-resultat-tab" data-bs-toggle="pill" data-bs-target="#pills-resultat" type="button" role="tab" aria-controls="pills-resultat" aria-selected="false">Resultat</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                      <button class="nav-link btn-dark" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>
+                          Disabled
+                      </button>
+                  </li>
+              </ul>
+              <hr />
+              <div class="tab-content" id="pills-tabContent">
+                  <!-- d-flex justify-content-center -->
+                  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0"></div>
+                  <div class="tab-pane fade" id="pills-stage" role="tabpanel" aria-labelledby="pills-stage-tab" tabindex="0">
+                      <div class="container">
+                          <div style="text-align: center;">
+                              <h3 style="margin: 5px; padding: 5px;">Les Stages</h3>
+                          </div>
+                          <hr />
+                          <div id="stageGrid" class="row">
+                              <!-- Stage grid will be dynamically populated here -->
+                          </div>
+                      </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-stage-postule" role="tabpanel" aria-labelledby="pills-stage-postule-tab" tabindex="0">
+                      .stage postulé content..
+                  </div>
+                  <div class="tab-pane fade" id="pills-resultat" role="tabpanel" aria-labelledby="pills-resultat-tab" tabindex="0">.resultat content..</div>
+                  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">.lol..</div>
+                  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">.grgg..</div>
+                  <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">..grgrgreg.</div>
+              </div>
+          </div>
+      </div>
+      <%-include('./common/footer') %>
+  </div>
+  <!-- Scripts -->
+  <!--   <script src="../public/js/script.js"></script> -->
+  <!-- Include Bootstrap JS -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+  <script>
+      // Function to set active tab based on stored value
+      function setActiveTab() {
+          const activeTabId = localStorage.getItem("activeTabId");
+          if (activeTabId) {
+              const activeTab = document.querySelector(`#${activeTabId}`);
+              if (activeTab) {
+                  activeTab.classList.add("active");
+                  const tabContentId = activeTab.getAttribute("aria-controls");
+                  const tabContent = document.querySelector(`#${tabContentId}`);
+                  if (tabContent) {
+                      tabContent.classList.add("show", "active");
+                  }
+              }
+          }
+      }
+
+      // Add event listener to each tab to store active tab in local storage
+      document.querySelectorAll(".nav-link").forEach((tab) => {
+          tab.addEventListener("click", function () {
+              const tabId = this.getAttribute("id");
+              localStorage.setItem("activeTabId", tabId);
+          });
+      });
+
+      // Call the function to set the active tab on page load
+      setActiveTab();
+  </script>
+
+  <script>
+      // Fetch all stages from the server
+      fetch("/etudiant/All")
+          .then((response) => {
+              if (!response.ok) {
+                  throw new Error("Network response was not ok");
+              }
+              return response.json();
+          })
+          .then((data) => {
+              const stages = Array.isArray(data) ? data : [data]; // Ensure stages is an array
+              console.log(stages); // Log the received stages
+              // Reference to the stageGrid container
+              const stageGrid = document.getElementById("stageGrid");
+              // Loop through each stage and create grid item
+              stages.forEach((stage) => {
+                  const stageItem = document.createElement("div");
+                  stageItem.classList.add("col-md-4"); // Adjust column width as needed
+
+                  stageItem.classList.add("card", "animate__animated", "animate__fadeInUp");
+
+                  const descriptionLines = stage.Description.split("\n");
+                  const shortDescription = descriptionLines.slice(0, 5).join("\n");
+                  const longDescription = stage.Description; // Use the original description for full text
+                  const showMore = descriptionLines.length > 5 ? `<span class="show-more">... <a href="#">Show more</a></span>` : "";
+                  const dateFin = new Date(stage.DateFin);
+                  const dateDebut = new Date(stage.DateDebut);
+                  const formattedDateFin = dateFin.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+                  const formattedDateDebut = dateDebut.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+                  const createdAt = new Date(stage.createdAt);
+                  const timeSinceCreated = getTimeSinceCreated(createdAt);
+
+                  const currentTime = new Date();
+                  const timeDifference = currentTime.getTime() - createdAt.getTime();
+                  let timeString = "";
+
+                  if (timeDifference < 60000) {
+                      const seconds = Math.floor(timeDifference / 1000);
+                      timeString = `${seconds} second${seconds !== 1 ? "s" : ""}`;
+                  } else if (timeDifference < 3600000) {
+                      const minutes = Math.floor(timeDifference / 60000);
+                      timeString = `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+                  } else if (timeDifference < 86400000) {
+                      const hours = Math.floor(timeDifference / 3600000);
+                      timeString = `${hours} heure${hours !== 1 ? "s" : ""}`;
+                  } else {
+                      const days = Math.floor(timeDifference / 86400000);
+                      timeString = `${days} jour${days !== 1 ? "s" : ""}`;
+                  }
+
+                  stageItem.innerHTML = `
+                  <div class="card">
+                      <div class="card-body">
+                          <span class="time-since-created">Publié ${timeSinceCreated}</span>
+                          <h5 class="card-title" style="text-transform: uppercase; text-align: center;"> <strong >${stage.Domaine}</strong> </h5>
+                          <hr>
+                          <h5 class="card-title"> Chez : ${stage.Nom}</h5>
+                          <h5 class="card-title"> Titre : ${stage.Titre}</h5>
+                          <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
+                          <details class="description-wrapper">
+                           <summary><strong>Description :</strong></summary>
+                
+                              <p class="long-description">${longDescription}</p>
+                          </details>
+                          <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau}</p>
+                          <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
+                          <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
+                          <hr>
+                          <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
+                          <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
+                          <!-- Add more stage properties as needed -->
+                          <hr>
+                        
+                          <a href="/postulate/${stage.id}" class="btn btn btn-outline-success mybtn">Postuler maintenant</a>
+                         
+                      </div>
+                  </div>
+                         <div class="card-footer">
+                           <span class="published-time">Publié il y a ${timeString}</span>
+                         </div>
+              `;
+                  // Append grid item to the stageGrid container
+                  stageGrid.appendChild(stageItem);
+                  // Add event listener for "Show more" links if present
+                  const showMoreLink = stageItem.querySelector(".show-more a");
+                  if (showMoreLink) {
+                      showMoreLink.addEventListener("click", function (event) {
+                          event.preventDefault();
+                          const descriptionWrapper = stageItem.querySelector(".description-wrapper");
+                          descriptionWrapper.querySelector(".short-description").style.display = "none";
+                          descriptionWrapper.querySelector(".long-description").style.display = "block";
+                          showMoreLink.style.display = "none"; // Hide the "Show more" link after displaying full description
+                      });
+                  }
+              });
+          })
+          .catch((error) => console.error("Error fetching stages:", error.message));
+
+      function getTimeSinceCreated(createdAt) {
+          const now = new Date();
+          const diffMs = now.getTime() - createdAt.getTime();
+          const diffSeconds = Math.floor(diffMs / 1000);
+          const diffMinutes = Math.floor(diffSeconds / 60);
+          const diffHours = Math.floor(diffMinutes / 60);
+          const diffDays = Math.floor(diffHours / 24);
+
+          if (diffSeconds < 60) {
+              return `il y a ${diffSeconds} secondes`;
+          } else if (diffMinutes < 60) {
+              return `il y a ${diffMinutes} minutes`;
+          } else if (diffHours < 24) {
+              return `il y a ${diffHours} heures`;
+          } else {
+              return `il y a ${diffDays} jours`;
+          }
+      }
+  </script>
+
+  <script>
+      // Define a function to fetch postulant data
+      async function fetchPostulantData() {
+          try {
+              const response = await fetch("/etudiant/stage_postuler");
+              if (!response.ok) {
+                  throw new Error("Failed to fetch postulant data");
+              }
+              const data = await response.json();
+              return data.postulant;
+          } catch (error) {
+              console.error("Error fetching postulant data:", error);
+              return [];
+          }
+      }
+
+      // Define a function to render postulant data in the tab
+      async function renderPostulantTab() {
+          const postulantTabPane = document.getElementById("pills-stage-postule");
+          const postulantList = await fetchPostulantData();
+
+          // Clear existing content
+          postulantTabPane.innerHTML = "";
+
+          // Render postulant data
+          const container = document.createElement("div");
+          container.classList.add("container", "mt-4");
+          container.innerHTML = `
+<div class="container-cc">
+<h3 class="text-center">Listes des stages  Postulés</h3>
+
+<hr>
+<div class="row">
+${postulantList
+  .map(
+      (postulant) => `
+<div class="col-md-4">
+    <div class="card mb-4" style="background-color: white;">
+
+        <div class="card-body">
+            <h5 class="card-title card-title-custom  ">${postulant.etudiantName}</h5>
+              <hr>
+            <p class="card-text"><strong>Email :</strong> ${postulant.etudiantEmail}</p>
+            <p class="card-text"><strong>Institue :</strong> ${postulant.etudiantInstitue}</p>
+            <p class="card-text"><strong>Domaine :</strong> ${postulant.stageDomaine}</p>
+            <p class="card-text"><strong>Sujet :</strong> ${postulant.stageSujet}</p>
+            <p class="card-text"><strong>Entreprise :</strong> ${postulant.entrepriseName}</p>
+            <p class="card-text">
+                 <strong>Status :</strong> 
+                   <span style=" font-weight: bold;  color: 
+                        ${postulant.status === "a attente" ? "rgb(200, 130, 30)" : postulant.status === "accepté" ? "green" : "red"}">
+                         ${postulant.status}
+                  </span>
+            </p>
+
+            <p class="card-text"><strong>Date de postulation :</strong> le ${postulant.postulatedAt}</p>
+            <p class="card-text"><strong>CV :</strong> <a href="${postulant.CVPath}" target="_blank">Ouvrir CV</a></p>
+            <a href="/etudiant/candidatures?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-outline-secondary">View more Details</a>
+        </div>
+    </div>
+</div>
+`
+  )
+  .join("")}
+</div>
+</div>
+`;
+          postulantTabPane.appendChild(container);
+      }
+
+      // Call the renderPostulantTab function when the page loads
+      document.addEventListener("DOMContentLoaded", () => {
+          renderPostulantTab();
+      });
+  </script>
+</body>

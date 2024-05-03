@@ -1,0 +1,2 @@
+http://localhost:3000/etudiant/All?search=fax
+
