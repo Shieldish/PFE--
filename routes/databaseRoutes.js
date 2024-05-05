@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const connection = require('../model/dbConfig');
+const {connection }= require('../model/dbConfig');
 const user_registration  = require('../controllers/UserRegistration'); // Import UserRegistration model
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const util = require('util');

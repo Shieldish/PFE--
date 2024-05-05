@@ -1,7 +1,7 @@
 const session = require('express-session');
 const express = require('express');
 const bodyParser = require('body-parser');
-const connection = require('../model/dbConfig');
+const  {connection } = require('../model/dbConfig');
 const { sequelize, DataTypes, etudiant } = require('../model/model');
 const { Op } = require('sequelize');
 const flash = require('connect-flash');

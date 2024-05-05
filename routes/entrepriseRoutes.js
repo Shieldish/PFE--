@@ -270,53 +270,6 @@ if (obj.postulatedAt) {
 });
 }
 
-/* router.get('/postulant', async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  let entreprise = req.session.user.EMAIL;
-
-  if (!entreprise) {
-    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
-    return res.status(400).json({ error: 'An error occurred while fetching postulant data' });
-  }
-
-  try {
-    const postulant = await stagepostulation.findAll({
-      where: {
-        entrepriseEmail: entreprise
-      }
-    });
-
-    if (postulant.length == 0) {
-     // req.flash('error', 'No postulant found');
-      return res.status(404).json({ error: 'No postulant found' });
-    }
-
-    let postulantJson = postulant.map(postulant => postulant.toJSON());
-
-    await normalizeDate(postulantJson);
-
-    // Assuming postulant is an array of postulant objects
-    postulantJson = postulantJson.map(postulantObj => {
-      const modifiedPostulant = { ...postulantObj };
-      modifiedPostulant.CVPath = `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`; // Construct the CV path
-      return modifiedPostulant;
-    });
-
-    console.log(postulantJson);
-
-    return res.status(200).json({ postulant: postulantJson });
-  } catch (error) {
-    console.log(error);
-    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
-    return res.status(500).json({ error: 'An error occurred while fetching postulant data' });
-  }
-}); */
-
-
-
 
 router.post('/decision', async (req, res) => {
   try {
@@ -413,62 +366,6 @@ router.get('/postulant_detail', async (req, res) => {
 })
 
 
-
-/* router.get('/postulant', async (req, res) => {
-  const entreprise = 'test.nodemailer.pfe2024@gmail.com';
-
-  try {
-    const { search, page = 1, pageSize = 10, sortBy = 'postulatedAt', sortOrder = 'DESC', filters } = req.query;
-
-    const where = {
-      entrepriseEmail: entreprise,
-    };
-
-    if (search && search !== '') {
-      where[Op.or] = [
-        { etudiantName: { [Op.like]: '%' + search + '%' } },
-        { etudiantInstitue: { [Op.like]: '%' + search + '%' } },
-        { stageDomaine: { [Op.like]: '%' + search + '%' } },
-        { stageSujet: { [Op.like]: '%' + search + '%' } },
-        { status: { [Op.like]: '%' + search + '%' } },
-      ];
-    }
-
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        where[key] = value;
-      });
-    }
-
-    const order = [[sortBy, sortOrder]];
-
-    const { count, rows: postulant } = await stagepostulation.findAndCountAll({
-      where,
-      order,
-      limit: parseInt(pageSize),
-      offset: (page - 1) * parseInt(pageSize),
-    });
-
-    const postulantJson = postulant.map((postulantObj) => {
-      const modifiedPostulant = { ...postulantObj };
-      modifiedPostulant.CVPath = `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`;
-      return modifiedPostulant;
-    });
-
-    const totalPages = Math.ceil(count / parseInt(pageSize));
-
-    return res.status(200).json({
-      totalItems: count,
-      totalPages,
-      currentPage: page,
-      postulant: postulantJson,
-    });
-  } catch (error) {
-    console.error(error);
-    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
-    return res.status(500).json({ error: 'An error occurred while fetching postulant data: ' + error.message });
-  }
-}); */
 router.get('/postulant', async (req, res) => {
 
 
@@ -534,8 +431,8 @@ router.get('/postulant', async (req, res) => {
       CVPath: `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`
     }));
 
-    await normalizeDate(postulantJson)
-
+    //await normalizeDate(postulantJson)
+  
     return res.status(200).json({
       totalItems: count,
       totalPages,

@@ -5,13 +5,15 @@ const path = require('path')
 const ejs = require('ejs')
 const zlib = require('node:zlib');
 const routes = require('./routes/routes')
-const connection = require('./model/dbConfig');
+const {connection, fetchSidebarItems} = require('./model/dbConfig');
 const connectionRoutes = require('./routes/connectionRoutes')
 const uploadsRoutes = require('./routes/uploadsRoutes')
 const databaseRoutes = require('./routes/databaseRoutes')
 const UserProfilesRoutes = require('./routes/UserProfilesRoutes')
 const entrepriseRoutes = require('./routes/entrepriseRoutes')
 const etudiantsRoutes = require('./routes/etudiantsRoutes')
+const encadrementRoutes=require('./routes/encadrementRoutes')
+const planificationRoutes= require('./routes/planificationRoutes')
 const authenticate = require('./middlewares/auth')
 const { isAdmin, isUser } = require('./middlewares/roles')
 
@@ -67,12 +69,15 @@ app.set('view cache', false)
 app.use('/people', authenticate, routes)
 app.use('/connection', connectionRoutes)
 app.use('/files', authenticate, isAdmin, uploadsRoutes)
-// Protect /gestion and its subroutes with authenticate middleware
-//app.use('/gestion', authenticate, databaseRoutes);
 app.use('/gestion', authenticate, isUser, databaseRoutes)
 app.use('/settings', authenticate, UserProfilesRoutes)
-app.use('/entreprise', entrepriseRoutes)
+app.use('/entreprise',authenticate, entrepriseRoutes)
 app.use('/etudiant',authenticate, etudiantsRoutes)
+app.use('/encadrement', encadrementRoutes)
+app.use('/planificationRoutes',authenticate, planificationRoutes)
+
+
+
 
 app.get(['/', '/home'], authenticate, (req, res) => {
     const user = req.session.user
@@ -84,58 +89,7 @@ app.get(['/', '/home'], authenticate, (req, res) => {
 })
 
 // Define fetchSidebarItems function
-const fetchSidebarItems = (lang, connection, callback) => {
-  
-  const sidebarSql = `
-    SELECT
-      s.id,
-      s.name_${lang} AS name,
-      s.link,
-      s.icon,
-      s.parent_id
-    FROM sidebar_items s
-    ORDER BY s.parent_id, s.id
-  `;
 
-  connection.query(sidebarSql, (sidebarErr, sidebarResults) => {
-    if (sidebarErr) {
-      console.error('Error fetching sidebar items:', sidebarErr);
-      if (typeof callback === 'function') {
-        callback('Error fetching sidebar items', null);
-      }
-      return;
-    }
-
-    // Build the sidebar items structure
-    const sidebarItems = sidebarResults.reduce((acc, item) => {
-      if (item.parent_id === null) {
-        acc.push({
-          id: item.id,
-          name: item.name,
-          link: item.link,
-          icon: item.icon,
-          children: []
-        });
-      } else {
-        const parent = acc.find(i => i.id === item.parent_id);
-        if (parent) {
-          parent.children.push({
-            id: item.id,
-            name: item.name,
-            link: item.link,
-            icon: item.icon
-          });
-        }
-      }
-      return acc;
-    }, []);
-
-    //console.log("Sidebar Items : =>", sidebarItems);
-    if (typeof callback === 'function') {
-      callback(null, sidebarItems);
-    }
-  });
-};
 
 // Usage of fetchSidebarItems function
 app.post('/sidebar', (req, res) => {
