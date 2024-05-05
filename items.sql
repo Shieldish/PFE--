@@ -61,7 +61,7 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (13, 7, '/settings', 'bi bi-folder-symlink-fill', ' مشاريعي', ' Mes Projets', ' My Projects'),
 (14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management'),
 (15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision'),
-(16, 11, '/planification', 'bi bi-calendar-day-fill', 'تخطيط', 'Plannification', 'Planning');
+(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning');
 
 --
 -- Index pour les tables déchargées
