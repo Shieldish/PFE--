@@ -4,18 +4,19 @@
        <%-include('./common/head') %>
        <!-- Your other CSS files -->
        <style>
-         .card:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-           transform: translateY(-5px);
-          background-color: beige;
-            }
+         
+         .card {
+            border-radius: 10px;
+            margin: 10px;
+
+              }
           .card-title-custom {
           font-size: 16px;
           font-weight: bold;
           text-align: center;
           text-transform: uppercase; /* Add this line to make the text uppercase */
           }
-          h1 {
+          h1 , h3 {
           font-size: 24px;
           font-weight: bold;
           margin-bottom: 20px;
@@ -31,12 +32,12 @@
           padding-top: 20px;
           border-radius: 8px;
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-          max-width: 50%;
+          max-width: 70%;
           margin: 0 auto;
           /* Center the container */
           overflow-y: auto;
           /* Add vertical scroll if content exceeds wrapper height */
-          max-height: 550px;
+       
           /* Example max height, adjust as needed */
           }
        </style>
@@ -56,7 +57,7 @@
                 <button class="nav-link active" id="postulant-tab" data-bs-toggle="tab"
                    data-bs-target="#postulant-tab-pane" type="button" role="tab"
                    aria-controls="postulant-tab-pane" aria-selected="true"
-                   onclick=" renderPostulantTab()">Postulant(e)s</button>
+                  >Postulant(e)s</button>
              </li>
              <li class="nav-item" role="presentation">
                 <button class="nav-link" id="stage-tab" data-bs-toggle="tab"
@@ -88,6 +89,8 @@
              <div class="tab-pane fade show active" id="postulant-tab-pane" role="tabpanel"
                 aria-labelledby="postulant-tab" tabindex="0">
                 <!-- Content for Postulant(e)s tab -->
+
+                <%-include('./partial/entrepriseTemplate/EntreprisePostulant') %>
                 <!-- Add your form, grid, text, or container content here -->
              </div>
              <div class="tab-pane fade" id="stage-tab-pane" role="tabpanel"
@@ -186,80 +189,7 @@
        });
     </script>
     <script>
-       // Define a function to fetch postulant data
-       async function fetchPostulantData() {
-           try {
-               const response = await fetch('/entreprise/postulant');
-               if (!response.ok) {
-                   throw new Error('Failed to fetch postulant data');
-               }
-               const data = await response.json();
-               return data.postulant;
-           } catch (error) {
-               console.error('Error fetching postulant data:', error);
-               return [];
-           }
-       }
-       
-       // Define a function to render postulant data in the tab
-       async function renderPostulantTab() {
-           const postulantTabPane = document.getElementById('postulant-tab-pane');
-           const postulantList = await fetchPostulantData();
-       
-           // Clear existing content
-           postulantTabPane.innerHTML = '';
-       
-           // Render postulant data
-           const container = document.createElement('div');
-           container.classList.add('container', 'mt-4');
-           container.innerHTML = `
-       <div class="container-cc">
-       <h3 class="text-center">List des Postulant(e)s</h3>
-       
-       <hr>
-       <div class="row">
-       ${postulantList.map(postulant => `
-       <div class="col-md-4">
-           <div class="card mb-4" style="background-color: white;">
-       
-               <div class="card-body">
-                   <h5 class="card-title card-title-custom ">${postulant.etudiantName}</h5>
-                     <hr>
-                   <p class="card-text"><strong>Email :</strong> ${postulant.etudiantEmail}</p>
-                   <p class="card-text"><strong>Institue :</strong> ${postulant.etudiantInstitue}</p>
-                   <p class="card-text"><strong>Domaine :</strong> ${postulant.stageDomaine}</p>
-                   <p class="card-text"><strong>Sujet :</strong> ${postulant.stageSujet}</p>
-                   <p class="card-text"><strong>Entreprise :</strong> ${postulant.entrepriseName}</p>
-                   <p class="card-text">
-                        <strong>Status :</strong> 
-                          <span style=" font-weight: bold;  color: 
-                               ${postulant.status === 'a attente' ? 'rgb(200, 130, 13)' :
-                                 postulant.status === 'accepté' ? 'green' : 'red'}">
-                                ${postulant.status}
-                         </span>
-                   </p>
-       
-                   <p class="card-text"><strong>Date de postulation :</strong> le ${postulant.postulatedAt}</p>
-                   <p class="card-text"><strong>CV :</strong> <a href="${postulant.CVPath}" target="_blank">Ouvrir CV</a></p>
-                   <a href="/entreprise/postulant_detail?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-outline-dark">View more Details</a>
-       
-       
-       
-       
-               </div>
-           </div>
-       </div>
-       `).join('')}
-       </div>
-       </div>
-       `;
-           postulantTabPane.appendChild(container);
-       }
-       
-       // Call the renderPostulantTab function when the page loads
-       document.addEventListener('DOMContentLoaded', () => {
-           renderPostulantTab();
-       });
-       
+    
+      
     </script>
  </body>

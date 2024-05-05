@@ -5,6 +5,9 @@ const { sequelize } = require('./model');
 const Stages=require('./stagesModel');
 const { enseignant, encadrant, etudiant } = require('./model');
 
+const { faker } = require('@faker-js/faker');
+
+
 const stagepostulation = sequelize.define('stagepostulation', {
   id: {
       type: DataTypes.INTEGER,
@@ -130,32 +133,46 @@ const candidature = sequelize.define('candidature', {
   experience_description: {
     type: DataTypes.TEXT,
     allowNull: true,
-    set(value)
-    {
-      const compressed = zlib.deflateSync(value).toString('base64');
-      this.setDataValue('experience_description', compressed);
+    set(value) {
+      try {
+        const compressed = zlib.deflateSync(value).toString('base64');
+        this.setDataValue('experience_description', compressed);
+      } catch (error) {
+        console.error('Error compressing experience_description:', error);
+      }
     },
-    get() 
-    {
-      const value= this.getDataValue('experience_description');
-      const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
-      return uncompressed.toString();
+    get() {
+      try {
+        const value = this.getDataValue('experience_description');
+        const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
+        return uncompressed.toString();
+      } catch (error) {
+        console.error('Error decompressing experience_description:', error);
+        return 'Error decompressing experience_description: '+ error; // Return a default value or handle the error
+      }
     }
   },
+  // Set and get method for motivation
   motivation: {
     type: DataTypes.TEXT,
-    allowNull: true
-    ,
-    set(value)
-    {
-      const compressed = zlib.deflateSync(value).toString('base64');
-      this.setDataValue('motivation', compressed);
+    allowNull: true,
+    set(value) {
+      try {
+        const compressed = zlib.deflateSync(value).toString('base64');
+        this.setDataValue('motivation', compressed);
+      } catch (error) {
+        console.error('Error compressing motivation:', error);
+      }
     },
-    get() 
-    {
-      const value= this.getDataValue('motivation');
-      const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
-      return uncompressed.toString();
+    get() {
+      try {
+        const value = this.getDataValue('motivation');
+        const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
+        return uncompressed.toString();
+      } catch (error) {
+        console.error('Error decompressing motivation:', error);
+        return 'Error decompressing motivation:'+ error; // Return a default value or handle the error
+      }
     }
   },
   langues: {
@@ -202,8 +219,6 @@ const candidature = sequelize.define('candidature', {
     }
   ]
 });
-
-
 
 
 

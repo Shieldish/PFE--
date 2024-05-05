@@ -1,2 +1,4 @@
-http://localhost:3000/etudiant/All?search=fax
 
+
+
+GET  http://localhost:3000/entreprise/postulant?search=jo

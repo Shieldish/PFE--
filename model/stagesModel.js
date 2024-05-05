@@ -28,20 +28,29 @@ const stage = sequelize.define('stage', {
   },
   Description: {
     type: DataTypes.TEXT,
-    allowNull: false
-    ,
-    set(value)
-    {
-      const compressed = zlib.deflateSync(value).toString('base64');
-      this.setDataValue('Description', compressed);
+    allowNull: false,
+    set(value) {
+      try {
+        const compressed = zlib.deflateSync(value).toString('base64');
+        this.setDataValue('Description', compressed);
+      } catch (error) {
+        console.error('Error compressing description:', error);
+        // Handle the error as needed
+      }
     },
-    get() 
-    {
-      const value= this.getDataValue('Description');
-      const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
-      return uncompressed.toString();
+    get() {
+      try {
+        const value = this.getDataValue('Description');
+        const uncompressed = zlib.inflateSync(Buffer.from(value, 'base64'));
+        return uncompressed.toString();
+      } catch (error) {
+        console.error('Error decompressing description:', error);
+        // Handle the error as needed
+        return 'Error decompressing description:'+ error; // Return a default value or handle the error
+      }
     }
   },
+  
   Niveau: {
     type: DataTypes.STRING,
     allowNull: false

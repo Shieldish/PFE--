@@ -25,6 +25,7 @@ const {
 } = require('./model/stagePostulationModel')
 const etudiant = require('./model/model')
 
+
 /* const logger = require('./logs/logger'); */
 
 const app = express()
@@ -70,8 +71,8 @@ app.use('/files', authenticate, isAdmin, uploadsRoutes)
 //app.use('/gestion', authenticate, databaseRoutes);
 app.use('/gestion', authenticate, isUser, databaseRoutes)
 app.use('/settings', authenticate, UserProfilesRoutes)
-app.use('/entreprise', authenticate, entrepriseRoutes)
-app.use('/etudiant', etudiantsRoutes)
+app.use('/entreprise', entrepriseRoutes)
+app.use('/etudiant',authenticate, etudiantsRoutes)
 
 app.get(['/', '/home'], authenticate, (req, res) => {
     const user = req.session.user
@@ -139,7 +140,7 @@ const fetchSidebarItems = (lang, connection, callback) => {
 // Usage of fetchSidebarItems function
 app.post('/sidebar', (req, res) => {
   const language = req.body.lang || 'en'; // Default to English if no language is provided
-  
+
   fetchSidebarItems(language, connection, (error, sidebarItems) => {
     if (error) {
       res.status(500).send(error);

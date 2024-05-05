@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const connection = require('../model/dbConfig');
 const stage=require('../model/stagesModel')
 const { candidature, stagepostulation } = require('../model/stagePostulationModel');
-
+const { Op } = require('sequelize');
 const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
@@ -270,7 +270,7 @@ if (obj.postulatedAt) {
 });
 }
 
-router.get('/postulant', async (req, res) => {
+/* router.get('/postulant', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -313,7 +313,7 @@ router.get('/postulant', async (req, res) => {
     req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
     return res.status(500).json({ error: 'An error occurred while fetching postulant data' });
   }
-});
+}); */
 
 
 
@@ -412,4 +412,144 @@ router.get('/postulant_detail', async (req, res) => {
   }
 })
 
+
+
+/* router.get('/postulant', async (req, res) => {
+  const entreprise = 'test.nodemailer.pfe2024@gmail.com';
+
+  try {
+    const { search, page = 1, pageSize = 10, sortBy = 'postulatedAt', sortOrder = 'DESC', filters } = req.query;
+
+    const where = {
+      entrepriseEmail: entreprise,
+    };
+
+    if (search && search !== '') {
+      where[Op.or] = [
+        { etudiantName: { [Op.like]: '%' + search + '%' } },
+        { etudiantInstitue: { [Op.like]: '%' + search + '%' } },
+        { stageDomaine: { [Op.like]: '%' + search + '%' } },
+        { stageSujet: { [Op.like]: '%' + search + '%' } },
+        { status: { [Op.like]: '%' + search + '%' } },
+      ];
+    }
+
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        where[key] = value;
+      });
+    }
+
+    const order = [[sortBy, sortOrder]];
+
+    const { count, rows: postulant } = await stagepostulation.findAndCountAll({
+      where,
+      order,
+      limit: parseInt(pageSize),
+      offset: (page - 1) * parseInt(pageSize),
+    });
+
+    const postulantJson = postulant.map((postulantObj) => {
+      const modifiedPostulant = { ...postulantObj };
+      modifiedPostulant.CVPath = `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`;
+      return modifiedPostulant;
+    });
+
+    const totalPages = Math.ceil(count / parseInt(pageSize));
+
+    return res.status(200).json({
+      totalItems: count,
+      totalPages,
+      currentPage: page,
+      postulant: postulantJson,
+    });
+  } catch (error) {
+    console.error(error);
+    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
+    return res.status(500).json({ error: 'An error occurred while fetching postulant data: ' + error.message });
+  }
+}); */
+router.get('/postulant', async (req, res) => {
+
+
+  try {
+    const user = req.session.user;
+    const entreprise = user.EMAIL;
+    if(!entreprise)
+    {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+
+    const { search, page = 1, pageSize = 1000, sortBy = 'postulatedAt', sortOrder = 'DESC', filters } = req.query;
+
+    const where = {
+      entrepriseEmail: entreprise,
+    };
+
+    if (search && search.trim() !== '') {
+      where[Op.or] = [
+        { etudiantName: { [Op.like]: '%' + search + '%' } },
+        { etudiantInstitue: { [Op.like]: '%' + search + '%' } },
+        { stageDomaine: { [Op.like]: '%' + search + '%' } },
+        { stageSujet: { [Op.like]: '%' + search + '%' } },
+        { status: { [Op.like]: '%' + search + '%' } },
+      ];
+    }
+
+    if (Array.isArray(filters) && filters.length > 0) {
+      const filterConditions = filters.map(filter => {
+        const [column, value] = filter.split(':');
+        return { [column]: { [Op.like]: `%${value}%` } };
+      });
+      where[Op.or] = filterConditions;
+    }
+
+    const order = [[sortBy, sortOrder]];
+
+    const { count, rows: postulant } = await stagepostulation.findAndCountAll({
+      where,
+      order,
+      limit: parseInt(pageSize),
+      offset: (page - 1) * parseInt(pageSize),
+    });
+
+    const totalPages = Math.ceil(count / parseInt(pageSize));
+
+    // Modify postulant objects as needed
+    const postulantJson = postulant.map(postulantObj => ({
+      id: postulantObj.id,
+      stageId: postulantObj.stageId,
+      etudiantID: postulantObj.etudiantID,
+      etudiantName: postulantObj.etudiantName,
+      etudiantInstitue: postulantObj.etudiantInstitue,
+      etudiantEmail: postulantObj.etudiantEmail,
+      stageDomaine: postulantObj.stageDomaine,
+      stageSujet: postulantObj.stageSujet,
+      entrepriseName: postulantObj.entrepriseName,
+      entrepriseEmail: postulantObj.entrepriseEmail,
+      status: postulantObj.status,
+      CV: postulantObj.CV,
+      postulatedAt: postulantObj.postulatedAt,
+      CVPath: `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`
+    }));
+
+    await normalizeDate(postulantJson)
+
+    return res.status(200).json({
+      totalItems: count,
+      totalPages,
+      currentPage: page,
+      postulant: postulantJson
+    });
+  } catch (error) {
+    console.error('Error fetching postulant data:', error);
+    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
+    return res.status(500).json({ error: 'An error occurred while fetching postulant data: ' + error.message });
+  }
+});
+
+
 module.exports = router;
+
+
