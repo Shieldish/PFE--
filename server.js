@@ -61,7 +61,7 @@ app.use(express.static(path.join(__dirname, '')))
 }); */
 // Parse URL-encoded bodies (as sent by HTML forms)
 
-// Set EJS as the view engine
+// Set EJS as the view engine**
 app.set('view engine', 'ejs')
 app.set('view cache', false)
 
@@ -74,19 +74,12 @@ app.use('/settings', authenticate, UserProfilesRoutes)
 app.use('/entreprise',authenticate, entrepriseRoutes)
 app.use('/etudiant',authenticate, etudiantsRoutes)
 app.use('/encadrement', encadrementRoutes)
-app.use('/planificationRoutes',authenticate, planificationRoutes)
+app.use('/planification',authenticate, planificationRoutes)
 
 
 
 
-app.get(['/', '/home'], authenticate, (req, res) => {
-    const user = req.session.user
-    if (user) {
-        delete user.PASSWORD
-    }
 
-    res.render('home', { user, userJSON: JSON.stringify(user) })
-})
 
 // Define fetchSidebarItems function
 
@@ -115,7 +108,16 @@ app.get('/postulate/:id', async (req, res) => {
     }
 })
 
-app.get('/sidebar', (req, res) => {
+app.get(['/', '/home'], authenticate, (req, res) => {
+  const user = req.session.user
+  if (user) {
+      delete user.PASSWORD
+  }
+
+  res.render('home', { user, userJSON: JSON.stringify(user) })
+})
+
+app.get(['/favicon.ico','/sidebar'], (req, res) => {
   res.redirect('/home');
 });
 

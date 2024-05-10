@@ -1,0 +1,291 @@
+<div class="container">
+    <!-- HTML code with dynamic length display -->
+    <p style="font-weight: bold;" id="postulantListTitle" class="mt-4 mb-4 text-center">Postulants List(e)s - <span id="postulantCount">0</span></p>
+    <!-- Search Input -->
+    <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search by name">
+    <!-- Filter Options -->
+    <div class="row mb-2">
+        <div class="col-md-3">
+            <select id="filterStatus" class="form-control">
+                <option value="">All Status</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="filterDomaine" class="form-control">
+                <option value="">All Domains</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="filterInstitue" class="form-control">
+                <option value="">All Institutes</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="filterPostulatedAt" class="form-control">
+                <option value="desc">Postulated At (Recent)</option>
+                <option value="asc">Postulated At (Ancient)</option>
+            </select>
+        </div>
+    </div>
+    <!-- Postulant Table -->
+    <div class="table-responsive table-bordered">
+        <table class="table table-hover table-striped sortable" id="postulantTable">
+            <thead  class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Institute</th>
+                    <th>Domain</th>
+                    <th>Subject</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Postulated At</th>
+                    <th>CV</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="postulantList">
+                <!-- Postulant data will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination Controls -->
+    <div id="pagination" class="mt-4 d-flex justify-content-center">
+        <!-- Pagination controls will be dynamically populated here -->
+    </div>
+</div>
+<!-- Bootstrap JS (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Your JavaScript Code -->
+<script>
+    const itemsPerPage = 10; // Change this value to adjust the number of items per page
+
+    let allPostulants = [];
+    let currentPage = 1;
+    let filteredPostulants = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Fetch postulants data
+        const postData = await fetchPostulants();
+        allPostulants = postData.postulant;
+
+        // Populate filter options and render postulant data
+        populateFilterOptions(allPostulants);
+        applyFilters();
+    });
+
+    async function fetchPostulants() {
+        // Perform fetch request to your backend API to get postulants data
+        const response = await fetch('/entreprise/postulant');
+        const data = await response.json();
+        return data;
+    }
+
+    function renderPostulantData(postulantList, container) {
+        container.innerHTML = '';
+        const postulantListHTML = postulantList.map(postulant => `
+            <tr>
+                <td>${postulant.etudiantName}</td>
+                <td>${postulant.etudiantEmail}</td>
+                <td>${postulant.etudiantInstitue}</td>
+                <td>${postulant.stageDomaine}</td>
+                <td>${postulant.stageSujet}</td>
+                <td>${postulant.entrepriseName}</td>
+                <td>
+                  <span class="badge badge-pill ${postulant.status === 'a attente' ? 'badge-warning' : postulant.status === 'accepté' ? 'badge-success' : 'badge-danger'}">
+                        ${postulant.status}
+                  </span>
+                </td>
+                <td>${new Date(postulant.postulatedAt).toLocaleString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: false
+                })}</td>
+                <td><a href="${postulant.CVPath}" target="_blank">Open CV</a></td>
+                <td><a href="/entreprise/postulant_detail?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-outline-dark">View Details</a></td>
+            </tr>
+        `).join('');
+        container.innerHTML = postulantListHTML;
+        renderPagination(filteredPostulants.length);
+    }
+
+    function populateFilterOptions(postulants) {
+        const filterStatusElement = document.getElementById('filterStatus');
+        const filterInstitueElement = document.getElementById('filterInstitue');
+        const filterDomaineElement = document.getElementById('filterDomaine');
+
+        const uniqueStatuses = new Set();
+        const uniqueInstitues = new Set();
+        const uniqueDomaines = new Set();
+        // Extract unique values for status, etudiantInstitue, and stageDomaine
+        postulants.forEach(postulant => {
+            uniqueStatuses.add(postulant.status.toUpperCase());
+            uniqueInstitues.add(postulant.etudiantInstitue.toUpperCase());
+            uniqueDomaines.add(postulant.stageDomaine.toUpperCase());
+        });
+
+        // Populate filter options for status
+        [...uniqueStatuses].sort().forEach(status => {
+            const option = document.createElement('option');
+            option.value = status;
+            option.textContent = status;
+            filterStatusElement.appendChild(option);
+        });
+
+        // Populate filter options for etudiantInstitue
+        [...uniqueInstitues].sort().forEach(institue => {
+            const option = document.createElement('option');
+            option.value = institue;
+            option.textContent = institue;
+            filterInstitueElement.appendChild(option);
+        });
+
+        // Populate filter options for stageDomaine
+        [...uniqueDomaines].sort().forEach(domaine => {
+            const option = document.createElement('option');
+            option.value = domaine;
+            option.textContent = domaine;
+            filterDomaineElement.appendChild(option);
+        });
+    }
+
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+        const filterStatus = document.getElementById('filterStatus').value.toUpperCase();
+        const filterInstitue = document.getElementById('filterInstitue').value.toUpperCase();
+        const filterDomaine = document.getElementById('filterDomaine').value.toUpperCase();
+        const filterPostulatedAt = document.getElementById('filterPostulatedAt').value;
+
+        filteredPostulants = allPostulants.filter(postulant => {
+            return (
+                (searchTerm === '' ||
+                    postulant.etudiantName.toLowerCase().includes(searchTerm) ||
+                    postulant.etudiantEmail.toLowerCase().includes(searchTerm) ||
+                    postulant.etudiantInstitue.toLowerCase().includes(searchTerm) ||
+                    postulant.stageDomaine.toLowerCase().includes(searchTerm) ||
+                    postulant.stageSujet.toLowerCase().includes(searchTerm) ||
+                    postulant.entrepriseName.toLowerCase().includes(searchTerm) ||
+                    postulant.status.toLowerCase().includes(searchTerm)) &&
+                (filterStatus === '' || postulant.status.toUpperCase() === filterStatus) &&
+                (filterInstitue === '' || postulant.etudiantInstitue.toUpperCase() === filterInstitue) &&
+                (filterDomaine === '' || postulant.stageDomaine.toUpperCase() === filterDomaine)
+            );
+        });
+
+        // Apply sorting based on Postulated At
+        if (filterPostulatedAt === 'asc') {
+            filteredPostulants.sort((a, b) => new Date(a.postulatedAt) - new Date(b.postulatedAt));
+        } else if (filterPostulatedAt === 'desc') {
+            filteredPostulants.sort((a, b) => new Date(b.postulatedAt) - new Date(a.postulatedAt));
+        }
+
+        // Reset current page to 1
+        currentPage = 1;
+
+        // Render the filtered postulant data
+        renderPostulantData(getPaginatedData(), document.getElementById('postulantList'));
+
+        // Update the postulant count
+        document.getElementById('postulantCount').textContent = filteredPostulants.length;
+    }
+
+    function renderPagination(totalItems) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        if (totalPages > 1) {
+            const paginationList = document.createElement('ul');
+            paginationList.classList.add('pagination');
+
+            // Previous button
+            const prevButton = document.createElement('li');
+            prevButton.classList.add('page-item');
+            prevButton.innerHTML = `<a class="page-link" href="#" aria-label="Previous" onclick="changePage(event, 'prev')"><span aria-hidden="true">&laquo;</span></a>`;
+            paginationList.appendChild(prevButton);
+
+            // Page numbers
+            const pageRange = 5; // Number of page numbers to display at a time
+            const startPage = Math.max(1, currentPage - Math.floor(pageRange / 2));
+            const endPage = Math.min(totalPages, startPage + pageRange - 1);
+
+            if (startPage > 1) {
+                const pageItem = document.createElement('li');
+                pageItem.classList.add('page-item');
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(event, 1)">1</a>`;
+                paginationList.appendChild(pageItem);
+
+                if (startPage > 2) {
+                    const ellipsisItem = document.createElement('li');
+                    ellipsisItem.classList.add('page-item', 'disabled');
+                    ellipsisItem.innerHTML = '<span class="page-link">&hellip;</span>';
+                    paginationList.appendChild(ellipsisItem);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.classList.add('page-item');
+                pageItem.classList.toggle('active', i === currentPage);
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(event, ${i})">${i}</a>`;
+                paginationList.appendChild(pageItem);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsisItem = document.createElement('li');
+                    ellipsisItem.classList.add('page-item', 'disabled');
+                    ellipsisItem.innerHTML = '<span class="page-link">&hellip;</span>';
+                    paginationList.appendChild(ellipsisItem);
+                }
+
+                const pageItem = document.createElement('li');
+                pageItem.classList.add('page-item');
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(event, ${totalPages})">${totalPages}</a>`;
+                paginationList.appendChild(pageItem);
+            }
+
+            // Next button
+            const nextButton = document.createElement('li');
+            nextButton.classList.add('page-item');
+            nextButton.innerHTML = `<a class="page-link" href="#" aria-label="Next" onclick="changePage(event, 'next')"><span aria-hidden="true">&raquo;</span></a>`;
+            paginationList.appendChild(nextButton);
+
+            paginationContainer.appendChild(paginationList);
+        }
+    }
+
+    function changePage(event, pageNumber) {
+        event.preventDefault();
+
+        if (pageNumber === 'prev') {
+            currentPage = currentPage > 1 ? currentPage - 1 : 1;
+        } else if (pageNumber === 'next') {
+            currentPage = currentPage < Math.ceil(filteredPostulants.length / itemsPerPage) ? currentPage + 1 : currentPage;
+        } else {
+            currentPage = pageNumber;
+        }
+
+        renderPostulantData(getPaginatedData(), document.getElementById('postulantList'));
+        renderPagination(filteredPostulants.length);
+    }
+
+    function getPaginatedData() {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return filteredPostulants.slice(startIndex, endIndex);
+    }
+
+    // Add event listeners for filter inputs
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('filterStatus').addEventListener('change', applyFilters);
+    document.getElementById('filterInstitue').addEventListener('change', applyFilters);
+    document.getElementById('filterDomaine').addEventListener('change', applyFilters);
+    document.getElementById('filterPostulatedAt').addEventListener('change', applyFilters);
+</script>

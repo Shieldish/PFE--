@@ -13,64 +13,123 @@
        <div class="main-content">
           <%-include('./common/navbar') %>
           <h1 style="margin: 15px; padding: 15px;">Tableau de bord this Plannification</h1>
+
+
+          <hr>
+
+          <!--Main Navigation-->
+<header>
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg bg-body">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+  
+        <!-- Search form -->
+        <form class="d-none d-md-flex input-group w-auto my-auto">
+          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)'
+            style="min-width: 225px" />
+          <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form>
+  
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+          <!-- Notification dropdown -->
+          <li class="nav-item dropdown">
+            <a data-mdb-dropdown-init class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+              role="button" aria-expanded="false">
+              <i class="fas fa-bell"></i>
+              <span class="badge rounded-pill badge-notification bg-danger">1</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="#">Some news</a></li>
+              <li><a class="dropdown-item" href="#">Another news</a></li>
+              <li>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </li>
+            </ul>
+          </li>
+  
+          <!-- Icon dropdown -->
+          <li class="nav-item dropdown">
+            <a data-mdb-dropdown-init class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" aria-expanded="false">
+              <i class="flag-united-kingdom flag m-0"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-united-kingdom flag"></i>English
+                  <i class="fa fa-check text-success ms-2"></i></a>
+              </li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-poland flag"></i>Polski</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-china flag"></i>中文</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-japan flag"></i>日本語</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-germany flag"></i>Deutsch</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-france flag"></i>Français</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-spain flag"></i>Español</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-russia flag"></i>Русский</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="flag-portugal flag"></i>Português</a>
+              </li>
+            </ul>
+          </li>
+  
+          <!-- Avatar -->
+          <li class="nav-item dropdown">
+            <a data-mdb-dropdown-init class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+              id="navbarDropdownMenuLink" role="button" aria-expanded="false">
+              <img src="https://mdbootstrap.com/img/new/avatars/2.jpg" class="rounded-circle" height="22" alt="Avatar"
+                loading="lazy" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="#">My profile</a></li>
+              <li><a class="dropdown-item" href="#">Settings</a></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+  
+    <!-- Heading -->
+    <div class="p-5 bg-body-tertiary mb-4">
+      <h1 class="">Dashboard</h1>
+      <!-- Breadcrumb -->
+      <nav class="d-flex">
+        <h6 class="mb-0">
+          <a href="" class="text-reset">Home</a>
+          <span>/</span>
+          <a href="" class="text-reset">Analytics</a>
+          <span>/</span>
+          <a href="" class="text-reset"><u>Dashboard</u></a>
+        </h6>
+      </nav>
+      <!-- Breadcrumb -->
+    </div>
+    <!-- Heading -->
+  </header>
+  <!--Main Navigation-->
           <hr>
        </div>
        <%-include('./common/footer') %>
     </div>
-    <!-- Scripts -->
-    <!--   <script src="../public/js/script.js"></script> -->
-    <!-- Include Bootstrap JS -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', function() {
-       var select = document.getElementById('language-select');
-       var storedLanguage = localStorage.getItem('selectedLanguage');
-       if (storedLanguage) {
-           select.value = storedLanguage;
-       } else {
-           // If no language is stored, default to English
-           select.value = 'en';
-       }
-       
-       // Function to fetch sidebar items
-       function fetchSidebarItems(language) {
-           fetch('/sidebar', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json'
-               },
-               body: JSON.stringify({ lang: language })
-           })
-           .then(response => {
-               if (!response.ok) {
-                   throw new Error('Network response was not ok');
-               }
-               return response.json();
-           })
-           .then(data => {
-               // Handle response data if needed
-               //console.log('Sidebar items from server:', data);
-               // Store selected language in local storage
-               localStorage.setItem('selectedLanguage', language);
-               localStorage.setItem('sidebarItems', JSON.stringify(data));
-               buildSidebar(data);  // Assuming you have a function to build the sidebar
-           })
-           .catch(error => {
-               console.error('Error fetching sidebar items:', error);
-           });
-       }
-       
-       // Fetch sidebar items using the default language value
-       fetchSidebarItems(select.value);
-       
-       // AJAX request when language is changed
-       select.addEventListener('change', function() {
-           const selectedLanguage = this.value;
-           console.log(selectedLanguage);
-           fetchSidebarItems(selectedLanguage);
-       });
-       });
-    </script>
+  
  </body>

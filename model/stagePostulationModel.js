@@ -32,7 +32,11 @@ etudiantInstitue: {
   allowNull: false,
 },
 
+etudiantSection: {
+  type: DataTypes.STRING,
+  allowNull: false,
 
+},
   etudiantEmail: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -119,6 +123,10 @@ const candidature = sequelize.define('candidature', {
     allowNull: false
   },
   domaine_etudes: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  section: {
     type: DataTypes.STRING,
     allowNull: false
   },

@@ -10,10 +10,22 @@ const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
 
-
 router.get('/', async (req,res)=>{
-    res.render('Encadrement')
+    return res.render('Encadrement')
 })
+
+
+router.get('/AllStages', async (req, res) => {
+    try {
+        const allStages = await stagepostulation.findAll({
+            attributes: { exclude: ['stageId', 'etudiantID'] }
+        });
+        res.json(allStages);
+    } catch (error) {
+        console.error('Error fetching all stages:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 
 module.exports = router;
