@@ -40,7 +40,6 @@
                     <th>Company</th>
                     <th>Status</th>
                     <th>Postulated At</th>
-                    <th>CV</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -76,43 +75,45 @@
     });
 
     async function fetchPostulants() {
-        // Perform fetch request to your backend API to get postulants data
-        const response = await fetch('/entreprise/postulant');
-        const data = await response.json();
-        return data;
-    }
+    // Perform fetch request to your backend API to get postulants data
+    const response = await fetch('/encadrement/AllStages');
+    const data = await response.json();
+    console.log(data)
+    return data;
+}
 
-    function renderPostulantData(postulantList, container) {
-        container.innerHTML = '';
-        const postulantListHTML = postulantList.map(postulant => `
-            <tr>
-                <td>${postulant.etudiantName}</td>
-                <td>${postulant.etudiantEmail}</td>
-                <td>${postulant.etudiantInstitue}</td>
-                <td>${postulant.stageDomaine}</td>
-                <td>${postulant.stageSujet}</td>
-                <td>${postulant.entrepriseName}</td>
-                <td>
-                  <span class="badge badge-pill ${postulant.status === 'a attente' ? 'badge-warning' : postulant.status === 'accepté' ? 'badge-success' : 'badge-danger'}">
-                        ${postulant.status}
-                  </span>
-                </td>
-                <td>${new Date(postulant.postulatedAt).toLocaleString('fr-FR', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    second: 'numeric',
-                    hour12: false
-                })}</td>
-                <td><a href="${postulant.CVPath}" target="_blank">Open CV</a></td>
-                <td><a href="/entreprise/postulant_detail?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-outline-dark">View Details</a></td>
-            </tr>
-        `).join('');
-        container.innerHTML = postulantListHTML;
-        renderPagination(filteredPostulants.length);
-    }
+function renderPostulantData(postulantList, container) {
+    container.innerHTML = '';
+    const postulantListHTML = postulantList.map(postulant => `
+        <tr>
+            <td>${postulant.etudiantName}</td>
+            <td>${postulant.etudiantEmail}</td>
+            <td>${postulant.etudiantInstitue}</td>
+            <td>${postulant.stageDomaine}</td>
+            <td>${postulant.stageSujet}</td>
+            <td>${postulant.entrepriseName}</td>
+            <td>
+              <span class="badge badge-pill ${postulant.status === 'a attente' ? 'badge-warning' : postulant.status === 'accepté' ? 'badge-success' : 'badge-danger'}">
+                    ${postulant.status}
+              </span>
+            </td>
+            <td>${new Date(postulant.postulatedAt).toLocaleString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: false
+            })}</td>
+            
+            <td><a href="/encadrement/viewsMoreDetails?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-dark"><i class="bi bi-eye"></i>View</a></td>
+        </tr>
+    `).join('');
+    container.innerHTML = postulantListHTML;
+    renderPagination(filteredPostulants.length);
+}
+
 
     function populateFilterOptions(postulants) {
         const filterStatusElement = document.getElementById('filterStatus');

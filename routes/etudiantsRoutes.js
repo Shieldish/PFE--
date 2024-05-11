@@ -192,17 +192,29 @@ router.post('/postulate/:id', upload.fields([
             releves_notes: relevesPath
         }, { transaction: t });
 
-        let etudiantID = await etudiant.findOne({ where: { EMAIL: email }, attributes: ['ID'] });
-        if (!etudiantID) {
-            etudiantID = await user_registration.findOne({ where: { EMAIL: email }, attributes: ['UUID'] });
+        let etudiantID;
+        const etudiantData = await etudiant.findOne({ where: { EMAIL: email }, attributes: ['ID'] });
+        if (etudiantData) {
+            etudiantID = etudiantData.ID;
+        } else {
+            const userRegistrationData = await user_registration.findOne({ where: { EMAIL: email }, attributes: ['UUID'] });
+            if (userRegistrationData) {
+                etudiantID = userRegistrationData.UUID;
+            } else {
+                // Handle the case when no record is found for the email
+                // For example, you can throw an error or set a default value
+                console.error('No record found for the provided email');
+                // throw new Error('No record found for the provided email');
+                // etudiantID = someDefaultValue;
+            }
         }
-
+        
         const stagepostulations = await stagepostulation.create({
             stageId: id,
-            etudiantID: etudiantID.ID ? etudiantID.ID : etudiantID.UUID,
+            etudiantID: etudiantID,
             etudiantName: `${nom} ${prenom}`,
             etudiantEmail: email,
-            etudiantSection:`${niveau_etudes} : ${section}`,
+            etudiantSection: `${niveau_etudes} : ${section}`,
             etudiantInstitue: institution,
             stageDomaine: stages.Domaine,
             stageSujet: stages.Libelle,
@@ -210,6 +222,7 @@ router.post('/postulate/:id', upload.fields([
             entrepriseEmail: stages.CreatedBy,
             CV: cvPath
         }, { transaction: t });
+        
 
         await t.commit();
 

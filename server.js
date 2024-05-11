@@ -56,9 +56,9 @@ app.set('views', path.join(__dirname, 'views'))
 
 // Set static directory for public files
 app.use(express.static(path.join(__dirname, '')))
-/* app.use((req, res, next) => {
+/*  app.use((req, res, next) => {
   res.status(404).render('404');
-}); */
+});  */
 // Parse URL-encoded bodies (as sent by HTML forms)
 
 // Set EJS as the view engine**
@@ -73,7 +73,7 @@ app.use('/gestion', authenticate, isUser, databaseRoutes)
 app.use('/settings', authenticate, UserProfilesRoutes)
 app.use('/entreprise',authenticate, entrepriseRoutes)
 app.use('/etudiant',authenticate, etudiantsRoutes)
-app.use('/encadrement', encadrementRoutes)
+app.use('/encadrement',authenticate, encadrementRoutes)
 app.use('/planification',authenticate, planificationRoutes)
 
 
@@ -96,6 +96,7 @@ app.post('/sidebar', (req, res) => {
     }
   });
 });
+
 
 
 app.get('/postulate/:id', async (req, res) => {

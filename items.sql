@@ -58,7 +58,7 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (10, 8, '/gestion', 'fas fa-database', ' قواعد البيانات', ' Databases ', ' Databases '),
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrements', 'Supervisions'),
 (12, 7, '/settings', 'bi bi-person-lines-fill', ' ملفاتي الشخصية', ' Mon Profiles', ' My Profiles'),
-(13, 7, '/settings', 'bi bi-folder-symlink-fill', ' مشاريعي', ' Mes Projets', ' My Projects'),
+(13, 7, '/settings', 'bi bi-pc-display', ' مشاريعي', ' Mes Projets', ' My Projects'),
 (14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management'),
 (15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision'),
 (16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning');
