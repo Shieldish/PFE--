@@ -372,7 +372,7 @@ require('dotenv').config();
 
 const mysql = require('mysql');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs/promises');
 
 const connection = mysql.createConnection({
   host: process.env.DATABASE_HOST,
@@ -381,48 +381,44 @@ const connection = mysql.createConnection({
   database: process.env.DATABASE_NAME
 });
 
-connection.connect(err => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
-    return;
-  }
-
-  console.log('Connected to MySQL database');
-
-  const sqlFilePath = path.join(__dirname, '../items.sql');
-
-  try {
-    const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
-    const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
-
-    // Execute each SQL command one by one
-    executeSQLCommands(sqlCommands, 0);
-  } catch (error) {
-    console.error('Error reading SQL file:', error);
-  }
-});
-
-const executeSQLCommands = (commands, index) => {
-  if (index >= commands.length) {
-    // All commands executed, proceed with other operations
-    return;
-  }
-
-  const sql = commands[index];
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error executing SQL query:', err);
-      // Handle the error and terminate the connection
-      connection.end();
-      return;
-    }
-
-    console.log('SQL query executed successfully');
-    executeSQLCommands(commands, index + 1); // Execute the next command
+const connectToDatabase = () => {
+  return new Promise((resolve, reject) => {
+    connection.connect((err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('Connected to MySQL database');
+        resolve();
+      }
+    });
   });
 };
 
-const fetchSidebarItems = (lang, connection, callback) => {
+const executeSQLCommands = async (commands) => {
+  for (const sql of commands) {
+    try {
+      await executeQuery(sql);
+      console.log('SQL query executed successfully');
+    } catch (err) {
+      console.error('Error executing SQL query:', err);
+      return; // Don't terminate the connection here
+    }
+  }
+};
+
+const executeQuery = (sql) => {
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
+
+const fetchSidebarItems = async (lang) => {
   const sidebarSql = `
     SELECT
       s.id,
@@ -434,16 +430,8 @@ const fetchSidebarItems = (lang, connection, callback) => {
     ORDER BY s.parent_id, s.id
   `;
 
-  connection.query(sidebarSql, (sidebarErr, sidebarResults) => {
-    if (sidebarErr) {
-      console.error('Error fetching sidebar items:', sidebarErr);
-      if (typeof callback === 'function') {
-        callback('Error fetching sidebar items', null);
-      }
-      return;
-    }
-
-    // Build the sidebar items structure
+  try {
+    const sidebarResults = await executeQuery(sidebarSql);
     const sidebarItems = sidebarResults.reduce((acc, item) => {
       if (item.parent_id === null) {
         acc.push({
@@ -466,12 +454,32 @@ const fetchSidebarItems = (lang, connection, callback) => {
       }
       return acc;
     }, []);
-
-    //console.log("Sidebar Items : =>", sidebarItems);
-    if (typeof callback === 'function') {
-      callback(null, sidebarItems);
-    }
-  });
+    return sidebarItems;
+  } catch (err) {
+    console.error('Error fetching sidebar items:', err);
+    throw err;
+  }
 };
 
-module.exports = { connection, fetchSidebarItems };
+const main = async () => {
+  try {
+    await connectToDatabase();
+    const sqlFilePath = path.join(__dirname, '../items.sql');
+    const sqlQuery = await fs.readFile(sqlFilePath, 'utf8');
+    const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
+    await executeSQLCommands(sqlCommands);
+    const sidebarItems = await fetchSidebarItems('en');
+    console.log('Sidebar Items:', sidebarItems);
+  } catch (err) {
+    console.error('Error:', err);
+  }
+};
+
+module.exports = {
+  connection,
+  connectToDatabase,
+  executeSQLCommands,
+  executeQuery,
+  fetchSidebarItems,
+  main
+};

@@ -5,7 +5,7 @@ const path = require('path')
 const ejs = require('ejs')
 const zlib = require('node:zlib');
 const routes = require('./routes/routes')
-const {connection, fetchSidebarItems} = require('./model/dbConfig');
+const {connection, fetchSidebarItems,main} = require('./model/dbConfig');
 const connectionRoutes = require('./routes/connectionRoutes')
 const uploadsRoutes = require('./routes/uploadsRoutes')
 const databaseRoutes = require('./routes/databaseRoutes')
@@ -80,12 +80,22 @@ app.use('/planification',authenticate, planificationRoutes)
 
 
 
+main();
 
-// Define fetchSidebarItems function
+// Call the fetchSidebarItems function in an Express route
+app.post('/sidebar', async (req, res) => {
+  const language = req.body.lang || 'en'; // Default to English if no language is provided
 
+  try {
+    const sidebarItems = await fetchSidebarItems(language);
+    res.json(sidebarItems); // Sending sidebarItems to the frontend as JSON
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 // Usage of fetchSidebarItems function
-app.post('/sidebar', (req, res) => {
+/* app.post('/sidebar', (req, res) => {
   const language = req.body.lang || 'en'; // Default to English if no language is provided
 
   fetchSidebarItems(language, connection, (error, sidebarItems) => {
@@ -96,7 +106,7 @@ app.post('/sidebar', (req, res) => {
     }
   });
 });
-
+ */
 
 
 app.get('/postulate/:id', async (req, res) => {
