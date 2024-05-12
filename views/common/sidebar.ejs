@@ -1,88 +1,89 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+
 <style>
- /* Sidebar Navigation */
- .sidebar-nav {
+  .sidebar-nav {
     background-color: #060607;
     height: 100vh;
-    width: 30vh;
+    width: auto;
     position: relative;
     z-index: 1;
     top: 0;
     left: 0;
     overflow-x: hidden;
-    transition: 0.5s;
+    transition: 0.5s; 
     padding-top: 60px;
-    display: inline-block;
+  
   }
-  .sidebar-nav.hide {
-  transform: translateX(-100%);
-}
-.sidebar-nav.hide-sidebar {
-  transform: translateX(-100%);
-}
 
+  .sidebar-nav .logo {
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
 
-  .sidebar-nav.collapsed {
-    width: 0;
+  .sidebar-nav .logo a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .sidebar-nav ul#sidebarItems {
+    list-style-type: none;
     padding: 0;
+    margin: 0;
   }
 
-.sidebar-nav .logo {
-  padding: 20px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-}
+  .sidebar-nav .sidebar-item {
+    display: block;
+    color: #fefefe;
+    padding: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+  }
 
-.sidebar-nav .logo a {
-  color: #ffffff;
-  text-decoration: none;
-}
+  .sidebar-nav .sidebar-item:hover {
+    background-color: #ddd;
+    color: #000;
+  }
 
-.sidebar-nav ul#sidebarItems {
-  list-style-type:none;
-  padding: 0;
-  margin: 0;
-}
+  .sidebar-nav .sidebar-item i {
+    margin-right: 10px;
+  }
 
-.sidebar-nav .sidebar-item {
-  display: block;
-  color: #fefefe;
-  padding: 10px;
-  text-decoration: none;
-  transition: 0.3s;
-}
+  .sidebar-nav .sidebar-subitem {
+    display: block;
+    color: #ffffff;
+    padding: 12px 16px 12px 36px;
+    text-decoration: none;
+    transition: 0.3s;
+  }
 
-.sidebar-nav .sidebar-item:hover {
-  background-color: #ddd;
-  color: #000;
-}
+  .sidebar-nav .sidebar-subitem:hover {
+    background-color: #ccc;
+    color: #000;
+  }
 
-.sidebar-nav .sidebar-item i {
-  margin-right: 10px;
-}
+  .sidebar-nav .submenu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.sidebar-nav .sidebar-subitem {
-  display: block;
-  color: #ffffff;
-  padding: 12px 16px 12px 36px;
-  text-decoration: none;
-  transition: 0.3s;
-}
+  @media (max-width: 767.98px) {
+      .sidebar-nav {
+        width: 0;
+        padding: 0;
+      }
 
-.sidebar-nav .sidebar-subitem:hover {
-  background-color: #ccc;
-  color: #000;
-}
+      .sidebar-nav.show {
+        width: auto;
+        transition: width 0.5s ease-in-out; /* Added transition */
+      }
+    }
 
-.sidebar-nav .submenu {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
 
-/* Sidebar Animations */
-/* @keyframes fadeIn {
+    @keyframes fadeIn {
   0% {
     opacity: 0;
     transform: translateX(-20px);
@@ -124,14 +125,10 @@
 
 .sidebar-nav .submenu.show {
   max-height: 500px; 
-} */
+}
 </style>
 
-
-<div class="sidebar-nav">
-  <div class="toggle-sidebar">
-    <i class="fas fa-bars"></i>
-  </div>
+<div class="sidebar-nav collapse d-md-block" id="sidebarNav">
   <div class="logo">
     <a href="/">Gestion des Stages</a>
   </div>
@@ -140,33 +137,9 @@
   </ul>
 </div>
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
-  const sidebar = document.querySelector('.sidebar-nav');
-
-  // Function to toggle sidebar visibility
-  function toggleSidebar() {
-    sidebar.classList.toggle('hide-sidebar');
-    const isSidebarHidden = sidebar.classList.contains('hide-sidebar');
-    localStorage.setItem('sidebarHidden', isSidebarHidden);
-  }
-
-  // Toggle sidebar visibility
-  toggleSidebarBtn.addEventListener('click', toggleSidebar);
-
-  // Check local storage for sidebar state on page load
-  const isSidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
-  if (isSidebarHidden) {
-    sidebar.classList.add('hide-sidebar');
-  }
-
-  // Rest of your existing code...
-});
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-</script>
 <script>
 
   // Function to generate the sidebar menu
@@ -265,4 +238,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var sidebarNav = $('#sidebarNav');
+    var toggler = $('.navbar-toggler');
+
+    toggler.on('click', function() {
+      var isExpanded = sidebarNav.hasClass('show');
+
+      if (isExpanded) {
+        sidebarNav.removeClass('show');
+        toggler.attr('aria-expanded', 'false');
+      } else {
+        sidebarNav.addClass('show');
+        toggler.attr('aria-expanded', 'true');
+      }
+    });
+  });
 </script>

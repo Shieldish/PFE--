@@ -129,7 +129,7 @@ router.post('/:tableName/add', async (req, res) => {
           otherFields.DATE= getFormattedDateTime();
       } */
 
-      const existingUser = await user_registration.findOne({ where: { EMAIL: email } });
+      const existingUser = await Model.findOne({ where: { EMAIL: email } });
       if (existingUser) {
           req.flash('error', `User with email ${EMAIL} already exists`);
           // Redirect the user to the appropriate route after successful creation

@@ -47,8 +47,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px; 
-     width: auto; 
+ /*    padding: 10px 20px;  */
+    width: auto; 
     
     /* Adjust the width as needed */
   
@@ -106,8 +106,9 @@ body {
 
 /* Styles du contenu principal */
 .main-content {
-   flex: 1;
+    flex: 1;
     padding: 0px; 
+    margin: 0px;
     width: auto;
     height: 85%;
     overflow: auto;

@@ -3,7 +3,6 @@
     
     <script>
         // ... (existing code) ...
-        let total;
 
         function populateFilterOptions(stages, filterElementId, propertyName) {
     const filterElement = document.getElementById(filterElementId);
@@ -84,8 +83,8 @@
             lastPageLink.appendChild(lastPageLinkAnchor);
             paginationContainer.appendChild(lastPageLink);
         }
-      /*   page = 1, limit = 9 */
-        function fetchStages() {  
+
+        function fetchStages(page = 1, limit = 9) {
     const domainFilter = document.getElementById('domainFilter').value;
     const nomFilter = document.getElementById('nomFilter').value;
     const titreFilter = document.getElementById('titreFilter').value;
@@ -93,27 +92,7 @@
     const searchInput = document.getElementById('searchInput').value;
     const sortOrder = document.getElementById('sortFilter').value; // Get the selected sort order
 
-
-    let url = `/etudiant/All?sortBy=createdAt&sortOrder=${sortOrder}`;
-
-    if (domainFilter) {
-        url += `&Domaine=${encodeURIComponent(domainFilter)}`;
-    }
-    if (nomFilter) {
-        url += `&Nom=${encodeURIComponent(nomFilter)}`;
-    }
-    if (titreFilter) {
-        url += `&Titre=${encodeURIComponent(titreFilter)}`;
-    }
-    if (stateFilter) {
-        url += `&State=${encodeURIComponent(stateFilter)}`;
-    }
-    if (searchInput) {
-        url += `&search=${encodeURIComponent(searchInput)}`;
-    }
-
-/* 
-    let url = `/etudiant/All?page=${page}&limit=${limit}&sortBy=createdAt&sortOrder=${sortOrder}`; 
+    let url = `/etudiant/All?page=${page}&limit=${limit}&sortBy=createdAt&sortOrder=${sortOrder}`; // Pass the sortBy and sortOrder parameters
 
     if (domainFilter) {
         url += `&Domaine=${encodeURIComponent(domainFilter)}`;
@@ -130,7 +109,7 @@
     if (searchInput) {
         url += `&search=${encodeURIComponent(searchInput)}`;
     }
- */
+
 
     fetch(url)
         .then(response => {
@@ -141,7 +120,6 @@
         })
         .then(data => {
             const { stages, pagination } = data;
-            total=stages.length;
             const stageGrid = document.getElementById("stageGrid");
             stageGrid.innerHTML = ""; // Clear previous stage items
 

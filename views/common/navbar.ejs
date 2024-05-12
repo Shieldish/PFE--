@@ -1,165 +1,112 @@
-<style>
-  .myNav {
-      background-color: royalblue;
-     
-       width: auto;
-      
-  }
-  .navbar-nav {
-  display: flex;
-  justify-content: flex-end; /* Align items to the right */
-  align-items: center;
-  margin: 0; /* Remove margin */
-  padding: 0; /* Remove padding */
-  list-style: none; /* Remove default list styles */
-}
-/*   .navbar-nav {
-       display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 10px;
-      
 
-  }
- */
-  .nav-item {
-      margin-left: 25px;
-  }
-
-  .form-control,
-  .btn {
-      border-radius: 5px;
-  }
-
-  .btn-outline-light {
-      border-color: #fff;
-      color: #fff;
-      margin-left: 10px; /* Add space between the input and button */
-  }
-
-  .btn-outline-dark{
-    border-radius: 5px;
-    
-  }
-
+  <body>
+    <style>
+        .custom-navbar-bg {
+          background-color:rgb(32, 32, 32); /* Replace 'your_custom_color' with your desired color code */
+        }
+      </style>
   
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light custom-navbar-bg">
+    <div class="container-fluid">
 
-  .btn-outline-light:hover {
-      background-color: #f9f9f9;
-      color: #000000;
-  }
-
-  .user-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-  }
-
-  /* Adjust dropdown menu width and overflow */
-  .dropdown-menu {
-      position: relative;
-      min-width: 200px; /* Adjust width as needed */
-      max-width: 300px; /* Adjust width as needed */
-      overflow-wrap: break-word; /* Wrap long content */
-  }
-</style>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark myNav">
-  <div class="container-fluid">
-   
-      <!--  <div class="toggle-sidebar-btn">
+ 
+            <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
       
-            <span class="navbar-toggler-icon"></span>
-            <button class=" btn-outline-dark">sidebar</button>
-        
-       </div> -->
-      <a class="navbar-brand" href="#"></a>
-      <form class="d-flex me-2" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 300px;">
-          <button class="btn btn-outline-light" type="submit">Search</button>
-      </form>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-              </li>
-              <!-- <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Dropdown
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-dark">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                  </ul>
-              </li> -->
-              <li class="nav-item">
-                  <div class="language-selector">
-                      <select id="language-select" class="form-control">
-                          <option value="en">English</option>
-                          <option value="fr">Français</option>
-                          <option value="ar">العربية</option>
-                      </select>
-                  </div>
-              </li>
-             <!--  <li class="nav-item">
-                  <a class="nav-link disabled">Disabled</a>
-              </li> -->
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <img src="../public/images/user/2.png" alt="User Logo" class="user-logo">
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                      <li><div class="dropdown-item user-info text-center">user-info</div></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><div class="dropdown-item user-name"></div></li>
-                      <li><div class="dropdown-item user-prenom"></div></li>
-                      <li><div class="dropdown-item user-email"></div></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item">
-                  <button class="btn btn-outline-danger" id="logoutButton">
-                      <i class="fas fa-sign-out-alt"></i> Logout
-                  </button>
-              </li>
+    
+       <!--  <form class="d-none d-md-flex form-inline my-2 my-lg-2">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+          </form> -->
+          <form class="d-none d-md-flex input-group w-auto my-auto">
+            <input autocomplete="off" type="search" class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
+            <button class="btn btn-outline-success rounded my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+          </form>
+          
+  
+      <!-- Right links -->
+      <ul class="navbar-nav ms-auto d-flex flex-row">
+        <!-- Notification dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell"></i>
+            <span class="badge rounded-pill badge-danger">1</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink1">
+            <li><a class="dropdown-item" href="#">Some news</a></li>
+            <li><a class="dropdown-item" href="#">Another news</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
-      </div>
-  </div>
-</nav>
+        </li>
+  
+        <li class="nav-item">
+            <div class="language-selector">
+                <select id="language-select" class="form-control">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                 <img src="../public/images/user/2.png" alt="User Logo"  class="rounded-circle" height="22" alt="Avatar" loading="lazy"> 
+         
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><div class="dropdown-item user-info text-center">user-info</div></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><div class="dropdown-item user-name"></div></li>
+                <li><div class="dropdown-item user-prenom"></div></li>
+                <li><div class="dropdown-item user-email"></div></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
+            </ul>
+        </li>
+     
+        <li class="nav-item">
+            <button class="btn btn-outline-danger" id="logoutButton">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-  fetch('/connection/profiles')
-      .then(response => response.json())
-      .then(data => {
-          // Update the profile card with the received data
-          updateProfileCard(data);
-      })
-      .catch(error => {
-          console.error('Error:', error);
-      });
+  <script>
+    fetch('/connection/profiles')
+        .then(response => response.json())
+        .then(data => {
+            // Update the profile card with the received data
+            updateProfileCard(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+  
+    function updateProfileCard(userData) {
+        const userNameElement = document.querySelector('.user-name');
+        const userEmailElement = document.querySelector('.user-email');
+        const userPrenomElement = document.querySelector('.user-prenom');
+  
+        // Update the user name
+        userNameElement.textContent = `Name: ${userData.NOM}`;
+  
+        // Update the user prenom
+        userPrenomElement.textContent = `Prenom: ${userData.PRENOM}`;
+  
+        // Update the user email
+        userEmailElement.textContent = `Email: ${userData.EMAIL}`;
+    }
+  </script>
 
-  function updateProfileCard(userData) {
-      const userNameElement = document.querySelector('.user-name');
-      const userEmailElement = document.querySelector('.user-email');
-      const userPrenomElement = document.querySelector('.user-prenom');
-
-      // Update the user name
-      userNameElement.textContent = `Name: ${userData.NOM}`;
-
-      // Update the user prenom
-      userPrenomElement.textContent = `Prenom: ${userData.PRENOM}`;
-
-      // Update the user email
-      userEmailElement.textContent = `Email: ${userData.EMAIL}`;
-  }
-</script>
-<script>
+  <script>
     document.getElementById('logoutButton').addEventListener('click', function() {
       // Make an AJAX request to the backend logout endpoint
       var xhr = new XMLHttpRequest();
@@ -178,3 +125,7 @@
       xhr.send();
     });
     </script>
+
+
+
+</body>

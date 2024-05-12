@@ -92,7 +92,7 @@ app.post('/sidebar', async (req, res) => {
   } catch (error) {
     res.status(500).send(error);
   }
-});
+}); 
 
 // Usage of fetchSidebarItems function
 /* app.post('/sidebar', (req, res) => {

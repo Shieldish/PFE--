@@ -34,52 +34,46 @@
         <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
     </div>
     <hr>
-
-    <div id="stageTable" class="table-responsive table-bordered myclass" >
+    
+    <div id="stageTable" class="table-responsive table-bordered myclass">
         <% if (stages && stages.length > 0) { %>
-          
-            <table class="table table-hover searchable sortable">
-                <thead class="bg-warning">
-                    <tr>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                        <% Object.keys(stages[0]).forEach(key => { %>
-                            <th><%= key %></th>
-                        <% }); %>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                        
-
-                    <% stages.forEach(stage => { %>
-                        <tr>
-                            <!-- Edit Button -->
-                              <td> <button type="button" class="btn-outline-success btn-sm edit-button" data-id="<%= stage.id %>">  <i class="bi bi-pencil-square"></i>  edit </button> </td>
-
-                              <td>
-                            
-                                 
-                                        <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-id="<%= stage.id %>" data-toggle="modal" data-target="#confirmDeleteModal">
-                                            <i class="bi bi-trash3"></i> delete
-                                        </button>
-                              </td>
-                                             <!-- Modal -->
-
-
-  
-
-                            <% Object.values(stage).forEach(value => { %>
-                                <td><%= value %></td>
-                            <% }); %>
-                        </tr>
+    
+        <table class="table table-hover searchable sortable">
+            <thead class="bg-warning">
+                <tr>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <% Object.keys(stages[0]).forEach(key => { %>
+                    <th><%= key %></th>
                     <% }); %>
-                </tbody>
-            </table>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <% stages.forEach(stage => { %>
+                <tr>
+                    <!-- Edit Button -->
+                    <td> <button type="button" class="btn-outline-success btn-sm edit-button" data-id="<%= stage.id %>"> <i class="bi bi-pencil-square"></i> edit </button> </td>
+    
+                    <td>
+    
+    
+                        <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-id="<%= stage.id %>" data-toggle="modal" data-target="#confirmDeleteModal">
+                            <i class="bi bi-trash3"></i> delete
+                        </button>
+                    </td>
+                    <!-- Modal -->
+    
+                    <% Object.values(stage).forEach(value => { %>
+                    <td><%= value %></td>
+                    <% }); %>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
         <% } else { %>
-            <p>Aucun stage trouvé.</p>
+        <p>Aucun stage trouvé.</p>
         <% } %>
     </div>
-
 <!-- Add this modal at the end of your HTML body -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -102,7 +96,8 @@
 
 </div>
 
-<script>
+
+<!-- <script>
     $(document).ready(function(){
         $('#searchInput').on('keyup', function() {
             var value = $(this).val().toLowerCase();
@@ -112,24 +107,11 @@
         });
     });
 </script>
+ -->
+
 
 <script>
-    // Client-side JavaScript
-document.addEventListener('DOMContentLoaded', function () {
-    const editButtons = document.querySelectorAll('.edit-button');
-
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const id = this.dataset.id;
-            window.location.href = `/entreprise/edit/${id}`;
-        });
-    });
-});
-
-</script>
-
-<script>
-   document.addEventListener('DOMContentLoaded', function() {
+/*    document.addEventListener('DOMContentLoaded', function() {
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const deleteButtons = document.querySelectorAll('.delete-button');
 
@@ -166,6 +148,78 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+ */
+// Get the input field and table body elements
+searchInput.addEventListener('input', function() {
+  const searchValue = this.value.toLowerCase();
+  const rows = tableBody.getElementsByTagName('tr');
 
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowText = row.textContent.toLowerCase();
 
+    if (rowText.includes(searchValue)) {
+        console.log(row)
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+});
+
+// Client-side JavaScript
+document.addEventListener('DOMContentLoaded', function () {
+    const editButtons = document.querySelectorAll('.edit-button');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.dataset.id;
+            window.location.href = `/entreprise/edit/${id}`;
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const deleteButtons = document.querySelectorAll('.delete-button');
+
+    // When delete button inside modal is clicked
+    confirmDeleteBtn.addEventListener('click', function() {
+        const stageId = this.getAttribute('data-id');
+        
+        // Perform AJAX delete request here
+        fetch(`/entreprise/delete/${stageId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                // Deletion successful
+                console.log('Stage deleted successfully');
+                // Remove the corresponding table row from the DOM
+                const row = document.querySelector(`tr[data-id="${stageId}"]`);
+                if (row) {
+                    row.remove();
+                }
+                // Close the modal after deletion
+                $('#confirmDeleteModal').modal('hide');
+            } else {
+                // Error occurred, handle it accordingly
+                console.error('Error deleting stage:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting stage:', error);
+        });
+    });
+
+    // When any delete button is clicked
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const stageId = this.getAttribute('data-id');
+            // Set the stageId to the confirmation modal's delete button
+            confirmDeleteBtn.setAttribute('data-id', stageId);
+        });
+    });
+});
   </script>
+

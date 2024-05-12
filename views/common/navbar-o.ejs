@@ -1,0 +1,180 @@
+<style>
+  .myNav {
+      background-color: royalblue;
+     
+       width: auto;
+      
+  }
+  .navbar-nav {
+  display: flex;
+  justify-content: flex-end; /* Align items to the right */
+  align-items: center;
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+  list-style: none; /* Remove default list styles */
+}
+/*   .navbar-nav {
+       display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 10px;
+      
+
+  }
+ */
+  .nav-item {
+      margin-left: 25px;
+  }
+
+  .form-control,
+  .btn {
+      border-radius: 5px;
+  }
+
+  .btn-outline-light {
+      border-color: #fff;
+      color: #fff;
+      margin-left: 10px; /* Add space between the input and button */
+  }
+
+  .btn-outline-dark{
+    border-radius: 5px;
+    
+  }
+
+  
+
+  .btn-outline-light:hover {
+      background-color: #f9f9f9;
+      color: #000000;
+  }
+
+  .user-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+  }
+
+  /* Adjust dropdown menu width and overflow */
+  .dropdown-menu {
+      position: relative;
+      min-width: 200px; /* Adjust width as needed */
+      max-width: 300px; /* Adjust width as needed */
+      overflow-wrap: break-word; /* Wrap long content */
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark myNav">
+  <div class="container-fluid">
+   
+      <!--  <div class="toggle-sidebar-btn">
+      
+            <span class="navbar-toggler-icon"></span>
+            <button class=" btn-outline-dark">sidebar</button>
+        
+       </div> -->
+      <a class="navbar-brand" href="#"></a>
+      <form class="d-flex me-2" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 300px;">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+      </form>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+              </li>
+              <!-- <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+              </li> -->
+              <li class="nav-item">
+                  <div class="language-selector">
+                      <select id="language-select" class="form-control">
+                          <option value="en">English</option>
+                          <option value="fr">Français</option>
+                          <option value="ar">العربية</option>
+                      </select>
+                  </div>
+              </li>
+             <!--  <li class="nav-item">
+                  <a class="nav-link disabled">Disabled</a>
+              </li> -->
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <img src="../public/images/user/2.png" alt="User Logo" class="user-logo">
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                      <li><div class="dropdown-item user-info text-center">user-info</div></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><div class="dropdown-item user-name"></div></li>
+                      <li><div class="dropdown-item user-prenom"></div></li>
+                      <li><div class="dropdown-item user-email"></div></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item">
+                  <button class="btn btn-outline-danger" id="logoutButton">
+                      <i class="fas fa-sign-out-alt"></i> Logout
+                  </button>
+              </li>
+          </ul>
+      </div>
+  </div>
+</nav>
+
+<script>
+  fetch('/connection/profiles')
+      .then(response => response.json())
+      .then(data => {
+          // Update the profile card with the received data
+          updateProfileCard(data);
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+
+  function updateProfileCard(userData) {
+      const userNameElement = document.querySelector('.user-name');
+      const userEmailElement = document.querySelector('.user-email');
+      const userPrenomElement = document.querySelector('.user-prenom');
+
+      // Update the user name
+      userNameElement.textContent = `Name: ${userData.NOM}`;
+
+      // Update the user prenom
+      userPrenomElement.textContent = `Prenom: ${userData.PRENOM}`;
+
+      // Update the user email
+      userEmailElement.textContent = `Email: ${userData.EMAIL}`;
+  }
+</script>
+<script>
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      // Make an AJAX request to the backend logout endpoint
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/connection/logout', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // Logout successful, redirect to login page
+            window.location.href = '/connection/login';
+          } else {
+            // Handle error response if needed
+            console.error('Error logging out:', xhr.responseText);
+          }
+        }
+      };
+      xhr.send();
+    });
+    </script>

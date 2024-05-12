@@ -127,6 +127,9 @@ stage.beforeCreate((stage, _) => {
   stage.id = uuidv4();
 });
 
+
+
+
 // Sync the model with the database using alter method
 (async () => {
   await stage.sync({ alter: true }); // This will alter the table to match the model definition
