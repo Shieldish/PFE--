@@ -110,8 +110,8 @@ body {
     padding: 0px; 
     margin: 0px;
     width: auto;
-    height: 85%;
-    overflow: auto;
+    height: auto;
+  overflow: auto; 
   /*    min-height: calc(100vh - 60px); */ /* 60px correspond à la hauteur du footer */
       
 }
@@ -150,13 +150,14 @@ body {
 }
 .custom-container {
     display: flex;
-    height: 100vh;
+  
     margin: 0;
     padding: 0 !important;
     max-width: none;
     top: 0;
+    bottom: 0;
     flex-grow: 1;
-    display: flex;
+   
 
    
    

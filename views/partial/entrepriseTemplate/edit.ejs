@@ -24,12 +24,20 @@
          padding-top: 20px;
          border-radius: 8px;
          box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-         max-width: 50%;
+         width: 50%;
          margin: 0 auto; /* Center the container */
          overflow-y: auto; /* Add vertical scroll if content exceeds wrapper height */
          height: auto; /* Example max height, adjust as needed */
-         width: auto;
+       
          }
+
+         @media only screen and (max-width: 768px) {
+    .content-wrapper {
+        padding: 20px;
+        margin-top: 10px;
+        width: 100%; /* Adjust width to fit smaller screens */
+    }
+}
       </style>
    </head>
    <body>
@@ -137,5 +145,8 @@
             </div>
          </form>
       </div>
+
    </body>
+
+   <%-include('../../common/footer') %>
 </html>

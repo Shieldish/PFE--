@@ -10,7 +10,9 @@
        border-collapse: collapse;
        } 
        .modal-dialog {
-       max-width: calc(30% - 15px); /* Adjust as needed */
+      /*  max-width: calc(30% - 15px);  */
+      width: auto;
+      min-width:30%;
        margin: 1rem auto;
        } 
        .button-container {
@@ -155,8 +157,9 @@
              </h2>
              <% } %>
           </div>
+          <%-include('./common/footer') %>
        </div>
-       <%-include('./common/footer') %>
+      
     </div>
     <%-include('./partial/crud_fades') %>
     <!-- Include Bootstrap JS -->
