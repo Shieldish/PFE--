@@ -85,7 +85,7 @@
             paginationContainer.appendChild(lastPageLink);
         }
       /*   page = 1, limit = 9 */
-        function fetchStages() {  
+        function fetchStages( page = 1, limit = 18) {  
     const domainFilter = document.getElementById('domainFilter').value;
     const nomFilter = document.getElementById('nomFilter').value;
     const titreFilter = document.getElementById('titreFilter').value;
@@ -94,7 +94,7 @@
     const sortOrder = document.getElementById('sortFilter').value; // Get the selected sort order
 
 
-    let url = `/etudiant/All?sortBy=createdAt&sortOrder=${sortOrder}`;
+   /*  let url = `/etudiant/All?sortBy=createdAt&sortOrder=${sortOrder}`;
 
     if (domainFilter) {
         url += `&Domaine=${encodeURIComponent(domainFilter)}`;
@@ -110,9 +110,9 @@
     }
     if (searchInput) {
         url += `&search=${encodeURIComponent(searchInput)}`;
-    }
+    } */
 
-/* 
+
     let url = `/etudiant/All?page=${page}&limit=${limit}&sortBy=createdAt&sortOrder=${sortOrder}`; 
 
     if (domainFilter) {
@@ -130,7 +130,7 @@
     if (searchInput) {
         url += `&search=${encodeURIComponent(searchInput)}`;
     }
- */
+ 
 
     fetch(url)
         .then(response => {

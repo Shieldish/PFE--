@@ -75,14 +75,14 @@
         })
         .then(data => {
             const stages = Array.isArray(data) ? data : [data]; // Ensure stages is an array
-            console.log(stages); // Log the received stages
+          
             // Reference to the stageGrid container
             const stageGrid = document.getElementById('stageGrid');
             // Loop through each stage and create grid item
 
           // Loop through each stage and create grid item
 stages.forEach(stage => {
-  console.log(stage.id)
+
     const stageItem = document.createElement('div');
     stageItem.classList.add('col-md-8'); // Adjust column width as needed
     stageItem.classList.add('card', 'animate__animated', 'animate__fadeInUp');

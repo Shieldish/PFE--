@@ -53,7 +53,6 @@
                 <tr>
                     <!-- Edit Button -->
                     <td> <button type="button" class="btn-outline-success btn-sm edit-button" data-id="<%= stage.id %>"> <i class="bi bi-pencil-square"></i> edit </button> </td>
-    
                     <td>
     
     
@@ -111,7 +110,7 @@
 
 
 <script>
-/*    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const deleteButtons = document.querySelectorAll('.delete-button');
 
@@ -148,7 +147,7 @@
         });
     });
 });
- */
+ 
 // Get the input field and table body elements
 searchInput.addEventListener('input', function() {
   const searchValue = this.value.toLowerCase();
@@ -159,7 +158,6 @@ searchInput.addEventListener('input', function() {
     const rowText = row.textContent.toLowerCase();
 
     if (rowText.includes(searchValue)) {
-        console.log(row)
       row.style.display = '';
     } else {
       row.style.display = 'none';
@@ -167,7 +165,13 @@ searchInput.addEventListener('input', function() {
   }
 });
 
-// Client-side JavaScript
+
+
+  </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
 document.addEventListener('DOMContentLoaded', function () {
     const editButtons = document.querySelectorAll('.edit-button');
 
@@ -178,48 +182,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-document.addEventListener('DOMContentLoaded', function() {
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    const deleteButtons = document.querySelectorAll('.delete-button');
-
-    // When delete button inside modal is clicked
-    confirmDeleteBtn.addEventListener('click', function() {
-        const stageId = this.getAttribute('data-id');
-        
-        // Perform AJAX delete request here
-        fetch(`/entreprise/delete/${stageId}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (response.ok) {
-                // Deletion successful
-                console.log('Stage deleted successfully');
-                // Remove the corresponding table row from the DOM
-                const row = document.querySelector(`tr[data-id="${stageId}"]`);
-                if (row) {
-                    row.remove();
-                }
-                // Close the modal after deletion
-                $('#confirmDeleteModal').modal('hide');
-            } else {
-                // Error occurred, handle it accordingly
-                console.error('Error deleting stage:', response.statusText);
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting stage:', error);
-        });
-    });
-
-    // When any delete button is clicked
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const stageId = this.getAttribute('data-id');
-            // Set the stageId to the confirmation modal's delete button
-            confirmDeleteBtn.setAttribute('data-id', stageId);
-        });
-    });
-});
-  </script>
-
+</script>
