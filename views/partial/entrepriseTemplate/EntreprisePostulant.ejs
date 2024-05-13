@@ -1,3 +1,6 @@
+ <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+ <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <div class="container">
     <!-- HTML code with dynamic length display -->
     <p style="font-weight: bold;" id="postulantListTitle" class="mt-4 mb-4 text-center">Postulants List(e)s - <span id="postulantCount">0</span></p>
@@ -76,7 +79,9 @@
         const data = await response.json();
         return data;
     }
-    
+
+
+
     function renderPostulantData(postulantList, container) {
         container.innerHTML = '';
         const postulantListHTML = postulantList.map(postulant => `

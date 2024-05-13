@@ -1,4 +1,5 @@
-
+<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <body>
     
     <script>
@@ -168,9 +169,10 @@
               // Loop through each stage and create grid item
               stages.forEach((stage) => {
                   const stageItem = document.createElement("div");
-                  stageItem.classList.add("col-md-4"); // Adjust column width as needed
+              /*     stageItem.classList.add("col-md-10");   */
+            
 
-                  stageItem.classList.add("card", "animate__animated", "animate__fadeInUp");
+                  stageItem.classList.add("card","animate__animated", "animate__fadeInUp");
 
                 
                   const longDescription = stage.Description; // Use the original description for full text

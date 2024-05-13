@@ -1,85 +1,107 @@
-
-  <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template with Bootstrap</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .custom-navbar-bg {
-          background-color:rgb(32, 32, 32); /* Replace 'your_custom_color' with your desired color code */
+            background-color: rgb(32, 32, 32); /* Replace 'your_custom_color' with your desired color code */
         }
-      </style>
-  
-  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
 
- 
-            <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-      
+        /* Custom CSS to fix dropdown issue */
+        .dropdown-menu-end {
+            right: 0;
+            left: auto;
+        }
+
+        .dropdown-menu.dropdown-menu-dark {
+            background-color: #343a40; /* Change background color if needed */
+        }
+
+        .user-info {
+            color: #ffffff; /* Change text color if needed */
+        }
+
+        .user-name,
+        .user-prenom,
+        .user-email {
+            color: #ffffff; /* Change text color if needed */
+        }
+        .nav-item{
+          margin: 5px;
+        }
     
-       <!--  <form class="d-none d-md-flex form-inline my-2 my-lg-2">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-          </form> -->
-          <form class="d-none d-md-flex input-group w-auto my-auto">
-            <input autocomplete="off" type="search" class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
-            <button class="btn btn-outline-success rounded my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-          </form>
-          
-  
-      <!-- Right links -->
-      <ul class="navbar-nav ms-auto d-flex flex-row">
-        <!-- Notification dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link me-3 me-lg-0 dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bell"></i>
-            <span class="badge rounded-pill badge-danger">1</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink1">
-            <li><a class="dropdown-item" href="#">Some news</a></li>
-            <li><a class="dropdown-item" href="#">Another news</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-  
-        <li class="nav-item">
-            <div class="language-selector">
-                <select id="language-select" class="form-control">
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="ar">العربية</option>
-                </select>
-            </div>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                 <img src="../public/images/user/2.png" alt="User Logo"  class="rounded-circle" height="22" alt="Avatar" loading="lazy"> 
-         
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                <li><div class="dropdown-item user-info text-center">user-info</div></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><div class="dropdown-item user-name"></div></li>
-                <li><div class="dropdown-item user-prenom"></div></li>
-                <li><div class="dropdown-item user-email"></div></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
-            </ul>
-        </li>
-     
-        <li class="nav-item">
-            <button class="btn btn-outline-danger" id="logoutButton">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  
-  <!-- Bootstrap JS and dependencies -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </style>
+</head>
+<body>
 
-  <script>
+<nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid ">
+        <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!--  <form class="d-none d-md-flex form-inline my-2 my-lg-2">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+            </form> -->
+        <form class=" input-group w-auto my-auto ">
+            <input autocomplete="off" type="search" class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
+            <button class="btn btn-outline-success rounded my-0 my-sm-0" type="submit"><i class="fas fa-search "></i></button>
+        </form>
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+            <!-- Notification dropdown -->
+            <li class="nav-item dropdown d-none d-md-block">
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge rounded-pill badge-danger">1</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink1">
+                    <li><a class="dropdown-item" href="#">Some news</a></li>
+                    <li><a class="dropdown-item" href="#">Another news</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <div class="language-selector">
+                    <select id="language-select" class="form-control">
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                </div>
+            </li>
+            <li class="nav-item dropdown d-none d-md-block">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="../public/images/user/2.png" alt="User Logo" class="rounded-circle" height="30" alt="Avatar" loading="lazy">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                    <li><div class="dropdown-item user-info text-center">user-info</div></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><div class="dropdown-item user-name"></div></li>
+                    <li><div class="dropdown-item user-prenom"></div></li>
+                    <li><div class="dropdown-item user-email"></div></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <div class="">
+                        <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
+                    </div>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <button class="btn btn-outline-danger" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<script>
     fetch('/connection/profiles')
         .then(response => response.json())
         .then(data => {
@@ -89,43 +111,43 @@
         .catch(error => {
             console.error('Error:', error);
         });
-  
+
     function updateProfileCard(userData) {
         const userNameElement = document.querySelector('.user-name');
         const userEmailElement = document.querySelector('.user-email');
         const userPrenomElement = document.querySelector('.user-prenom');
-  
+
         // Update the user name
         userNameElement.textContent = `Name: ${userData.NOM}`;
-  
+
         // Update the user prenom
         userPrenomElement.textContent = `Prenom: ${userData.PRENOM}`;
-  
+
         // Update the user email
         userEmailElement.textContent = `Email: ${userData.EMAIL}`;
     }
-  </script>
+</script>
 
-  <script>
+<script>
     document.getElementById('logoutButton').addEventListener('click', function() {
-      // Make an AJAX request to the backend logout endpoint
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', '/connection/logout', true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            // Logout successful, redirect to login page
-            window.location.href = '/connection/login';
-          } else {
-            // Handle error response if needed
-            console.error('Error logging out:', xhr.responseText);
-          }
-        }
-      };
-      xhr.send();
+        // Make an AJAX request to the backend logout endpoint
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/connection/logout', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // Logout successful, redirect to login page
+                    window.location.href = '/connection/login';
+                } else {
+                    // Handle error response if needed
+                    console.error('Error logging out:', xhr.responseText);
+                }
+            }
+        };
+        xhr.send();
     });
-    </script>
+</script>
 
-
-
+<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>
