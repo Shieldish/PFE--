@@ -36,9 +36,9 @@
           <div class="my-custom-class">
              <%-include('./partial/flaskMessages')  %>
              <h5 >
-                <a href="/gestion">
-                <i class="fas fa-home"></i>  <button class="btn btn-outline-li btn-sm"> Back to Home</button>
-                </a>
+               <a href="/gestion" class="btn btn-outline-secondary">
+                  <i class="bi bi-arrow-left"></i> Go Back
+               </a>
              </h5>
              <% if (tableName !== null && typeof tableName !== 'undefined') { %>
              <script>

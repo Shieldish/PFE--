@@ -4,6 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Edit Stage</title>
+      <%-include('../../common/head') %>
       <!-- Bootstrap CSS -->
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
       <style>
@@ -42,7 +43,10 @@
    </head>
    <body>
       <hr>
-      <h1>Editer formulaire de stage</h1>
+      <h1 >Editer formulaire de stage</h1>
+      <a style="margin-left: 15px;" href="/entreprise" class="btn btn-outline-secondary">
+         <i class="bi bi-arrow-left"></i> Go Back
+       </a>
       <hr>
       <div class="content-wrapper ">
          <form id="stageForm" action="/entreprise/edit/<%= data.id %>" method="POST" class="row g-3">
