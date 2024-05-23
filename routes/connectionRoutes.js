@@ -316,7 +316,7 @@ router.post('/reseting-password', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+/* router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -358,7 +358,50 @@ router.post('/login', async (req, res) => {
     res.render('../connection/login', { messages: req.flash() });
   }
 });
+ */
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    const user = await user_registration.findOne({ where: { email } });
+
+    if (!user) {
+      req.flash('error', `Email address ${email} not found.`);
+      return res.render('../connection/login', { messages: req.flash() });
+    }
+
+    if (!user.ISVALIDATED) {
+      req.flash('info', 'Account not activated. Please check your email and confirm your registration before logging in!');
+      return res.render('../connection/login', { messages: req.flash() });
+    }
+    if (!user.validPassword(password)) {
+      req.flash('error', 'Incorrect password. Please try again.');
+      return res.render('../connection/login', { messages: req.flash() });
+    }
+    
+    
+    // Update session user data
+    req.session.user = user.toJSON();
+    
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
+    
+    // Update cookies with token and user data
+    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
+
+    req.flash('success', 'Login successful!');
+    
+    // Retrieve returnTo from session or default to home
+    const returnTo = req.session.returnTo || '/';
+    delete req.session.returnTo; // Clear the stored return URL
+    res.redirect(returnTo);
+
+  } catch (err) {
+    req.flash('error', err.message);
+    res.render('../connection/login', { messages: req.flash() });
+  }
+});
 
 // In your backend route
 router.get('/profiles', (req, res) => {

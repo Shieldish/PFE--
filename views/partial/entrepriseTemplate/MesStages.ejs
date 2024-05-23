@@ -10,6 +10,8 @@
   height: auto; /* Set the desired height */
   max-height: fit-content;
   background-color: rgb(255, 255, 255);
+  padding: 5px;
+  margin: 5px;
   
 }
 
@@ -37,11 +39,18 @@
 }
 
 /* Grid Container */
+
 #stageGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Minimum card width of 300px */
-  grid-gap: 5px;
-  grid-auto-rows: auto; /* Set the desired height for each row */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Minimum card width of 400px for larger screens */
+    grid-gap: 10px;
+    grid-auto-rows: auto; /* Set the desired height for each row */
+}
+
+@media (max-width: 600px) { /* Adjust the breakpoint as needed */
+    #stageGrid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Minimum card width of 250px for mobile screens */
+    }
 }
 .mybtn {
            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;

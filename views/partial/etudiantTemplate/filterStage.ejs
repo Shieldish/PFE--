@@ -1,5 +1,80 @@
 <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    /* Card Styles */
+    .card-title-custom {
+        font-size: 16px;
+        font-weight: bold;
+           text-align: center;
+        text-transform: uppercase; 
+        ;/* Add this line to make the text uppercase */
+    }
+
+    .card {
+       
+        border-radius:none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        width: auto; /* Set the desired width */
+        height: fit-content; /* Set the desired height */
+     /*    max-height: fit-content; */
+        background-color:beige;
+        margin: 5px;
+        padding: 5px;
+        
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+       background-color: rgb(255, 255, 255)
+    }
+
+    .card-body {
+        padding: 10px;
+        height: 100%; /* Make the card-body take up the full height of the card */
+        display: flex;
+        flex-direction: column; /* Stack the content vertically */
+    }
+
+    .card-body > * {
+        margin-bottom: 10px; /* Add some spacing between card elements */
+    }
+
+    .card-body > *:last-child {
+        margin-bottom: 0; /* Remove the bottom margin from the last element */
+    }
+
+    #stageGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Minimum card width of 400px for larger screens */
+    grid-gap: 10px;
+    grid-auto-rows: auto; /* Set the desired height for each row */
+}
+
+@media (max-width: 600px) { /* Adjust the breakpoint as needed */
+    #stageGrid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Minimum card width of 250px for mobile screens */
+    }
+}
+
+
+    .mybtn {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        align-self: end;
+        font-size: 15px;
+        width: fit-content;
+        height: auto;
+    }
+    .time-since-created {
+        display: none;
+    }
+/* 
+    .card:hover .time-since-created {
+        display: block;
+    } */
+</style>
 <body>
     
     <script>
@@ -169,7 +244,7 @@
               // Loop through each stage and create grid item
               stages.forEach((stage) => {
                   const stageItem = document.createElement("div");
-              /*     stageItem.classList.add("col-md-10");   */
+                   stageItem.classList.add("col-md-10");  
             
 
                   stageItem.classList.add("card","animate__animated", "animate__fadeInUp");

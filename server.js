@@ -66,13 +66,14 @@ app.set('view engine', 'ejs')
 app.set('view cache', false)
 
 // Import routes
+
 app.use('/people', authenticate, routes)
 app.use('/connection', connectionRoutes)
 app.use('/files', authenticate, isAdmin, uploadsRoutes)
 app.use('/gestion', authenticate, isUser, databaseRoutes)
 app.use('/settings', authenticate, UserProfilesRoutes)
-app.use('/entreprise',authenticate, entrepriseRoutes)
-app.use('/etudiant',authenticate, etudiantsRoutes)
+app.use('/entreprise', entrepriseRoutes)
+app.use('/etudiant', etudiantsRoutes)
 app.use('/encadrement',authenticate, encadrementRoutes)
 app.use('/planification',authenticate, planificationRoutes)
 

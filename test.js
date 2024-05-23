@@ -1,6 +1,6 @@
 const { id_ID } = require("@faker-js/faker");
 
-const fakeData = Array.from({ length: 1000 }, (_, index) => ({
+const fakeData = Array.from({ length: 100 }, (_, index) => ({
   stageId: faker.datatype.uuid(),
   etudiantID: faker.datatype.uuid(),
   etudiantName: faker.person.fullName(),
@@ -36,7 +36,7 @@ insertFakeData();
 
 
 const { faker } = require('@faker-js/faker');
-const fakeDatas = Array.from({ length: 1000 }, (_, index) => ({
+const fakeDatas = Array.from({ length: 100 }, (_, index) => ({
   id:faker.datatype.uuid(), 
   Nom:faker.person.jobTitle(),
   Domaine:faker.helpers.arrayElement(['FSS', 'FSEG', 'ISET','ISIMS','CIC' , 'LSI' ,'LISI','MPSRCC','LFI']),

@@ -329,7 +329,7 @@ router.get('/postulant_detail', async (req, res) => {
           // Handle the case where no candidature is found
           return res.status(404).send('candidature not found')
       }
-      const modifiedcandidature = {
+    /*   const modifiedcandidature = {
           ...candidatures.toJSON(),
           cv: `/stockages/${candidatures.email}/${path.basename(
               candidatures.cv
@@ -344,7 +344,14 @@ router.get('/postulant_detail', async (req, res) => {
                     candidatures.releves_notes
                 )}`
               : 'document pas fournis',
-      }
+      } */
+
+      const modifiedcandidature = {
+        ...candidatures.toJSON(),
+        cv:  candidatures.cv,
+        lettre_motivation:  candidatures.lettre_motivation || 'document pas fournis',
+        releves_notes: candidatures.releves_notes || 'document pas fournis',
+    };
 
       const StageData = await stagepostulation.findOne({
           where: {
