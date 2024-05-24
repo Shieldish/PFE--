@@ -77,3 +77,35 @@ async function insertFakeData() {
   }
 }
 insertFakeData();
+
+
+
+
+<div class="card custom-card mycontainer" >
+<div class="card-header">
+   <button class="btn btn-success btn-block "disabled><strong>User Information</strong></button>
+</div>
+<div class="card-body">
+   <hr width="100%" size="5">
+   <p ><strong>ID :</strong> <strong><%= userData.UUID.toUpperCase() %></strong></p>
+   <p ><strong>FIRST NAME :</strong><strong class="text-uppercase "  style="color: green;">  <%= userData.NOM %></strong></p>
+   <p ><strong>LAST NAME :</strong><strong class="text-uppercase " style="color: green;">  <%= userData.PRENOM %></strong> </p>
+   <p ><strong>EMAIL ADDRESS :</strong> <strong class="text-uppercase " style="color:green;">  <%= userData.EMAIL %></strong></p>
+   <p ><strong>DEPARTMENT :</strong><strong style="color: black">  <%= userData.DEPARTEMENT %></strong> </p>
+   <p ><strong>ADDRESS :</strong><strong style="color: black">  <%= userData.ADDRESS %></strong> </p>
+   <p ><strong>BIRTHDAY DATE :</strong><strong style="color: black">
+      <% if (userData.DATE) { %>
+      <%= userData.DATE.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric' }) %>
+      <% } else { %>
+      NA
+      <% } %>
+      </strong>
+   </p>
+   <hr width="100%" size="5">
+   <p ><strong>ACCOUNT TYPE :</strong><strong style="color: rgb(208, 39, 30)">  <%= userData.role %></strong> </p>
+   <p ><strong>VALIDITY :</strong><strong style="color: red;">  <%= userData.ISVALIDATED ? 'Yes' : 'No' %></strong> </p>
+   <p ><strong>CREATED :</strong><strong style="color:blue">  <%= userData.createdAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></strong> </p>
+   <p ><strong>UPDATED :</strong><strong style="color: blue;">  <%= userData.updatedAt.toLocaleString('fr-FR', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })%></strong> </p>
+   <!-- Add more fields as needed -->
+</div>
+</div>
