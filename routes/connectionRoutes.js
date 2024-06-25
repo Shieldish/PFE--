@@ -69,6 +69,8 @@ router.post('/register', async function(req, res) {
   try {
     const { nom, prenom, email, password, repeatPassword } = req.body;
 
+    console.log(req.body)
+
     // Check if password and repeatPassword match
     if (password !== repeatPassword) {
       req.flash('error', 'Passwords do not correspond');
@@ -223,6 +225,8 @@ router.get('/confirm-email', async (req, res) => {
 router.post('/reset-password', async (req, res) => {
   const { email } = req.body;
 
+  console.log(Date.now() ,':',req.body)
+
   try {
     // Find the user registration record by email
     const userRegistration = await user_registration.findOne({ where: { email } });
@@ -359,14 +363,20 @@ router.post('/reseting-password', async (req, res) => {
   }
 });
  */
-router.post('/login', async (req, res) => {
+
+
+ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
+  console.log(email,password)
+
+  
   try {
     const user = await user_registration.findOne({ where: { email } });
 
     if (!user) {
       req.flash('error', `Email address ${email} not found.`);
+   
       return res.render('../connection/login', { messages: req.flash() });
     }
 
@@ -401,7 +411,44 @@ router.post('/login', async (req, res) => {
     req.flash('error', err.message);
     res.render('../connection/login', { messages: req.flash() });
   }
-});
+}); 
+
+/* 
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await user_registration.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: `Email address ${email} not found.` });
+    }
+
+    if (!user.ISVALIDATED) {
+      return res.status(401).json({ success: false, message: 'Account not activated. Please check your email and confirm your registration before logging in!' });
+    }
+
+    if (!user.validPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
+    }
+
+    // Update session user data
+    req.session.user = user.toJSON();
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
+
+    // Update cookies with token and user data
+    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
+
+    return res.status(200).json({ success: true, message: 'Login successful!', user });
+
+  } catch (err) {
+    console.error('Login error:', err.message);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+}); */
 
 // In your backend route
 router.get('/profiles', (req, res) => {
@@ -421,5 +468,123 @@ function generateRandomToken(length) {
       return chars[Math.floor(Math.random() * chars.length)];
     });
 }
+
+
+
+
+
+
+
+
+
+
+router.post('/loging', async (req, res) => {
+  const { email, password } = req.body;
+
+  console.log(email, password);
+
+  try {
+    const user = await user_registration.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: `Email address ${email} not found.` });
+    }
+
+    if (!user.ISVALIDATED) {
+      return res.status(403).json({ success: false, message: 'Account not activated. Please check your email and confirm your registration before logging in!' });
+    }
+
+    if (!user.validPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
+
+    // Return the token and user data in the response
+    res.status(200).json({
+      success: true,
+      message: 'Login successful!',
+      token,
+      user: { id: user.id, email: user.email, role: user.role }
+    });
+
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ success: false, message: 'An error occurred while logging in. Please try again later.' });
+  }
+});
+
+
+router.post('/registration', async function (req, res) {
+  try {
+    const { nom, prenom, email, password, repeatPassword } = req.body;
+
+    // Log request data (useful for debugging)
+    console.log(req.body);
+
+    // Check if password and repeatPassword match
+    if (password !== repeatPassword) {
+      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+    }
+
+    // Check if email already exists
+    const existingUser = await user_registration.findOne({ where: { email } });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: `Error: Email address [${email}] already exists. Try another address or log in instead!`,
+      });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Generate registration token
+    const registrationToken = generateRandomToken(100);
+
+    // Create a new user
+    const uuid = uuidv4();
+
+    const newUser = await user_registration.create({
+      NOM: nom.trim().toUpperCase(),
+      PRENOM: prenom.trim(),
+      EMAIL: email.trim().toLowerCase(),
+      PASSWORD: password,
+      TOKEN: registrationToken,
+      UUID: uuid,
+    });
+
+    // Send registration confirmation email
+    await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken);
+
+    // On successful registration
+    return res.status(201).json({
+      success: true,
+      message: 'User registered successfully. A confirmation email has been sent.',
+      user: {
+        nom: nom.trim().toUpperCase(),
+        email: email.trim().toLowerCase(),
+      },
+    });
+
+  } catch (error) {
+    // Log error for debugging purposes
+    console.error('Error registering user:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred while registering the user.',
+      error: error.message,
+    });
+  }
+});
+
+
+
+
+
+
+
 
   module.exports = router;
