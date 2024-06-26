@@ -62,6 +62,8 @@ router.get('/All', async (req, res) => {
   
       const { count, rows } = await stage.findAndCountAll(options);
       const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+      console.log(rows)
   
       res.json({
         stages: rows,
