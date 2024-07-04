@@ -15,8 +15,6 @@ const { isAdmin, isUser } = require('../middlewares/roles');
 const user_registration = require('../controllers/UserRegistration');
 const router = express.Router();
 const cloudinary = require('cloudinary').v2;
-const { Dropbox } = require('dropbox');
-const fetch = require('node-fetch');
 
 const app = express();
 
@@ -62,8 +60,6 @@ router.get('/All', async (req, res) => {
   
       const { count, rows } = await stage.findAndCountAll(options);
       const totalPages = limit ? Math.ceil(count / limit) : 1;
-
-      console.log(rows)
   
       res.json({
         stages: rows,
@@ -111,68 +107,339 @@ const uploadFolderPath = path.join(__dirname, '..', uploadFolder);
 if (!fs.existsSync(uploadFolderPath)) {
     fs.mkdirSync(uploadFolderPath);
 }
-const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch: fetch });
 
-const storage = multer.memoryStorage();
+// Multer disk storage configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const studentEmail = req.body.email; // Get the student's email from the request body
+        const studentFolderPath = path.join(uploadFolderPath, studentEmail);
+
+        // Create a folder for the student if it doesn't exist
+        if (!fs.existsSync(studentFolderPath)) {
+            fs.mkdirSync(studentFolderPath);
+        }
+
+        cb(null, studentFolderPath); // Set the destination folder for uploaded files
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname); // Generate unique filenames
+    }
+});
+
+// Configure multer with the disk storage
 const upload = multer({ storage: storage });
 
-async function uploadFileToDropbox(fileBuffer, fileName, mimeType, retryCount = 3) {
-    const dropboxPath = `/stockages/${fileName}`;
+/* router.post('/postulates/:id', upload.fields([
+  { name: 'cv', maxCount: 1 },
+  { name: 'lettre_motivation', maxCount: 1 },
+  { name: 'releves_notes', maxCount: 1 }
+]), async (req, res) => {
+  const t = await sequelize.transaction();
+  const id = req.params.id;
 
-    for (let attempt = 0; attempt < retryCount; attempt++) {
-        try {
-            const response = await dbx.filesUpload({
-                path: dropboxPath,
-                contents: fileBuffer
-            });
+  try {
+      // Extract form data from request body
+      const {
+          nom,
+          prenom,
+          date_naissance,
+          adresse,
+          telephone,
+          email,
+          niveau_etudes,
+          institution,
+          domaine_etudes,
+          section,
+          annee_obtention,
+          experience,
+          experience_description,
+          motivation,
+          langues,
+          logiciels,
+          competences_autres,
+          date_debut,
+          duree_stage
+      } = req.body;
 
-            const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({
-                path: response.result.path_lower,
-                settings: { requested_visibility: 'public' }
-            });
+      // Extract file paths from request files
+      const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
+      const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
+      const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
 
-            return sharedLink.result.url.replace('dl=0', 'raw=1'); // Convert to direct link
-        } catch (error) {
-            console.error(`Error uploading file to Dropbox (attempt ${attempt + 1}):`, error);
-            if (error.status !== 500 || attempt === retryCount - 1) {
-                throw error;
-            }
-        }
+
+      console.log( "Verificateur :",req.body , cvPath,lettrePath,relevesPath)
+
+      // Find the stage by ID
+      const stages = await stage.findByPk(id);
+
+      if (!stages) {
+          return res.status(404).json({ error: 'Stage not found' });
+      }
+
+      // Create a new instance of the candidature model
+      const candidatures = await candidature.create({
+          id,
+          nom,
+          prenom,
+          date_naissance,
+          adresse,
+          telephone,
+          email,
+          niveau_etudes,
+          institution,
+          domaine_etudes,
+          section,
+          annee_obtention,
+          experience,
+          experience_description,
+          motivation,
+          langues,
+          logiciels,
+          competences_autres,
+          date_debut,
+          duree_stage,
+          cv: cvPath,
+          lettre_motivation: lettrePath,
+          releves_notes: relevesPath
+      }, { transaction: t });
+
+      // Retrieve or determine etudiantID
+      let etudiantID;
+      const etudiantData = await etudiant.findOne({ where: { EMAIL: email }, attributes: ['ID'] });
+      if (etudiantData) {
+          etudiantID = etudiantData.ID;
+      } else {
+          const userRegistrationData = await user_registration.findOne({ where: { EMAIL: email }, attributes: ['UUID'] });
+          if (userRegistrationData) {
+              etudiantID = userRegistrationData.UUID;
+          } else {
+              console.error('No record found for the provided email');
+              return res.status(404).json({ error: 'No record found for the provided email' });
+          }
+      }
+
+      // Create the stage postulation entry
+      const stagepostulations = await stagepostulation.create({
+          stageId: id,
+          etudiantID: etudiantID,
+          etudiantName: `${nom} ${prenom}`,
+          etudiantEmail: email,
+          etudiantSection: `${niveau_etudes} : ${section}`,
+          etudiantInstitue: institution,
+          stageDomaine: stages.Domaine,
+          stageSujet: stages.Libelle,
+          entrepriseName: stages.Nom,
+          entrepriseEmail: stages.CreatedBy,
+          CV: cvPath
+      }, { transaction: t });
+
+      // Commit the transaction
+      await t.commit();
+
+      // Send success response
+      return res.status(200).json({ message: 'Candidature submitted successfully' });
+
+  } catch (err) {
+      // Rollback the transaction in case of error
+      await t.rollback();
+      console.error('Error submitting candidature:', err);
+      return res.status(500).json({ error: `An error occurred while submitting the candidature: ${err.message}` });
+  }
+}); */
+router.post('/postulates/:id', upload.fields([
+  { name: 'cv', maxCount: 1 },
+  { name: 'lettre_motivation', maxCount: 1 },
+  { name: 'releves_notes', maxCount: 1 }
+]), async (req, res) => {
+  let t;
+  try {
+    t = await sequelize.transaction();
+
+    const id = req.params.id;
+
+    // Extract form data from request body
+    const {
+      nom,
+      prenom,
+      date_naissance,
+      adresse,
+      telephone,
+      email,
+      niveau_etudes,
+      institution,
+      domaine_etudes,
+      section,
+      annee_obtention,
+      experience,
+      experience_description,
+      motivation,
+      langues,
+      logiciels,
+      competences_autres,
+      date_debut,
+      duree_stage
+    } = req.body;
+
+    // Extract file paths from request files
+    const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
+    const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
+    const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
+
+    // Find the stage by ID
+    const stages = await stage.findByPk(id, { transaction: t });
+
+    if (!stages) {
+      await t.rollback();
+      return res.status(404).json({ error: 'Stage not found' });
     }
-}
+
+    // Create a new instance of the candidature model
+    const candidatures = await candidature.create({
+      id,
+      nom,
+      prenom,
+      date_naissance,
+      adresse,
+      telephone,
+      email,
+      niveau_etudes,
+      institution,
+      domaine_etudes,
+      section,
+      annee_obtention,
+      experience,
+      experience_description,
+      motivation,
+      langues,
+      logiciels,
+      competences_autres,
+      date_debut,
+      duree_stage,
+      cv: cvPath,
+      lettre_motivation: lettrePath,
+      releves_notes: relevesPath
+    }, { transaction: t });
+
+    // Retrieve or determine etudiantID
+    let etudiantID;
+    const etudiantData = await etudiant.findOne({ where: { EMAIL: email }, attributes: ['ID'], transaction: t });
+    if (etudiantData) {
+      etudiantID = etudiantData.ID;
+    } else {
+      const userRegistrationData = await user_registration.findOne({ where: { EMAIL: email }, attributes: ['UUID'], transaction: t });
+      if (userRegistrationData) {
+        etudiantID = userRegistrationData.UUID;
+      } else {
+        await t.rollback();
+        console.error('No record found for the provided email');
+        return res.status(404).json({ error: 'No record found for the provided email' });
+      }
+    }
+
+    // Create the stage postulation entry
+    const stagepostulations = await stagepostulation.create({
+      stageId: id,
+      etudiantID: etudiantID,
+      etudiantName: `${nom} ${prenom}`,
+      etudiantEmail: email,
+      etudiantSection: `${niveau_etudes} : ${section}`,
+      etudiantInstitue: institution,
+      stageDomaine: stages.Domaine,
+      stageSujet: stages.Libelle,
+      entrepriseName: stages.Nom,
+      entrepriseEmail: stages.CreatedBy,
+      CV: cvPath
+    }, { transaction: t });
+
+    // Commit the transaction
+    await t.commit();
+
+    // Send success response
+    return res.status(200).json({ message: 'Candidature submitted successfully' });
+
+  } catch (err) {
+    // Rollback the transaction in case of error
+    if (t) await t.rollback();
+
+    console.error('Error submitting candidature:', err);
+    return res.status(500).json({ error: `An error occurred while submitting the candidature: ${err.message}` });
+  }
+});
 
 router.post('/postulate/:id', upload.fields([
     { name: 'cv', maxCount: 1 },
     { name: 'lettre_motivation', maxCount: 1 },
-    { name: 'releves_notes', maxCount: 1 },
+    { name: 'releves_notes', maxCount: 1 }
 ]), async (req, res) => {
     const t = await sequelize.transaction();
     const id = req.params.id;
-
     try {
+        // Get the form data
         const {
-            nom, prenom, date_naissance, adresse, telephone, email, niveau_etudes,
-            institution, domaine_etudes, section, annee_obtention, experience, experience_description,
-            motivation, langues, logiciels, competences_autres, date_debut, duree_stage
+            nom,
+            prenom,
+            date_naissance,
+            adresse,
+            telephone,
+            email,
+            niveau_etudes,
+            institution,
+            domaine_etudes,
+            section,
+            annee_obtention,
+            experience,
+            experience_description,
+            motivation,
+            langues,
+            logiciels,
+            competences_autres,
+            date_debut,
+            duree_stage
         } = req.body;
 
-        const cvUrl = req.files['cv'] ? await uploadFileToDropbox(req.files['cv'][0].buffer, `${email}-${Date.now()}-${req.files['cv'][0].originalname}`, req.files['cv'][0].mimetype) : null;
-        const lettreUrl = req.files['lettre_motivation'] ? await uploadFileToDropbox(req.files['lettre_motivation'][0].buffer, `${email}-${Date.now()}-${req.files['lettre_motivation'][0].originalname}`, req.files['lettre_motivation'][0].mimetype) : null;
-        const relevesUrl = req.files['releves_notes'] ? await uploadFileToDropbox(req.files['releves_notes'][0].buffer, `${email}-${Date.now()}-${req.files['releves_notes'][0].originalname}`, req.files['releves_notes'][0].mimetype) : null;
 
-        console.log('Files uploaded:', { cvUrl, lettreUrl, relevesUrl });
+        // Get the file paths
+        const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
+        const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
+        const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
 
         const stages = await stage.findByPk(id);
+
+            console.log(stages)
+            console.log(req.body)
+            console.log(req.files)
+
+      
         if (!stages) {
             req.flash('error', 'Stage not found');
             return res.redirect(`/etudiant/postulate/${id}`);
         }
 
+        // Create a new instance of the candidature model
         const candidatures = await candidature.create({
-            id, nom, prenom, date_naissance, adresse, telephone, email, niveau_etudes,
-            institution, domaine_etudes, section, annee_obtention, experience, experience_description,
-            motivation, langues, logiciels, competences_autres, date_debut, duree_stage,
-            cv: cvUrl, lettre_motivation: lettreUrl, releves_notes: relevesUrl
+            id,
+            nom,
+            prenom,
+            date_naissance,
+            adresse,
+            telephone,
+            email,
+            niveau_etudes,
+            institution,
+            domaine_etudes,
+            section,
+            annee_obtention,
+            experience,
+            experience_description,
+            motivation,
+            langues,
+            logiciels,
+            competences_autres,
+            date_debut,
+            duree_stage,
+            cv: cvPath,
+            lettre_motivation: lettrePath,
+            releves_notes: relevesPath
         }, { transaction: t });
 
         let etudiantID;
@@ -184,19 +451,32 @@ router.post('/postulate/:id', upload.fields([
             if (userRegistrationData) {
                 etudiantID = userRegistrationData.UUID;
             } else {
+                // Handle the case when no record is found for the email
+                // For example, you can throw an error or set a default value
                 console.error('No record found for the provided email');
+                // throw new Error('No record found for the provided email');
+                // etudiantID = someDefaultValue;
             }
         }
-
+        
         const stagepostulations = await stagepostulation.create({
-            stageId: id, etudiantID: etudiantID, etudiantName: `${nom} ${prenom}`, etudiantEmail: email,
-            etudiantSection: `${niveau_etudes} : ${section}`, etudiantInstitue: institution, stageDomaine: stages.Domaine,
-            stageSujet: stages.Libelle, entrepriseName: stages.Nom, entrepriseEmail: stages.CreatedBy, CV: cvUrl
+            stageId: id,
+            etudiantID: etudiantID,
+            etudiantName: `${nom} ${prenom}`,
+            etudiantEmail: email,
+            etudiantSection: `${niveau_etudes} : ${section}`,
+            etudiantInstitue: institution,
+            stageDomaine: stages.Domaine,
+            stageSujet: stages.Libelle,
+            entrepriseName: stages.Nom,
+            entrepriseEmail: stages.CreatedBy,
+            CV: cvPath
         }, { transaction: t });
+        
 
         await t.commit();
 
-        req.flash('success', 'Candidature submitted successfully');
+        req.flash('success', 'candidature submitted successfully');
         return res.redirect(`/etudiant`);
     } catch (err) {
         await t.rollback();
@@ -233,13 +513,14 @@ router.get('/check-email', async (req, res) => {
     }
 });
 
-router.get('/stage_postuler', async (req, res) => {
+/* router.get('/stage_postuler', async (req, res) => {
     try {
       if (!req.session.user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
   
-      const etudiants = req.session.user.EMAIL;
+      const etudiants = req.session.user.EMAIL; 
+      const etudiants='kossisamuel.gabiam@fss.u-sfax.tn'
   
       if (!etudiants) {
         req.flash('error', 'An error occurred while fetching postulated data');
@@ -261,11 +542,13 @@ router.get('/stage_postuler', async (req, res) => {
       const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
       console.log(etudiantIdValue);
   
-      const postulated = await stagepostulation.findAll({
+   const postulated = await stagepostulation.findAll({
         where: {
           etudiantID: etudiantIdValue
-        }
+        },
+        order: [['postulatedAt', 'DESC']] // Sorting by postulatedAt in descending order
       });
+    
   
       if (postulated.length === 0) {
        // req.flash('info', 'No postulated found');
@@ -278,8 +561,7 @@ router.get('/stage_postuler', async (req, res) => {
   
       postulatedJson = postulatedJson.map(postulatedObj => {
         const modifiedpostulated = { ...postulatedObj };
-    /*     modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`; */
-       modifiedpostulated.CVPath =postulatedObj.CV;
+        modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`;
         return modifiedpostulated;
       });
   
@@ -291,7 +573,63 @@ router.get('/stage_postuler', async (req, res) => {
       req.flash('error', 'An error occurred while fetching postulated data: ' + error.message);
       return res.status(500).json({ error: 'An error occurred while fetching postulated data' });
     }
+  }); */
+
+  router.get('/stage_postuler', async (req, res) => {
+    try {
+      // Mock email for demonstration; replace with your session management logic
+      const etudiants = 'kossisamuel.gabiam@fss.u-sfax.tn';
+    
+      if (!etudiants) {
+        return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
+      }
+    
+      // Fetching the etudiant ID
+      let etudiantID = await etudiant.findOne({ where: { EMAIL: etudiants }, attributes: ['ID'] });
+      if (!etudiantID) {
+          etudiantID = await user_registration.findOne({ where: { EMAIL: etudiants }, attributes: ['UUID'] });
+      }
+    
+      if (!etudiantID) {
+        return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
+      }
+    
+      const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
+      console.log(etudiantIdValue);
+    
+      // Fetching postulated stages with order
+      const postulated = await stagepostulation.findAll({
+        where: {
+          etudiantID: etudiantIdValue
+        },
+        order: [['postulatedAt', 'DESC']] // Sorting by postulatedAt in descending order
+      });
+    
+      if (postulated.length === 0) {
+        return res.status(404).json({ error: 'No postulated found' });
+      }
+    
+      let postulatedJson = postulated.map(postulated => postulated.toJSON());
+    
+      await normalizeDate(postulatedJson);
+    
+      postulatedJson = postulatedJson.map(postulatedObj => {
+        const modifiedpostulated = { ...postulatedObj };
+        modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`;
+        return modifiedpostulated;
+      });
+    
+      console.log(postulatedJson);
+    
+      return res.status(200).json({ postulant: postulatedJson });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'An error occurred while fetching postulated data' });
+    }
   });
+  
+
+
 
   async function normalizeDate(filteredArray)
 {
@@ -362,7 +700,7 @@ router.get('/candidatures', async (req, res) => {
           // Handle the case where no candidature is found
           return res.status(404).send('candidature not found')
       }
-     /*  const modifiedcandidature = {
+      const modifiedcandidature = {
           ...candidatures.toJSON(),
           cv: `/stockages/${candidatures.email}/${path.basename(
               candidatures.cv
@@ -377,15 +715,7 @@ router.get('/candidatures', async (req, res) => {
                     candidatures.releves_notes
                 )}`
               : 'document pas fournis',
-      } */
-
-      const modifiedcandidature = {
-        ...candidatures.toJSON(),
-        cv:  candidatures.cv,
-        lettre_motivation:  candidatures.lettre_motivation || 'document pas fournis',
-        releves_notes: candidatures.releves_notes || 'document pas fournis',
-    };
-
+      }
 
       const StageData = await stagepostulation.findOne({
           where: {
@@ -406,5 +736,59 @@ router.get('/candidatures', async (req, res) => {
 })
 
 
+router.get('/candidatures2', async (req, res) => {
+  const etudiantEmail = req.query.etudiantEmail; // Retrieving from query parameters
+  const stageId = req.query.stageId; // Retrieving from query parameters
+  
+  try {
+      let candidatures = await candidature.findOne({
+          where: {
+              email: etudiantEmail,
+              id: stageId,
+          },
+      });
+
+      if (!candidatures) {
+          return res.status(404).json({ error: 'Candidature not found' });
+      }
+
+      const modifiedcandidature = {
+          ...candidatures.toJSON(),
+          cv: `/stockages/${candidatures.email}/${path.basename(candidatures.cv)}`,
+          lettre_motivation: candidatures.lettre_motivation
+              ? `/stockages/${candidatures.email}/${path.basename(candidatures.lettre_motivation)}`
+              : 'document pas fournis',
+          releves_notes: candidatures.releves_notes
+              ? `/stockages/${candidatures.email}/${path.basename(candidatures.releves_notes)}`
+              : 'document pas fournis',
+      };
+
+      const StageData = await stagepostulation.findOne({
+          where: {
+              stageId: candidatures.id,
+              etudiantEmail: candidatures.email,
+          },
+      });
+
+      if (!StageData) {
+          return res.status(404).json({ error: 'Stage data not found' });
+      }
+
+      const stageDataJSON = StageData.toJSON();
+
+      // Send JSON response with data
+
+      console.log("modifiedcandidature",modifiedcandidature)
+      console.log("stageDataJSON",stageDataJSON)
+
+      res.status(200).json({
+          candidature: modifiedcandidature,
+          stage: stageDataJSON,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 module.exports = router;

@@ -99,7 +99,7 @@ const candidature = sequelize.define('candidature', {
     allowNull: false
   },
   date_naissance: {
-    type: DataTypes.DATEONLY,
+    type: DataTypes.STRING,
     allowNull: false
   },
   adresse: {
@@ -131,8 +131,7 @@ const candidature = sequelize.define('candidature', {
     allowNull: false
   },
   annee_obtention: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: DataTypes.STRING
   },
   experience: {
     type: DataTypes.BOOLEAN,
@@ -196,11 +195,11 @@ const candidature = sequelize.define('candidature', {
     allowNull: true
   },
   date_debut: {
-    type: DataTypes.DATEONLY,
+    type: DataTypes.STRING,
     allowNull: true
   },
   duree_stage: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true
   },
   cv: {
@@ -227,7 +226,6 @@ const candidature = sequelize.define('candidature', {
     }
   ]
 });
-
 
 
 

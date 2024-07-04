@@ -15,6 +15,8 @@ const { isAdmin, isUser } = require('../middlewares/roles');
 const user_registration = require('../controllers/UserRegistration');
 const router = express.Router();
 const cloudinary = require('cloudinary').v2;
+const { Dropbox } = require('dropbox');
+const fetch = require('node-fetch');
 
 const app = express();
 
@@ -60,6 +62,8 @@ router.get('/All', async (req, res) => {
   
       const { count, rows } = await stage.findAndCountAll(options);
       const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+      console.log(rows)
   
       res.json({
         stages: rows,
@@ -107,97 +111,68 @@ const uploadFolderPath = path.join(__dirname, '..', uploadFolder);
 if (!fs.existsSync(uploadFolderPath)) {
     fs.mkdirSync(uploadFolderPath);
 }
+const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch: fetch });
 
-// Multer disk storage configuration
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const studentEmail = req.body.email; // Get the student's email from the request body
-        const studentFolderPath = path.join(uploadFolderPath, studentEmail);
-
-        // Create a folder for the student if it doesn't exist
-        if (!fs.existsSync(studentFolderPath)) {
-            fs.mkdirSync(studentFolderPath);
-        }
-
-        cb(null, studentFolderPath); // Set the destination folder for uploaded files
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Generate unique filenames
-    }
-});
-
-// Configure multer with the disk storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+async function uploadFileToDropbox(fileBuffer, fileName, mimeType, retryCount = 3) {
+    const dropboxPath = `/stockages/${fileName}`;
+
+    for (let attempt = 0; attempt < retryCount; attempt++) {
+        try {
+            const response = await dbx.filesUpload({
+                path: dropboxPath,
+                contents: fileBuffer
+            });
+
+            const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({
+                path: response.result.path_lower,
+                settings: { requested_visibility: 'public' }
+            });
+
+            return sharedLink.result.url.replace('dl=0', 'raw=1'); // Convert to direct link
+        } catch (error) {
+            console.error(`Error uploading file to Dropbox (attempt ${attempt + 1}):`, error);
+            if (error.status !== 500 || attempt === retryCount - 1) {
+                throw error;
+            }
+        }
+    }
+}
 
 router.post('/postulate/:id', upload.fields([
     { name: 'cv', maxCount: 1 },
     { name: 'lettre_motivation', maxCount: 1 },
-    { name: 'releves_notes', maxCount: 1 }
+    { name: 'releves_notes', maxCount: 1 },
 ]), async (req, res) => {
     const t = await sequelize.transaction();
     const id = req.params.id;
+
     try {
-        // Get the form data
         const {
-            nom,
-            prenom,
-            date_naissance,
-            adresse,
-            telephone,
-            email,
-            niveau_etudes,
-            institution,
-            domaine_etudes,
-            section,
-            annee_obtention,
-            experience,
-            experience_description,
-            motivation,
-            langues,
-            logiciels,
-            competences_autres,
-            date_debut,
-            duree_stage
+            nom, prenom, date_naissance, adresse, telephone, email, niveau_etudes,
+            institution, domaine_etudes, section, annee_obtention, experience, experience_description,
+            motivation, langues, logiciels, competences_autres, date_debut, duree_stage
         } = req.body;
 
-        // Get the file paths
-        const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
-        const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
-        const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
+        const cvUrl = req.files['cv'] ? await uploadFileToDropbox(req.files['cv'][0].buffer, `${email}-${Date.now()}-${req.files['cv'][0].originalname}`, req.files['cv'][0].mimetype) : null;
+        const lettreUrl = req.files['lettre_motivation'] ? await uploadFileToDropbox(req.files['lettre_motivation'][0].buffer, `${email}-${Date.now()}-${req.files['lettre_motivation'][0].originalname}`, req.files['lettre_motivation'][0].mimetype) : null;
+        const relevesUrl = req.files['releves_notes'] ? await uploadFileToDropbox(req.files['releves_notes'][0].buffer, `${email}-${Date.now()}-${req.files['releves_notes'][0].originalname}`, req.files['releves_notes'][0].mimetype) : null;
+
+        console.log('Files uploaded:', { cvUrl, lettreUrl, relevesUrl });
 
         const stages = await stage.findByPk(id);
-        console.log(stages.CreatedBy)
         if (!stages) {
             req.flash('error', 'Stage not found');
             return res.redirect(`/etudiant/postulate/${id}`);
         }
 
-        // Create a new instance of the candidature model
         const candidatures = await candidature.create({
-            id,
-            nom,
-            prenom,
-            date_naissance,
-            adresse,
-            telephone,
-            email,
-            niveau_etudes,
-            institution,
-            domaine_etudes,
-            section,
-            annee_obtention,
-            experience,
-            experience_description,
-            motivation,
-            langues,
-            logiciels,
-            competences_autres,
-            date_debut,
-            duree_stage,
-            cv: cvPath,
-            lettre_motivation: lettrePath,
-            releves_notes: relevesPath
+            id, nom, prenom, date_naissance, adresse, telephone, email, niveau_etudes,
+            institution, domaine_etudes, section, annee_obtention, experience, experience_description,
+            motivation, langues, logiciels, competences_autres, date_debut, duree_stage,
+            cv: cvUrl, lettre_motivation: lettreUrl, releves_notes: relevesUrl
         }, { transaction: t });
 
         let etudiantID;
@@ -209,32 +184,19 @@ router.post('/postulate/:id', upload.fields([
             if (userRegistrationData) {
                 etudiantID = userRegistrationData.UUID;
             } else {
-                // Handle the case when no record is found for the email
-                // For example, you can throw an error or set a default value
                 console.error('No record found for the provided email');
-                // throw new Error('No record found for the provided email');
-                // etudiantID = someDefaultValue;
             }
         }
-        
+
         const stagepostulations = await stagepostulation.create({
-            stageId: id,
-            etudiantID: etudiantID,
-            etudiantName: `${nom} ${prenom}`,
-            etudiantEmail: email,
-            etudiantSection: `${niveau_etudes} : ${section}`,
-            etudiantInstitue: institution,
-            stageDomaine: stages.Domaine,
-            stageSujet: stages.Libelle,
-            entrepriseName: stages.Nom,
-            entrepriseEmail: stages.CreatedBy,
-            CV: cvPath
+            stageId: id, etudiantID: etudiantID, etudiantName: `${nom} ${prenom}`, etudiantEmail: email,
+            etudiantSection: `${niveau_etudes} : ${section}`, etudiantInstitue: institution, stageDomaine: stages.Domaine,
+            stageSujet: stages.Libelle, entrepriseName: stages.Nom, entrepriseEmail: stages.CreatedBy, CV: cvUrl
         }, { transaction: t });
-        
 
         await t.commit();
 
-        req.flash('success', 'candidature submitted successfully');
+        req.flash('success', 'Candidature submitted successfully');
         return res.redirect(`/etudiant`);
     } catch (err) {
         await t.rollback();
@@ -249,6 +211,7 @@ router.post('/postulate/:id', upload.fields([
 router.get('/check-email', async (req, res) => {
     const email = req.query.email;
     const stageId = req.query.stageId;
+    console.log(email,stageId)
 
     try {
         // Check if there is a stage with the given stageId and etudiantEmail
@@ -316,7 +279,8 @@ router.get('/stage_postuler', async (req, res) => {
   
       postulatedJson = postulatedJson.map(postulatedObj => {
         const modifiedpostulated = { ...postulatedObj };
-        modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`;
+    /*     modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`; */
+       modifiedpostulated.CVPath =postulatedObj.CV;
         return modifiedpostulated;
       });
   
@@ -399,7 +363,7 @@ router.get('/candidatures', async (req, res) => {
           // Handle the case where no candidature is found
           return res.status(404).send('candidature not found')
       }
-      const modifiedcandidature = {
+     /*  const modifiedcandidature = {
           ...candidatures.toJSON(),
           cv: `/stockages/${candidatures.email}/${path.basename(
               candidatures.cv
@@ -414,7 +378,15 @@ router.get('/candidatures', async (req, res) => {
                     candidatures.releves_notes
                 )}`
               : 'document pas fournis',
-      }
+      } */
+
+      const modifiedcandidature = {
+        ...candidatures.toJSON(),
+        cv:  candidatures.cv,
+        lettre_motivation:  candidatures.lettre_motivation || 'document pas fournis',
+        releves_notes: candidatures.releves_notes || 'document pas fournis',
+    };
+
 
       const StageData = await stagepostulation.findOne({
           where: {

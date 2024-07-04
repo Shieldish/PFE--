@@ -1,11 +1,11 @@
 const { id_ID } = require("@faker-js/faker");
-
+const { faker } = require('@faker-js/faker');
 const fakeData = Array.from({ length: 100 }, (_, index) => ({
   stageId: faker.datatype.uuid(),
   etudiantID: faker.datatype.uuid(),
   etudiantName: faker.person.fullName(),
   etudiantInstitue:faker.helpers.arrayElement(['FSS', 'FSEG', 'ISET','ISIMS','CIC' , 'LSI' ,'LISI','MPSRCC','LFI']),
-  etudiantEmail: faker.internet.email(),
+  etudiantEmail: faker.helpers.arrayElement(['test.nodemailer.pfe2024@gmail.com', 'gabiam.k.samuel@gmail.com', 'kossisamuel.gabiam@fss.u-sfax.tn']),
   stageDomaine:faker.helpers.arrayElement(['INFORMATIQUE', 'dev', 'web','manager','admin reseau' , 'securité' ,'compteur','dev junior','pro']),
   stageSujet: faker.lorem.words(10),
   entrepriseName: faker.helpers.arrayElement(['Microsoft', 'amazon inc', 'oracle','windows','ibm' ,'facebook','meta', 'google','rockstars','steam','GTA 5']),// Correct usage of companyName method
