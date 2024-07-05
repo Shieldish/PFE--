@@ -501,11 +501,15 @@ router.post('/loging', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
 
+    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
+
     // Return the token and user data in the response
     res.status(200).json({
       success: true,
       message: 'Login successful!',
       token,
+      userData :{ userData: user },
       user: { id: user.id, email: user.email, role: user.role }
     });
 

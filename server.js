@@ -31,10 +31,12 @@ const etudiant = require('./model/model');
 const app = express();
 
 app.use(cors({
-  origin: '*', // Allows requests from any origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow the Authorization header
-}));
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    //maxAge: 600 
+  }));
 
 app.use(cookieParser());
 app.use(flash());
@@ -67,7 +69,12 @@ app.use('/files', authenticate, isAdmin, uploadsRoutes);
 app.use('/gestion', authenticate, isUser, databaseRoutes);
 app.use('/settings', authenticate, UserProfilesRoutes);
 app.use('/entreprise',authenticate, entrepriseRoutes);
-app.use('/etudiant', etudiantsRoutes);
+
+
+  
+app.use('/etudiant', authenticate,etudiantsRoutes);
+
+
 app.use('/encadrement', authenticate, encadrementRoutes);
 app.use('/planification', authenticate, planificationRoutes);
 

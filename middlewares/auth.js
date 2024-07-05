@@ -1,9 +1,9 @@
-/* const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 // Authentication middleware
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
   const token2=req.session.user
-  if (!token2) {
+  if (!token) {
     // Store the original URL in session or cookie
     req.session.returnTo = req.originalUrl;
     
@@ -22,10 +22,10 @@ const authenticate = (req, res, next) => {
   }
 };
 
-module.exports = authenticate; */
+module.exports = authenticate; 
 
 
-const jwt = require('jsonwebtoken');
+/* const jwt = require('jsonwebtoken');
 
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
@@ -50,3 +50,4 @@ const authenticate = (req, res, next) => {
 };
 
 module.exports = authenticate;
+ */

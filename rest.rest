@@ -1,8 +1,0 @@
-
-
-
-GET  http://localhost:3000/entreprise/postulant
-###
-
-GET  http://localhost:3000/encadrement/AllStages
-
