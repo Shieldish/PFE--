@@ -36,18 +36,17 @@ insertFakeData();
 
 
 const { faker } = require('@faker-js/faker');
-const fakeDatas = Array.from({ length: 100 }, (_, index) => ({
+const fakeDatas = Array.from({ length: 55 }, (_, index) => ({
   id:faker.datatype.uuid(), 
-  Nom:faker.person.jobTitle(),
-  Domaine:faker.helpers.arrayElement(['FSS', 'FSEG', 'ISET','ISIMS','CIC' , 'LSI' ,'LISI','MPSRCC','LFI']),
+  Nom:faker.helpers.arrayElement(["Walmart", "State Grid", "Amazon", "China National Petroleum", "Sinopec Group", "Apple", "Saudi Aramco", "Volkswagen", "Royal Dutch Shell", "Berkshire Hathaway", "Toyota Motor", "Exxon Mobil", "Samsung Electronics", "Ping An Insurance", "Alphabet", "Microsoft", "China Construction Bank", "JPMorgan Chase", "Alibaba", "Berkshire Hathaway", "Nestle", "Visa", "Roche Holding", "Samsung Electronics", "Procter & Gamble", "Novartis", "UnitedHealth Group", "Bank of America", "ICBC", "Taiwan Semiconductor", "Johnson & Johnson", "Walt Disney", "Mastercard", "Comcast", "Intel", "Merck & Co.", "Pfizer", "AT&T", "Chevron", "Home Depot", "Verizon Communications", "Honda Motor", "NVIDIA", "L'Oréal", "Adobe", "T-Mobile", "Abbott Laboratories", "Costco Wholesale"]),
+  Domaine:faker.helpers.arrayElement(['INFORMATIQUE','COMMERCE','BIOLOGIE' ,'MATH','PHYSIQUE','MARKETING','BIG DATA','DEVELOPPEUR APPLICATION','DEVELOPPEUR APPLICATION WEB ','DEVELOPPEUR APPLICATION ANDROID','DEVELOPPEUR APPLICATION IOS','DEVELOPPEUR APPLICATION DESKTOP','TESTEUR ','CYBER-SECURITE', 'ADMIN RESEAU', 'GEOLOGIE','MANAGER','ADMIN SYSTEME' , 'BIOLOGISTE' ,'DESIGNER','PROJECT MANAGER','CLOUD MANAGER']),
   Email: faker.internet.email(),
   Email2: faker.internet.email(),
-  Titre:faker.helpers.arrayElement(['INFORMATIQUE', 'dev', 'web','manager','admin reseau' , 'securité' ,'compteur','dev junior','pro']),
-  Nom: faker.lorem.words(2),
-  Libelle: faker.lorem.words(5),
+  Titre:faker.helpers.arrayElement(["Software Engineer", "Data Scientist", "UX/UI Designer", "Product Manager", "AI/Machine Learning Engineer", "Cybersecurity Specialist", "Cloud Architect", "Full Stack Developer", "Digital Marketing Specialist", "Financial Analyst", "DevOps Engineer", "Medical Doctor", "Nurse Practitioner", "Pharmacist", "Dentist", "Operations Manager", "Marketing Manager", "Human Resources Manager", "Sales Manager", "Accountant", "Lawyer", "Civil Engineer", "Mechanical Engineer", "Electrical Engineer", "Aerospace Engineer", "Biomedical Engineer", "Environmental Engineer", "Construction Manager", "Architect", "Graphic Designer", "Content Writer", "Video Editor", "Photographer", "Chef", "Restaurant Manager", "Fitness Trainer", "Teacher", "Professor", "Police Officer", "Firefighter", "Paramedic", "Pilot", "Flight Attendant", "Event Planner", "Real Estate Agent", "Social Worker", "Clinical Psychologist"]),
+  Libelle:faker.word.adjective() ,
  /*  Description: faker.lorem.words(50), */
- Description: faker.random.words(50),
-  Niveau:faker.helpers.arrayElement(['lincence', 'master', 'doctora','Ingenieur']),
+  Description:faker.word.words({ count: { min: 50, max: 100 } }) ,
+  Niveau:faker.helpers.arrayElement(['licence', 'master', 'doctora','Ingenieur']),
   Experience:faker.helpers.arrayElement(['0', '1 ans', '2 ans','3 ans',' 4 ans' , '5 ans' ,'6 ans','7  ans','8 ans']),
   PostesVacants: faker.helpers.arrayElement(['5 places', '10 places', '3 places','1 places','2 places', '50 places']),// Correct usage of companyName method
   CreatedBy: faker.helpers.arrayElement(['test.nodemailer.pfe2024@gmail.com', 'gabiam.k.samuel@gmail.com', 'kossisamuel.gabiam@fss.u-sfax.tn']),
@@ -56,8 +55,8 @@ const fakeDatas = Array.from({ length: 100 }, (_, index) => ({
   DateFin: faker.date.future(),
   Zip:faker.number.int(),
   Telephone:faker.phone.number(),
-  Fax:faker.phone.imei(),
-  Address:faker.location.city(),
+  Fax:faker.phone.number(),
+  Address:faker.helpers.arrayElement(["Ariana", "Beja", "Ben Arous", "Bizerte", "Gabes", "Gafsa", "Jendouba", "Kairouan", "Kasserine", "Kebili", "Kef", "Mahdia", "Manouba", "Medenine", "Monastir", "Nabeul", "Sfax", "Sidi Bouzid", "Siliana", "Sousse", "Tataouine", "Tozeur", "Tunis", "Zaghouan"]),
   State :faker.location.city(),
   Rue:faker.location.buildingNumber(),
   gridCheck:'1'
@@ -77,7 +76,6 @@ async function insertFakeData() {
   }
 }
 insertFakeData();
-
 
 
 

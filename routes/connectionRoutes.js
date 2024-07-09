@@ -499,7 +499,9 @@ router.post('/loging', async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
+        console.log('user :', user.toJSON())
+
+    const token = jwt.sign({ userId: user.UUID, email:user.EMAIL, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
 
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
@@ -510,7 +512,7 @@ router.post('/loging', async (req, res) => {
       message: 'Login successful!',
       token,
       userData :{ userData: user },
-      user: { id: user.id, email: user.email, role: user.role }
+      user: { id: user.UUID, email: user.email, role: user.role }
     });
 
   } catch (err) {

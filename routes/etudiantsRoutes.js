@@ -14,7 +14,7 @@ const multer = require('multer');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const user_registration = require('../controllers/UserRegistration');
 const router = express.Router();
-const cloudinary = require('cloudinary').v2;
+const jwt = require('jsonwebtoken');
 
 const app = express();
 
@@ -94,11 +94,6 @@ router.get('/postuler/', async (req , res)=>{
   
 })
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 const uploadFolder = 'stockages';
 const uploadFolderPath = path.join(__dirname, '..', uploadFolder);
@@ -513,14 +508,14 @@ router.get('/check-email', async (req, res) => {
     }
 });
 
-/* router.get('/stage_postuler', async (req, res) => {
+router.get('/stage_postuler', async (req, res) => {
     try {
       if (!req.session.user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
   
       const etudiants = req.session.user.EMAIL; 
-      const etudiants='kossisamuel.gabiam@fss.u-sfax.tn'
+     
   
       if (!etudiants) {
         req.flash('error', 'An error occurred while fetching postulated data');
@@ -573,63 +568,88 @@ router.get('/check-email', async (req, res) => {
       req.flash('error', 'An error occurred while fetching postulated data: ' + error.message);
       return res.status(500).json({ error: 'An error occurred while fetching postulated data' });
     }
-  }); */
+  }); 
 
-  router.get('/stage_postuler', async (req, res) => {
+
+  router.get('/stage_postuler2', async (req, res) => {
     try {
-      // Mock email for demonstration; replace with your session management logic
-      const etudiants = 'kossisamuel.gabiam@fss.u-sfax.tn';
-    
+      const authHeader = req.headers.authorization;
+  
+      console.log('Authorization Header:', authHeader);
+  
+      if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+  
+      const token = authHeader.split(' ')[1];
+  
+      console.log('JWT Token:', token);
+  
+      if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+  
+      const JWT_SECRET = process.env.secretKey; // Ensure this matches the environment variable in your .env file
+  
+      let etudiants;
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        etudiants = decoded.email;
+        req.userId = decoded.userId;
+        req.role=decoded.role
+        console.log('Decoded Email:',etudiants);
+        console.log('userId',  req.userId);
+        console.log('role',req.role)
+      } catch (err) {
+        console.error('JWT Verification Error:', err);
+        return res.status(401).json({ error: 'Invalid token' });
+      }
+  
+      // Now check the value of 'etudiants' to ensure it's valid before querying the database
       if (!etudiants) {
-        return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
+        return res.status(401).json({ error: 'Invalid token. Email not found in decoded token.' });
       }
-    
-      // Fetching the etudiant ID
-      let etudiantID = await etudiant.findOne({ where: { EMAIL: etudiants }, attributes: ['ID'] });
-      if (!etudiantID) {
-          etudiantID = await user_registration.findOne({ where: { EMAIL: etudiants }, attributes: ['UUID'] });
-      }
-    
+  
+      const etudiantID = await etudiant.findOne({ where: { EMAIL: etudiants }, attributes: ['ID'] }) ||
+                         await user_registration.findOne({ where: { EMAIL: etudiants }, attributes: ['UUID'] });
+  
       if (!etudiantID) {
         return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
       }
-    
+  
       const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
-      console.log(etudiantIdValue);
-    
-      // Fetching postulated stages with order
+      console.log('Etudiant ID:', etudiantIdValue);
+  
       const postulated = await stagepostulation.findAll({
         where: {
           etudiantID: etudiantIdValue
         },
         order: [['postulatedAt', 'DESC']] // Sorting by postulatedAt in descending order
       });
-    
+  
       if (postulated.length === 0) {
         return res.status(404).json({ error: 'No postulated found' });
       }
-    
+  
       let postulatedJson = postulated.map(postulated => postulated.toJSON());
-    
+  
       await normalizeDate(postulatedJson);
-    
+  
       postulatedJson = postulatedJson.map(postulatedObj => {
         const modifiedpostulated = { ...postulatedObj };
         modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`;
         return modifiedpostulated;
       });
-    
-      console.log(postulatedJson);
-    
+  
+      console.log('Postulated Data:', postulatedJson);
+  
       return res.status(200).json({ postulant: postulatedJson });
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching postulated data:', error);
       return res.status(500).json({ error: 'An error occurred while fetching postulated data' });
     }
   });
   
-
-
 
   async function normalizeDate(filteredArray)
 {
