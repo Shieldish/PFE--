@@ -495,7 +495,7 @@ router.get('/check-email', async (req, res) => {
                 etudiantEmail: email
             }
         });
-               console.log(stage)
+               console.log("Stage existe",stage)
         // If stage is found, it means the email already exists for that stage
         if (stage) {
             return res.json({ exists: true });
@@ -808,6 +808,36 @@ router.get('/candidatures2', async (req, res) => {
   } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+router.post('/stages/byIds', async (req, res) => {
+  const { ids } = req.body;
+  try {
+    // Ensure ids is an array
+    if (!Array.isArray(ids)) {
+      return res.status(400).json({ error: 'ids must be an array' });
+    }
+
+    // Fetch jobs by IDs from the database
+    const jobs = await stage.findAll({
+      where: {
+        id: {
+          [Op.in]: ids
+        }
+      }
+    });
+
+    // Map the jobs to plain objects
+    const plainJobs = jobs.map(job => job.toJSON());
+    
+    console.log("Jobs found:", plainJobs);
+     
+    res.json(plainJobs);
+  } catch (error) {
+    console.error('Error fetching jobs:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
