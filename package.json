@@ -15,7 +15,7 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.3.3",
-    "cloudinary": "^2.2.0",
+  
     "compression-zlib": "^2.6.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
@@ -38,7 +38,6 @@
     "jquery": "^3.7.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "multer-storage-cloudinary": "^4.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.2",
     "node-localstorage": "^3.0.5",
