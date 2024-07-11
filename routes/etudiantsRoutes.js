@@ -36,7 +36,8 @@ router.get('/All', async (req, res) => {
       const { search, sortBy, sortOrder, page, limit, ...filters } = req.query;
       const options = {
         where: filters,
-        order: sortBy && sortOrder ? [[sortBy, sortOrder]] : undefined,
+      /*   order: sortBy && sortOrder ? [[sortBy, sortOrder]] : undefined, */
+      order: sortBy && sortOrder ? [[sortBy, sortOrder]] : [['createdAt', 'DESC']],
         offset: page && limit ? (page - 1) * limit : 0,
         limit: limit ? parseInt(limit) : undefined,
       };
