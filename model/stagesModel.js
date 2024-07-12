@@ -128,7 +128,7 @@ stage.beforeCreate((stage, _) => {
 });
 
 
-
+/* 
 const { faker } = require('@faker-js/faker');
 
 const fakeDatas = Array.from({ length: 8 }, (_, index) => {
@@ -199,7 +199,7 @@ async function insertFakeData() {
   }
 }
 insertFakeData();
-
+ */
 
 
 
