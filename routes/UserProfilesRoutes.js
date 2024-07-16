@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-let data
+let data/* 
 router.get('/',async (req, res) => {
        if(req.session.user)
        {
@@ -42,6 +42,34 @@ router.get('/',async (req, res) => {
         userData=null
         req.flash('error', 'An error occurred while retrieving user data. Please try again later. If the problem persists, log out and log in again! ');
         return res.render('UserSettingsProfiles', {userData, messages: req.flash() });
+});
+
+ */
+router.get('/', async (req, res) => {
+    try {
+        if (req.session.user) {
+            const user = req.session.user;
+            const email = user.EMAIL;
+
+            // Fetch user data from database
+            const userData = await user_registration.findOne({ where: { email } });
+
+            if (userData) {
+                req.flash('success', 'Data retrieved successfully');
+                return res.render('UserSettingsProfiles', { userData:userData, messages: req.flash() });
+            } else {
+                req.flash('error', 'User data not found');
+                return res.render('UserSettingsProfiles', { userData: null, messages: req.flash() });
+            }
+        } else {
+            req.flash('error', 'User session not found');
+            return res.render('UserSettingsProfiles', { userData: null, messages: req.flash() });
+        }
+    } catch (error) {
+        console.error('Error retrieving user data:', error.message);
+        req.flash('error', 'An error occurred while retrieving user data. Please try again later.');
+        return res.render('UserSettingsProfiles', { userData: null, messages: req.flash() });
+    }
 });
 
 
