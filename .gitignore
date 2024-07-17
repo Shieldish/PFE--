@@ -2,3 +2,4 @@ node_modules/
 stockages/
 scratch/
 Uploads/
+.vercel
