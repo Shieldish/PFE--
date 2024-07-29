@@ -26,6 +26,8 @@
               <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
                 <option value="USER">USER</option>
                 <option value="ADMIN">ADMIN</option>
+                <option value="DEPARTEMENT">DEPARTEMENT</option>
+                <option value="ENTREPRISE">ENTREPRISE</option>
               </select>
             <% } else if (key === 'ISVALIDATED') { %>
               <select class="form-control  my-color" id="<%= key %>" name="<%= key %>" required>
@@ -92,12 +94,14 @@
           <select class="form-control my-color" id="role" name="ROLE" required>
             <option value="USER">USER</option>
             <option value="ADMIN">ADMIN</option>
+            <option value="DEPARTEMENT">DEPARTEMENT</option>
+            <option value="ENTREPRISE">ENTREPRISE</option>
           </select>
          
           <label for="status">Statut</label>
           <select class="form-control my-color" id="status" name="STATUS" required>
-            <option value="0">0</option>
-            <option value="1">1</option>
+            <option value="0">inactivé</option>
+            <option value="1">activé</option>
           </select>
          
           <label for="SEXE">Sexe</label>
@@ -176,6 +180,8 @@
                             <select class="form-control  my-color" id="<%= key %>" name="<%= key %>">
                                 <option value="USER" <% if (row[key] === 'USER') { %> selected <% } %>>USER</option>
                                 <option value="ADMIN" <% if (row[key] === 'ADMIN') { %> selected <% } %>>ADMIN</option>
+                                <option value="DEPARTEMENT" <% if (row[key] === 'DEPARTEMENT') { %> selected <% } %>>DEPARTEMENT</option>
+                                <option value="ENTREPRISE" <% if (row[key] === 'ENTREPRISE') { %> selected <% } %>>ENTREPRISE</option>
                                 
                             </select>
                         <% } else if (key === 'SEXE') { %>

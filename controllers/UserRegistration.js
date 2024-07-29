@@ -41,7 +41,7 @@ const user_registration = sequelize.define('user_registration', {
       allowNull: true
     },
     role: {
-      type: DataTypes.ENUM('USER', 'ADMIN'),
+      type: DataTypes.ENUM('USER', 'ADMIN','DEPARTEMENT','ENTREPRISE'),
     defaultValue: 'USER'
     },
     ISVALIDATED: {

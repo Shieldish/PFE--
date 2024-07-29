@@ -1,24 +1,26 @@
-
-const isAdmin = (req, res, next) => {
-    if (req.role === 'ADMIN') {
-      next();
-    } else {
-   
-       req.flash('error', `error(403) : Access denied. This feature is restricted to administrators only`);
-       return res.render('AccessDenied',{ messages: req.flash()}) 
-   /*   return res.status(403).json({ error: 'Access denied, Admin only' }); */
-
-   
-    }
+const checkRole = (roles) => {
+    return (req, res, next) => {
+      const userRole = req.role  // Assuming user's role is stored in req.user.role
+  
+      console.log('User role:', userRole);
+      console.log('Allowed roles:', roles);
+      console.log('Requested path:', req.path);
+  
+      if (!userRole) {
+        console.log('No user role found');
+        req.flash('error', 'You must be logged in to access this page');
+        return res.redirect('/login');
+      }
+  
+      if (roles.includes(userRole)) {
+        console.log('Access granted');
+        next(); // User has one of the allowed roles, proceed to the next middleware
+      } else {
+        console.log('Access denied');
+        req.flash('error', 'error(403): Access denied');
+        return res.render('AccessDenied', { messages: req.flash() });
+      }
+    };
   };
   
-  const isUser = (req, res, next) => {
-    if (req.role === 'USER' || req.role === 'ADMIN') {
-      next();
-    } else {
-     /*  return res.status(403).json({ error: 'Access denied' }); */
-       req.flash('error', `error(403) : Access denied `);
-       return res.render('AccessDenied',{ messages: req.flash()}) 
-    }
-  };
-  module.exports = { isAdmin, isUser };
+  module.exports = checkRole;

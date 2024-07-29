@@ -68,23 +68,19 @@ app.use(express.static(path.join(__dirname, '')));
 /* app.set('view engine', 'ejs'); */
 app.set('view cache', false);
 
-
 app.use('/people', authenticate, routes);
 app.use('/connection', connectionRoutes);
-
-app.use('/etudiant', authenticate, checkRole(['USER','ENTREPRISE', 'ADMIN', 'DEPARTEMENT']), etudiantsRoutes);
-app.use('/entreprise', authenticate, checkRole(['ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), entrepriseRoutes);
-app.use('/encadrement', authenticate, checkRole(['DEPARTEMENT', 'ADMIN']), encadrementRoutes);
-app.use('/planification', authenticate, checkRole(['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), planificationRoutes);
-app.use('/settings', authenticate, checkRole(['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), UserProfilesRoutes);
-app.use('/gestion', authenticate, checkRole(['ADMIN']), databaseRoutes);
-app.use('/files', authenticate, checkRole(['ADMIN']), uploadsRoutes);
-
-
+app.use('/files', authenticate,  checkRole(['ADMIN']), uploadsRoutes);
+app.use('/gestion', authenticate, isUser, databaseRoutes);
+app.use('/settings', authenticate, UserProfilesRoutes);
+app.use('/entreprise',authenticate, checkRole(['ENTREPRISE']), entrepriseRoutes);
+app.use('/etudiant', authenticate,etudiantsRoutes);
+app.use('/encadrement', authenticate, checkRole(['DEPARTEMENT']), encadrementRoutes);
+app.use('/planification', authenticate, planificationRoutes);
 
 main();
 
-/* app.post('/sidebar', async (req, res) => {
+app.post('/sidebar', async (req, res) => {
     const language = req.body.lang || 'en';
 
     try {
@@ -94,18 +90,6 @@ main();
         res.status(500).send(error);
     }
 });
- */
-app.post('/sidebar', authenticate, async (req, res) => {
-    try {
-      const { lang } = req.body || 'fr';
-      const userRole = req.role; // Assuming you have the user's role available in the request object
-      const sidebarItems = await fetchSidebarItems(lang, userRole);
-      res.json(sidebarItems);
-    } catch (error) {
-      console.error('Error fetching sidebar items:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
 
 app.get('/postulate/:id', async (req, res) => {
     const id = req.params.id;

@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS  `sidebar_items`  (
 --
 
 INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name_fr`, `name_en`) VALUES
-(1, NULL, '/#', 'fas fa-tachometer-alt', 'لوحة القيادة', 'Tableau de bord', 'Dashboard'),
+(1, NULL, '/', 'fas fa-tachometer-alt', 'لوحة القيادة', 'Tableau de bord', 'Dashboard'),
 (2, NULL, '/etudiant', 'fas fa-users', 'طلاب', 'Étudiants', 'Students'),
 (3, NULL, '/#', 'fas fa-chalkboard-teacher', 'معلمون', 'Enseignants', 'Instructors'),
 (4, NULL, '/entreprise', 'fas fa-building', 'شركات', 'Entreprises', 'Companies'),
@@ -59,13 +59,13 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrements', 'Supervisions'),
 (12, 7, '/settings', 'bi bi-person-lines-fill', ' ملفاتي الشخصية', ' Mon Profiles', ' My Profiles'),
 (13, 7, '/settings', 'bi bi-pc-display', ' مشاريعي', ' Mes Projets', ' My Projects'),
-(14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management'),
-(15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision'),
-(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning');
+(15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision');
+
 
 --
 -- Index pour les tables déchargées
---
+--(14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management'),
+--(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning');
 
 --
 -- Index pour la table `sidebar_items`
