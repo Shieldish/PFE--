@@ -59,6 +59,7 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrements', 'Supervisions'),
 (12, 7, '/settings', 'bi bi-person-lines-fill', ' ملفاتي الشخصية', ' Mon Profiles', ' My Profiles'),
 (13, 7, '/settings', 'bi bi-pc-display', ' مشاريعي', ' Mes Projets', ' My Projects'),
+(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning'),
 (15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision');
 
 

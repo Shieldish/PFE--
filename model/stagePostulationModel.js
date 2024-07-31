@@ -4,7 +4,7 @@ const zlib = require('node:zlib');
 const { sequelize } = require('./model');
 const Stages=require('./stagesModel');
 const { enseignant, encadrant, etudiant } = require('./model');
-
+const Soutenance = require('./Soutenance');
 const { faker } = require('@faker-js/faker');
 
 
@@ -235,7 +235,9 @@ const candidature = sequelize.define('candidature', {
 (async () => {
   await stagepostulation.sync({ alter: true });
   await candidature.sync({ alter: true }); 
-  console.log("Model:stagepostulation , candidature are synced successfully");
+  await Soutenance.sync({ alter: true });
+
+  console.log("Model: Soutenance , stagepostulation , candidature are synced successfully");
 })();
 
 

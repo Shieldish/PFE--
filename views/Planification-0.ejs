@@ -1,0 +1,104 @@
+<head>
+    <head>
+       <title>Gestion des Stages -Plannification</title>
+       <%-include('./common/head') %>
+       <!-- Your other CSS files -->
+       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+ </head>
+ </head>
+ <body>
+    <div class="custom-container">
+       <%-include('./common/sidebar') %>
+       <div class="main-content">
+          <%-include('./common/navbar') %>
+          <h1 style="margin: 15px; padding: 15px;">Soutenances</h1>
+          <hr>
+
+                <div>
+               
+             
+                <body>
+                  <h1>Soutenances</h1>
+                  <table border="1" id="soutenances-table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Salle</th>
+                        <th>Groupe</th>
+                        <th>Type</th>
+                        <th>Etudiant 1</th>
+                        <th>Etudiant 2</th>
+                        <th>Etudiant 3</th>
+                        <th>Sujet</th>
+                        <th>President</th>
+                        <th>Rapporteur</th>
+                        <th>Encadrant Academique</th>
+                        <th>Encadrant Professionnel</th>
+                        <th>Entreprise</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% soutenances.forEach(function(soutenance) { %>
+                        <tr data-id="<%= soutenance.id %>">
+                          <td><%= soutenance.id %></td>
+                          <td><input type="date" value="<%= soutenance.date %>" data-field="date"></td>
+                          <td><input type="time" value="<%= soutenance.time %>" data-field="time"></td>
+                          <td><input type="text" value="<%= soutenance.salle %>" data-field="salle"></td>
+                          <td><input type="text" value="<%= soutenance.groupe %>" data-field="groupe"></td>
+                          <td>
+                            <select data-field="type">
+                              <option value="Binome" <%= soutenance.type === 'Binome' ? 'selected' : '' %>>Binome</option>
+                              <option value="Monome" <%= soutenance.type === 'Monome' ? 'selected' : '' %>>Monome</option>
+                              <option value="Monome" <%= soutenance.type === 'trinome' ? 'selected' : '' %>>trinome</option>
+                            </select>
+                          </td>
+                          <td><input type="text" value="<%= soutenance.etudiant1 %>" data-field="etudiant1"></td>
+                          <td><input type="text" value="<%= soutenance.etudiant2 %>" data-field="etudiant2"></td>
+                          <td><input type="text" value="<%= soutenance.etudiant3 %>" data-field="etudiant3"></td>
+                          <td><input type="text" value="<%= soutenance.sujet %>" data-field="sujet"></td>
+                          <td><input type="text" value="<%= soutenance.president %>" data-field="president"></td>
+                          <td><input type="text" value="<%= soutenance.rapporteur %>" data-field="rapporteur"></td>
+                          <td><input type="text" value="<%= soutenance.encadrantAcademique %>" data-field="encadrantAcademique"></td>
+                          <td><input type="text" value="<%= soutenance.encadrantProfessionnel %>" data-field="encadrantProfessionnel"></td>
+                          <td><input type="text" value="<%= soutenance.entreprise %>" data-field="entreprise"></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                
+                  <script>
+                    // jQuery for handling table cell edits
+                    $(document).ready(function() {
+                      $('input, select').on('blur', function() {
+                        var $input = $(this);
+                        var id = $input.closest('tr').data('id');
+                        var field = $input.data('field');
+                        var value = $input.val();
+                
+                        // Send AJAX request to update the value
+                        $.ajax({
+                          url: '/planification/soutenances/' + id,
+                          method: 'PUT',
+                          data: { [field]: value },
+                          success: function(response) {
+                            console.log('Updated successfully:', response);
+                          },
+                          error: function(err) {
+                            console.error('Error updating:', err);
+                          }
+                        });
+                      });
+                    });
+                  </script>
+                </body>
+
+          <hr>
+          <%-include('./common/footer') %>
+       </div>
+     
+    </div>
+  
+ </body>

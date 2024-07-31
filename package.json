@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
@@ -15,7 +15,6 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.3.3",
-  
     "compression-zlib": "^2.6.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",

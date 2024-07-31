@@ -75,7 +75,7 @@ app.use('/connection', connectionRoutes);
 app.use('/etudiant', authenticate, checkRole(['USER','ENTREPRISE', 'ADMIN', 'DEPARTEMENT']), etudiantsRoutes);
 app.use('/entreprise', authenticate, checkRole(['ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), entrepriseRoutes);
 app.use('/encadrement', authenticate, checkRole(['DEPARTEMENT', 'ADMIN']), encadrementRoutes);
-app.use('/planification', authenticate, checkRole(['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), planificationRoutes);
+app.use('/planification', authenticate, checkRole(['DEPARTEMENT', 'ADMIN']), planificationRoutes);
 app.use('/settings', authenticate, checkRole(['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), UserProfilesRoutes);
 app.use('/gestion', authenticate, checkRole(['ADMIN']), databaseRoutes);
 app.use('/files', authenticate, checkRole(['ADMIN']), uploadsRoutes);
