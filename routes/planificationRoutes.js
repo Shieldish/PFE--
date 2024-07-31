@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
       const soutenances = await Soutenance.findAll();
       //console.log( 'soutenance data : ',soutenances)
 
-      res.render('Planification', { soutenances});
+      res.render('Planification', { soutenances : soutenances});
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

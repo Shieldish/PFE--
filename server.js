@@ -16,9 +16,7 @@ const etudiantsRoutes = require('./routes/etudiantsRoutes');
 const encadrementRoutes = require('./routes/encadrementRoutes');
 const planificationRoutes = require('./routes/planificationRoutes');
 const authenticate = require('./middlewares/auth');
-const { isAdmin, isUser } = require('./middlewares/roles1');
 const checkRole =  require('./middlewares/roles');
-
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const user_registration = require('./controllers/UserRegistration');

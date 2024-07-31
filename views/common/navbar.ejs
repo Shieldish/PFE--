@@ -6,6 +6,7 @@
     <title>Email Template with Bootstrap</title>
     <!-- Include Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .custom-navbar-bg {
             background-color: rgb(32, 32, 32); /* Replace 'your_custom_color' with your desired color code */
@@ -36,7 +37,7 @@
     
     </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
 <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid ">
@@ -53,18 +54,7 @@
         </form>
         <!-- Right links -->
         <ul class="navbar-nav ms-auto d-flex flex-row">
-            <!-- Notification dropdown -->
-            <li class="nav-item dropdown d-none d-md-block">
-                <a class="nav-link me-3 me-lg-0 dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge rounded-pill badge-danger">1</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink1">
-                    <li><a class="dropdown-item" href="#">Some news</a></li>
-                    <li><a class="dropdown-item" href="#">Another news</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-            </li>
+        
 
             <li class="nav-item">
                 <div class="language-selector">
@@ -77,7 +67,7 @@
             </li>
             <li class="nav-item dropdown d-none d-md-block">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="../public/images/user/2.png" alt="User Logo" class="rounded-circle" height="30" alt="Avatar" loading="lazy">
+                    <img src="../public/images/user/2.png" alt="User Logo" class="rounded-full w-8 h-8"  alt="Avatar" loading="lazy">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                     <li><div class="dropdown-item user-info text-center">user-info</div></li>

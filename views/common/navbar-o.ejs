@@ -30,12 +30,16 @@
         .user-email {
             color: #ffffff; /* Change text color if needed */
         }
+        .nav-item{
+          margin: 5px;
+        }
+    
     </style>
 </head>
 <body>
 
 <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
+    <div class="container-fluid ">
         <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -43,14 +47,14 @@
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
             </form> -->
-        <form class="d-none d-md-flex input-group w-auto my-auto">
+        <form class=" input-group w-auto my-auto ">
             <input autocomplete="off" type="search" class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
-            <button class="btn btn-outline-success rounded my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+            <button class="btn btn-outline-success rounded my-0 my-sm-0" type="submit"><i class="fas fa-search "></i></button>
         </form>
         <!-- Right links -->
         <ul class="navbar-nav ms-auto d-flex flex-row">
             <!-- Notification dropdown -->
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown d-none d-md-block">
                 <a class="nav-link me-3 me-lg-0 dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-bell"></i>
                     <span class="badge rounded-pill badge-danger">1</span>
@@ -71,9 +75,9 @@
                     </select>
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown d-none d-md-block">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="../public/images/user/2.png" alt="User Logo"  class="rounded-circle" height="22" alt="Avatar" loading="lazy">
+                    <img src="../public/images/user/2.png" alt="User Logo" class="rounded-circle" height="30" alt="Avatar" loading="lazy">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                     <li><div class="dropdown-item user-info text-center">user-info</div></li>
@@ -82,7 +86,9 @@
                     <li><div class="dropdown-item user-prenom"></div></li>
                     <li><div class="dropdown-item user-email"></div></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
+                    <div class="">
+                        <li><a class="dropdown-item" href="/settings"> <i class="fa-thin fa-user-gear"></i>  Edit Profiles</a></li>
+                    </div>
                 </ul>
             </li>
 

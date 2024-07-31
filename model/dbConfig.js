@@ -47,61 +47,7 @@ const executeQuery = (sql) => {
   });
 };
 
-/* const fetchSidebarItems = async (lang, userRole) => {
-    const accessRules = {
-      ADMIN: ['all'],
-      USER: ['/', '/etudiant', '/encadrement', '/planification', '/settings'],
-      DEPARTEMENT: ['/', '/etudiant', '/entreprise', '/encadrement', '/planification', '/settings'],
-      ENTREPRISE: ['/', '/entreprise', '/encadrement', '/planification', '/settings']
-    };
-  
-    const allowedPaths = accessRules[userRole] || [];
 
-  const sidebarSql = `
-    SELECT
-      s.id,
-      s.name_${lang} AS name,
-      s.link,
-      s.icon,
-      s.parent_id
-    FROM sidebar_items s
-    ORDER BY s.parent_id, s.id
-  `;
-
-  try {
-    const sidebarResults = await executeQuery(sidebarSql);
-    const filteredItems = sidebarResults.reduce((acc, item) => {
-
-      if (allowedPaths.includes('all') || allowedPaths.includes(item.link) || item.link === '/' || item.link === '/settings') {
-        if (item.parent_id === null) {
-          acc.push({
-            id: item.id,
-            name: item.name,
-            link: item.link,
-            icon: item.icon,
-            children: []
-          });
-        } else {
-          const parent = acc.find(i => i.id === item.parent_id);
-          if (parent) {
-            parent.children.push({
-              id: item.id,
-              name: item.name,
-              link: item.link,
-              icon: item.icon
-            });
-          }
-        }
-      }
-      return acc;
-    }, []);
-    return filteredItems;
-  } catch (err) {
-    console.error('Error fetching sidebar items:', err);
-    throw err;
-  }
-  };
-   */
 
   const fetchSidebarItems = async (lang, userRole) => {
     const sidebarSql = `
@@ -152,7 +98,7 @@ const executeQuery = (sql) => {
       '/home': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
       '/entreprise': ['ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
       '/encadrement': ['DEPARTEMENT', 'ADMIN'],
-      '/planification': ['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
+      '/planification': ['DEPARTEMENT', 'ADMIN'],
       '/settings': ['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
       '/gestion': ['ADMIN'],
       '/files/upload': ['ADMIN']

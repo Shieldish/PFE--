@@ -9,6 +9,7 @@
             transition: background-color 0.5s ease;
             margin: 0;
             padding: 0;
+        
         }
 
         .custom-container {
@@ -42,15 +43,17 @@
             width: 100%;
             border-collapse: collapse;
             animation: fadeIn 0.8s ease-out;
-
+            font-weight: bold;
             background-color: #f3f2f2;
             table-layout: fixed;
         }
        
         thead {
+            font-weight: bold;
             position: sticky;
             top: 0;
             z-index: 1;
+
         }
 
         th, td {
@@ -66,14 +69,14 @@
 
         th:nth-child(1), td:nth-child(1) { width: 50px; }  /* ID */
         th:nth-child(2), td:nth-child(2) { width: 120px; } /* Date */
-        th:nth-child(3), td:nth-child(3) { width: 80px; }  /* Time */
+        th:nth-child(3), td:nth-child(3) { width: 120px; }  /* Time */
         th:nth-child(4), td:nth-child(4) { width: 80px; }  /* Salle */
         th:nth-child(5), td:nth-child(5) { width: 100px; }  /* Groupe */
         th:nth-child(6), td:nth-child(6) { width: 120px; } /* Type */
         th:nth-child(7), td:nth-child(7),
         th:nth-child(8), td:nth-child(8),
         th:nth-child(9), td:nth-child(9) { width: 120px; } /* Etudiants */
-        th:nth-child(10), td:nth-child(10) { width: 200px; } /* Sujet */
+        th:nth-child(10), td:nth-child(10) { width: 300px; } /* Sujet */
         th:nth-child(11), td:nth-child(11),
         th:nth-child(12), td:nth-child(12) { width: 150px; } /* President, Rapporteur */
         th:nth-child(13), td:nth-child(13),

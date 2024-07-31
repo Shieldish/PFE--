@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
       res.status(500).send('Error fetching table names');
       return; */
     }
-    const tablesToRemove = ['sidebar_items','stage','stagepostulation','candidature'];
+    const tablesToRemove = ['sidebar_items','stage','stagepostulation','candidature'  ,'soutenance'];
     
     const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
       .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
