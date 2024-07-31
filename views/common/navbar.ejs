@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Template with Bootstrap</title>
+   
     <!-- Include Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .custom-navbar-bg {
             background-color: rgb(32, 32, 32); /* Replace 'your_custom_color' with your desired color code */
@@ -37,7 +36,7 @@
     
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
 
 <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid ">
@@ -50,7 +49,9 @@
             </form> -->
         <form class=" input-group w-auto my-auto ">
             <input autocomplete="off" type="search" class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
-            <button class="btn btn-outline-success rounded my-0 my-sm-0" type="submit"><i class="fas fa-search "></i></button>
+           <button class="btn btn-outline-success rounded-lg bg-green-500 text-white px-4 py-2 hover:bg-green-600" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
         </form>
         <!-- Right links -->
         <ul class="navbar-nav ms-auto d-flex flex-row">
@@ -67,7 +68,7 @@
             </li>
             <li class="nav-item dropdown d-none d-md-block">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="../public/images/user/2.png" alt="User Logo" class="rounded-full w-8 h-8"  alt="Avatar" loading="lazy">
+                    <img src="../public/images/user/2.png" alt="User Logo" class="rounded-full w-8 h-8" alt="Avatar" loading="lazy">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                     <li><div class="dropdown-item user-info text-center">user-info</div></li>
