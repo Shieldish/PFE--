@@ -80,7 +80,7 @@ app.use('/files', authenticate, checkRole(['ADMIN']), uploadsRoutes);
 
 
 
-main();
+
 
 /* app.post('/sidebar', async (req, res) => {
     const language = req.body.lang || 'en';
@@ -116,9 +116,11 @@ app.get('/postulate/:id', async (req, res) => {
 });
 
 app.get(['/', '/home'], authenticate, (req, res) => {
+    main();
     const user = req.session.user;
     if (user) {
         delete user.PASSWORD;
+   
     }
     res.render('home', { user, userJSON: JSON.stringify(user) });
 });

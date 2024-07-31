@@ -143,7 +143,7 @@ stage.beforeCreate((stage, _) => {
 
 const { faker } = require('@faker-js/faker');
 
-const fakeDatas = Array.from({ length: 7 }, (_, index) => {
+const fakeDatas = Array.from({ length: 3 }, (_, index) => {
   const titre = faker.helpers.arrayElement([
     "Software Engineer", "Data Scientist", "UX/UI Designer", "Product Manager", 
     "AI/Machine Learning Engineer", "Cybersecurity Specialist", "Cloud Architect", 
