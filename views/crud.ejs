@@ -37,7 +37,7 @@
              <%-include('./partial/flaskMessages')  %>
              <h5 >
                <a href="/gestion" class="btn btn-outline-secondary">
-                  <i class="bi bi-arrow-left"></i> Go Back
+                  <i class="bi bi-arrow-left"></i> Retour
                </a>
              </h5>
              <% if (tableName !== null && typeof tableName !== 'undefined') { %>
@@ -46,7 +46,7 @@
              </script>
              <!-- Button to add new entry -->
              <button type="button" class="btn btn-outline-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
-             <i class="fas fa-plus"></i> Add New <%= tableName %>
+             <i class="fas fa-plus"></i>Ajouter un Nouveau <%= tableName %>
              </button>
              <!-- Button container for displaying table name and count -->
              <div class="button-container">
@@ -82,14 +82,14 @@
                          <td>
                             <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="modal"
                                data-target="#viewsModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
-                            <i class="fas fa-eye"></i>Views
+                            <i class="fas fa-eye"></i>voir
                             </button>
                             <!-- modal fade for views -->
                             <div class="modal fade" id="viewsModal<%= row.EMAIL %>" tabindex="-1" role="dialog" aria-labelledby="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" aria-hidden="true">
                                <div class="modal-dialog modal-sm" role="document">
                                   <div class="modal-content my-color ">
                                      <div class="modal-header">
-                                        <h5  class="modal-title " id="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" >Edit :  <%= row.EMAIL%></h5>
+                                        <h5  class="modal-title " id="viewsModalLabel<%= row.EMAIL.replace(/\[@.\]/g, '\\\\$&') %>" >Editer :  <%= row.EMAIL%></h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                         </button>
@@ -106,7 +106,7 @@
                                         </table>
                                      </div>
                                      <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">fermer</button>
                                      </div>
                                   </div>
                                </div>
@@ -115,13 +115,13 @@
                          <td>
                             <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
                                data-target="#editModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
-                            <i class="fas fa-edit"></i> Edit
+                            <i class="fas fa-edit"></i> Editer
                             </button>
                          </td>
                          <td>
                             <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal"
                                data-target="#deleteModal<%= row.EMAIL.replace(/[@.]/g, '\\$&') %>">
-                            <i class="fas fa-trash"></i> Delete
+                            <i class="fas fa-trash"></i> Supprimer
                             </button>
                          </td>
                       </tr>
@@ -131,17 +131,17 @@
                          <div class="modal-dialog modal-sm">
                             <div class="modal-content">
                                <div class="modal-header">
-                                  <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
+                                  <h5 class="modal-title" id="deleteConfirmationLabel">Confirmation de la suppression</h5>
                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                   </button>
                                </div>
                                <div class="modal-body">
-                                  <p class="text-center"> You sure you want to  <em style="color: rgb(255, 0, 0);">permanently remove</em> : <strong  style="color:#007bff;" ><%=row.EMAIL %></strong>  and his informations from  <strong><em><%= tableName %></em> </strong>  ?   </p>
+                                  <p class="text-center"> Tu es sûr de vouloir <em style="color: rgb(255, 0, 0);">supprimer définitivement</em> : <strong  style="color:#007bff;" ><%=row.EMAIL %></strong> et ses informations de <strong><em><%= tableName %></em> </strong>  ?   </p>
                                </div>
                                <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                  <a href="/gestion/<%= tableName %>/delete/<%= row.EMAIL %>" class="btn btn-danger">Delete</a>
+                                  <a href="/gestion/<%= tableName %>/delete/<%= row.EMAIL %>" class="btn btn-danger">Supprimer</a>
                                </div>
                             </div>
                          </div>
@@ -153,7 +153,7 @@
              <!-- Bootstrap Pagination -->
              <% } else { %>
              <h2>
-                <p style="text-align: center; color: red;"> <%= tableName.toUpperCase() %> has no records</p>
+                <p style="text-align: center; color: red;"> <%= tableName.toUpperCase() %> n'a pas de Données</p>
              </h2>
              <% } %>
           </div>

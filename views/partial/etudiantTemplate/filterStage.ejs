@@ -1,8 +1,15 @@
 <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+
 
 <style>
     /* Card Styles */
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
     .card-title-custom {
         font-size: 16px;
         font-weight: bold;
@@ -19,7 +26,7 @@
         width: auto; /* Set the desired width */
         height: fit-content; /* Set the desired height */
      /*    max-height: fit-content; */
-        background-color:beige;
+        background-color:rgb(255, 255, 254);
         margin: 5px;
         padding: 5px;
         
@@ -280,37 +287,146 @@
                   }
 
                   stageItem.innerHTML = `
-                 
-                      <div class="card-body">
-                          <span class="time-since-created">Publié ${timeSinceCreated}</span>
-                          <h5 class="card-title" style="text-transform: uppercase; text-align: center;"> <strong >${stage.Domaine}</strong> </h5>
-                          <hr>
-                          <h5 class="card-title"> Chez : ${stage.Nom}</h5>
-                          <h5 class="card-title"> Titre : ${stage.Titre}</h5>
-                          <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
-                          <details class="description-wrapper">
-                           <summary><strong>Description :</strong></summary>
-                
-                              <p class="long-description">${longDescription}</p>
-                          </details>
-                          <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau}</p>
-                          <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
-                          <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
-                          <hr>
-                          <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
-                          <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
-                          <!-- Add more stage properties as needed -->
-                          
-                         
-                          <a href="/postulate/${stage.id}" class="btn btn btn-outline-dark mybtn">Postuler maintenant</a>
-                         
-                      </div>
-                      <div class="card-footer">
-                           <span class="published-time">Publié il y a ${timeString}</span>
-                         </div>
-                         <hr>
-                
-                        
+      <div class="card-body">
+    <span class="time-since-created">
+        <i class="fas fa-clock me-2"></i>Publié ${timeSinceCreated}
+    </span>
+    <h5 class="card-title domain-title" style="text-transform: uppercase; text-align: center;">
+        <strong>${stage.Domaine}</strong>
+    </h5>
+    <hr class="divider">
+    <h5 class="card-title">
+        <i class="fas fa-building me-2"></i>Chez : ${stage.Nom}
+    </h5>
+    <h5 class="card-title">
+        <i class="fas fa-briefcase me-2"></i>Titre : ${stage.Titre}
+    </h5>
+    <p class="card-text">
+        <strong><i class="fas fa-tag me-2"></i>Domaine:</strong> ${stage.Libelle}
+    </p>
+    <details class="description-wrapper">
+        <summary><strong><i class="fas fa-align-left me-2"></i>Description :</strong></summary>
+        <p class="long-description">${longDescription}</p>
+    </details>
+    <p class="card-text">
+        <strong><i class="fas fa-graduation-cap me-2"></i>Niveau:</strong> ${stage.Niveau}
+    </p>
+    <p class="card-text">
+        <strong><i class="fas fa-users me-2"></i>Nombre de poste:</strong> ${stage.PostesVacants}
+    </p>
+    <p class="card-text">
+        <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong> ${stage.State}
+    </p>
+    <hr class="divider">
+    <p class="card-text">
+        <strong><i class="fas fa-calendar-alt me-2"></i>Date début:</strong> ${formattedDateDebut}
+    </p>
+    <p class="card-text">
+        <strong><i class="fas fa-calendar-alt me-2"></i>Date fin:</strong> ${formattedDateFin}
+    </p>
+    <a href="/postulate/${stage.id}" class="btn btn-outline-dark mybtn" style="animation: bounce 2s infinite";>
+        <i class="fas fa-paper-plane me-2"></i>Postuler maintenant
+    </a>
+</div>
+<div class="card-footer">
+    <span class="published-time">
+        <i class="fas fa-clock me-2"></i>Publié il y a ${timeString}
+    </span>
+</div>
+<hr>
+
+<style>
+ @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-30px); }
+        60% { transform: translateY(-15px); }
+    }
+
+
+    .card-body {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border-radius: 15px;
+      /*   background: linear-gradient(145deg, #e2e8f0, #cbd5e1); */
+        background-color:"white";
+        box-shadow: 20px 20px 60px #a7aeb8, -20px -20px 60px #f7ffff;
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .card-body:hover {
+        transform: scale(1.05);
+        box-shadow: 30px 30px 70px #9ca3af, -30px -30px 70px #ffffff;
+    }
+
+    .divider {
+        border: 0;
+        height: 1px;
+        background: #ddd;
+        margin: 20px 0;
+    }
+
+    .domain-title {
+        color: #1e3a8a;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        animation: fadeInDown 1s;
+    }
+
+    .description-wrapper summary {
+        cursor: pointer;
+    }
+
+    .description-wrapper .long-description {
+        padding: 10px;
+        background-color: #f1f5f9;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+
+    .mybtn {
+        background-color: #2563eb;
+        border-color: #2563eb;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .mybtn:hover {
+        background-color: #1d4ed8;
+        border-color: #1d4ed8;
+    }
+
+    .card-footer {
+        background-color: #e5e7eb;
+        border-top: 1px solid #d1d5db;
+        padding: 10px 20px;
+        text-align: center;
+        border-radius: 0 0 15px 15px;
+    }
+
+    .published-time {
+        color: #6b7280;
+    }
+
+    @keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
               `;
 
               stageGrid.appendChild(stageItem);
@@ -352,3 +468,4 @@ function getTimeSinceCreated(createdAt) {
 fetchStages();
 
 </script>
+

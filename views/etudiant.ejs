@@ -106,7 +106,7 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link btn-dark" id="pills-resultat-tab" data-bs-toggle="pill" data-bs-target="#pills-resultat" type="button" role="tab" aria-controls="pills-resultat" aria-selected="false">Resultat</button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                <!--     <li class="nav-item" role="presentation">
                         <button class="nav-link btn-dark" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -116,7 +116,7 @@
                         <button class="nav-link btn-dark" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>
                             Disabled
                         </button>
-                    </li>
+                    </li> -->
                 </ul>
                 <hr />
                 <div class="tab-content" id="pills-tabContent">
@@ -182,9 +182,9 @@
                         .stage postulé content..
                     </div>
                     <div class="tab-pane fade" id="pills-resultat" role="tabpanel" aria-labelledby="pills-resultat-tab" tabindex="0">.resultat content..</div>
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">.lol..</div>
+                   <!--  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">.lol..</div>
                     <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">.grgg..</div>
-                    <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">..grgrgreg.</div>
+                    <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">..grgrgreg.</div> -->
                 </div>
             </div>
             <%-include('./common/footer') %>
@@ -264,31 +264,146 @@
     .map(
         (postulant) => `
   <div class="col-md-4">
-      <div class="card mb-4  animate__animated animate__fadeInUp"    style="background-color: white;">
-  
-          <div class="card-body">
-              <h5 class="card-title card-title-custom  ">${postulant.etudiantName}</h5>
-                <hr>
-              <p class="card-text"><strong>Email :</strong> ${postulant.etudiantEmail}</p>
-              <p class="card-text"><strong>Institue :</strong> ${postulant.etudiantInstitue}</p>
-              <p class="card-text"><strong>Domaine :</strong> ${postulant.stageDomaine}</p>
-              <p class="card-text"><strong>Section :</strong> ${postulant.etudiantSection}</p>
-              <p class="card-text"><strong>Sujet :</strong> ${postulant.stageSujet}</p>
-              <p class="card-text"><strong>Entreprise :</strong> ${postulant.entrepriseName}</p>
-              <p class="card-text">
-                   <strong>Status :</strong> 
-                     <span style=" font-weight: bold;  color: 
-                          ${postulant.status === "a attente" ? "rgb(200, 130, 30)" : postulant.status === "accepté" ? "green" : "red"}">
-                           ${postulant.status}
-                    </span>
-              </p>
-  
-              <p class="card-text"><strong>Date de postulation :</strong> le ${postulant.postulatedAt}</p>
-              <p class="card-text"><strong>CV :</strong> <a href="${postulant.CVPath}" target="_blank">Ouvrir CV</a></p>
-              <a href="/etudiant/candidatures?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-outline-secondary">View more Details</a>
-          </div>
+  <div class="card mb-4 animate__animated animate__fadeInUp postulant-card">
+    <div class="card-body">
+      <h5 class="card-title card-title-custom">
+        <i class="fas fa-user-graduate"></i> ${postulant.etudiantName}
+      </h5>
+      <hr class="custom-hr">
+      <div class="postulant-info">
+        <p class="card-text"><i class="fas fa-envelope"></i> <strong>Email :</strong> ${postulant.etudiantEmail}</p>
+        <p class="card-text"><i class="fas fa-university"></i> <strong>Institut :</strong> ${postulant.etudiantInstitue}</p>
+        <p class="card-text"><i class="fas fa-bookmark"></i> <strong>Domaine :</strong> ${postulant.stageDomaine}</p>
+        <p class="card-text"><i class="fas fa-graduation-cap"></i> <strong>Section :</strong> ${postulant.etudiantSection}</p>
+        <p class="card-text"><i class="fas fa-book"></i> <strong>Sujet :</strong> ${postulant.stageSujet}</p>
+        <p class="card-text"><i class="fas fa-building"></i> <strong>Entreprise :</strong> ${postulant.entrepriseName}</p>
+        <p class="card-text">
+          <i class="fas fa-info-circle"></i> <strong>Status :</strong> 
+          <span class="status-badge status-${postulant.status.toLowerCase().replace(' ', '-')}">${postulant.status}</span>
+        </p>
+        <p class="card-text">
+          <i class="fas fa-calendar-alt"></i> <strong>Date de postulation :</strong> le ${postulant.postulatedAt}
+        </p>
       </div>
+      <div class="postulant-actions">
+        <a href="${postulant.CVPath}" target="_blank" class="btn btn-outline-primary btn-sm">
+          <i class="fas fa-file-pdf"></i> Ouvrir CV
+        </a>
+        <a href="/etudiant/candidatures?etudiantEmail=${postulant.etudiantEmail}&stageId=${postulant.stageId}" class="btn btn-outline-secondary btn-sm">
+          <i class="fas fa-eye"></i> Voir plus de détails
+        </a>
+      </div>
+    </div>
   </div>
+</div>
+
+     <style>
+        .postulant-card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+}
+
+.postulant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-title-custom {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.custom-hr {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  margin: 1rem 0;
+}
+
+.postulant-info p {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.postulant-info p i {
+  width: 20px;
+  margin-right: 0.5rem;
+  color: #3498db;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.status-a-attente {
+  background-color: #ffeaa7;
+  color: #d35400;
+}
+
+.status-accepté {
+  background-color: #55efc4;
+  color: #27ae60;
+}
+
+.status-refusé {
+  background-color: #fab1a0;
+  color: #c0392b;
+}
+
+.postulant-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-outline-primary {
+  color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3498db;
+  color: #ffffff;
+}
+
+.btn-outline-secondary {
+  color: #7f8c8d;
+  border-color: #7f8c8d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #7f8c8d;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .postulant-actions {
+    flex-direction: column;
+  }
+
+  .postulant-actions .btn {
+    margin-bottom: 0.5rem;
+  }
+}
+    </style>
   `
     )
     .join("")}

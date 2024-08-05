@@ -141,7 +141,7 @@
       <%- include('./common/navbar') %>
 
       <a style="margin: 15px; " href="/etudiant" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left"></i> Go Back
+        <i class="bi bi-arrow-left"></i> Retour
      </a>
 
       <h1 style="margin: 15px; padding: 15px;">Stage :</h1>
@@ -150,36 +150,138 @@
       <%-include('./partial/flaskMessages') %>
      
 
-      <div class="job-details">
-        <h3 style="margin: 10px; text-transform: uppercase;"><%= stage.Titre %> (<%= stage.State %>)</h3>
-        <hr>
-        <h2 style="font-weight: bold;"> <%= stage.Nom %></h2>
-        <p style="font-weight: bold;"> <%= stage.State %></p>
-      <p>
-      du  <%= new Date(stage.createdAt).toLocaleString('fr-FR', { dateStyle: 'long' }) %> -
-      au  <%= new Date(stage.DateFin).toLocaleString('fr-FR', { dateStyle: 'long' }) %>
-      </p>
-        <hr>
-        <p> <strong>Postes vacants:</strong> <%= stage.PostesVacants %> poste(s) ouvert(s)</p>
-        <p> <strong>Experience :</strong>  <%= stage.Experience %></p>
-        <p> <strong>Niveau :</strong> <%= stage.Niveau %></p>
-        <p><strong>Langue :</strong> <%= stage.Langue %></p>
-        <hr>
-        <p><strong>Email :</strong> 
-          <a href="mailto:<%= stage.Email %>"><%= stage.Email %></a>
-          <% if (stage.Email2) { %>
-              / <a href="mailto:<%= stage.Email2 %>"><%= stage.Email2 %></a>
-          <% } %>
-      </p>
-      
-        <p><strong>Tél :</strong> <%= stage.Telephone %></p>
-        <p><strong>Fax :</strong> <%= stage.Fax %></p>
-        <hr>
-        <p><strong>Description de l'emploi</strong></p>
-        <p><%= stage.Description %></p>
+      <div class="job-details animate__animated animate__fadeIn">
+        <h3 class="job-title">
+          <i class="fas fa-briefcase"></i> <%= stage.Titre %> 
+          <span class="job-location"><i class="fas fa-map-marker-alt"></i> <%= stage.State %></span>
+        </h3>
+        <hr class="fancy-hr">
+        <h2 class="company-name"><i class="fas fa-building"></i> <%= stage.Nom %></h2>
+        <p class="job-location-full"><i class="fas fa-map-pin"></i> <%= stage.State %></p>
+        <p class="job-duration">
+          <i class="fas fa-calendar-alt"></i> Du <%= new Date(stage.createdAt).toLocaleString('fr-FR', { dateStyle: 'long' }) %> 
+          <i class="fas fa-long-arrow-alt-right"></i> 
+          Au <%= new Date(stage.DateFin).toLocaleString('fr-FR', { dateStyle: 'long' }) %>
+        </p>
+        <hr class="fancy-hr">
+        <div class="job-info-grid">
+          <p><i class="fas fa-users"></i> <strong>Postes vacants:</strong> <%= stage.PostesVacants %> poste(s) ouvert(s)</p>
+          <p><i class="fas fa-star"></i> <strong>Experience :</strong> <%= stage.Experience %></p>
+          <p><i class="fas fa-graduation-cap"></i> <strong>Niveau :</strong> <%= stage.Niveau %></p>
+          <p><i class="fas fa-language"></i> <strong>Langue :</strong> <%= stage.Langue %></p>
+        </div>
+        <hr class="fancy-hr">
+        <div class="contact-info">
+          <p>
+            <i class="fas fa-envelope"></i> <strong>Email :</strong> 
+            <a href="mailto:<%= stage.Email %>" class="email-link"><%= stage.Email %></a>
+            <% if (stage.Email2) { %>
+              / <a href="mailto:<%= stage.Email2 %>" class="email-link"><%= stage.Email2 %></a>
+            <% } %>
+          </p>
+          <p><i class="fas fa-phone"></i> <strong>Tél :</strong> <%= stage.Telephone %></p>
+          <p><i class="fas fa-fax"></i> <strong>Fax :</strong> <%= stage.Fax %></p>
+        </div>
+        <hr class="fancy-hr">
+        <div class="job-description">
+          <h4><i class="fas fa-file-alt"></i> Description de l'emploi</h4>
+          <p><%= stage.Description %></p>
+        </div>
       </div>
+
+      <style>.job-details {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
       
-    
+      .job-title {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      }
+      
+      .job-location {
+        font-size: 1rem;
+        color: #7f8c8d;
+        margin-left: 1rem;
+      }
+      
+      .company-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #34495e;
+        margin-bottom: 0.5rem;
+      }
+      
+      .job-location-full {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+        margin-bottom: 0.5rem;
+      }
+      
+      .job-duration {
+        font-size: 1rem;
+        color: #95a5a6;
+        margin-bottom: 1rem;
+      }
+      
+      .fancy-hr {
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+        margin: 1.5rem 0;
+      }
+      
+      .job-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .job-info-grid p {
+        margin: 0;
+        font-size: 1rem;
+        color: #34495e;
+      }
+      
+      .contact-info p {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        color: #34495e;
+      }
+      
+      .email-link {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .email-link:hover {
+        color: #2980b9;
+        text-decoration: underline;
+      }
+      
+      .job-description h4 {
+        font-size: 1.3rem;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+      }
+      
+      .job-description p {
+        font-size: 1rem;
+        color: #34495e;
+        line-height: 1.6;
+      }
+      
+      i {
+        margin-right: 0.5rem;
+        color: #3498db;
+      }</style>
 
       <div class="container">
         <div class="row justify-content-center">
@@ -325,21 +427,21 @@
                     <label for="cv">Veuillez joindre votre CV format pdf (obligatoire) :</label>
                     <div class="custom-file">
                       <input type="file" class="custom-file-input" id="cv" name="cv" accept=".pdf" required>
-                      <label class="custom-file-label" for="cv">Choose file</label>
+                      <label class="custom-file-label" for="cv">Choisir le fichier CV</label>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="lettre-motivation">Veuillez joindre une lettre de motivation <i style="color: green;">(optionnel)</i> :</label>
                     <div class="custom-file">
                       <input type="file" class="custom-file-input" id="lettre-motivation" name="lettre_motivation">
-                      <label class="custom-file-label" for="lettre-motivation">Choose file</label>
+                      <label class="custom-file-label" for="lettre-motivation">Choisir le fichier :une lettre de motivation  </label>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="releves-notes">Veuillez joindre vos derniers relevés de notes <i style="color: green;">(optionnel)</i> :</label>
                     <div class="custom-file">
                       <input type="file" class="custom-file-input" id="releves-notes" name="releves_notes" accept=".pdf">
-                      <label class="custom-file-label" for="releves-notes">Choose file</label>
+                      <label class="custom-file-label" for="releves-notes">Choisir le fichier : relevés de notes </label>
                     </div>
                   </div>
                 </div>

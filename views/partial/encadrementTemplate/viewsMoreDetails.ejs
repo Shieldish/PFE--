@@ -1,264 +1,426 @@
 <head>
-    <title>Details</title>
-    <%- include('../../common/head') %>
-    <!-- Link Bootstrap CSS -->
+   <title>Details</title>
+   <%- include('../../common/head') %>
+   <!-- Link Bootstrap CSS -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>  
+   <!-- Your other CSS files -->
 
-    <!-- Your other CSS files -->
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-      <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
 
+<style>
+  .candidature-card {
+ background-color: #ffffff;
+ border-radius: 10px;
+ box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+ overflow: hidden;
+}
 
-      .watermark-container {
-    position: relative;
+.candidature-name {
+ font-size: 2rem;
+ font-weight: bold;
+ text-align: center;
+ text-transform: uppercase;
+ margin: 20px 0;
+ padding-bottom: 20px;
+ color: #2c3e50;
+ border-bottom: 2px solid #3498db;
+}
+
+.candidature-section {
+ margin-bottom: 1.5rem;
+ padding: 1rem;
+ background-color: #f8f9fa;
+ border-radius: 5px;
+}
+
+.section-title {
+ font-size: 1.2rem;
+ color: #34495e;
+ margin-bottom: 1rem;
+ display: flex;
+ align-items: center;
+}
+
+.section-title i {
+ margin-right: 0.5rem;
+ color: #3498db;
+}
+
+.card-text {
+ margin-bottom: 0.5rem;
+ font-size: 0.95rem;
+ color: #555;
+}
+
+.card-text strong {
+ color: #2c3e50;
+}
+
+.doc-link {
+ color: #3498db;
+ text-decoration: none;
+ transition: color 0.3s ease;
+}
+
+.doc-link:hover {
+ color: #2980b9;
+ text-decoration: underline;
 }
 
 .watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size:  5em;
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.1);
-    pointer-events: none;
-    user-select: none;
-    text-transform: uppercase;
-    
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%) rotate(-45deg);
+ font-size: 5rem;
+ opacity: 0.1;
+ color: #e74c3c;
+ pointer-events: none;
+ text-transform: uppercase;
+ white-space: nowrap;
 }
-       /* Add any custom styles here */
-       hr {
-       font-size: 2rem; /* Adjust the font size as needed */
-       }
-       .row {
-       justify-content: center; /* Center the content of the row */
-       }
-       .job-details{
-       border: 1px solid #ccc;
-       font-size: 20px;
-       padding: 20px;
-       margin: 20px;
-       background-color: #f0f0f0
-       }
-       /*     max-width: 30%; */
-       /* float: left; */
-       .job-details h2 {
-       margin-top: 0;
-       }
-       .job-details p {
-       margin-bottom: 5px;
-       }
-       
-    </style>
- </head>
- <body>
-    <div class="custom-container">
-       <%- include('../../common/sidebar') %>
-       <div class="main-content">
-          <%- include('../../common/navbar') %>
-          <div class="container">
 
-            <a style="margin-left: 15px;" href="/encadrement" class="btn btn-outline-secondary">
-               <i class="bi bi-arrow-left"></i> Go Back
-            </a> 
+.alert-info {
+ background-color: #d1ecf1;
+ border-color: #bee5eb;
+ color: #0c5460;
+ padding: 1rem;
+ border-radius: 5px;
+ text-align: center;
+}
+</style>
 
-             <h1 class="mt-4">Detail : </h1>
-             <hr>
-             <%-include('../flaskMessages')  %>
-             <div class="row ">
-                <div class="job-details ">
-                   <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives de :<strong style="text-transform: uppercase;"> <%= candidature.nom %> <%= candidature.prenom %></strong></h5>
-                   <!-- You can add more elements to display other information -->
-                   <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank">Ouvrir CV</a></p>
-                   <% if (candidature.lettre_motivation) { %>
-                   <% if (candidature.lettre_motivation !== "document pas fournis") { %>
-                   <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank">Ouvrir Lettre de Motivation</a></p>
-                   <% } else { %>
-                   <p class="card-text" ><strong>Lettre de Motivation:</strong > <i  style="color: red;">document pas fournis</i></p>
-                   <% } %>
-                   <% } %>
-                   <% if (candidature.releves_notes) { %>
-                   <% if (candidature.releves_notes !== "document pas fournis") { %>
-                   <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank">Ouvrir Relevés de Notes</a></p>
-                   <% } else { %>
-                   <p class="card-text" ><strong>Relevés de Notes :</strong><i  style="color: red;">document pas fournis</i></p>
-                   <% } %>
-                   <% } %>
-                   <hr>
-                   <h5 class="card-subtitle mb-2 text-muted">Décision</h5>
-                   <% if (stage) { %>
-                     <p class="card-text">
-                       <strong>Status de Candidature :</strong>
-                       <span style="font-weight: bold; color: <%= stage.status === 'a attente' ? 'rgb(200, 130, 13)' : (stage.status === 'accepté' ? 'green' : 'red') %>">
-                         <%= stage.status %>
-                       </span>
-                     </p>
-                   <% } else { %>
-                     <p class="card-text">
-                       <strong>Status de Candidature :</strong>
-                       <span style="font-weight: bold; color: red">Aucune candidature en cours</span>
-                     </p>
-                   <% } %>
-                 
-                   <!-- Button to trigger modal -->
-                 <!--   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                   Modifier la Décision
-                   </button> -->
-                   <!-- Modal -->
-                   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                         <div class="modal-content">
-                            <div class="modal-header">
-                               <h5 class="modal-title" id="exampleModalLabel">Modifier la Décision</h5>
-                               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                               <span aria-hidden="true">&times;</span>
-                               </button>
-                            </div>
-                            <div class="modal-body">
-                               <!-- Form inside the modal -->
-                               <form id="decisionForm">
-                                  <div class="form-group">
-                                     <label for="decision">Choisir une option :</label>
-                                     <select class="form-control" id="decision" name="decision">
-                                        <option value="a attente">En Attente</option>
-                                        <option value="accepté">Accepté</option>
-                                        <option value="refusé">Refusé</option>
-                                     </select>
-                                  </div>
-                               </form>
-                               <!-- Hidden input fields to store stage id and email -->
-                               <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
-                               <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
-                            </div>
-                            <div class="modal-footer">
-                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                               <button type="button" class="btn btn-primary" onclick="submitDecision()" >Enregistrer</button>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+   <style>
 
-             
+
+     .watermark-container {
+   position: relative;
+}
+
+.watermark {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%) rotate(-30deg);
+   font-size:  5em;
+   font-weight: bold;
+   color: rgba(0, 0, 0, 0.1);
+   pointer-events: none;
+   user-select: none;
+   text-transform: uppercase;
+   
+}
+      /* Add any custom styles here */
+      hr {
+      font-size: 2rem; /* Adjust the font size as needed */
+      }
+      .row {
+      justify-content: center; /* Center the content of the row */
+      }
+      .job-details{
+      border: 1px solid #ccc;
+      font-size: 20px;
+      padding: 20px;
+      margin: 20px;
+      background-color: #f0f0f0
+      }
+      /*     max-width: 30%; */
+      /* float: left; */
+      .job-details h2 {
+      margin-top: 0;
+      }
+      .job-details p {
+      margin-bottom: 5px;
+      }
+      
+   </style>
+</head>
+<body>
+   <div class="custom-container">
+      <%- include('../../common/sidebar') %>
+      <div class="main-content">
+         <%- include('../../common/navbar') %>
+         <div class="container">
+           <a href="/entreprise" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left"></i> Go Back
+           </a>
+            <h1 class="mt-4">Detail : </h1>
+            <hr>
+            <%-include('../flaskMessages')  %>
+            <div class="row ">
+               <div class="job-details ">
+                  <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives de :<strong style="text-transform: uppercase;"> <%= candidature.nom %> <%= candidature.prenom %></strong></h5>
+                  <!-- You can add more elements to display other information -->
+                  <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank">Ouvrir CV</a></p>
+                  <% if (candidature.lettre_motivation) { %>
+                  <% if (candidature.lettre_motivation !== "document pas fournis") { %>
+                  <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank">Ouvrir Lettre de Motivation</a></p>
+                  <% } else { %>
+                  <p class="card-text" ><strong>Lettre de Motivation:</strong > <i  style="color: red;">document pas fournis</i></p>
+                  <% } %>
+                  <% } %>
+                  <% if (candidature.releves_notes) { %>
+                  <% if (candidature.releves_notes !== "document pas fournis") { %>
+                  <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank">Ouvrir Relevés de Notes</a></p>
+                  <% } else { %>
+                  <p class="card-text" ><strong>Relevés de Notes :</strong><i  style="color: red;">document pas fournis</i></p>
+                  <% } %>
+                  <% } %>
+                  <hr>
+                  <h5 class="card-subtitle mb-2 text-muted">Décision</h5>
+                  <% if (stage) { %>
+                    <p class="card-text">
+                      <strong>Status de Candidature :</strong>
+                      <span style="font-weight: bold; color: <%= stage.status === 'a attente' ? 'rgb(200, 130, 13)' : (stage.status === 'accepté' ? 'green' : 'red') %>">
+                        <%= stage.status %>
+                      </span>
+                    </p>
+                  <% } else { %>
+                    <p class="card-text">
+                      <strong>Status de Candidature :</strong>
+                      <span style="font-weight: bold; color: red">Aucune candidature en cours</span>
+                    </p>
+                  <% } %>
+                
+                  <!-- Button to trigger modal -->
+               <!--    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                  Modifier la Décision
+                  </button> -->
+                  <!-- Modal -->
+                  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                     <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                           <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Modifier la Décision</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                              </button>
+                           </div>
+                           <div class="modal-body">
+                              <!-- Form inside the modal -->
+                              <form id="decisionForm">
+                                 <div class="form-group">
+                                    <label for="decision">Choisir une option :</label>
+                                    <select class="form-control" id="decision" name="decision">
+                                       <option value="a attente">En Attente</option>
+                                       <option value="accepté">Accepté</option>
+                                       <option value="refusé">Refusé</option>
+                                    </select>
+                                 </div>
+                              </form>
+                              <!-- Hidden input fields to store stage id and email -->
+                              <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
+                              <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                              <button type="button" class="btn btn-primary" onclick="submitDecision()" >Enregistrer</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
 
             
-                <div class="col-md-8" >
+               <div class="col-md-8">
+                 <% if (candidature) { %>
+                   <div class="card mb-4 watermark-container candidature-card animate__animated animate__fadeIn">
+                     <div class="card-body">
+                       <h2 class="card-title candidature-name"><%= candidature.nom %> <%= candidature.prenom %></h2>
+                       
+                       <% const sections = [
+                         { title: "Informations personnelles", icon: "user", fields: [
+                           { label: "Date de naissance", value: candidature.date_naissance },
+                           { label: "Adresse", value: candidature.adresse },
+                           { label: "Téléphone", value: candidature.telephone },
+                           { label: "Email", value: candidature.email }
+                         ]},
+                         { title: "Formation", icon: "graduation-cap", fields: [
+                           { label: "Niveau d'études", value: candidature.niveau_etudes },
+                           { label: "Institution", value: candidature.institution },
+                           { label: "Domaine d'études", value: candidature.domaine_etudes },
+                           { label: "Année d'obtention", value: candidature.annee_obtention }
+                         ]},
+                         { title: "Expérience pertinente", icon: "briefcase", fields: [
+                           { label: "Expérience", value: candidature.experience ? 'Oui' : 'Non' },
+                           { label: "Description de l'expérience", value: candidature.experience_description, condition: candidature.experience_description }
+                         ]},
+                         { title: "Motivation pour ce stage", icon: "star", fields: [
+                           { label: "Motivation", value: candidature.motivation }
+                         ]},
+                         { title: "Compétences", icon: "cogs", fields: [
+                           { label: "Langues", value: candidature.langues },
+                           { label: "Logiciels", value: candidature.logiciels },
+                           { label: "Autres compétences", value: candidature.competences_autres }
+                         ]},
+                         { title: "Disponibilités", icon: "calendar-alt", fields: [
+                           { label: "Date de début", value: candidature.date_debut },
+                           { label: "Durée du stage", value: `${candidature.duree_stage} mois` }
+                         ]},
+                         { title: "Pièces justificatives", icon: "file-alt", fields: [
+                           { label: "CV", value: candidature.cv, isLink: true, linkText: "Ouvrir CV" },
+                           { label: "Lettre de Motivation", value: candidature.lettre_motivation, isLink: true, linkText: "Ouvrir Lettre de Motivation", condition: candidature.lettre_motivation && candidature.lettre_motivation !== "document pas fournis" },
+                           { label: "Relevés de Notes", value: candidature.releves_notes, isLink: true, linkText: "Ouvrir Relevés de Notes", condition: candidature.releves_notes && candidature.releves_notes !== "document pas fournis" }
+                         ]}
+                       ] %>
+               
+                       <% sections.forEach(section => { %>
+                         <div class="candidature-section">
+                           <h5 class="section-title">
+                             <i class="fas fa-<%= section.icon %>"></i> <%= section.title %>
+                           </h5>
+                           <% section.fields.forEach(field => { %>
+                             <% if (!field.condition || field.condition) { %>
+                               <p class="card-text">
+                                 <strong><%= field.label %>:</strong> 
+                                 <% if (field.isLink) { %>
+                                   <a href="<%= field.value %>" target="_blank" class="doc-link"><%= field.linkText %></a>
+                                 <% } else { %>
+                                   <%= field.value %>
+                                 <% } %>
+                               </p>
+                             <% } %>
+                           <% }) %>
+                         </div>
+                       <% }) %>
+               
+                       <% if (stage && stage.status) { %>
+                         <div class="watermark">
+                           <%= stage.status %>
+                         </div>
+                       <% } %>
+                     </div>
+                   </div>
+                 <% } else { %>
+                   <div class="alert alert-info">Aucune candidature trouvée</div>
+                 <% } %>
+               </div>
+           
+            <!--    <div class="col-md-8" >
 
-                  <% if (candidature) { %>
-                  <div  class="card mb-4 watermark-container my"> 
-                      <div class="card-body" >
-                          <h2 class="card-title " style="text-align: center; font-weight: bold; text-transform: uppercase ; margin: 20px; padding-bottom: 30px;"><%= candidature.nom %> <%= candidature.prenom %></h2>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Informations personnelles</h5>
-                          <p class="card-text"><strong>Date de naissance:</strong> <%= candidature.date_naissance %></p>
-                          <p class="card-text"><strong>Adresse:</strong> <%= candidature.adresse %></p>
-                          <p class="card-text"><strong>Téléphone:</strong> <%= candidature.telephone %></p>
-                          <p class="card-text"><strong>Email:</strong> <%= candidature.email %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Formation</h5>
-                          <p class="card-text"><strong>Niveau d'études:</strong> <%= candidature.niveau_etudes %></p>
-                          <p class="card-text"><strong>Institution:</strong> <%= candidature.institution %></p>
-                          <p class="card-text"><strong>Domaine d'études:</strong> <%= candidature.domaine_etudes %></p>
-                          <p class="card-text"><strong>Année d'obtention:</strong> <%= candidature.annee_obtention %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Expérience pertinente</h5>
-                          <p class="card-text"><strong>Expérience:</strong> <%= candidature.experience ? 'Oui' : 'Non' %></p>
-                          <% if (candidature.experience_description) { %>
-                          <p class="card-text"><strong>Description de l'expérience:</strong> <%= candidature.experience_description %></p>
-                          <% } %>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Motivation pour ce stage</h5>
-                          <p class="card-text"><strong>Motivation:</strong> <%= candidature.motivation %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Compétences</h5>
-                          <p class="card-text"><strong>Langues:</strong> <%= candidature.langues %></p>
-                          <p class="card-text"><strong>Logiciels:</strong> <%= candidature.logiciels %></p>
-                          <p class="card-text"><strong>Autres compétences:</strong> <%= candidature.competences_autres %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Disponibilités</h5>
-                          <p class="card-text"><strong>Date de début:</strong> <%= candidature.date_debut %></p>
-                          <p class="card-text"><strong>Durée du stage:</strong> <%= candidature.duree_stage %> mois</p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives</h5>
-                          <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank">Ouvrir CV</a></p>
-                          <% if (candidature.lettre_motivation) { %>
-                          <% if (candidature.lettre_motivation !== "document pas fournis") { %>
-                          <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank">Ouvrir Lettre de Motivation</a></p>
-                          <% } else { %>
-                          <p class="card-text" ><strong>Lettre de Motivation:</strong > <i  style="color: red;">document pas fournis</i></p>
-                          <% } %>
-                          <% } %>
-                          <% if (candidature.releves_notes) { %>
-                          <% if (candidature.releves_notes !== "document pas fournis") { %>
-                          <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank">Ouvrir Relevés de Notes</a></p>
-                          <% } else { %>
-                          <p class="card-text"><strong>Relevés de Notes :</strong>  <i  style="color: red;">document pas fournis</i></p>
-                          <% } %>
-                          <% } %>
-                          <% if (stage) { %>
-                           <div class="watermark">
-                             <%= stage.status %>
-                           </div>
+                 <% if (candidature) { %>
+                 <div  class="card mb-4 watermark-container my"> 
+                     <div class="card-body" >
+                         <h2 class="card-title " style="text-align: center; font-weight: bold; text-transform: uppercase ; margin: 20px; padding-bottom: 30px;"><%= candidature.nom %> <%= candidature.prenom %></h2>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Informations personnelles</h5>
+                         <p class="card-text"><strong>Date de naissance:</strong> <%= candidature.date_naissance %></p>
+                         <p class="card-text"><strong>Adresse:</strong> <%= candidature.adresse %></p>
+                         <p class="card-text"><strong>Téléphone:</strong> <%= candidature.telephone %></p>
+                         <p class="card-text"><strong>Email:</strong> <%= candidature.email %></p>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Formation</h5>
+                         <p class="card-text"><strong>Niveau d'études:</strong> <%= candidature.niveau_etudes %></p>
+                         <p class="card-text"><strong>Institution:</strong> <%= candidature.institution %></p>
+                         <p class="card-text"><strong>Domaine d'études:</strong> <%= candidature.domaine_etudes %></p>
+                         <p class="card-text"><strong>Année d'obtention:</strong> <%= candidature.annee_obtention %></p>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Expérience pertinente</h5>
+                         <p class="card-text"><strong>Expérience:</strong> <%= candidature.experience ? 'Oui' : 'Non' %></p>
+                         <% if (candidature.experience_description) { %>
+                         <p class="card-text"><strong>Description de l'expérience:</strong> <%= candidature.experience_description %></p>
                          <% } %>
-                      </div>
-                  </div>
-                
-                  <% } else { %>
-                  <p>No candidature found</p>
-                  <% } %>
-              </div>
-      
-             </div>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Motivation pour ce stage</h5>
+                         <p class="card-text"><strong>Motivation:</strong> <%= candidature.motivation %></p>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Compétences</h5>
+                         <p class="card-text"><strong>Langues:</strong> <%= candidature.langues %></p>
+                         <p class="card-text"><strong>Logiciels:</strong> <%= candidature.logiciels %></p>
+                         <p class="card-text"><strong>Autres compétences:</strong> <%= candidature.competences_autres %></p>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Disponibilités</h5>
+                         <p class="card-text"><strong>Date de début:</strong> <%= candidature.date_debut %></p>
+                         <p class="card-text"><strong>Durée du stage:</strong> <%= candidature.duree_stage %> mois</p>
+                         <hr class="dashed-line" style="font-weight: bold; ">
+                         <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives</h5>
+                         <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank">Ouvrir CV</a></p>
+                         <% if (candidature.lettre_motivation) { %>
+                         <% if (candidature.lettre_motivation !== "document pas fournis") { %>
+                         <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank">Ouvrir Lettre de Motivation</a></p>
+                         <% } else { %>
+                         <p class="card-text" ><strong>Lettre de Motivation:</strong > <i  style="color: red;">document pas fournis</i></p>
+                         <% } %>
+                         <% } %>
+                         <% if (candidature.releves_notes) { %>
+                         <% if (candidature.releves_notes !== "document pas fournis") { %>
+                         <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank">Ouvrir Relevés de Notes</a></p>
+                         <% } else { %>
+                         <p class="card-text"><strong>Relevés de Notes :</strong>  <i  style="color: red;">document pas fournis</i></p>
+                         <% } %>
+                         <% } %>
+                         <% if (stage) { %>
+                          <div class="watermark">
+                            <%= stage.status %>
+                          </div>
+                        <% } %>
+                     </div>
+                 </div>
+               
+                 <% } else { %>
+                 <p>No candidature found</p>
+                 <% } %>
+             </div> -->
      
-          </div>
-          <%- include('../../common/footer') %>
-       </div>
-    </div>
+            </div>
+    
+         </div>
+         <%- include('../../common/footer') %>
+      </div>
+   </div>
+
 
  
-  
 
-    <!-- Your other JavaScript files -->
-    <script>
-       function submitDecision() {
-           // Get the selected decision from the form
-           const decision = document.getElementById('decision').value;
-           
-           // Get the stage id and email from the HTML attributes
-           const stageId = document.getElementById('stageId').getAttribute('data-stage-id');
-           const stageEmail = document.getElementById('stageEmail').getAttribute('data-stage-email');
-       
-           // Construct the data object to be sent to the backend
-           const data = {
-               decision: decision,
-               stageId: stageId,
-               stageEmail: stageEmail
-           };
-       
-           // Assuming you're using fetch API to send data to the backend
-           fetch('/entreprise/decision', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json'
-               },
-               body: JSON.stringify(data)
-           })
-           .then(response => {
-               if (response.ok) {
-                   location.reload();
-                   // Optionally, you can close the modal after successful submission
-                   $('#myModal').modal('hide');
-                   // Perform any other actions after successful submission
-               } else {
-                   // Handle errors if any
-                   location.reload();
-                   console.error('Failed to submit decision');
-               }
-           })
-           .catch(error => {
-               location.reload();
-               console.error('Error submitting decision:', error);
-           });
-       }
-    </script>
- </body>
+   <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   <!-- Your other JavaScript files -->
+   <script>
+      function submitDecision() {
+          // Get the selected decision from the form
+          const decision = document.getElementById('decision').value;
+          
+          // Get the stage id and email from the HTML attributes
+          const stageId = document.getElementById('stageId').getAttribute('data-stage-id');
+          const stageEmail = document.getElementById('stageEmail').getAttribute('data-stage-email');
+      
+          // Construct the data object to be sent to the backend
+          const data = {
+              decision: decision,
+              stageId: stageId,
+              stageEmail: stageEmail
+          };
+      
+          // Assuming you're using fetch API to send data to the backend
+          fetch('/entreprise/decision', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => {
+              if (response.ok) {
+                  location.reload();
+                  // Optionally, you can close the modal after successful submission
+                  $('#myModal').modal('hide');
+                  // Perform any other actions after successful submission
+              } else {
+                  // Handle errors if any
+                  location.reload();
+                  console.error('Failed to submit decision');
+              }
+          })
+          .catch(error => {
+              location.reload();
+              console.error('Error submitting decision:', error);
+          });
+      }
+   </script>
+</body>

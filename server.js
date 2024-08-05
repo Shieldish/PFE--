@@ -82,17 +82,7 @@ app.use('/files', authenticate, checkRole(['ADMIN']), uploadsRoutes);
 
 
 
-/* app.post('/sidebar', async (req, res) => {
-    const language = req.body.lang || 'en';
 
-    try {
-        const sidebarItems = await fetchSidebarItems(language);
-        res.json(sidebarItems);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
- */
 app.post('/sidebar', authenticate, async (req, res) => {
     try {
       const { lang } = req.body || 'fr';
@@ -100,7 +90,7 @@ app.post('/sidebar', authenticate, async (req, res) => {
       const sidebarItems = await fetchSidebarItems(lang, userRole);
       res.json(sidebarItems);
     } catch (error) {
-      console.error('Error fetching sidebar items:', error);
+      console.error('Erreur lors de la récupération des éléments de la barre latérale :', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

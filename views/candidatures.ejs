@@ -24,7 +24,7 @@
     transform: translate(-50%, -50%) rotate(-45deg);
     font-size:  5em;
     font-weight: bold;
-    color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.3);
     pointer-events: none;
     user-select: none;
     text-transform: uppercase;
@@ -69,88 +69,195 @@
           <%- include('./common/navbar') %>
           <div class="container">
             <a href="/etudiant" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Go Back
+                <i class="bi bi-arrow-left"></i> Retour
              </a>
-            <p><h3>Details</h3></p>
-            <hr>
-             <h3 class="mt-4"  style="font-weight: bold; text-align: center; color: #007bff; padding-top: 50px;">Candidature : <%= stage.stageDomaine %> /<%= stage.stageSujet %>  /<%= stage.entrepriseName %> </h3>
-             <hr>
-             <%-include('./partial/flaskMessages')  %>
-
-             <div class="row">
-                <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
-                <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
+         
 
 
-                <div class="col-md-8" >
+             <div class="details-section">
+                <h3 class="details-title">
+                    <i class="fas fa-info-circle me-2"></i>Details
+                </h3>
+                <%-include('./partial/flaskMessages')  %>
+                <hr class="divider">
+                <h3 class="candidature-title">
+                    <i class="fas fa-file-alt me-2"></i>Candidature: <%= stage.stageDomaine %> / <%= stage.stageSujet %> / <%= stage.entrepriseName %>
+                </h3>
+                <hr class="divider">
+            
+                <div class="row">
+                    <input type="hidden" id="stageId" data-stage-id="<%= stage.stageId %>" />
+                    <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>" />
+            
+                    <div class="col-md-8">
+                        <% if (candidature) { %>
+                        <div class="card mb-4 form-card">
+                            <div class="card-body">
+                                <h2 class="candidate-name">
+                                    <i class="fas fa-user"></i> <%= candidature.nom %> <%= candidature.prenom %>
+                                </h2>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">   <i class="fas fa-user me-2"></i> Informations personnelles</h5>
+                                <p class="card-text"><strong>Date de naissance:</strong> <%= candidature.date_naissance %></p>
+                                <p class="card-text"><strong>Adresse:</strong> <%= candidature.adresse %></p>
+                                <p class="card-text"><strong>Téléphone:</strong> <%= candidature.telephone %></p>
+                                <p class="card-text"><strong>Email:</strong> <%= candidature.email %></p>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">  <i class="fas fa-graduation-cap"></i> Formation</h5>
+                                <p class="card-text"><strong>Niveau d'études:</strong> <%= candidature.niveau_etudes %></p>
+                                <p class="card-text"><strong>Institution:</strong> <%= candidature.institution %></p>
+                                <p class="card-text"><strong>Domaine d'études:</strong> <%= candidature.domaine_etudes %></p>
+                                <p class="card-text"><strong>Section:</strong> <%= candidature.section %></p>
+                                <p class="card-text"><strong>Année d'obtention:</strong> <%= candidature.annee_obtention %></p>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">  <i class="fas fa-briefcase"></i> Expérience pertinente</h5>
+                                <p class="card-text"><strong>Expérience:</strong> <%= candidature.experience ? 'Oui' : 'Non' %></p>
+                                <% if (candidature.experience_description) { %>
+                                <p class="card-text"><strong>Description de l'expérience:</strong> <%= candidature.experience_description %></p>
+                                <% } %>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">  <i class="fas fa-star"></i> Motivation pour ce stage</h5>
+                                <p class="card-text"><strong>Motivation:</strong> <%= candidature.motivation %></p>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">  <i class="fas fa-cogs"></i> Compétences</h5>
+                                <p class="card-text"><strong>Langues:</strong> <%= candidature.langues %></p>
+                                <p class="card-text"><strong>Logiciels:</strong> <%= candidature.logiciels %></p>
+                                <p class="card-text"><strong>Autres compétences:</strong> <%= candidature.competences_autres %></p>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">  <i class="fas fa-calendar-alt"></i> Disponibilités</h5>
+                                <p class="card-text"><strong>Date de début:</strong> <%= candidature.date_debut %></p>
+                                <p class="card-text"><strong>Durée du stage:</strong> <%= candidature.duree_stage %> mois</p>
+                                <hr class="dashed-line">
+                                <h5 class="section-title">  <i class="fas fa-file-alt"></i> Pièces justificatives</h5>
+                                <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank"><i class="fas fa-file-pdf me-2"></i>Ouvrir CV</a></p>
+                                <% if (candidature.lettre_motivation) { %>
+                                <% if (candidature.lettre_motivation !== "document pas fournis") { %>
+                                <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank"><i class="fas fa-file-alt me-2"></i>Ouvrir Lettre de Motivation</a></p>
+                                <% } else { %>
+                                <p class="card-text"><strong>Lettre de Motivation:</strong> <i class="fas fa-times-circle me-2" style="color: red;"></i>document pas fournis</p>
+                                <% } %>
+                                <% } %>
+                                <% if (candidature.releves_notes) { %>
+                                <% if (candidature.releves_notes !== "document pas fournis") { %>
+                                <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank"><i class="fas fa-file-alt me-2"></i>Ouvrir Relevés de Notes</a></p>
+                                <% } else { %>
+                                <p class="card-text"><strong>Relevés de Notes :</strong> <i class="fas fa-times-circle me-2" style="color: red;"></i>document pas fournis</p>
+                                <% } %>
+                                <% } %>
+                                <div class="watermark">
+                                    <%= stage.status %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } else { %>
+                        <p>No candidature found</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <style>
+                .details-section {
+                    background: #f5f7fa;
+                    padding: 30px;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    margin: 20px 0;
+                }
+            
+                .details-title {
+                    font-size: 2rem;
+                    color: #4a5568;
+                    font-weight: bold;
+                    text-align: center;
+                    animation: fadeIn 0.5s ease-in-out;
+                }
+            
+                .candidature-title {
+                    font-size: 1.6rem;
+                    font-weight: bold;
+                    text-align: center;
+                    color: #007bff;
+                    margin-top: 50px;
+                    padding-top: 20px;
+                    animation: fadeInUp 0.5s ease-in-out;
+                }
+            
+                .divider {
+                    border: 0;
+                    height: 1px;
+                    background: #cbd5e0;
+                    margin: 20px 0;
+                }
+            
+                .form-card {
+                    background: #edf2f7;
+                    border-radius: 10px;
+                    padding: 20px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                }
+            
+                .form-card:hover {
+                    transform: scale(1.02);
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                }
+            
+                .candidate-name {
+                    font-size: 1.5rem;
+                    color: #2d3748;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    text-transform: uppercase;
+                }
+            
+                .section-title {
+                    font-size: 1.2rem;
+                    color: #718096;
+                    margin-top: 20px;
+                }
+            
+                .card-text {
+                    font-size: 1rem;
+                    color: #4a5568;
+                }
+            
+                .dashed-line {
+                    border-top: 2px dashed #e2e8f0;
+                    margin: 20px 0;
+                }
+            
+              
+            
+                @keyframes fadeIn {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            
+                @keyframes fadeInUp {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            </style>
+            
 
-                  <% if (candidature) { %>
-                  <div  class="card mb-4 watermark-container  form-card" style="background-color:rgb(241, 241, 241);font-family: Verdana, Geneva, Tahoma, sans-serif; ">
-                      <div class="card-body" >
-                          <h2 class="card-title " style="text-align: center; font-weight: bold; text-transform: uppercase ; margin: 20px; padding-bottom: 30px;"><%= candidature.nom %> <%= candidature.prenom %></h2>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Informations personnelles</h5>
-                          <p class="card-text"><strong>Date de naissance:</strong> <%= candidature.date_naissance %></p>
-                          <p class="card-text"><strong>Adresse:</strong> <%= candidature.adresse %></p>
-                          <p class="card-text"><strong>Téléphone:</strong> <%= candidature.telephone %></p>
-                          <p class="card-text"><strong>Email:</strong> <%= candidature.email %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Formation</h5>
-                          <p class="card-text"><strong>Niveau d'études:</strong> <%= candidature.niveau_etudes %></p>
-                          <p class="card-text"><strong>Institution:</strong> <%= candidature.institution %></p>
-                          <p class="card-text"><strong>Domaine d'études:</strong> <%= candidature.domaine_etudes %></p>
-                          <p class="card-text"><strong>Section:</strong> <%= candidature.section %></p>
-                          <p class="card-text"><strong>Année d'obtention:</strong> <%= candidature.annee_obtention %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Expérience pertinente</h5>
-                          <p class="card-text"><strong>Expérience:</strong> <%= candidature.experience ? 'Oui' : 'Non' %></p>
-                          <% if (candidature.experience_description) { %>
-                          <p class="card-text"><strong>Description de l'expérience:</strong> <%= candidature.experience_description %></p>
-                          <% } %>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Motivation pour ce stage</h5>
-                          <p class="card-text"><strong>Motivation:</strong> <%= candidature.motivation %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Compétences</h5>
-                          <p class="card-text"><strong>Langues:</strong> <%= candidature.langues %></p>
-                          <p class="card-text"><strong>Logiciels:</strong> <%= candidature.logiciels %></p>
-                          <p class="card-text"><strong>Autres compétences:</strong> <%= candidature.competences_autres %></p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Disponibilités</h5>
-                          <p class="card-text"><strong>Date de début:</strong> <%= candidature.date_debut %></p>
-                          <p class="card-text"><strong>Durée du stage:</strong> <%= candidature.duree_stage %> mois</p>
-                          <hr class="dashed-line" style="font-weight: bold; ">
-                          <h5 class="card-subtitle mb-2 text-muted">Pièces justificatives</h5>
-                          <p class="card-text"><strong>CV :</strong> <a href="<%= candidature.cv %> " target="_blank">Ouvrir CV</a></p>
-                          <% if (candidature.lettre_motivation) { %>
-                          <% if (candidature.lettre_motivation !== "document pas fournis") { %>
-                          <p class="card-text"><strong>Lettre de Motivation:</strong> <a href="<%= candidature.lettre_motivation %> " target="_blank">Ouvrir Lettre de Motivation</a></p>
-                          <% } else { %>
-                          <p class="card-text" ><strong>Lettre de Motivation:</strong > <i  style="color: red;">document pas fournis</i></p>
-                          <% } %>
-                          <% } %>
-                          <% if (candidature.releves_notes) { %>
-                          <% if (candidature.releves_notes !== "document pas fournis") { %>
-                          <p class="card-text"><strong>Relevés de Notes :</strong> <a href="<%= candidature.releves_notes %> " target="_blank">Ouvrir Relevés de Notes</a></p>
-                          <% } else { %>
-                          <p class="card-text"><strong>Relevés de Notes :</strong>  <i  style="color: red;">document pas fournis</i></p>
-                          <% } %>
-                          <% } %>
-                          <div class="watermark">
-                              <%= stage.status %>
-                          </div>
-                      </div>
-                  </div>
-                
-                  <% } else { %>
-                  <p>No candidature found</p>
-                  <% } %>
-              </div>
-      
              </div>
-     
+             <%- include('./common/footer') %>
           </div>
-          <%- include('./common/footer') %>
+          </div>
+        
        </div>
     </div>
 
