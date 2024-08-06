@@ -153,11 +153,11 @@
       <div class="job-details animate__animated animate__fadeIn">
         <h3 class="job-title">
           <i class="fas fa-briefcase"></i> <%= stage.Titre %> 
-          <span class="job-location"><i class="fas fa-map-marker-alt"></i> <%= stage.State %></span>
+          <span class="job-location"><i class="fas fa-map-marker-alt"></i> <%= stage.Address %></span>
         </h3>
         <hr class="fancy-hr">
         <h2 class="company-name"><i class="fas fa-building"></i> <%= stage.Nom %></h2>
-        <p class="job-location-full"><i class="fas fa-map-pin"></i> <%= stage.State %></p>
+        <p class="job-location-full"><i class="fas fa-map-pin"></i> <%= stage.Address %></p>
         <p class="job-duration">
           <i class="fas fa-calendar-alt"></i> Du <%= new Date(stage.createdAt).toLocaleString('fr-FR', { dateStyle: 'long' }) %> 
           <i class="fas fa-long-arrow-alt-right"></i> 

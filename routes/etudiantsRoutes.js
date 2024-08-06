@@ -15,7 +15,9 @@ const { isAdmin, isUser } = require('../middlewares/roles');
 const user_registration = require('../controllers/UserRegistration');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-
+const { google } = require('googleapis');
+const stream = require('stream');
+const { Readable } = stream;
 const app = express();
 
 // Parse URL-encoded bodies (as sent by HTML forms)
@@ -76,18 +78,6 @@ router.get('/All', async (req, res) => {
     }
   });
   
-/* router.get('/All', async (req, res) => {
-    try {
-      const stages = await stage.findAll();
-      res.json(stages);
-    } catch (error) {
-      // Handle error
-      console.error('Error retrieving stage:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-   */
-
 
 router.get('/postuler/', async (req , res)=>{
   
@@ -123,125 +113,62 @@ const storage = multer.diskStorage({
 });
 
 // Configure multer with the disk storage
-const upload = multer({ storage: storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
-/* router.post('/postulates/:id', upload.fields([
-  { name: 'cv', maxCount: 1 },
-  { name: 'lettre_motivation', maxCount: 1 },
-  { name: 'releves_notes', maxCount: 1 }
-]), async (req, res) => {
-  const t = await sequelize.transaction();
-  const id = req.params.id;
-
-  try {
-      // Extract form data from request body
-      const {
-          nom,
-          prenom,
-          date_naissance,
-          adresse,
-          telephone,
-          email,
-          niveau_etudes,
-          institution,
-          domaine_etudes,
-          section,
-          annee_obtention,
-          experience,
-          experience_description,
-          motivation,
-          langues,
-          logiciels,
-          competences_autres,
-          date_debut,
-          duree_stage
-      } = req.body;
-
-      // Extract file paths from request files
-      const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
-      const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
-      const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
+const CREDENTIALS_PATH = './cred.json';
 
 
-      console.log( "Verificateur :",req.body , cvPath,lettrePath,relevesPath)
+function initializeDriveClient() {
+  const credentialsPath = path.resolve(CREDENTIALS_PATH);
+  const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
 
-      // Find the stage by ID
-      const stages = await stage.findByPk(id);
+  const auth = new google.auth.GoogleAuth({
+    credentials: credentials,
+    scopes: ['https://www.googleapis.com/auth/drive.file']
+  });
 
-      if (!stages) {
-          return res.status(404).json({ error: 'Stage not found' });
+  return google.drive({ version: 'v3', auth });
+}
+
+
+async function uploadFileToDrive(driveClient, fileObject, fileName) {
+
+  console.log('Uploading file:', fileName);
+  console.log('File size:', fileObject.size);
+  console.log('File mimetype:', fileObject.mimetype);
+
+  return new Promise((resolve, reject) => {
+    const fileStream = new Readable();
+    fileStream.push(fileObject.buffer);
+    fileStream.push(null);
+
+    const media = {
+      mimeType: fileObject.mimetype,
+      body: fileStream,
+    };
+
+    driveClient.files.create(
+      {
+        requestBody: {
+          name: fileName,
+          parents: ['1OsKycKqCdFoVnWkXyBHvJo0_ouBIpuXX'], // Replace with your folder ID
+        },
+        media: media,
+        fields: 'id,webViewLink',
+      },
+      (err, file) => {
+        if (err) {
+          console.error('Error uploading file:', err);
+          reject(err);
+        } else {
+          resolve(file.data);
+        }
       }
+    );
+  });
+}
 
-      // Create a new instance of the candidature model
-      const candidatures = await candidature.create({
-          id,
-          nom,
-          prenom,
-          date_naissance,
-          adresse,
-          telephone,
-          email,
-          niveau_etudes,
-          institution,
-          domaine_etudes,
-          section,
-          annee_obtention,
-          experience,
-          experience_description,
-          motivation,
-          langues,
-          logiciels,
-          competences_autres,
-          date_debut,
-          duree_stage,
-          cv: cvPath,
-          lettre_motivation: lettrePath,
-          releves_notes: relevesPath
-      }, { transaction: t });
 
-      // Retrieve or determine etudiantID
-      let etudiantID;
-      const etudiantData = await etudiant.findOne({ where: { EMAIL: email }, attributes: ['ID'] });
-      if (etudiantData) {
-          etudiantID = etudiantData.ID;
-      } else {
-          const userRegistrationData = await user_registration.findOne({ where: { EMAIL: email }, attributes: ['UUID'] });
-          if (userRegistrationData) {
-              etudiantID = userRegistrationData.UUID;
-          } else {
-              console.error('No record found for the provided email');
-              return res.status(404).json({ error: 'No record found for the provided email' });
-          }
-      }
-
-      // Create the stage postulation entry
-      const stagepostulations = await stagepostulation.create({
-          stageId: id,
-          etudiantID: etudiantID,
-          etudiantName: `${nom} ${prenom}`,
-          etudiantEmail: email,
-          etudiantSection: `${niveau_etudes} : ${section}`,
-          etudiantInstitue: institution,
-          stageDomaine: stages.Domaine,
-          stageSujet: stages.Libelle,
-          entrepriseName: stages.Nom,
-          entrepriseEmail: stages.CreatedBy,
-          CV: cvPath
-      }, { transaction: t });
-
-      // Commit the transaction
-      await t.commit();
-
-      // Send success response
-      return res.status(200).json({ message: 'Candidature submitted successfully' });
-
-  } catch (err) {
-      // Rollback the transaction in case of error
-      await t.rollback();
-      console.error('Error submitting candidature:', err);
-      return res.status(500).json({ error: `An error occurred while submitting the candidature: ${err.message}` });
-  }
-}); */
 router.post('/postulates/:id', upload.fields([
   { name: 'cv', maxCount: 1 },
   { name: 'lettre_motivation', maxCount: 1 },
@@ -252,6 +179,7 @@ router.post('/postulates/:id', upload.fields([
     t = await sequelize.transaction();
 
     const id = req.params.id;
+    const driveClient = initializeDriveClient();
 
     // Extract form data from request body
     const {
@@ -277,9 +205,19 @@ router.post('/postulates/:id', upload.fields([
     } = req.body;
 
     // Extract file paths from request files
-    const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
+/*     const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
     const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
-    const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
+    const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null; */
+    const cvFile = req.files['cv'] ? await uploadFileToDrive(driveClient, req.files['cv'][0], `CV_${email}_${Date.now()}`) : null;
+    const lettreFile = req.files['lettre_motivation'] ? await uploadFileToDrive(driveClient, req.files['lettre_motivation'][0], `LM_${email}_${Date.now()}`) : null;
+    const relevesFile = req.files['releves_notes'] ? await uploadFileToDrive(driveClient, req.files['releves_notes'][0], `RN_${email}_${Date.now()}`) : null;
+    
+
+
+          console.log('cvFile',cvFile);
+          console.log('lettreFile',lettreFile);
+          console.log('relevesFile ',relevesFile );
+
 
     // Find the stage by ID
     const stages = await stage.findByPk(id, { transaction: t });
@@ -311,9 +249,9 @@ router.post('/postulates/:id', upload.fields([
       competences_autres,
       date_debut,
       duree_stage,
-      cv: cvPath,
-      lettre_motivation: lettrePath,
-      releves_notes: relevesPath
+      cv: cvFile ? cvFile.webViewLink : null,
+      lettre_motivation: lettreFile ? lettreFile.webViewLink : null,
+      releves_notes: relevesFile ? relevesFile.webViewLink : null
     }, { transaction: t });
 
     // Retrieve or determine etudiantID
@@ -344,7 +282,7 @@ router.post('/postulates/:id', upload.fields([
       stageSujet: stages.Libelle,
       entrepriseName: stages.Nom,
       entrepriseEmail: stages.CreatedBy,
-      CV: cvPath
+      CV:  cvFile ? cvFile.webViewLink : null,
     }, { transaction: t });
 
     // Commit the transaction
@@ -362,13 +300,15 @@ router.post('/postulates/:id', upload.fields([
   }
 });
 
-router.post('/postulate/:id', upload.fields([
+ router.post('/postulate/:id', upload.fields([
     { name: 'cv', maxCount: 1 },
     { name: 'lettre_motivation', maxCount: 1 },
     { name: 'releves_notes', maxCount: 1 }
 ]), async (req, res) => {
     const t = await sequelize.transaction();
     const id = req.params.id;
+    const driveClient = initializeDriveClient();
+
     try {
         // Get the form data
         const {
@@ -395,15 +335,23 @@ router.post('/postulate/:id', upload.fields([
 
 
         // Get the file paths
-        const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
+/*         const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
         const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;
-        const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null;
+        const relevesPath = req.files['releves_notes'] ? req.files['releves_notes'][0].path : null; */
+        const cvFile = req.files['cv'] ? await uploadFileToDrive(driveClient, req.files['cv'][0], `CV_${email}_${Date.now()}`) : null;
+        const lettreFile = req.files['lettre_motivation'] ? await uploadFileToDrive(driveClient, req.files['lettre_motivation'][0], `LM_${email}_${Date.now()}`) : null;
+        const relevesFile = req.files['releves_notes'] ? await uploadFileToDrive(driveClient, req.files['releves_notes'][0], `RN_${email}_${Date.now()}`) : null;
+    
+              console.log('cvFile',cvFile);
+              console.log('lettreFile',lettreFile);
+              console.log('relevesFile ',relevesFile );
+    
 
         const stages = await stage.findByPk(id);
 
-            console.log(stages)
+ /*            console.log(stages)
             console.log(req.body)
-            console.log(req.files)
+            console.log(req.files) */
 
       
         if (!stages) {
@@ -433,9 +381,9 @@ router.post('/postulate/:id', upload.fields([
             competences_autres,
             date_debut,
             duree_stage,
-            cv: cvPath,
-            lettre_motivation: lettrePath,
-            releves_notes: relevesPath
+            cv: cvFile ? cvFile.webViewLink : null,
+           lettre_motivation: lettreFile ? lettreFile.webViewLink : null,
+           releves_notes: relevesFile ? relevesFile.webViewLink : null
         }, { transaction: t });
 
         let etudiantID;
@@ -466,7 +414,7 @@ router.post('/postulate/:id', upload.fields([
             stageSujet: stages.Libelle,
             entrepriseName: stages.Nom,
             entrepriseEmail: stages.CreatedBy,
-            CV: cvPath
+            CV:  cvFile ? cvFile.webViewLink : null,
         }, { transaction: t });
         
 
@@ -481,7 +429,7 @@ router.post('/postulate/:id', upload.fields([
         return res.redirect(`/postulate/${id}`);
     }
 });
-
+ 
 
 
 router.get('/check-email', async (req, res) => {
@@ -557,7 +505,8 @@ router.get('/stage_postuler', async (req, res) => {
   
       postulatedJson = postulatedJson.map(postulatedObj => {
         const modifiedpostulated = { ...postulatedObj };
-        modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`;
+    /*     modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`; */
+    modifiedpostulated.CVPath =postulatedObj.CV;
         return modifiedpostulated;
       });
   
@@ -638,7 +587,8 @@ router.get('/stage_postuler', async (req, res) => {
   
       postulatedJson = postulatedJson.map(postulatedObj => {
         const modifiedpostulated = { ...postulatedObj };
-        modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`;
+  /*       modifiedpostulated.CVPath = `/stockages/${postulatedObj.etudiantEmail}/${path.basename(postulatedObj.CV)}`; */
+         modifiedpostulated.CVPath =postulatedObj.CV;
         return modifiedpostulated;
       });
   
@@ -722,20 +672,15 @@ router.get('/candidatures', async (req, res) => {
           return res.status(404).send('candidature not found')
       }
       const modifiedcandidature = {
-          ...candidatures.toJSON(),
-          cv: `/stockages/${candidatures.email}/${path.basename(
-              candidatures.cv
-          )}`,
-          lettre_motivation: candidatures.lettre_motivation
-              ? `/stockages/${candidatures.email}/${path.basename(
-                    candidatures.lettre_motivation
-                )}`
-              : 'document pas fournis',
-          releves_notes: candidatures.releves_notes
-              ? `/stockages/${candidatures.email}/${path.basename(
-                    candidatures.releves_notes
-                )}`
-              : 'document pas fournis',
+        ...candidatures.toJSON(),
+        cv:candidatures.cv,
+        /*  `/stockages/${candidatures.email}/${path.basename(candidatures.cv)}`,*/
+        lettre_motivation: candidatures.lettre_motivation 
+            ?  candidatures.lettre_motivation /* `/stockages/${candidatures.email}/${path.basename(candidatures.lettre_motivation)}` */
+            : 'document pas fournis',
+        releves_notes: candidatures.releves_notes
+            ? candidatures.releves_notes /*  `/stockages/${candidatures.email}/${path.basename(candidatures.releves_notes)}` */
+            : 'document pas fournis',
       }
 
       const StageData = await stagepostulation.findOne({
@@ -775,12 +720,13 @@ router.get('/candidatures2', async (req, res) => {
 
       const modifiedcandidature = {
           ...candidatures.toJSON(),
-          cv: `/stockages/${candidatures.email}/${path.basename(candidatures.cv)}`,
-          lettre_motivation: candidatures.lettre_motivation
-              ? `/stockages/${candidatures.email}/${path.basename(candidatures.lettre_motivation)}`
+          cv:candidatures.cv,
+          /*  `/stockages/${candidatures.email}/${path.basename(candidatures.cv)}`,*/
+          lettre_motivation: candidatures.lettre_motivation 
+              ?  candidatures.lettre_motivation /* `/stockages/${candidatures.email}/${path.basename(candidatures.lettre_motivation)}` */
               : 'document pas fournis',
           releves_notes: candidatures.releves_notes
-              ? `/stockages/${candidatures.email}/${path.basename(candidatures.releves_notes)}`
+              ? candidatures.releves_notes /*  `/stockages/${candidatures.email}/${path.basename(candidatures.releves_notes)}` */
               : 'document pas fournis',
       };
 
