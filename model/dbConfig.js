@@ -21,11 +21,19 @@ const connectToDatabase = () => {
 
     connection.connect((err) => {
       if (err) {
+        console.error('Error connecting to MySQL database:', err);
         reject(err);
       } else {
         console.log('Connected to MySQL database');
         isConnected = true;
         resolve();
+      }
+    });
+
+    connection.on('error', (err) => {
+      console.error('MySQL connection error:', err);
+      if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') {
+        isConnected = false;
       }
     });
   });
@@ -35,10 +43,10 @@ const executeSQLCommands = async (commands) => {
   for (const sql of commands) {
     try {
       await executeQuery(sql);
-      console.log('SQL query executed successfully');
+    //  console.log('SQL query executed successfully');
     } catch (err) {
       console.error('Error executing SQL query:', err);
-      return; // Don't terminate the connection here
+      // Continue with the next query
     }
   }
 };
@@ -126,7 +134,7 @@ const main = async () => {
     const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
     await executeSQLCommands(sqlCommands);
     const sidebarItems = await fetchSidebarItems('en', 'USER'); // Assuming 'USER' role for example
-    console.log('Sidebar Items:', sidebarItems);
+  //  console.log('Sidebar Items:', sidebarItems);
   } catch (err) {
     console.error('Error:', err);
   }
