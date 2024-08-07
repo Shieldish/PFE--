@@ -107,6 +107,7 @@ app.get('/postulate/:id', async (req, res) => {
 
 app.get(['/', '/home'], authenticate, (req, res) => {
     const user = req.session.user;
+    main()
     if (user) {
       delete user.PASSWORD;
     }

@@ -1,376 +1,304 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
-// Create a nodemailer transporter
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com', // Your SMTP host
-  port: 465, // Your SMTP port
-  secure: true, // true for 465, false for other ports
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
-    user: process.env.NODEMAILER_USER, // Your email address
-    pass: process.env.NODEMAILER_PASS// Your email password
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS
   }
 });
 
-async function sendUserRegistrationMail(email, name,confirmationToken) {
-const mailOptions = {
-    from: `Gestions Stages <${process.env.NODEMAILER_USER}>`,  // Sender address
-    to: email, // Recipient address
-    subject: 'Registration Confirmation', // Subject line
-    html: `
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Confirmation</title>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <style>
-    /* Custom CSS styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        padding: 20px;
-    }
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color:beige;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    h2 {
-        text-align: center;
-        margin-top: 0;
-    }
-    .message {
-        margin-bottom: 20px;
-    }
-    .confirm-email-btn {
-        display: inline-block;
-        background-color: #ffffff38;
-        color: #ffffff;
-        text-decoration:#08070700;
-        padding: 10px 20px;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
-    .confirm-email-btn:hover {
-        background-color: rgb(77, 77, 73);
-    }
-    .signature {
-        margin-top: 20px;
-        text-align: center;
-    }
-    .confirm-email-btn.animation {
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.1);
-        }
-        100% {
-            transform: scale(1);
-        }
-    }
-</style>
- 
-</head>
-<body>
-    <div class="container">
-        <h2>Registration Confirmation: Welcome</h2>
-        <div class="message">
-            <p>Dear ${name},</p>
-            <p>Congratulations! We are delighted to confirm that your registration was successful. Welcome to our community!</p>
-            <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}" class="confirm-email-btn animation">Confirm Email</a>
-            <p>Here are the details of your registration:</p>
-            <ul>
-                <li><strong>Username:</strong> ${name}</li>
-                <li><strong>Email Address:</strong> ${email}</li>
-                <li><strong>Registration Date:</strong> ${new Date().toLocaleString('fr-FR', {
-            month: 'long',
-            day: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        })}</li>
-            </ul>
-            <p>Thank you for registering with our app!</p>
-            <p>Please click the link below to confirm your email address:</p>
-            <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}" class="confirm-email-btn">Confirm Email</a>
-            <p>This link will expire in 24 hours.</p>
-            <p>Click here: ${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}</p>
-            <p>As a registered member, you now have access to [briefly mention key features or benefits of your product/service]. We are confident that you'll find [Your Company] to be a valuable resource.</p>
-            <p>Should you have any questions or need assistance, feel free to reach out to our support team at [Support Email/Contact Information]. We're here to help!</p>
-            <p>Thank you for choosing [Your Company]. We're excited to have you on board!</p>
-        </div>
-        <div class="signature">
-            <p>Best regards,</p>
-            <p>[Your Name]<br>[Your Position/Role]<br>[Your Company]</p>
-        </div>
-    </div>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-    `
- 
-  };
-  
-
-  try {
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info.messageId);
-  } catch (error) {
-    console.error('Error sending email:', error);
-  }
-}
-
-
-async function resendRegistrationMail(email,name,token) {
+async function sendUserRegistrationMail(email, name, confirmationToken) {
   const mailOptions = {
-    from: `Gestions Stages <${process.env.NODEMAILER_USER}>`,  // Sender address
-    to: email, // Recipient address
-    subject: 'Resend Registration Email', // Subject line
+    from: `Gestions Stages <${process.env.NODEMAILER_USER}>`,
+    to: email,
+    subject: 'Confirmation d\'inscription',
     html: `
-    <!DOCTYPE html>
-    <html>
+      <!DOCTYPE html>
+      <html lang="fr">
       <head>
-        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Confirmation d'inscription</title>
         <style>
-          /* Custom CSS styles */
           body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
           }
-    
           .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color:beige;
+            background-color: #fef3c7;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
           }
-    
+          h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #333333;
+          }
           .message {
             margin-bottom: 20px;
+            color: #333333;
           }
-    
-          .signature {
-            margin-top: 20px;
-            text-align: center;
-          }
-    
-          .btn-confirm {
+          .confirm-email-btn {
             display: inline-block;
-            background-color: #ffffff38;
+            background-color: #f59e0b;
             color: #ffffff;
-            text-decoration:#08070700;
+            text-decoration: none;
             padding: 10px 20px;
             border-radius: 5px;
             transition: background-color 0.3s ease;
           }
-    
-          .btn-confirm:hover {
-            background-color: rgb(77, 77, 73);
+          .confirm-email-btn:hover {
+            background-color: #d97706;
           }
-    
-          /* Animation */
-          @keyframes pulse {
-            0% {
-              transform: scale(1);
-            }
-            50% {
-              transform: scale(1.1);
-            }
-            100% {
-              transform: scale(1);
-            }
+          .signature {
+            margin-top: 20px;
+            text-align: center;
+            color: #333333;
           }
         </style>
       </head>
       <body>
         <div class="container">
-          <h2>Resent Registration Email</h2>
+          <h2>Confirmation d'inscription: Bienvenue</h2>
           <div class="message">
-            <p>Dear ${name},</p>
-            <p>We received a request to resend the registration email to the following email address:</p>
-            <a class="btn-confirm" href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}">Confirm Email</a>
+            <p>Bonjour ${name},</p>
+            <p>Félicitations ! Nous sommes ravis de confirmer que votre inscription a été réussie. Bienvenue dans notre communauté !</p>
+            <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}" class="confirm-email-btn">Confirmer l'email</a>
+            <p>Voici les détails de votre inscription :</p>
             <ul>
-              <li><strong>Name:</strong> ${name}</li>
-              <li><strong>Email Address:</strong> ${email}</li>
-              <li><strong>Date:</strong> ${new Date().toLocaleString('en-US', {
+              <li><strong>Nom d'utilisateur:</strong> ${name}</li>
+              <li><strong>Adresse email:</strong> ${email}</li>
+              <li><strong>Date d'inscription:</strong> ${new Date().toLocaleString('fr-FR', {
+                month: 'long',
                 day: '2-digit',
-                month: '2-digit',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit'
               })}</li>
             </ul>
-            <p>If this was not you, please ignore this email.</p>
-            <p>To confirm your email address and complete the registration process, please click the link below:</p>
-            <a class="btn-confirm" href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}">Confirm Email</a>
-            <p>Click here: ${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}</p>
+            <p>Merci de vous être inscrit sur notre application !</p>
+            <p>Veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse email :</p>
+            <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}" class="confirm-email-btn">Confirmer l'email</a>
+            <p>Ce lien expirera dans 24 heures.</p>
+            <p>Cliquez ici: ${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${confirmationToken}</p>
+            <p>En tant que membre enregistré, vous avez désormais accès à [mentionner brièvement les principales fonctionnalités ou avantages de votre produit/service]. Nous sommes convaincus que vous trouverez [Votre Société] une ressource précieuse.</p>
+            <p>Si vous avez des questions ou avez besoin d'aide, n'hésitez pas à contacter notre équipe de support à [Support Email/Contact Information]. Nous sommes là pour vous aider !</p>
+            <p>Merci d'avoir choisi [Votre Société]. Nous sommes ravis de vous compter parmi nous !</p>
           </div>
           <div class="signature">
-            <p>Best regards,</p>
-            <p>Your Team</p>
+            <p>Cordialement,</p>
+            <p>[Votre Nom]<br>[Votre Poste/Rôle]<br>[Votre Société]</p>
           </div>
         </div>
-        <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
       </body>
-    </html>
+      </html>
     `
   };
 
-
   try {
-    // Send email
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent:', info.messageId);
-
-    return true; // Email sent successfully
   } catch (error) {
-    console.error('Error sending resend registration email:', error);
-    return  false; // Failed to send email
+    console.error('Error sending email:', error);
   }
 }
+async function resendRegistrationMail(email, name, token) {
+  const mailOptions = {
+    from: `Gestions Stages <${process.env.NODEMAILER_USER}>`,
+    to: email,
+    subject: 'Renvoi de l\'email d\'inscription',
+    html: `
+      <!DOCTYPE html>
+      <html lang="fr">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Renvoi de l'email d'inscription</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fef3c7;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+          }
+          h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #333333;
+          }
+          .message {
+            margin-bottom: 20px;
+            color: #333333;
+          }
+          .confirm-email-btn {
+            display: inline-block;
+            background-color: #f59e0b;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+          }
+          .confirm-email-btn:hover {
+            background-color: #d97706;
+          }
+          .signature {
+            margin-top: 20px;
+            text-align: center;
+            color: #333333;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h2>Renvoi de l'email d'inscription</h2>
+          <div class="message">
+            <p>Bonjour ${name},</p>
+            <p>Nous avons reçu une demande de renvoi de l'email d'inscription à l'adresse suivante :</p>
+            <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}" class="confirm-email-btn">Confirmer l'email</a>
+            <ul>
+              <li><strong>Nom:</strong> ${name}</li>
+              <li><strong>Adresse email:</strong> ${email}</li>
+              <li><strong>Date:</strong> ${new Date().toLocaleString('fr-FR', {
+                month: 'long',
+                day: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+              })}</li>
+            </ul>
+            <p>Si ce n'était pas vous, veuillez ignorer cet email.</p>
+            <p>Pour confirmer votre adresse email et terminer le processus d'inscription, veuillez cliquer sur le lien ci-dessous :</p>
+            <a href="${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}" class="confirm-email-btn">Confirmer l'email</a>
+            <p>Cliquez ici: ${process.env.FRONTEND_URL}/connection/confirm-email?TOKEN=${token}</p>
+          </div>
+          <div class="signature">
+            <p>Cordialement,</p>
+            <p>Votre Équipe</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
 
-
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.messageId);
+    return true;
+  } catch (error) {
+    console.error('Error sending resend registration email:', error);
+    return false;
+  }
+}
 async function sendUserResetPasswordMail(email, resetToken) {
-const mailOptions = {
-  from: 'Gestions Stages <gabiamsamuelnathan@gmail.com>', // Sender address
-  to: email, // Recipient address
-  subject: 'Reset Your Password', // Subject line
-  html: `
-  <!DOCTYPE html>
-  <html>
-    <head>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-      <style>
-    
-        /* Custom CSS styles */
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #f5f5f5;
-          padding: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-        }
-  
-        .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color:beige;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-  
-        .title {
-          text-align: center;
-          color: #333333;
-          animation: slideInDown 0.5s ease-in-out;
-        }
-  
-        .message {
-          margin-bottom: 20px;
-        }
-  
-        .signature {
-          margin-top: 20px;
-          text-align: center;
-        }
-  
-        .button {
-          display: inline-block;
-          background-color: #ffffff38;
-          color: #ffffff;
-          text-decoration:#08070700;
-          padding: 10px 20px;
-          border-radius: 5px;
-          transition: background-color 0.3s ease;
-        }
-  
-        .button:hover {
-          background-color: rgb(77, 77, 73);
-        }
-  
-        /* Animations */
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
+  const mailOptions = {
+    from: 'Gestions Stages <gabiamsamuelnathan@gmail.com>',
+    to: email,
+    subject: 'Réinitialiser votre mot de passe',
+    html: `
+      <!DOCTYPE html>
+      <html lang="fr">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Réinitialiser votre mot de passe</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
           }
-          100% {
-            opacity: 1;
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fef3c7;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
           }
-        }
-  
-        @keyframes slideInDown {
-          0% {
-            transform: translateY(-100%);
-            opacity: 0;
+          h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #333333;
           }
-          100% {
-            transform: translateY(0);
-            opacity: 1;
+          .message {
+            margin-bottom: 20px;
+            color: #333333;
           }
-        }
-  
-        @keyframes pulse {
-          0% {
-            transform: scale(1);
+          .reset-password-btn {
+            display: inline-block;
+            background-color: #f59e0b;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
           }
-          50% {
-            transform: scale(1.1);
+          .reset-password-btn:hover {
+            background-color: #d97706;
           }
-          100% {
-            transform: scale(1);
+          .signature {
+            margin-top: 20px;
+            text-align: center;
+            color: #333333;
           }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <h2 class="title">Password Reset Request</h2>
-        <div class="message">
-          <p>Dear User,</p>
-          <p>We received a request to reset your password. If this was not you, please ignore this email.</p>
-          <p>To reset your password, click the link below:</p>
-          <a class="button" href="${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}">Reset Password</a>
-          <p>The link will expire in 24 hours for security reasons.</p>
-          <p>${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}</p>
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h2>Réinitialiser votre mot de passe</h2>
+          <div class="message">
+            <p>Bonjour,</p>
+            <p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.</p>
+            <a href="${process.env.FRONTEND_URL}/newPassword?TOKEN=${resetToken}" class="reset-password-btn">Réinitialiser le mot de passe</a>
+            <p>Ce lien expirera dans 24 heures. Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.</p>
+            <p>Cliquez ici: ${process.env.FRONTEND_URL}/newPassword?TOKEN=${resetToken}</p>
+          </div>
+          <div class="signature">
+            <p>Cordialement,</p>
+            <p>Votre Équipe</p>
+          </div>
         </div>
-        <div class="signature">
-          <p>Best regards,</p>
-          <p>Your Team</p>
-        </div>
-      </div>
-      <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+      </body>
+      </html>
+    `
+  };
 
-  </html>
-  `
-};
-
-try {
-  // Send email
-  const info = await transporter.sendMail(mailOptions);
-  console.log('Email sent:', info.messageId);
-} catch (error) {
-  console.error('Error sending email:', error);
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.messageId);
+  } catch (error) {
+    console.error('Error sending reset password email:', error);
+  }
 }
-}
-
-
 module.exports = {sendUserRegistrationMail,sendUserResetPasswordMail ,resendRegistrationMail};
