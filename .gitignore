@@ -1,8 +1,8 @@
 node_modules/
 stockages/
 Uploads/
-.env
-.env*
-env*
-test.js
+/.env
+/.env*
+/env*
+/test.js
 
