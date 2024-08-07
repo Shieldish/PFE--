@@ -115,12 +115,40 @@ const storage = multer.diskStorage({
 // Configure multer with the disk storage
 const upload = multer({ storage: multer.memoryStorage() });
 
-const CREDENTIALS_PATH = './cred.json';
+/* const CREDENTIALS_PATH = './cred.json';
 
 
 function initializeDriveClient() {
   const credentialsPath = path.resolve(CREDENTIALS_PATH);
   const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+
+  const auth = new google.auth.GoogleAuth({
+    credentials: credentials,
+    scopes: ['https://www.googleapis.com/auth/drive.file']
+  });
+
+  return google.drive({ version: 'v3', auth });
+}
+
+ */
+
+
+
+
+function initializeDriveClient() {
+  // Ensure GOOGLE_CREDENTIALS is defined
+  if (!process.env.GOOGLE_CREDENTIALS) {
+    throw new Error('GOOGLE_CREDENTIALS environment variable is not defined');
+  }
+  console.log(process.env.GOOGLE_CREDENTIALS);
+
+  // Parse the JSON string from the environment variable
+  let credentials;
+  try {
+    credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  } catch (err) {
+    throw new Error('Failed to parse GOOGLE_CREDENTIALS: ' + err.message);
+  }
 
   const auth = new google.auth.GoogleAuth({
     credentials: credentials,
@@ -151,7 +179,7 @@ async function uploadFileToDrive(driveClient, fileObject, fileName) {
       {
         requestBody: {
           name: fileName,
-          parents: ['1OsKycKqCdFoVnWkXyBHvJo0_ouBIpuXX'], // Replace with your folder ID
+          parents: [process.env.GOOGLE_DRIVE_STORAGES], // Replace with your folder ID
         },
         media: media,
         fields: 'id,webViewLink',

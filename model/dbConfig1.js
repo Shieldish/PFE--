@@ -3,21 +3,32 @@ const mysql = require('mysql');
 const path = require('path');
 const fs = require('fs/promises');
 
-const connection = mysql.createConnection({
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME
-});
+let connection = null;
+
+const createConnection = () => {
+  return mysql.createConnection({
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME
+  });
+};
 
 const connectToDatabase = () => {
   return new Promise((resolve, reject) => {
+    if (connection && connection.state === 'authenticated') {
+      console.log('Already connected to MySQL database');
+      resolve(connection);
+      return;
+    }
+
+    connection = createConnection();
     connection.connect((err) => {
       if (err) {
         reject(err);
       } else {
         console.log('Connected to MySQL database');
-        resolve();
+        resolve(connection);
       }
     });
   });
@@ -47,7 +58,7 @@ const executeQuery = (sql) => {
   });
 };
 
-const fetchSidebarItems = async (lang) => {
+const fetchSidebarItems = async (lang, userRole) => {
   const sidebarSql = `
     SELECT
       s.id,
@@ -61,33 +72,53 @@ const fetchSidebarItems = async (lang) => {
 
   try {
     const sidebarResults = await executeQuery(sidebarSql);
-    const sidebarItems = sidebarResults.reduce((acc, item) => {
-      if (item.parent_id === null) {
-        acc.push({
-          id: item.id,
-          name: item.name,
-          link: item.link,
-          icon: item.icon,
-          children: []
-        });
-      } else {
-        const parent = acc.find(i => i.id === item.parent_id);
-        if (parent) {
-          parent.children.push({
-            id: item.id,
-            name: item.name,
-            link: item.link,
-            icon: item.icon
-          });
-        }
-      }
-      return acc;
-    }, []);
+    const sidebarItems = buildSidebarTree(sidebarResults, userRole);
     return sidebarItems;
   } catch (err) {
     console.error('Error fetching sidebar items:', err);
     throw err;
   }
+};
+
+const buildSidebarTree = (items, userRole, parentId = null) => {
+  return items
+    .filter(item => item.parent_id === parentId)
+    .map(item => {
+      const children = buildSidebarTree(items, userRole, item.id);
+      const hasAccessToItem = hasAccess(item.link, userRole);
+      const hasAccessToChildren = children.some(child => child.visible);
+
+      return {
+        id: item.id,
+        name: item.name,
+        link: item.link,
+        icon: item.icon,
+        children: children.filter(child => child.visible),
+        visible: hasAccessToItem || hasAccessToChildren
+      };
+    })
+    .filter(item => item.visible);
+};
+
+const hasAccess = (link, userRole) => {
+  const roleAccess = {
+    '/': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
+    '/etudiant': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
+    '/home': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
+    '/entreprise': ['ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
+    '/encadrement': ['DEPARTEMENT', 'ADMIN'],
+    '/planification': ['DEPARTEMENT', 'ADMIN'],
+    '/settings': ['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
+    '/gestion': ['ADMIN'],
+    '/files/upload': ['ADMIN']
+  };
+
+  // If the link is not in the roleAccess object or starts with '#', assume it's accessible to all
+  if (!roleAccess[link] || link.startsWith('#')) {
+    return false;
+  }
+
+  return roleAccess[link].includes(userRole);
 };
 
 const main = async () => {
@@ -101,6 +132,16 @@ const main = async () => {
     console.log('Sidebar Items:', sidebarItems);
   } catch (err) {
     console.error('Error:', err);
+  } finally {
+    if (connection) {
+      connection.end((err) => {
+        if (err) {
+          console.error('Error closing database connection:', err);
+        } else {
+          console.log('Database connection closed');
+        }
+      });
+    }
   }
 };
 

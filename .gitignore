@@ -1,7 +1,7 @@
 node_modules/
 stockages/
-scratch/
 Uploads/
-.vercel/
-.env/
-.env*/
+.env
+.env*
+env*
+cred.json

@@ -6,7 +6,7 @@ const ejs = require('ejs');
 const cors = require('cors'); // Import the cors module
 
 const routes = require('./routes/routes');
-const { connection, fetchSidebarItems, main } = require('./model/dbConfig');
+const { connection, fetchSidebarItems, main ,connectToDatabase} = require('./model/dbConfig');
 const connectionRoutes = require('./routes/connectionRoutes');
 const uploadsRoutes = require('./routes/uploadsRoutes');
 const databaseRoutes = require('./routes/databaseRoutes');
@@ -106,20 +106,44 @@ app.get('/postulate/:id', async (req, res) => {
 });
 
 app.get(['/', '/home'], authenticate, (req, res) => {
-    main();
     const user = req.session.user;
     if (user) {
-        delete user.PASSWORD;
-   
+      delete user.PASSWORD;
     }
     res.render('home', { user, userJSON: JSON.stringify(user) });
-});
+  });
+  
+  app.post('/sidebar', authenticate, async (req, res) => {
+    try {
+      const { lang } = req.body || 'fr';
+      const userRole = req.role; // Assuming you have the user's role available in the request object
+      const sidebarItems = await fetchSidebarItems(lang, userRole);
+      res.json(sidebarItems);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des éléments de la barre latérale :', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+/* app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-});
+}); */
+
+const startServer = async () => {
+    try {
+      await connectToDatabase();
+      app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+      });
+    } catch (error) {
+      console.error('Failed to connect to the database:', error);
+      process.exit(1); // Exit the process with an error code
+    }
+  };
+  
+  startServer();
