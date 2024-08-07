@@ -73,8 +73,8 @@ router.get('/All', async (req, res) => {
         },
       });
     } catch (error) {
-      console.error('Error retrieving stage:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Erreur lors de l\'étape de récupération :', error);
+      res.status(500).json({ error: 'Erreur interne du serveur' });
     }
   });
   
@@ -158,7 +158,7 @@ async function uploadFileToDrive(driveClient, fileObject, fileName) {
       },
       (err, file) => {
         if (err) {
-          console.error('Error uploading file:', err);
+          console.error('Erreur lors du téléchargement du fichier:', err);
           reject(err);
         } else {
           resolve(file.data);
@@ -224,7 +224,7 @@ router.post('/postulates/:id', upload.fields([
 
     if (!stages) {
       await t.rollback();
-      return res.status(404).json({ error: 'Stage not found' });
+      return res.status(404).json({ error: 'Stage  introuvable' });
     }
 
     // Create a new instance of the candidature model
@@ -265,8 +265,8 @@ router.post('/postulates/:id', upload.fields([
         etudiantID = userRegistrationData.UUID;
       } else {
         await t.rollback();
-        console.error('No record found for the provided email');
-        return res.status(404).json({ error: 'No record found for the provided email' });
+        console.error('Aucun enregistrement trouvé pour l\'e-mail fourni');
+        return res.status(404).json({ error: 'Aucun enregistrement trouvé pour l\'e-mail fourni' });
       }
     }
 
@@ -289,14 +289,14 @@ router.post('/postulates/:id', upload.fields([
     await t.commit();
 
     // Send success response
-    return res.status(200).json({ message: 'Candidature submitted successfully' });
+    return res.status(200).json({ message: 'Candidature soumise avec succès' });
 
   } catch (err) {
     // Rollback the transaction in case of error
     if (t) await t.rollback();
 
-    console.error('Error submitting candidature:', err);
-    return res.status(500).json({ error: `An error occurred while submitting the candidature: ${err.message}` });
+    console.error('Erreur lors de la soumission de la candidature :', err);
+    return res.status(500).json({ error: `Une erreur s'est produite lors de la soumission de la candidature: ${err.message}` });
   }
 });
 
@@ -397,7 +397,7 @@ router.post('/postulates/:id', upload.fields([
             } else {
                 // Handle the case when no record is found for the email
                 // For example, you can throw an error or set a default value
-                console.error('No record found for the provided email');
+                console.error('Aucun enregistrement trouvé pour l\'e-mail fourni');
                 // throw new Error('No record found for the provided email');
                 // etudiantID = someDefaultValue;
             }
@@ -420,12 +420,12 @@ router.post('/postulates/:id', upload.fields([
 
         await t.commit();
 
-        req.flash('success', 'candidature submitted successfully');
+        req.flash('success', 'candidature soumise avec succès');
         return res.redirect(`/etudiant`);
     } catch (err) {
         await t.rollback();
-        console.error('Error submitting candidature:', err);
-        req.flash('error', `An error occurred while submitting the candidature: ${err.message}`);
+        console.error('Erreur lors de la soumission de la candidature:', err);
+        req.flash('error', `Une erreur s'est produite lors de la soumission de la candidature: ${err.message}`);
         return res.redirect(`/postulate/${id}`);
     }
 });
@@ -444,31 +444,30 @@ router.get('/check-email', async (req, res) => {
                 etudiantEmail: email
             }
         });
-               console.log("Stage existe",stage)
-        // If stage is found, it means the email already exists for that stage
+          
         if (stage) {
             return res.json({ exists: true });
         } else {
             return res.json({ exists: false });
         }
     } catch (error) {
-        console.error('Error checking email:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error('Erreur lors de la vérification du courrier électronique:', error);
+        return res.status(500).json({ error: 'Erreur interne du serveur' });
     }
 });
 
 router.get('/stage_postuler', async (req, res) => {
     try {
       if (!req.session.user) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Non autorisé' });
       }
   
       const etudiants = req.session.user.EMAIL; 
      
   
       if (!etudiants) {
-        req.flash('error', 'An error occurred while fetching postulated data');
-        return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
+        req.flash('error', 'Une erreur s\'est produite lors de la récupération des données postulées');
+        return res.status(400).json({ error: 'Une erreur s\'est produite lors de la récupération des données postulées' });
       }
   
      
@@ -479,8 +478,8 @@ router.get('/stage_postuler', async (req, res) => {
       }
   
       if (!etudiantID) {
-        req.flash('error', 'An error occurred while fetching postulated data');
-        return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
+        req.flash('error', 'Une erreur s\'est produite lors de la récupération des données postulées');
+        return res.status(400).json({ error: 'Une erreur s\'est produite lors de la récupération des données postulées' });
       }
   
       const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
@@ -496,7 +495,7 @@ router.get('/stage_postuler', async (req, res) => {
   
       if (postulated.length === 0) {
        // req.flash('info', 'No postulated found');
-        return res.status(404).json({ error: 'No postulated found' });
+        return res.status(404).json({ error: 'Aucun postulé trouvé' });
       }
   
       let postulatedJson = postulated.map(postulated => postulated.toJSON());
@@ -515,8 +514,8 @@ router.get('/stage_postuler', async (req, res) => {
       return res.status(200).json({ postulant: postulatedJson });
     } catch (error) {
       console.log(error);
-      req.flash('error', 'An error occurred while fetching postulated data: ' + error.message);
-      return res.status(500).json({ error: 'An error occurred while fetching postulated data' });
+      req.flash('error', 'Une erreur s\'est produite lors de la récupération des données postulées : ' + error.message);
+      return res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des données postulées' });
     }
   }); 
 
@@ -528,7 +527,7 @@ router.get('/stage_postuler', async (req, res) => {
       console.log('Authorization Header:', authHeader);
   
       if (!authHeader) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Non autorisé' });
       }
   
       const token = authHeader.split(' ')[1];
@@ -536,7 +535,7 @@ router.get('/stage_postuler', async (req, res) => {
       console.log('JWT Token:', token);
   
       if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Non autorisé' });
       }
   
       const JWT_SECRET = process.env.secretKey; // Ensure this matches the environment variable in your .env file
@@ -557,14 +556,14 @@ router.get('/stage_postuler', async (req, res) => {
   
       // Now check the value of 'etudiants' to ensure it's valid before querying the database
       if (!etudiants) {
-        return res.status(401).json({ error: 'Invalid token. Email not found in decoded token.' });
+        return res.status(401).json({ error: 'Jeton invalide. E-mail introuvable dans le jeton décodé.' });
       }
   
       const etudiantID = await etudiant.findOne({ where: { EMAIL: etudiants }, attributes: ['ID'] }) ||
                          await user_registration.findOne({ where: { EMAIL: etudiants }, attributes: ['UUID'] });
   
       if (!etudiantID) {
-        return res.status(400).json({ error: 'An error occurred while fetching postulated data' });
+        return res.status(400).json({ error: 'Une erreur s\'est produite lors de la récupération des données postulées' });
       }
   
       const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
@@ -578,7 +577,7 @@ router.get('/stage_postuler', async (req, res) => {
       });
   
       if (postulated.length === 0) {
-        return res.status(404).json({ error: 'No postulated found' });
+        return res.status(404).json({ error: 'Aucun postulé trouvé' });
       }
   
       let postulatedJson = postulated.map(postulated => postulated.toJSON());
@@ -596,8 +595,8 @@ router.get('/stage_postuler', async (req, res) => {
   
       return res.status(200).json({ postulant: postulatedJson });
     } catch (error) {
-      console.error('Error fetching postulated data:', error);
-      return res.status(500).json({ error: 'An error occurred while fetching postulated data' });
+      console.error('Erreur lors de la récupération des données postulées :', error);
+      return res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des données postulées' });
     }
   });
   
@@ -669,7 +668,7 @@ router.get('/candidatures', async (req, res) => {
       })
       if (!candidatures) {
           // Handle the case where no candidature is found
-          return res.status(404).send('candidature not found')
+          return res.status(404).send('candidature introuvable')
       }
       const modifiedcandidature = {
         ...candidatures.toJSON(),
@@ -697,7 +696,7 @@ router.get('/candidatures', async (req, res) => {
   } catch (error) {
       // Handle errors
       console.error(error)
-      return res.status(500).send('Internal Server Error')
+      return res.status(500).send('Erreur interne du serveur')
   }
 })
 
@@ -715,7 +714,7 @@ router.get('/candidatures2', async (req, res) => {
       });
 
       if (!candidatures) {
-          return res.status(404).json({ error: 'Candidature not found' });
+          return res.status(404).json({ error: 'Candidature introuvable' });
       }
 
       const modifiedcandidature = {
@@ -738,7 +737,7 @@ router.get('/candidatures2', async (req, res) => {
       });
 
       if (!StageData) {
-          return res.status(404).json({ error: 'Stage data not found' });
+          return res.status(404).json({ error: 'Données de stages sont introuvables' });
       }
 
       const stageDataJSON = StageData.toJSON();
@@ -754,7 +753,7 @@ router.get('/candidatures2', async (req, res) => {
       });
   } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });
 
@@ -764,7 +763,7 @@ router.post('/stages/byIds', async (req, res) => {
   try {
     // Ensure ids is an array
     if (!Array.isArray(ids)) {
-      return res.status(400).json({ error: 'ids must be an array' });
+      return res.status(400).json({ error: 'les identifiants doivent être un tableau' });
     }
 
     // Fetch jobs by IDs from the database
@@ -779,12 +778,10 @@ router.post('/stages/byIds', async (req, res) => {
     // Map the jobs to plain objects
     const plainJobs = jobs.map(job => job.toJSON());
     
-    console.log("Jobs found:", plainJobs);
-     
     res.json(plainJobs);
   } catch (error) {
-    console.error('Error fetching jobs:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Erreur lors de la récupération des tâches :', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });
 

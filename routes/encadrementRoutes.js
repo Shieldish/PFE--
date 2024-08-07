@@ -6,7 +6,6 @@ const connection = require('../model/dbConfig');
 const stage=require('../model/stagesModel')
 const { candidature, stagepostulation } = require('../model/stagePostulationModel');
 const { Op } = require('sequelize');
-const authenticate = require('../middlewares/auth');
 const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
 
@@ -25,7 +24,7 @@ router.get('/AllStages', async (req, res) => {
             postulant: allStages
           });
     } catch (error) {
-        console.error('Error fetching all stages:', error);
+        console.error('Erreur lors de la récupération de tout stages:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -42,24 +41,9 @@ router.get('/viewsMoreDetails', async (req, res) => {
         })
         if (!candidatures) {
             // Handle the case where no candidature is found
-            return res.status(404).send('candidature not found')
+            return res.status(404).send('candidature pas trouvé')
         }
-        /* const modifiedcandidature = {
-            ...candidatures.toJSON(),
-            cv: `/stockages/${candidatures.email}/${path.basename(
-                candidatures.cv
-            )}`,
-            lettre_motivation: candidatures.lettre_motivation
-                ? `/stockages/${candidatures.email}/${path.basename(
-                      candidatures.lettre_motivation
-                  )}`
-                : 'document pas fournis',
-            releves_notes: candidatures.releves_notes
-                ? `/stockages/${candidatures.email}/${path.basename(
-                      candidatures.releves_notes
-                  )}`
-                : 'document pas fournis',
-        } */
+      
         const modifiedcandidature = {
             ...candidatures.toJSON(),
             cv:  candidatures.cv,

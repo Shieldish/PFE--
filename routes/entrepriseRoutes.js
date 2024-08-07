@@ -28,7 +28,7 @@ router.post('/creactionStage', async (req, res) => {
       // Check if user is logged in and session contains user object
       if (!req.session.user || !req.session.user.id) {
          
-         req.flash('error', 'User not authenticated');
+         req.flash('error', 'Utilisateur non authentifié');
          return res.redirect('/Entreprise');
         
       }
@@ -41,7 +41,7 @@ router.post('/creactionStage', async (req, res) => {
 
       // Check if stageData object exists and is not null
       if (!stageData) {
-          req.flash('error', 'Stage data is missing');
+          req.flash('error', 'Les données de scène sont manquantes');
           return res.redirect('/Entreprise');
       }
 
@@ -52,12 +52,12 @@ router.post('/creactionStage', async (req, res) => {
       const newStage = await stage.create(stageData);
 
       // Respond with success message and redirect
-      req.flash('success', 'New stage successfully added.');
+      req.flash('success', 'Nouvelle étape ajoutée avec succès.');
       return res.redirect('/Entreprise');
   } catch (error) {
       // Handle any errors
-      console.error("Error saving stage data:", error);
-      req.flash('error', 'An error occurred while saving stage data :'+error.message);
+      console.error("Erreur lors de l'enregistrement des données de STAGE:", error);
+      req.flash('error', 'Une erreur s\'est produite lors de l\'enregistrement des données de STAGE:'+error.message);
       return res.redirect('/Entreprise');
   }
 });
@@ -68,28 +68,28 @@ router.get('/stages', async (req, res) => {
   try {
       const user = req.session.user;
       if (!user) {
-          req.flash('info', 'Session lost, please reconnect to fetch data');
+          req.flash('info','Session perdue, veuillez vous reconnecter pour récupérer les données');
           return res.status(401).end();
       }
 
       const entrepriseEmail = user.EMAIL;
 
       if (!entrepriseEmail) {
-          req.flash('info', 'Session lost, please reconnect to fetch data');
+          req.flash('info', 'Session perdue, veuillez vous reconnecter pour récupérer les données');
           return res.status(401).end();
       }
 
       const allstage = await stage.findAll({ where: { Createdby: entrepriseEmail } });
 
       if (!allstage || allstage.length === 0) {
-          req.flash('info', 'No stage found for the user');
+          req.flash('info', 'Pas de stage trouvé pour l\'utilisateur');
           return res.status(404).end();
       }
 
       res.json(allstage);
   } catch (error) {
-      console.error('Error fetching stage:', error);
-      req.flash('error', 'An error occurred while fetching stage data: ' + error.message);
+      console.error('Erreur lors de l\'étape de récupération :', error);
+      req.flash('error', 'Une erreur s\'est produite lors de la récupération des données stages : ' + error.message);
       res.status(500).end();
   }
 });
@@ -101,7 +101,7 @@ router.get('/', async (req, res) => {
       const  user = req.session.user;
          if(!user)
             {
-                req.flash('info', 'the session is lost , reconnect to fetch data  ');
+                req.flash('info', 'la session est perdue, reconnectez-vous pour récupérer les données  ');
                 return res.render('Entreprise', { stages: [] });
            }
 
@@ -109,7 +109,7 @@ router.get('/', async (req, res) => {
       const entrepriseEMAIL=user.EMAIL;
       // Fetch stage for the authenticated user
       if(!entrepriseEMAIL){
-        req.flash('info', 'the session is lost , reconnect to fetch data  ');
+        req.flash('info', 'la session est perdue, reconnectez-vous pour récupérer les données ');
         return res.render('Entreprise', { stages: [] });
       }
       const stages = entrepriseEMAIL ? await stage.findAll({ where: { Createdby: entrepriseEMAIL } }) : [];
@@ -126,7 +126,7 @@ router.get('/', async (req, res) => {
   } catch (error) {
       // Handle any errors
       console.error('Error fetching stage:', error);
-      req.flash('error', 'An error occurred while fetching stage data: ' + error.message);
+      req.flash('error', 'Une erreur s\'est produite lors de la récupération des données de Stages: ' + error.message);
     return  res.redirect('/entreprise');
   }
 });
@@ -150,7 +150,7 @@ router.get('/edit/:id', async (req, res) => {
   catch (error) {
     // Handle any errors
     console.error('Error fetching stage:', error);
-    req.flash('error', 'An error occurred while fetching stage data: ' + error.message);
+    req.flash('error','Une erreur s\'est produite lors de la récupération des données stages : ' + error.message);
     return res.redirect('/entreprise');
   }
          
@@ -167,12 +167,12 @@ router.delete('/delete/:id', async (req, res) => {
     });
     // Send a success response
     console.log(' deleted successfully')
-    req.flash('info', `Stage with id : ${stageId} deleted successfully`);
+    req.flash('info', `Stage avec  id : ${stageId} Supprimé avec succès`);
     return res.redirect('/entreprise');
   } catch (err) {
     // Send an error response if deletion fails
-    console.error('Error deleting stage:', err);
-    req.flash('error', `Error deleting stage with id : ${stageId}: ${err.message}`);
+    console.error('Erreur lors de la suppression du  stage:', err);
+    req.flash('error', `Erreur lors de la suppression du stage avec l'identifiant: ${stageId}: ${err.message}`);
     return res.redirect('/entreprise');
   }
 });
@@ -193,7 +193,7 @@ router.post('/edit/:id', function (req, res) {
 
         if(!existstage)
         {
-          req.flash('error', 'An error occurred while updating stage data: ' + error.message);
+          req.flash('error', 'Une erreur s\'est produite lors de la mise à jour des données: ' + error.message);
           return res.redirect('/entreprise');
         }
 
@@ -203,12 +203,12 @@ router.post('/edit/:id', function (req, res) {
               id: id
             }
           }).then(function () {
-            req.flash('success', 'Stage updated successfully!');
+            req.flash('success', 'Stages mise à jour avec succès !');
             return res.redirect('/entreprise');
           });
           
         } catch (error) {
-          req.flash('error', 'An error occurred while updating stage data: ' + error.message);
+          req.flash('error', 'Une erreur s\'est produite lors de la mise à jour des données:' + error.message);
           return res.redirect('/entreprise');
           
         }
@@ -285,8 +285,8 @@ router.post('/decision', async (req, res) => {
 
       // If the stage postulation doesn't exist, return an error
       if (!existingStage) {
-          req.flash('error', 'Stage not found');
-          return res.status(400).json({ error: 'Stage not found' });
+          req.flash('error', 'Stage pas trouvé');
+          return res.status(400).json({ error: 'Stage pas trouvé' });
       }
 
       // Update the decision status of the stage postulation
@@ -301,12 +301,12 @@ router.post('/decision', async (req, res) => {
 
       // If the decision update fails, return an error
       if (!updateDecision) {
-          req.flash('error', 'Decision not updated');
-          return res.status(400).json({ error: 'Decision not updated' });
+          req.flash('error', 'Décision non mise à jour');
+          return res.status(400).json({ error: 'Décision non mise à jour' });
       }
 
       // Flash success message and redirect to the page showing postulant details
-      req.flash('success', 'Decision is updated');
+      req.flash('success', 'La décision est mise à jour');
       return res.redirect('partial/entrepriseTemplate/postulant_detail' + stageEmail);
   } catch (error) {
       // If any error occurs, handle it and return an error response
@@ -327,7 +327,7 @@ router.get('/postulant_detail', async (req, res) => {
       })
       if (!candidatures) {
           // Handle the case where no candidature is found
-          return res.status(404).send('candidature not found')
+          return res.status(404).send('candidature introuvable')
       }
     /*   const modifiedcandidature = {
           ...candidatures.toJSON(),
@@ -381,7 +381,7 @@ router.get('/postulant', async (req, res) => {
     const entreprise = user.EMAIL;
     if(!entreprise)
     {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Non autorisé' });
     }
 
 
@@ -435,7 +435,7 @@ router.get('/postulant', async (req, res) => {
       status: postulantObj.status,
       CV: postulantObj.CV,
       postulatedAt: postulantObj.postulatedAt,
-      CVPath: `/stockages/${postulantObj.etudiantEmail}/${path.basename(postulantObj.CV)}`
+      CVPath: postulantObj.CV
     }));
 
     //await normalizeDate(postulantJson)
@@ -448,8 +448,8 @@ router.get('/postulant', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching postulant data:', error);
-    req.flash('error', 'An error occurred while fetching postulant data: ' + error.message);
-    return res.status(500).json({ error: 'An error occurred while fetching postulant data: ' + error.message });
+    req.flash('error', 'Une erreur s\'est produite lors de la récupération des données du postulant : ' + error.message);
+    return res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des données du postulant : ' + error.message });
   }
 });
 

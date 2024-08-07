@@ -48,7 +48,7 @@ router.get('/upload', (req, res) => {
     })
     .catch(error => {
       console.error('Error:', error);
-      res.status(500).send('Error occurred while fetching tables and their structures');
+      res.status(500).send('Une erreur s\'est produite lors de la récupération des tables et de leurs structures ',error);
     });
 });
 
@@ -59,13 +59,13 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   let fileName = req.file.originalname;
 
   if (!file) {
-      return res.status(400).send('No file uploaded.');
+      return res.status(400).send('Aucun fichier téléchargé.');
   }
 
   // Check file type synchronously
   const fileType = path.extname(file.originalname).toLowerCase();
   if (fileType !== '.xlsx' && fileType !== '.csv') {
-      return res.status(400).send('Unsupported file format. Please upload an Excel file (xlsx) or CSV file.');
+      return res.status(400).send('Format de fichier non pris en charge. Veuillez télécharger un fichier Excel (xlsx) ou un fichier CSV.');
   }
 
   try {
@@ -113,12 +113,12 @@ router.post('/upload', upload.single('file'), async (req, res) => {
               })
               .on('error', (err) => {
                   console.error('Error:', err);
-                  return res.status(500).send('Error while processing file.');
+                  return res.status(500).send('Erreur lors du traitement du fichier. ',err);
               });
       }
   } catch (err) {
       console.error('Error:', err);
-      return res.status(500).send('Error while processing file.');
+      return res.status(500).send('Erreur lors du traitement du fichier ',err);
   }
 });
 
@@ -131,13 +131,13 @@ router.post('/saveToDatabase', async (req, res) => {
   try {
     // Check if TableName is missing
     if (!TableName) {
-      res.status(400).json({ error: 'Table name is required.' });
+      res.status(400).json({ error: 'Le nom de la table est obligatoire.' });
       return;
     }
 
     // Check if Options is missing or invalid
     if (Options !== '1' && Options !== '2') {
-      res.status(400).json({ error: 'Invalid Options value. Use 1 or 2.' });
+      res.status(400).json({ error: 'Valeur d\'options non valide. Utilisez-en 1 ou 2.' });
       return;
     }
 
@@ -145,7 +145,7 @@ router.post('/saveToDatabase', async (req, res) => {
     const Model = sequelize.models[TableName];
 
     if (!Model) {
-      res.status(404).json({ error: `Table "${TableName}" not found.` });
+      res.status(404).json({ error: `Table "${TableName}" n'est pas trouvé.` });
       return;
     }
 
@@ -160,14 +160,14 @@ router.post('/saveToDatabase', async (req, res) => {
           ignoreDuplicates: true, // Ignore duplicate entry errors
         });
     
-        console.log(`${result.length} rows inserted successfully.`);
+        console.log(`${result.length}lignes insérées avec succès.`);
         await transaction.commit();
-        res.status(200).json({ message: 'Data inserted successfully.' });
+        res.status(200).json({ message: 'Données insérées avec succès.' });
       } catch (error) {
         // Handle other errors, if any
         await transaction.rollback();
-        console.error('Error inserting data:', error);
-        res.status(500).json({ error: 'Internal server error. Failed to insert data.' });
+        console.error('Erreur lors de l\'insertion des données :', error);
+        res.status(500).json({ error: 'Erreur interne du serveur. Échec de l\'insertion des données.' });
       }
     } else if (Options === '2') {
       // Insert new data and update existing data
@@ -190,16 +190,16 @@ router.post('/saveToDatabase', async (req, res) => {
         );
     
         await transaction.commit();
-        res.status(200).json({ message: 'Data inserted and updated successfully.' });
+        res.status(200).json({ message: 'Données insérées et mises à jour avec succès.' });
       } catch (error) {
         await transaction.rollback();
-        console.error('Error inserting/updating data:', error);
-        res.status(500).json({ error: 'Internal server error. Failed to insert/update data.' });
+        console.error('Erreur lors de l\'insertion/mise à jour des données :', error);
+        res.status(500).json({ error: 'Erreur interne du serveur. Échec de l\'insertion/mise à jour des données.' });
       }
     }
   } catch (error) {
-    console.error('Error saving data to database:', error);
-    res.status(500).json({ error: 'Internal server error.' });
+    console.error('Erreur lors de l\'enregistrement des données dans la base de données :', error);
+    res.status(500).json({ error: 'Erreur interne du serveur.' });
   }
 });
 

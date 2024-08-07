@@ -52,223 +52,193 @@ router.get(['/', '/login'], (req, res) => {
     res.json({ message: 'You are authenticated' });
   });
   
-  // Apply rate limiting middleware
-const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour window
-  max: 3, // limit each IP to 3 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
-});
- 
-let NOM;
-let EMAIL;
-
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-
-
-router.post('/register', async function(req, res) {
-  try {
-    const { nom, prenom, email, password, repeatPassword } = req.body;
-
-    console.log(req.body)
-
-    // Check if password and repeatPassword match
-    if (password !== repeatPassword) {
-      req.flash('error', 'Passwords do not correspond');
+  router.post('/register', async function(req, res) {
+    try {
+      const { nom, prenom, email, password, repeatPassword } = req.body;
+  
+      // Vérifiez si le mot de passe et le mot de passe répété correspondent
+      if (password !== repeatPassword) {
+        req.flash('error', 'Les mots de passe ne correspondent pas');
+        return res.render('../connection/register', { messages: req.flash() });
+      }
+  
+      // Regex pour vérifier le format de l'adresse e-mail
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        req.flash('error', 'Adresse e-mail non valide');
+        return res.render('../connection/register', { messages: req.flash() });
+      }
+  
+      // Vérifiez si l'email existe déjà
+      const existingUser = await user_registration.findOne({ where: { email } });
+  
+      if (existingUser) {
+        req.flash('error', `Erreur : l'adresse e-mail '${email}' existe déjà, essayez une autre adresse ou connectez-vous !`);
+        return res.render('../connection/register', { messages: req.flash() });
+      }
+  
+      // Générer un token d'inscription
+      const registrationToken = generateRandomToken(100);
+  
+      // Créer un nouvel utilisateur
+      const uuid = uuidv4();
+  
+      const newUser = await user_registration.create({
+        NOM: nom.trim().toUpperCase(),
+        PRENOM: prenom.trim(),
+        EMAIL: email.trim().toLowerCase(),
+        PASSWORD: password,
+        TOKEN: registrationToken,
+        UUID: uuid
+      });
+  
+      // Envoyer un email de confirmation d'inscription
+      await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken).then(() => {
+        const NOM = nom.trim().toUpperCase();
+        const EMAIL = email.trim().toLowerCase();
+  
+        return res.render('../connection/messages/RegisterSMS', { NOM, EMAIL });
+      });
+  
+    } catch (error) {
+      req.flash('error', `Une erreur s'est produite lors de l'inscription de l'utilisateur: ${error}`);
       return res.render('../connection/register', { messages: req.flash() });
     }
-    
-
-
-    // Check if email already exists
-    const existingUser = await user_registration.findOne({ where: { email } });
-
-    if (existingUser) {
-     // return res.status(400).send('Email address already exists');
-     req.flash('error', `Error email address : [${email}] already exists , try another address or login instead ! `);
-     return res.render('../connection/register', { messages: req.flash() });
-
-     
-    }
-    
-    // Hash the password
-   // const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Generate registration token
-    const registrationToken = generateRandomToken(100);
-
-    // Create a new user
-    const uuid = uuidv4();
-
-    const newUser = await user_registration.create({
-      NOM: nom.trim().toUpperCase(),
-      PRENOM: prenom.trim(),
-      EMAIL: email.trim().toLowerCase(),
-      PASSWORD: password,
-      TOKEN: registrationToken,
-      UUID: uuid
-    });
-           
-    
-    // Send registration confirmation email
-    await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken).then(()=>{
-      NOM=nom.trim().toUpperCase();
-      EMAIL=email.trim().toLowerCase();     
-      //console.log('Registration confirmation email sent successfully');
-
-      return res.render('../connection/messages/RegisterSMS', { NOM:NOM,EMAIL:EMAIL });
-    }) 
-
-    
-   // console.log('Registration confirmation email sent successfully');
-
-    //res.status(201).send('User registered successfully, Registration confirmation email sent successfully to : ' + email);
-  } catch (error) {
-    //console.error('Error registering user:', error);
-    //res.status(500).send('An error occurred while registering the user');
-    req.flash('error', 'An error occurred while registering the user '+error);
-    return res.render('../connection/register', { messages: req.flash() });
-  }
-});
-
-
-
- router.post('/resendmail', async (req, res) => {
-  const { NOM, EMAIL } = req.body;
-
-  // Check if the user's email has been validated
-  const userRegistration = await user_registration.findOne({ where: { EMAIL } });
-
-  if (!userRegistration) {
-    req.flash('error', 'Unknown error, please try again later!');
-    return res.status(404).send({ message: 'User registration not found' });
-  }
-
-  if (userRegistration.ISVALIDATED) {
-    req.flash('error', 'Your email has already been validated. No need to resend the validation email.');
-    return res.status(400).send({ message: 'Email already validated' });
-  }
-
-  // Check if the user has requested a validation email within the last 5 minutes
-
-  const now = new Date();
-  const fiveMinutesAgo = new Date(now.getTime() - (1 * 60 * 1000));
-
-  if (userRegistration.lastEmailSentTime > fiveMinutesAgo) {
-    req.flash('error', 'You have already requested a validation email within the last 5 minutes. Please try again later.');
-    return res.status(429).send({ message: 'Too many requests. You have already requested a validation email within the last 5 minutes. Please  try again later.!' });
-  }
-
-  // Generate a new token and update the user's record
-  const registrationToken = generateRandomToken(100);
-  userRegistration.TOKEN = registrationToken;
-  userRegistration.updatedAt = now;
-  await userRegistration.save();
-
-  // Attempt to resend the registration email
-  let status;
-  try {
-    status = await resendRegistrationMail(EMAIL, NOM, registrationToken);
-  } catch (error) {
-    console.error('Error sending email:', error);
-    status = false;
-  }
-
-  if (status) {
-
-    console.log('Email sent successfully');
-    userRegistration.lastEmailSentTime=now;
-    await userRegistration.save();
-
-    req.flash('success', 'Email resent successfully!');
-    return res.status(200).send({ message: 'Email resent successfully' });
-  } else {
-    console.error('Failed to send email');
-    req.flash('error', 'Failed to send email. Please try again later.');
-    return res.status(500).send({ message: 'Failed to resend email. Please try again later!' });
-  }
-});
- 
-router.get('/confirm-email', async (req, res) => {
-  try {
-    // Extract token from the query parameters
-    const TOKEN = req.query.TOKEN;
-
-    // Find user registration by token
-    const userRegistration = await user_registration.findOne({ where: { TOKEN } });
-
-    // If user registration not found or account already validated
-    if (!userRegistration || userRegistration.ISVALIDATED) { 
-      
-      req.flash('error', 'Account already activated or token expired , try to login instead !');
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-
-    // Check if token is expired
-/*     if (userRegistration.expiration_date && userRegistration.expiration_date < new Date()) {
-      return res.send('Token expired');
-    } */
-
-    // Update isvalidated column to true
-    userRegistration.ISVALIDATED=true;
-    userRegistration.TOKEN='0';
-    userRegistration.save();
-   // await user_registration.update({ ISVALIDATED: true , TOKEN :'0'});
-
-    // Respond with success message
-    return res.render('../connection/login');
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-router.post('/reset-password', async (req, res) => {
-  const { email } = req.body;
-
-  console.log(Date.now() ,':',req.body)
-
-  try {
-    // Find the user registration record by email
-    const userRegistration = await user_registration.findOne({ where: { email } });
-
-    // If user registration not found, send error response
+  });
+  
+  router.post('/resendmail', async (req, res) => {
+    const { NOM, EMAIL } = req.body;
+  
+    // Vérifiez si l'email de l'utilisateur a été validé
+    const userRegistration = await user_registration.findOne({ where: { EMAIL } });
+  
     if (!userRegistration) {
-      return res.status(400).json({ error: "The email address you provided doesn't exist. Please try again." });
+      req.flash('error', 'Erreur inconnue, veuillez réessayer plus tard !');
+      return res.status(404).send({ message: 'Inscription utilisateur introuvable' });
     }
-
+  
+    if (userRegistration.ISVALIDATED) {
+      req.flash('error', 'Votre e-mail a déjà été validé. Pas besoin de renvoyer l\'e-mail de validation.');
+      return res.status(400).send({ message: 'E-mail déjà validé' });
+    }
+  
+    // Vérifiez si l'utilisateur a demandé un e-mail de validation au cours des 5 dernières minutes
     const now = new Date();
-    const fiveMinutesAgo = new Date(now.getTime() - (5 * 60 * 1000)); // Changed to 5 minutes
-
-    if (userRegistration.lastEmailResetTime > fiveMinutesAgo) {
-      if (userRegistration.lastEmailResetSent) {
-      
-        return res.status(200).json({ message:'  Too many requests. Password reset instructions already sent to :'});
-      }
-      else {
-        return res.status(429).json({ error: ', Too many requests. You have already requested a reset email within the last 5 minutes. Please try again later!' });
-      }
-    } 
-
-    // Generate a new reset token
-    const resetToken = generateRandomToken(100);
-
-    // Update the user registration record with the new reset token
-    userRegistration.TOKEN = resetToken; // Changed to lowercase
-    userRegistration.lastEmailResetSent = true;
-    userRegistration.lastEmailResetTime = new Date();
+    const fiveMinutesAgo = new Date(now.getTime() - (5 * 60 * 1000)); // 5 minutes
+  
+    if (userRegistration.lastEmailSentTime > fiveMinutesAgo) {
+      req.flash('error', 'Vous avez déjà demandé un e-mail de validation au cours des 5 dernières minutes. Veuillez réessayer plus tard.');
+      return res.status(429).send({ message: 'Trop de demandes. Vous avez déjà demandé un e-mail de validation au cours des 5 dernières minutes. Veuillez réessayer plus tard.' });
+    }
+  
+    // Générer un nouveau token et mettre à jour l'enregistrement de l'utilisateur
+    const registrationToken = generateRandomToken(100);
+    userRegistration.TOKEN = registrationToken;
+    userRegistration.updatedAt = now;
     await userRegistration.save();
+  
+    // Tentez de renvoyer l'e-mail d'inscription
+    let status;
+    try {
+      status = await resendRegistrationMail(EMAIL, NOM, registrationToken);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'e-mail :', error);
+      status = false;
+    }
+  
+    if (status) {
+      console.log('E-mail envoyé avec succès');
+      userRegistration.lastEmailSentTime = now;
+      await userRegistration.save();
+  
+      req.flash('success', 'E-mail renvoyé avec succès !');
+      return res.status(200).send({ message: 'E-mail renvoyé avec succès' });
+    } else {
+      console.error('Échec de l\'envoi de l\'e-mail');
+      req.flash('error', 'Échec de l\'envoi de l\'e-mail. Veuillez réessayer plus tard.');
+      return res.status(500).send({ message: 'Échec du renvoi de l\'e-mail. Veuillez réessayer plus tard !' });
+    }
+  });
+  
+  router.get('/confirm-email', async (req, res) => {
+    try {
+      // Extraire le token des paramètres de la requête
+      const TOKEN = req.query.TOKEN;
+  
+      // Trouver l'enregistrement de l'utilisateur par token
+      const userRegistration = await user_registration.findOne({ where: { TOKEN } });
+  
+      // Si l'enregistrement de l'utilisateur n'est pas trouvé ou si le compte est déjà validé
+      if (!userRegistration || userRegistration.ISVALIDATED) {
+        req.flash('error', 'Compte déjà activé ou token expiré, essayez de vous connecter à la place !');
+        return res.render('../connection/login', { messages: req.flash() });
+      }
+  
+      // Vérifier si le token est expiré
+      /* if (userRegistration.expiration_date && userRegistration.expiration_date < new Date()) {
+        return res.send('Token expiré');
+      } */
+  
+      // Mettre à jour la colonne ISVALIDATED à true
+      userRegistration.ISVALIDATED = true;
+      userRegistration.TOKEN = '0';
+      await userRegistration.save();
+  
+      // Répondre avec un message de succès
+      return res.render('../connection/login');
+    } catch (error) {
+      console.error('Erreur:', error);
+      res.status(500).send('Erreur Interne du Serveur');
+    }
+  });
+  
 
-    // Send reset password email
-    await sendUserResetPasswordMail(email, resetToken);
-
-    // Send success response
-    const message = 'Password reset instructions successfully sent to:';
-    res.status(200).json({ message: `${message} ` });
-  } catch (error) {
-    console.error('Error sending reset password email:', error);
-    res.status(500).send('An error occurred while sending reset password email');
-  }
-});
+  router.post('/reset-password', async (req, res) => {
+    const { email } = req.body;
+  
+    console.log(Date.now(), ':', req.body);
+  
+    try {
+      // Trouver l'enregistrement de l'utilisateur par email
+      const userRegistration = await user_registration.findOne({ where: { email } });
+  
+      // Si l'enregistrement de l'utilisateur n'est pas trouvé, renvoyer une réponse d'erreur
+      if (!userRegistration) {
+        return res.status(400).json({ error: "L'adresse e-mail que vous avez fournie n'existe pas. Veuillez réessayer." });
+      }
+  
+      const now = new Date();
+      const fiveMinutesAgo = new Date(now.getTime() - (5 * 60 * 1000)); // Changé à 5 minutes
+  
+      if (userRegistration.lastEmailResetTime > fiveMinutesAgo) {
+        if (userRegistration.lastEmailResetSent) {
+          return res.status(200).json({ message: 'Trop de requêtes. Les instructions de réinitialisation de mot de passe ont déjà été envoyées.' });
+        } else {
+          return res.status(429).json({ error: 'Trop de requêtes. Vous avez déjà demandé un e-mail de réinitialisation dans les 5 dernières minutes. Veuillez réessayer plus tard!' });
+        }
+      }
+  
+      // Générer un nouveau token de réinitialisation
+      const resetToken = generateRandomToken(100);
+  
+      // Mettre à jour l'enregistrement de l'utilisateur avec le nouveau token de réinitialisation
+      userRegistration.TOKEN = resetToken; // Changé en minuscule
+      userRegistration.lastEmailResetSent = true;
+      userRegistration.lastEmailResetTime = new Date();
+      await userRegistration.save();
+  
+      // Envoyer un e-mail de réinitialisation de mot de passe
+      await sendUserResetPasswordMail(email, resetToken);
+  
+      // Envoyer une réponse de succès
+      const message = 'Les instructions de réinitialisation de mot de passe ont été envoyées avec succès à:';
+      res.status(200).json({ message: `${message} ` });
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'e-mail de réinitialisation de mot de passe:', error);
+      res.status(500).send('Une erreur est survenue lors de l\'envoi de l\'e-mail de réinitialisation de mot de passe');
+    }
+  });
+  
 
 
 router.get('/reset-password', async (req, res) => {
@@ -282,182 +252,94 @@ router.get('/reset-password', async (req, res) => {
 
 
 router.post('/reseting-password', async (req, res) => {
-  const { email, password,confirmPassword, token } = req.body;
-  const data=req.body;
+  const { email, password, confirmPassword, token } = req.body;
 
+  // Vérifiez si les mots de passe correspondent
   if (password !== confirmPassword) {
-    req.flash('error', 'Passwords do not correspond');
-   // return res.render('../connection/register', { messages: req.flash() });
-   return res.render('../connection/resetpassword',{email:email.toLowerCase() ,token:token,messages: req.flash()}); //, { messages: req.flash() }
+    req.flash('error', 'Les mots de passe ne correspondent pas');
+    return res.render('../connection/resetpassword', { email: email.toLowerCase(), token, messages: req.flash() });
   }
-  
 
   try {
-    // Find the user by email and token
+    // Trouver l'utilisateur par email et token
     const user = await user_registration.findOne({ where: { EMAIL: email, TOKEN: token } });
 
-    // If user not found or token is expired
+    // Si l'utilisateur n'est pas trouvé ou si le token a expiré
     if (!user || user.TOKEN === '0') {
-      return  res.send('Your reset token is expired' );
+      return res.send('Votre token de réinitialisation a expiré');
     }
 
-    // Generate salt
+    // Générer le sel et hacher le nouveau mot de passe
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
-    // Hash the new password
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Update the user's password and reset token
+    // Mettre à jour le mot de passe de l'utilisateur et réinitialiser le token
     await user_registration.update(
-      { PASSWORD: hashedPassword, TOKEN: '0',ISVALIDATED:true }, // Set token to '0' to mark it as used
+      { PASSWORD: hashedPassword, TOKEN: '0', ISVALIDATED: true }, // Définir le token à '0' pour le marquer comme utilisé
       { where: { EMAIL: email } }
     );
 
-    return  res.redirect('../connection/login');
+    return res.redirect('../connection/login');
   } catch (error) {
-    console.error('Error resetting password:', error);
-    return res.status(500).json({ error: 'An error occurred while resetting the password' });
+    console.error('Erreur lors de la réinitialisation du mot de passe :', error);
+    return res.status(500).json({ error: 'Une erreur est survenue lors de la réinitialisation du mot de passe' });
   }
 });
 
-/* router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await user_registration.findOne({ where: { email } });
-
-    if (!user) {
-      req.flash('error', `Email address ${email} not found.`);
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-    
-    if (!user.ISVALIDATED) {
-      req.flash('info', 'Account not activated. Please check your email and confirm your registration before logging in!');
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-
-    if (!user.validPassword(password)) {
-      req.flash('error', 'Incorrect password. Please try again.');
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-    
-    // Update session user data
-    req.session.user = user.toJSON();
-    
-    // Generate JWT token
-    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
-    
-    // Update cookies with token and user data
-    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
-
-    req.flash('success', 'Login successful!');
-    
-    const returnTo = req.session.returnTo || '/';
-    delete req.session.returnTo; // Clear the stored return URL
-    res.redirect(returnTo);
-
-  } catch (err) {
-    req.flash('error', err.message);
-    res.render('../connection/login', { messages: req.flash() });
-  }
-});
- */
 
 
- router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  console.log(email,password)
-
-  
-  try {
-    const user = await user_registration.findOne({ where: { email } });
-
-    if (!user) {
-      req.flash('error', `Email address ${email} not found.`);
-   
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-
-    if (!user.ISVALIDATED) {
-      req.flash('info', 'Account not activated. Please check your email and confirm your registration before logging in!');
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-    if (!user.validPassword(password)) {
-      req.flash('error', 'Incorrect password. Please try again.');
-      return res.render('../connection/login', { messages: req.flash() });
-    }
-    
-    
-    // Update session user data
-    req.session.user = user.toJSON();
-    
-    // Generate JWT token
-    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
-    
-    // Update cookies with token and user data
-    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
-
-    req.flash('success', 'Login successful!');
-    
-    // Retrieve returnTo from session or default to home
-    const returnTo = req.session.returnTo || '/';
-    delete req.session.returnTo; // Clear the stored return URL
-    res.redirect(returnTo);
-
-  } catch (err) {
-    req.flash('error', err.message);
-    res.render('../connection/login', { messages: req.flash() });
-  }
-}); 
-
-/* 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
+  console.log(email, password);
+
   try {
     const user = await user_registration.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(401).json({ success: false, message: `Email address ${email} not found.` });
+      req.flash('error', `Adresse e-mail ${email} non trouvée.`);
+      return res.render('../connection/login', { messages: req.flash() });
     }
 
     if (!user.ISVALIDATED) {
-      return res.status(401).json({ success: false, message: 'Account not activated. Please check your email and confirm your registration before logging in!' });
+      req.flash('info', 'Compte non activé. Veuillez vérifier votre e-mail et confirmer votre inscription avant de vous connecter !');
+      return res.render('../connection/login', { messages: req.flash() });
     }
-
     if (!user.validPassword(password)) {
-      return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
+      req.flash('error', 'Mot de passe incorrect. Veuillez réessayer.');
+      return res.render('../connection/login', { messages: req.flash() });
     }
-
-    // Update session user data
+    
+    // Mettre à jour les données utilisateur de la session
     req.session.user = user.toJSON();
-
-    // Generate JWT token
+    
+    // Générer le token JWT
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
-
-    // Update cookies with token and user data
+    
+    // Mettre à jour les cookies avec le token et les données utilisateur
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
 
-    return res.status(200).json({ success: true, message: 'Login successful!', user });
+    req.flash('success', 'Connexion réussie !');
+    
+    // Récupérer returnTo depuis la session ou utiliser la page d'accueil par défaut
+    const returnTo = req.session.returnTo || '/';
+    delete req.session.returnTo; // Effacer l'URL de retour stockée
+    res.redirect(returnTo);
 
   } catch (err) {
-    console.error('Login error:', err.message);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    req.flash('error', err.message);
+    res.render('../connection/login', { messages: req.flash() });
   }
-}); */
+});
 
-// In your backend route
 router.get('/profiles', (req, res) => {
   const userInfo = req.session.user;
 
   res.json(userInfo)
      
 });
-
 
 function generateRandomToken(length) {
   return crypto.randomBytes(Math.ceil(length / 2))
@@ -469,58 +351,48 @@ function generateRandomToken(length) {
     });
 }
 
-
-
-
-
-
-
-
-
-
 router.post('/loging', async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(email, password);
+
 
   try {
-    const user = await user_registration.findOne({ where: { email } });
+    const user = await user_registration.findOne({ where: { EMAIL: email } });
 
     if (!user) {
-      return res.status(401).json({ success: false, message: `Email address ${email} not found.` });
+      return res.status(401).json({ success: false, message: `Adresse e-mail ${email} non trouvée.` });
     }
 
     if (!user.ISVALIDATED) {
-      return res.status(403).json({ success: false, message: 'Account not activated. Please check your email and confirm your registration before logging in!' });
+      return res.status(403).json({ success: false, message: 'Compte non activé. Veuillez vérifier votre e-mail et confirmer votre inscription avant de vous connecter !' });
     }
 
     if (!user.validPassword(password)) {
-      return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
+      return res.status(401).json({ success: false, message: 'Mot de passe incorrect. Veuillez réessayer.' });
     }
 
-    // Generate JWT token
-        console.log('user :', user.toJSON())
+    // Générer le token JWT
+    console.log('Utilisateur :', user.toJSON());
 
-    const token = jwt.sign({ userId: user.UUID, email:user.EMAIL, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
+    const token = jwt.sign({ userId: user.UUID, email: user.EMAIL, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
 
     res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
 
-    // Return the token and user data in the response
+    // Retourner le token et les données utilisateur dans la réponse
     res.status(200).json({
       success: true,
-      message: 'Login successful!',
+      message: 'Connexion réussie !',
       token,
-      userData :{ userData: user },
-      user: { id: user.UUID, email: user.email, role: user.role }
+      userData: { userData: user },
+      user: { id: user.UUID, email: user.EMAIL, role: user.role }
     });
 
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ success: false, message: 'An error occurred while logging in. Please try again later.' });
+    console.error('Erreur de connexion :', err);
+    res.status(500).json({ success: false, message: 'Une erreur est survenue lors de la connexion. Veuillez réessayer plus tard.' });
   }
 });
-
 
 router.post('/registration', async function (req, res) {
   try {
@@ -531,16 +403,24 @@ router.post('/registration', async function (req, res) {
 
     // Check if password and repeatPassword match
     if (password !== repeatPassword) {
-      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+      return res.status(400).json({ success: false, message: 'Les mots de passe ne correspondent pas' });
     }
 
     // Check if email already exists
-    const existingUser = await user_registration.findOne({ where: { email } });
+    const existingUser = await user_registration.findOne({ where: { EMAIL: email } });
 
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: `Error: Email address [${email}] already exists. Try another address or log in instead!`,
+        message: `Erreur : L'adresse e-mail '${email}' existe déjà. Essayez une autre adresse ou connectez-vous au lieu !`,
+      });
+    }
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+   
+      return res.status(400).json({
+        success: false,
+        message: `Erreur : '${email}' n'est pas une Adresse e-mail  valide!`,
       });
     }
 
@@ -557,7 +437,7 @@ router.post('/registration', async function (req, res) {
       NOM: nom.trim().toUpperCase(),
       PRENOM: prenom.trim(),
       EMAIL: email.trim().toLowerCase(),
-      PASSWORD: password,
+      PASSWORD: hashedPassword, // Updated to use hashed password
       TOKEN: registrationToken,
       UUID: uuid,
     });
@@ -568,7 +448,7 @@ router.post('/registration', async function (req, res) {
     // On successful registration
     return res.status(201).json({
       success: true,
-      message: 'User registered successfully. A confirmation email has been sent.',
+      message: 'Utilisateur enregistré avec succès. Un e-mail de confirmation a été envoyé.',
       user: {
         nom: nom.trim().toUpperCase(),
         email: email.trim().toLowerCase(),
@@ -577,19 +457,14 @@ router.post('/registration', async function (req, res) {
 
   } catch (error) {
     // Log error for debugging purposes
-    console.error('Error registering user:', error);
+    console.error('Erreur lors de l\'inscription de l\'utilisateur :', error);
     return res.status(500).json({
       success: false,
-      message: 'An error occurred while registering the user.',
+      message: 'Une erreur est survenue lors de l\'inscription de l\'utilisateur.',
       error: error.message,
     });
   }
 });
-
-
-
-
-
 
 
 

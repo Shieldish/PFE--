@@ -1,108 +1,86 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {connection }= require('../model/dbConfig');
-const user_registration  = require('../controllers/UserRegistration'); // Import UserRegistration model
+const { connection } = require('../model/dbConfig');
 const { enseignant, encadrant, etudiant } = require('../model/model');
-const util = require('util');
 const { v4: uuidv4 } = require('uuid');
-const { exit } = require('process');
-const fs = require('fs').promises;
+const user_registration = require('../controllers/UserRegistration');
 
 const router = express.Router(); 
 
-// Use bodyParser middleware to parse request bodies
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-let filteredArrayGlobal
-let countGlobal
-
-
-
+let filteredArrayGlobal;
+let countGlobal;
 
 router.get('/', (req, res) => {
-  // Query MySQL for table names
   connection.query('SHOW TABLES', (err, results) => {
     if (err) {
-
-      req.flash('error', 'Error fetching table names');
+      req.flash('error', 'Erreur lors de la récupération des noms de table');
       return res.render('index', { messages: req.flash() });
-     /*  console.error('Error fetching table names:', err);
-      res.status(500).send('Error fetching table names');
-      return; */
     }
-    const tablesToRemove = ['sidebar_items','stage','stagepostulation','candidature'  ,'soutenance'];
-    
+
+    const tablesToRemove = ['sidebar_items', 'stage', 'stagepostulation', 'candidature', 'soutenance'];
     const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
       .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
 
-    // Render the index page with the table names
     res.render('index', { tables });
   });
 });
-  // Route to handle table selection
-  router.get('/:tableName', (req, res) => {
-    const tableName = req.params.tableName;
-    // Query MySQL for table data
-    connection.query(`SELECT * FROM ${tableName}`, (err, results) => {
-        if (err) {
-          req.flash('error', `Error fetching data from table ${tableName}:`);
-          return res.render('crud', { messages: req.flash() });
-           /*  console.error(`Error fetching data from table ${tableName}:`, err);
-            res.status(500).send('Error fetching data');
-            return; */
-        }
 
-        let count = results.length;
+router.get('/:tableName', (req, res) => {
+  const tableName = req.params.tableName;
 
-        // Remove password, token, and date
-        const keysToRemove = ['PASSWORD', 'TOKEN','UUID' ,'lastEmailSentTime', 'lastEmailResetSent','lastEmailResetTime'];
-       
-        const filteredArray = results.map(obj => {
-            keysToRemove.forEach(key => delete obj[key]);
-            return obj;
-        });
+  connection.query(`SELECT * FROM ${tableName}`, (err, results) => {
+    if (err) {
+      req.flash('error', `Erreur lors de la récupération des données de la table ${tableName}`);
+      return res.render('crud', { messages: req.flash() });
+    }
 
-        // Format createdAt and updatedAt properties
-        filteredArray.forEach(obj => {
-            if (obj.createdAt) {
-                obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', { 
-                    month: 'long',
-                    day: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
-            }
-            if (obj.updatedAt) {
-                obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', { 
-                    month: 'long',
-                    day: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
-            }
-            if (obj.DATE) {
-              obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', { 
-                  month: 'long',
-                  day: '2-digit',
-                  year: 'numeric',
-                 // hour: '2-digit',
-                 // minute: '2-digit',
-                 // second: '2-digit'
-              });
-          }
-        });
-        req.flash('success', ` data successfully fetched from table ${tableName}:`);
-       // return res.render('crud', { messages: req.flash() });
-         
-          filteredArrayGlobal=filteredArray;
-          countGlobal=count;
-        res.render('crud', { data: filteredArrayGlobal, tableName,count: countGlobal , /* messages: req.flash() */});
+    let count = results.length;
+
+    const keysToRemove = ['PASSWORD', 'TOKEN', 'UUID', 'lastEmailSentTime', 'lastEmailResetSent', 'lastEmailResetTime'];
+
+    const filteredArray = results.map(obj => {
+      keysToRemove.forEach(key => delete obj[key]);
+      return obj;
     });
+
+    filteredArray.forEach(obj => {
+      if (obj.createdAt) {
+        obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', { 
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+      if (obj.updatedAt) {
+        obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', { 
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+      if (obj.DATE) {
+        obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', { 
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric'
+        });
+      }
+    });
+
+    req.flash('success', `Données récupérées avec succès depuis la table ${tableName}`);
+    filteredArrayGlobal = filteredArray;
+    countGlobal = count;
+    res.render('crud', { data: filteredArrayGlobal, tableName, count: countGlobal });
+  });
 });
 
 router.post('/:tableName/add', async (req, res) => {
@@ -111,188 +89,109 @@ router.post('/:tableName/add', async (req, res) => {
   const email = EMAIL.trim();
 
   try {
-      // Get the Sequelize model based on the table name
-    /*   const Model = tableName === 'enseignant' ? enseignant :
-          tableName === 'encadrant' ? encadrant :
-              tableName === 'user_registration' ? user_registration :
-                  tableName === 'etudiant' ? etudiant : null; */
-          const Model = getModelFromTableName(tableName);
+    const Model = getModelFromTableName(tableName);
 
-      if (!Model) {
-          req.flash('error', `Model not found for table ${tableName}`);
-          // Redirect the user to the appropriate route after successful creation
-          return res.redirect(`/gestion/${tableName}`);
-      }
-
-      /* if(otherFields.DATE)
-      {
-          otherFields.DATE= getFormattedDateTime();
-      } */
-
-      const existingUser = await Model.findOne({ where: { EMAIL: email } });
-      if (existingUser) {
-          req.flash('error', `User with email ${EMAIL} already exists`);
-          // Redirect the user to the appropriate route after successful creation
-          return res.redirect(`/gestion/${tableName}`);
-      }
-
-      otherFields.UUID = uuidv4();
-      delete otherFields.createdAt;
-
-      // Create a new instance of the model with the data from the request body
-      const newEntry = await Model.create({
-          EMAIL,
-          ...otherFields
-      });
-
-      // Set flash message
-      req.flash('success', 'Entry successfully added.');
-
-      // Redirect the user to the appropriate route after successful creation
+    if (!Model) {
+      req.flash('error', `Modèle introuvable pour la table ${tableName}`);
       return res.redirect(`/gestion/${tableName}`);
+    }
+
+    const existingUser = await Model.findOne({ where: { EMAIL: email } });
+    if (existingUser) {
+      req.flash('error', `Utilisateur avec l'email ${EMAIL} existe déjà`);
+      return res.redirect(`/gestion/${tableName}`);
+    }
+
+    otherFields.UUID = uuidv4();
+    delete otherFields.createdAt;
+
+    await Model.create({
+      EMAIL,
+      ...otherFields
+    });
+
+    req.flash('success', 'Entrée ajoutée avec succès.');
+    return res.redirect(`/gestion/${tableName}`);
   } catch (err) {
-      console.error(`Error creating entry in table ${tableName}:`, err);
-
-      req.flash('error', ` creating entry ${tableName} : ` + err);
-      return res.redirect(`/gestion/${tableName}`);
+    console.error(`Erreur lors de la création de l'entrée dans la table ${tableName}:`, err);
+    req.flash('error', `Erreur lors de la création de l'entrée ${tableName}: ${err}`);
+    return res.redirect(`/gestion/${tableName}`);
   }
 });
 
+router.post('/:tableName/update/:email', async (req, res) => {
+  const tableName = req.params.tableName;
+  const { EMAIL, ...otherFields } = req.body;
 
-  /* router.post('/:tableName/update/:email', async (req, res) => {
-    const tableName = req.params.tableName;
-    const { EMAIL, ...otherFields } = req.body;
-  
-    try {
-      // Get the Sequelize model based on the table name
-      const Model = tableName === 'enseignant' ? enseignant :
-        tableName === 'encadrant' ? encadrant :
-        tableName === 'user_registration' ? user_registration :
-        tableName === 'etudiant' ? etudiant : null;
-  
-      if (!Model) {
-        req.flash('error', `Model not found for table ${tableName}`);
-          // Redirect the user to the appropriate route after successful creation
-          res.redirect(`/gestion/${tableName}`);
-        throw new Error(`Model not found for table ${tableName}`);
-      }
-      
-      delete otherFields.createdAt;
-      delete otherFields.updatedAt;
-      delete otherFields.id;
+  try {
+    const Model = getModelFromTableName(tableName);
 
-      for (let key in otherFields) {
-        if (otherFields[key] === '') {
-          delete otherFields[key];
-        }
-      }
-      // Update the entry in the table using Sequelize
-   
-
-      await Model.update(otherFields, {
-        where: { EMAIL }
-      });
-  
-      // Set the flash message
-      req.flash('success', `Data successfully updated in table: ${tableName}`);
-  
-      // Redirect with the flash message
-       res.redirect(`/gestion/${tableName}`,);
-   
-    
-    } catch (err) {
-      console.error(`Error updating data in table ${tableName}:`, err);
-      req.flash('error', ` updating entry  ${tableName} : `+err);
-      res.redirect(`/gestion/${tableName}`);
+    if (!Model) {
+      req.flash('error', `Modèle introuvable pour la table ${tableName}`);
+      return res.redirect(`/gestion/${tableName}`);
     }
-  });
 
- */
-  router.post('/:tableName/update/:email', async (req, res) => {
-    const tableName = req.params.tableName;
-    const { EMAIL, ...otherFields } = req.body;
-  
-    try {
-        const Model = getModelFromTableName(tableName);
-  
-        if (!Model) {
-            req.flash('error', `Model not found for table ${tableName}`);
-            return res.redirect(`/gestion/${tableName}`); // Return to avoid further execution
-        }
-      
-        delete otherFields.createdAt;
-        delete otherFields.updatedAt;
-        delete otherFields.id;
+    delete otherFields.createdAt;
+    delete otherFields.updatedAt;
+    delete otherFields.id;
 
-        for (let key in otherFields) {
-            if (otherFields[key] === '') {
-                delete otherFields[key];
-            }
-        }
-
-        await Model.update(otherFields, {
-            where: { EMAIL }
-        });
-  
-        req.flash('success', `Data successfully updated in table: ${tableName}`);
-        return res.redirect(`/gestion/${tableName}`);
-    
-    } catch (err) {
-        console.error(`Error updating data in table ${tableName}:`, err);
-        req.flash('error', `Error updating entry in ${tableName}: ${err}`);
-        return res.redirect(`/gestion/${tableName}`);
+    for (let key in otherFields) {
+      if (otherFields[key] === '') {
+        delete otherFields[key];
+      }
     }
+
+    await Model.update(otherFields, {
+      where: { EMAIL }
+    });
+
+    req.flash('success', `Données mises à jour avec succès dans la table: ${tableName}`);
+    return res.redirect(`/gestion/${tableName}`);
+  } catch (err) {
+    console.error(`Erreur lors de la mise à jour des données dans la table ${tableName}:`, err);
+    req.flash('error', `Erreur lors de la mise à jour de l'entrée dans ${tableName}: ${err}`);
+    return res.redirect(`/gestion/${tableName}`);
+  }
 });
 
-// Function to get model based on table name
+router.get('/:tableName/delete/:email', (req, res) => {
+  const tableName = req.params.tableName;
+  const email = req.params.email;
 
-
-
-
-  // Route to handle deleting an entry
-
-
-  router.get('/:tableName/delete/:email', (req, res) => {
-    const tableName = req.params.tableName;
-    const email = req.params.email;
-  
-    // Delete entry from the table
-    try {
-      connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email], (err, result) => {
-        if (err) {
-          console.error(`Error deleting data from table ${tableName}:`, err);
-          req.flash('error', `Error deleting entry from table: ${tableName} : `+err);
-          res.redirect(`/gestion/${tableName}`);
-          return;
-        }
-        // Set the flash message
-        req.flash('info', `Data of ${email} successfully removed from table: ${tableName}`);
+  try {
+    connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email], (err, result) => {
+      if (err) {
+        console.error(`Erreur lors de la suppression des données de la table ${tableName}:`, err);
+        req.flash('error', `Erreur lors de la suppression de l'entrée de la table ${tableName}: ${err}`);
         res.redirect(`/gestion/${tableName}`);
-      });
-    } catch (error) {
-      console.error(`Error deleting data from table ${tableName}:`, error);
-      req.flash('error', `Error deleting entry from table: ${tableName} : `+error);
+        return;
+      }
+
+      req.flash('info', `Données de ${email} supprimées avec succès de la table: ${tableName}`);
       res.redirect(`/gestion/${tableName}`);
-    }
-    
-  });
+    });
+  } catch (error) {
+    console.error(`Erreur lors de la suppression des données de la table ${tableName}:`, error);
+    req.flash('error', `Erreur lors de la suppression de l'entrée de la table ${tableName}: ${error}`);
+    res.redirect(`/gestion/${tableName}`);
+  }
+});
 
-  function getModelFromTableName(tableName) {
-    switch(tableName) {
-        case 'enseignant':
-            return enseignant;
-        case 'encadrant':
-            return encadrant;
-        case 'user_registration':
-            return user_registration;
-        case 'user_registrations':
-            return user_registration;  
-        case 'etudiant':
-            return etudiant;
-        default:
-            return null;
-    }
+function getModelFromTableName(tableName) {
+  switch(tableName) {
+    case 'enseignant':
+      return enseignant;
+    case 'encadrant':
+      return encadrant;
+    case 'user_registration':
+      return user_registration;
+    case 'user_registrations':
+      return user_registration;
+    case 'etudiant':
+      return etudiant;
+    default:
+      return null;
+  }
 }
-
 
 module.exports = router;
