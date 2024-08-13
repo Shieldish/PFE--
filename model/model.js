@@ -1,16 +1,15 @@
-
-//model/model.js
-const {main}  = require('./dbConfig');
+// model/model.js
 const { v4: uuidv4 } = require('uuid');
 const { Sequelize, DataTypes } = require('sequelize');
-// Replace 'database_name', 'username', 'password', and 'host' with your MySQL database credentials
-const sequelize = new Sequelize(process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, {
+const path = require('path');
+const fs = require('fs/promises');
+
+const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, {
   host: process.env.DATABASE_HOST,
   dialect: process.env.DATABASE_DIALECT,
   port: process.env.DATABASE_PORT,
 });
 
-// Define the  model
 const enseignant = sequelize.define('enseignant', {
   EMAIL: {
     type: DataTypes.STRING,
@@ -35,7 +34,7 @@ const enseignant = sequelize.define('enseignant', {
     allowNull: true
   },
   DATE: {
-   type:DataTypes.STRING,
+    type: DataTypes.STRING,
     allowNull: true
   }
 }, {
@@ -67,7 +66,7 @@ const encadrant = sequelize.define('encadrant', {
     allowNull: true
   },
   DATE: {
-    type:DataTypes.STRING,
+    type: DataTypes.STRING,
     allowNull: true
   }
 }, {
@@ -75,15 +74,14 @@ const encadrant = sequelize.define('encadrant', {
   timestamps: true
 });
 
-// Define the Etudiant model
 const etudiant = sequelize.define('etudiant', {
   ID: {
-    type: DataTypes.STRING(36), // Use DataTypes.UUID instead of DataTypes.STRING
+    type: DataTypes.STRING(36),
     allowNull: false,
-     defaultValue: DataTypes.UUIDV4  // Generate UUID for new records
+    defaultValue: DataTypes.UUIDV4
   },
   EMAIL: {
-    type: DataTypes.STRING, 
+    type: DataTypes.STRING,
     primaryKey: true,
     unique: true,
     allowNull: false
@@ -109,9 +107,9 @@ const etudiant = sequelize.define('etudiant', {
     allowNull: true
   },
   DATE: {
-    type:DataTypes.STRING,
+    type: DataTypes.STRING,
     allowNull: true
-  },
+  }
 }, {
   tableName: 'etudiant',
   timestamps: true
@@ -121,25 +119,21 @@ etudiant.beforeCreate((etudiant, _) => {
   etudiant.ID = uuidv4();
 });
 
-// Function to get all tables and their structures
 async function getAllTablesAndStructure() {
   try {
-    // Retrieve table names and their column names
     const tablesAndColumns = await sequelize.query(`
-          SELECT table_name, column_name
-          FROM information_schema.columns
-          WHERE table_schema = :databaseName;
-      `, {
+      SELECT table_name, column_name
+      FROM information_schema.columns
+      WHERE table_schema = :databaseName;
+    `, {
       replacements: { databaseName: sequelize.config.database },
       type: sequelize.QueryTypes.SELECT
     });
 
-    // Ensure we have some data returned
     if (!Array.isArray(tablesAndColumns) || tablesAndColumns.length === 0) {
       throw new Error('No tables and columns found');
     }
 
-    // Group the columns by table name
     const tablesStructure = {};
     tablesAndColumns.forEach(row => {
       const { table_name, column_name } = row;
@@ -151,34 +145,26 @@ async function getAllTablesAndStructure() {
 
     return tablesStructure;
   } catch (error) {
-    // console.error('Error fetching tables and their columns:', error.message);
     return null;
   }
 }
 
-
 async function getDataFromTable(TableName) {
   try {
-    // Retrieve data from the specified table
     const tableData = await sequelize.query(`SELECT * FROM ${TableName}`, {
       type: sequelize.QueryTypes.SELECT
     });
 
-    // Ensure we have some data returned
     if (!Array.isArray(tableData) || tableData.length === 0) {
       throw new Error(`No data found in table '${TableName}'`);
     }
 
     return tableData;
   } catch (error) {
-    // console.error('Error fetching data from table:', error.message);
     return null;
   }
 }
 
-
-
-// Establish connection to the database
 async function connectToDatabase() {
   try {
     await sequelize.authenticate();
@@ -188,38 +174,52 @@ async function connectToDatabase() {
   }
 }
 
-// Sync the model with the database
 async function syncModel() {
   try {
     await enseignant.sync({ alter: true });
     await encadrant.sync({ alter: true });
     await etudiant.sync({ alter: true });
-   // await UserRegistration.sync({ alter: true });
   } catch (error) {
     console.error('Error syncing models:', error);
   }
 }
 
-sequelize.sync()
-  .then(() => {
-    // console.log('Database & tables synced');
-  })
-  .catch(err => {
-    // console.error('Error syncing database:', err);
-  });
+const executeSQLCommands = async (commands) => {
+  for (const sql of commands) {
+    try {
+      await sequelize.query(sql);
+    } catch (err) {
+      console.error('Error executing SQL query:', err);
+    }
+  }
+};
 
-// Call the functions to connect and sync the model
+const main = async () => {
+  try {
+    const sqlFilePath = path.join(__dirname, '../items.sql');
+    const sqlQuery = await fs.readFile(sqlFilePath, 'utf8');
+    const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
+    await executeSQLCommands(sqlCommands);
+  } catch (err) {
+    console.error('Error:', err);
+  }
+};
+
+sequelize.sync().then(() => {
+  main();
+}).catch(err => {
+  console.error('Error syncing database:', err);
+});
+
 connectToDatabase();
 syncModel();
 
-
 module.exports = {
-  enseignant,  etudiant ,encadrant,
-//  UserRegistration,
+  enseignant,
+  etudiant,
+  encadrant,
   getAllTablesAndStructure,
   getDataFromTable,
   sequelize,
   DataTypes
-
-  //getAllTablesAndData
 };

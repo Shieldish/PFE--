@@ -19,17 +19,7 @@ const connectToDatabase = async () => {
   }
 };
 
-const executeSQLCommands = async (commands) => {
-  for (const sql of commands) {
-    try {
-      await sequelize.query(sql);
-      // console.log('SQL query executed successfully');
-    } catch (err) {
-      console.error('Error executing SQL query:', err);
-      // Continue with the next query
-    }
-  }
-};
+
 
 const fetchSidebarItems = async (lang, userRole) => {
   const sidebarSql = `
@@ -96,21 +86,17 @@ const hasAccess = (link, userRole) => {
 const main = async () => {
   try {
     await connectToDatabase();
-    const sqlFilePath = path.join(__dirname, '../items.sql');
-    const sqlQuery = await fs.readFile(sqlFilePath, 'utf8');
-    const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
-    await executeSQLCommands(sqlCommands);
     const sidebarItems = await fetchSidebarItems('en', 'USER');
-    // console.log('Sidebar Items:', sidebarItems);
+    console.log('Sidebar Items:', sidebarItems);
   } catch (err) {
     console.error('Error:', err);
   }
-};
+}; 
 
 module.exports = {
   sequelize,
   connectToDatabase,
-  executeSQLCommands,
+
   fetchSidebarItems,
-  main,
+  main, 
 };

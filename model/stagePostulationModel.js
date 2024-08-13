@@ -230,12 +230,11 @@ const candidature = sequelize.define('candidature', {
 
 
 
-
-
 (async () => {
   await stagepostulation.sync({ alter: true });
   await candidature.sync({ alter: true }); 
   await Soutenance.sync({ alter: true });
+
 
   console.log("Model: Soutenance , stagepostulation , candidature are synced successfully");
 })();
