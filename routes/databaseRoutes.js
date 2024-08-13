@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { connection } = require('../model/dbConfig');
+const connection   = require('../model/mysql');
+
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const { v4: uuidv4 } = require('uuid');
 const user_registration = require('../controllers/UserRegistration');

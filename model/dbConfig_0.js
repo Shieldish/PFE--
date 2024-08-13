@@ -1,34 +1,66 @@
 require('dotenv').config();
+const mysql = require('mysql');
 const path = require('path');
 const fs = require('fs/promises');
-const { sequelize } = require('./model'); // Importing sequelize from your models
+
+const connection = mysql.createConnection({
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME
+});
 
 let isConnected = false;
 
-const connectToDatabase = async () => {
-  try {
-    if (!isConnected) {
-      await sequelize.authenticate();
-      console.log('Connected to MySQL database');
-      isConnected = true;
+const connectToDatabase = () => {
+  return new Promise((resolve, reject) => {
+    if (isConnected) {
+      resolve();
+      return;
     }
-  } catch (err) {
-    console.error('Error connecting to MySQL database:', err);
-    isConnected = false; // Set isConnected to false if the connection fails
-    throw err;
-  }
+
+    connection.connect((err) => {
+      if (err) {
+        console.error('Error connecting to MySQL database:', err);
+        reject(err);
+      } else {
+        console.log('Connected to MySQL database');
+        isConnected = true;
+        resolve();
+      }
+    });
+
+    connection.on('error', (err) => {
+      console.error('MySQL connection error:', err);
+      if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') {
+        isConnected = false;
+      }
+    });
+  });
 };
 
 const executeSQLCommands = async (commands) => {
   for (const sql of commands) {
     try {
-      await sequelize.query(sql);
-      // console.log('SQL query executed successfully');
+      await executeQuery(sql);
+    //  console.log('SQL query executed successfully');
     } catch (err) {
       console.error('Error executing SQL query:', err);
       // Continue with the next query
     }
   }
+};
+
+const executeQuery = (sql) => {
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
 };
 
 const fetchSidebarItems = async (lang, userRole) => {
@@ -44,7 +76,7 @@ const fetchSidebarItems = async (lang, userRole) => {
   `;
 
   try {
-    const [sidebarResults] = await sequelize.query(sidebarSql);
+    const sidebarResults = await executeQuery(sidebarSql);
     const sidebarItems = buildSidebarTree(sidebarResults, userRole);
     return sidebarItems;
   } catch (err) {
@@ -75,17 +107,18 @@ const buildSidebarTree = (items, userRole, parentId = null) => {
 
 const hasAccess = (link, userRole) => {
   const roleAccess = {
-    '/': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT'],
-    '/etudiant': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT'],
-    '/home': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT'],
+    '/': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
+    '/etudiant': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
+    '/home': ['USER', 'ENTREPRISE','ADMIN', 'DEPARTEMENT'],
     '/entreprise': ['ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
     '/encadrement': ['DEPARTEMENT', 'ADMIN'],
     '/planification': ['DEPARTEMENT', 'ADMIN'],
     '/settings': ['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
     '/gestion': ['ADMIN'],
-    '/files/upload': ['ADMIN'],
+    '/files/upload': ['ADMIN']
   };
 
+  // If the link is not in the roleAccess object or starts with '#', assume it's accessible to all
   if (!roleAccess[link] || link.startsWith('#')) {
     return false;
   }
@@ -100,17 +133,18 @@ const main = async () => {
     const sqlQuery = await fs.readFile(sqlFilePath, 'utf8');
     const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
     await executeSQLCommands(sqlCommands);
-    const sidebarItems = await fetchSidebarItems('en', 'USER');
-    // console.log('Sidebar Items:', sidebarItems);
+    const sidebarItems = await fetchSidebarItems('en', 'USER'); // Assuming 'USER' role for example
+  //  console.log('Sidebar Items:', sidebarItems);
   } catch (err) {
     console.error('Error:', err);
   }
 };
 
 module.exports = {
-  sequelize,
+  connection,
   connectToDatabase,
   executeSQLCommands,
+  executeQuery,
   fetchSidebarItems,
-  main,
+  main
 };

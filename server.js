@@ -4,9 +4,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const ejs = require('ejs');
 const cors = require('cors'); // Import the cors module
-
 const routes = require('./routes/routes');
-const { connection, fetchSidebarItems, main ,connectToDatabase} = require('./model/dbConfig');
+const {  fetchSidebarItems, main ,connectToDatabase} = require('./model/dbConfig');
 const connectionRoutes = require('./routes/connectionRoutes');
 const uploadsRoutes = require('./routes/uploadsRoutes');
 const databaseRoutes = require('./routes/databaseRoutes');

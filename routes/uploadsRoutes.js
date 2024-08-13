@@ -8,7 +8,7 @@ const csvParser = require('csv-parser');
 const bodyParser = require('body-parser');
 const {sequelize,   enseignant,  etudiant ,getDataFromTable, getAllTablesAndStructure } = require('../model/model');
 const unidecode = require('unidecode');
-const  {connection } = require ('../model/dbConfig')
+
 
 const router = express.Router();
 

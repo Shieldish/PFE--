@@ -1,5 +1,6 @@
 
 //model/model.js
+const {main}  = require('./dbConfig');
 const { v4: uuidv4 } = require('uuid');
 const { Sequelize, DataTypes } = require('sequelize');
 // Replace 'database_name', 'username', 'password', and 'host' with your MySQL database credentials
@@ -210,6 +211,7 @@ sequelize.sync()
 // Call the functions to connect and sync the model
 connectToDatabase();
 syncModel();
+
 
 module.exports = {
   enseignant,  etudiant ,encadrant,

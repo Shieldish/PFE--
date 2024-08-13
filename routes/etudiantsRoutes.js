@@ -1,7 +1,6 @@
-const session = require('express-session');
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const  {connection } = require('../model/dbConfig');
 const { sequelize, DataTypes, etudiant } = require('../model/model');
 const { Op } = require('sequelize');
 const flash = require('connect-flash');
@@ -11,7 +10,6 @@ const { candidature, stagepostulation } = require('../model/stagePostulationMode
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const { isAdmin, isUser } = require('../middlewares/roles');
 const user_registration = require('../controllers/UserRegistration');
 const router = express.Router();
 const jwt = require('jsonwebtoken');

@@ -2,7 +2,7 @@ node_modules/
 stockages/
 Uploads/
 .env
-.env*
+.env_l
 env*
 test.js
 
