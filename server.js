@@ -113,7 +113,7 @@ app.get(['/', '/home'], authenticate, (req, res) => {
     res.render('home', { user, userJSON: JSON.stringify(user) });
   });
   
-  app.post('/sidebar', authenticate, async (req, res) => {
+/*   app.post('/sidebar', authenticate, async (req, res) => {
     try {
       const { lang } = req.body || 'fr';
       const userRole = req.role; // Assuming you have the user's role available in the request object
@@ -124,7 +124,7 @@ app.get(['/', '/home'], authenticate, (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
-
+ */
 app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
 });

@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const connection   = require('../model/mysql');
+const connection   = require('../model/mysql'); 
 
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const { v4: uuidv4 } = require('uuid');
@@ -15,6 +15,7 @@ let filteredArrayGlobal;
 let countGlobal;
 
 router.get('/', (req, res) => {
+
   connection.query('SHOW TABLES', (err, results) => {
     if (err) {
       req.flash('error', 'Erreur lors de la récupération des noms de table');
