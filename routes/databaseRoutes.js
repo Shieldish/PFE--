@@ -1,12 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const connection   = require('../model/mysql'); 
-
+const { createConnection, closeConnection } = require('../model/mysql');
 const { enseignant, encadrant, etudiant } = require('../model/model');
 const { v4: uuidv4 } = require('uuid');
 const user_registration = require('../controllers/UserRegistration');
 
-const router = express.Router(); 
+const router = express.Router();
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
@@ -14,33 +13,30 @@ router.use(bodyParser.json());
 let filteredArrayGlobal;
 let countGlobal;
 
-router.get('/', (req, res) => {
-
-  connection.query('SHOW TABLES', (err, results) => {
-    if (err) {
-      req.flash('error', 'Erreur lors de la récupération des noms de table');
-      return res.render('index', { messages: req.flash() });
-    }
+router.get('/', async (req, res) => {
+  try {
+    const connection = await createConnection();
+    const [results] = await connection.query('SHOW TABLES');
 
     const tablesToRemove = ['sidebar_items', 'stage', 'stagepostulation', 'candidature', 'soutenance'];
     const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
       .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
 
     res.render('index', { tables });
-  });
+  } catch (err) {
+    req.flash('error', 'Erreur lors de la récupération des noms de table');
+    res.render('index', { messages: req.flash() });
+  }
 });
 
-router.get('/:tableName', (req, res) => {
+router.get('/:tableName', async (req, res) => {
   const tableName = req.params.tableName;
 
-  connection.query(`SELECT * FROM ${tableName}`, (err, results) => {
-    if (err) {
-      req.flash('error', `Erreur lors de la récupération des données de la table ${tableName}`);
-      return res.render('crud', { messages: req.flash() });
-    }
+  try {
+    const connection = await createConnection();
+    const [results] = await connection.query(`SELECT * FROM ${tableName}`);
 
     let count = results.length;
-
     const keysToRemove = ['PASSWORD', 'TOKEN', 'UUID', 'lastEmailSentTime', 'lastEmailResetSent', 'lastEmailResetTime'];
 
     const filteredArray = results.map(obj => {
@@ -50,7 +46,7 @@ router.get('/:tableName', (req, res) => {
 
     filteredArray.forEach(obj => {
       if (obj.createdAt) {
-        obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', { 
+        obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', {
           month: 'long',
           day: '2-digit',
           year: 'numeric',
@@ -60,7 +56,7 @@ router.get('/:tableName', (req, res) => {
         });
       }
       if (obj.updatedAt) {
-        obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', { 
+        obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', {
           month: 'long',
           day: '2-digit',
           year: 'numeric',
@@ -70,7 +66,7 @@ router.get('/:tableName', (req, res) => {
         });
       }
       if (obj.DATE) {
-        obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', { 
+        obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', {
           month: 'long',
           day: '2-digit',
           year: 'numeric'
@@ -82,7 +78,10 @@ router.get('/:tableName', (req, res) => {
     filteredArrayGlobal = filteredArray;
     countGlobal = count;
     res.render('crud', { data: filteredArrayGlobal, tableName, count: countGlobal });
-  });
+  } catch (err) {
+    req.flash('error', `Erreur lors de la récupération des données de la table ${tableName}`);
+    res.render('crud', { messages: req.flash() });
+  }
 });
 
 router.post('/:tableName/add', async (req, res) => {
@@ -156,22 +155,16 @@ router.post('/:tableName/update/:email', async (req, res) => {
   }
 });
 
-router.get('/:tableName/delete/:email', (req, res) => {
+router.get('/:tableName/delete/:email', async (req, res) => {
   const tableName = req.params.tableName;
   const email = req.params.email;
 
   try {
-    connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email], (err, result) => {
-      if (err) {
-        console.error(`Erreur lors de la suppression des données de la table ${tableName}:`, err);
-        req.flash('error', `Erreur lors de la suppression de l'entrée de la table ${tableName}: ${err}`);
-        res.redirect(`/gestion/${tableName}`);
-        return;
-      }
+    const connection = await createConnection();
+    await connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email]);
 
-      req.flash('info', `Données de ${email} supprimées avec succès de la table: ${tableName}`);
-      res.redirect(`/gestion/${tableName}`);
-    });
+    req.flash('info', `Données de ${email} supprimées avec succès de la table: ${tableName}`);
+    res.redirect(`/gestion/${tableName}`);
   } catch (error) {
     console.error(`Erreur lors de la suppression des données de la table ${tableName}:`, error);
     req.flash('error', `Erreur lors de la suppression de l'entrée de la table ${tableName}: ${error}`);
@@ -180,7 +173,7 @@ router.get('/:tableName/delete/:email', (req, res) => {
 });
 
 function getModelFromTableName(tableName) {
-  switch(tableName) {
+  switch (tableName) {
     case 'enseignant':
       return enseignant;
     case 'encadrant':
