@@ -230,6 +230,8 @@ router.post('/postulates/:id', upload.fields([
       duree_stage
     } = req.body;
 
+    console.log(req.body);
+
     // Extract file paths from request files
 /*     const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
     const lettrePath = req.files['lettre_motivation'] ? req.files['lettre_motivation'][0].path : null;

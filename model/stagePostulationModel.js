@@ -134,7 +134,7 @@ const candidature = sequelize.define('candidature', {
     type: DataTypes.STRING
   },
   experience: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.STRING,
     allowNull: false
   },
   experience_description: {

@@ -1,50 +1,23 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Hôte : 127.0.0.1
--- Généré le : mer. 17 avr. 2024 à 12:50
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
-
-
-
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+-- Drop table if it exists
+DROP TABLE IF EXISTS sidebar_items;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de données : `data`
---
-DROP TABLE IF EXISTS sidebar_items ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `sidebar_items`
---
-
-CREATE TABLE IF NOT EXISTS  `sidebar_items`  (
-  `id` int(11) NOT NULL,
+-- Create table with primary key
+CREATE TABLE IF NOT EXISTS `sidebar_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `name_ar` varchar(255) DEFAULT NULL,
   `name_fr` varchar(255) DEFAULT NULL,
-  `name_en` varchar(255) DEFAULT NULL
+  `name_en` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Déchargement des données de la table `sidebar_items`
---
-
+-- Insert data
 INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name_fr`, `name_en`) VALUES
 (1, NULL, '/', 'fas fa-tachometer-alt', 'لوحة القيادة', 'Tableau de bord', 'Dashboard'),
 (2, NULL, '/etudiant', 'fas fa-users', 'طلاب', 'Étudiants', 'Students'),
@@ -59,32 +32,8 @@ INSERT INTO `sidebar_items` (`id`, `parent_id`, `link`, `icon`, `name_ar`, `name
 (11, NULL, '/#', 'fas fa-file-alt', 'الإشراف', 'Encadrements', 'Supervisions'),
 (12, 7, '/settings', 'bi bi-person-lines-fill', ' ملفاتي الشخصية', ' Mon Profiles', ' My Profiles'),
 (13, 7, '/settings', 'bi bi-pc-display', ' مشاريعي', ' Mes Projets', ' My Projects'),
-(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning'),
-(15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision');
+(14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management'),
+(15, 11, '/encadrement', 'bi bi-table', 'الإشراف', 'Encadrement', 'Supervision'),
+(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning');
 
-
---
--- Index pour les tables déchargées
---(14, 8, '#', 'bi bi-sliders', 'إدارة القائمة', 'gestion menu', 'menu management'),
---(16, 11, '/planification', 'bi bi-calendar-month', 'تخطيط', 'Planification', 'Planning');
-
---
--- Index pour la table `sidebar_items`
---
-ALTER TABLE `sidebar_items`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `sidebar_items`
---
-ALTER TABLE `sidebar_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

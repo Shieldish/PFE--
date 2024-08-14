@@ -373,7 +373,7 @@ router.get('/postulant', async (req, res) => {
 
 
   try {
-    const user = req.session.user;
+    const user = JSON.parse(req.cookies.user);
     const entreprise = user.EMAIL;
     if(!entreprise)
     {

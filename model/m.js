@@ -3,11 +3,11 @@ const { v4: uuidv4 } = require('uuid');
 const { Sequelize, DataTypes } = require('sequelize');
 const path = require('path');
  const fs = require('fs/promises'); 
- const rf = require('fs'); 
+/* const fs = require('fs'); */
 
 
 const caFilePath = path.join(__dirname, '../certificate.pem');
-const ca = rf.readFileSync(caFilePath, 'utf8');
+const ca = await fs.readFile(caFilePath, 'utf8');
 
 const sequelize = new Sequelize(
   process.env.DATABASE_NAME,
@@ -23,8 +23,7 @@ const sequelize = new Sequelize(
         rejectUnauthorized: true, // Ensures the server certificate is validated
       },
     },
-    logging: true, 
-
+    logging: false, // Optional: Disable logging; set to true if you want to see SQL queries
   }
 );
 
@@ -137,35 +136,6 @@ etudiant.beforeCreate((etudiant, _) => {
   etudiant.ID = uuidv4();
 });
 
-/* async function getAllTablesAndStructure() {
-  try {
-    const tablesAndColumns = await sequelize.query(`
-      SELECT table_name, column_name
-      FROM information_schema.columns
-      WHERE table_schema = :databaseName;
-    `, {
-      replacements: { databaseName: sequelize.config.database },
-      type: sequelize.QueryTypes.SELECT
-    });
-
-    if (!Array.isArray(tablesAndColumns) || tablesAndColumns.length === 0) {
-      throw new Error('No tables and columns found');
-    }
-
-    const tablesStructure = {};
-    tablesAndColumns.forEach(row => {
-      const { table_name, column_name } = row;
-      if (!tablesStructure[table_name]) {
-        tablesStructure[table_name] = [];
-      }
-      tablesStructure[table_name].push(column_name);
-    });
-
-    return tablesStructure;
-  } catch (error) {
-    return null;
-  }
-} */
 async function getAllTablesAndStructure() {
   try {
     const tablesAndColumns = await sequelize.query(`
@@ -195,8 +165,7 @@ async function getAllTablesAndStructure() {
     return null;
   }
 }
-  
-  
+
 async function getDataFromTable(TableName) {
   try {
     const tableData = await sequelize.query(`SELECT * FROM ${TableName}`, {

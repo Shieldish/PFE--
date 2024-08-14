@@ -1,0 +1,32 @@
+FRONTEND_URL=https://pfe2024.onrender.com
+
+
+secretKey = '8a4ba753f2c8fa1d32d38e0330fa5f675e11d31da58772fe083ad49642aef6b9'
+JWT_SECRET= '8a4ba753f2c8fa1d32d38e0330fa5f675e11d31da58772fe083ad49642aef6b9'
+
+DATABASE_HOST='sql7.freemysqlhosting.net'
+DATABASE_PORT='3306'
+DATABASE_DIALECT='mysql'
+DATABASE_NAME='sql7724609'
+DATABASE_USER='sql7724609'
+DATABASE_PASSWORD='PVHi5UjAKK'
+
+NODEMAILER_USER="gabiamsamuelnathan@gmail.com"
+NODEMAILER_PASS="fkjo fycc cmgy oses"
+
+GOOGLE_DRIVE_STORAGES='1Jjar3AJesqeK2jGfC0khL5MtNSvtVbuQ'
+
+GOOGLE_CREDENTIALS='{
+  "type": "service_account",
+  "project_id": "storagejs-424215",
+  "private_key_id": "72c395b44fd477567de1fe67c8bc1bb6ec65f0d3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+tTW2cOItyXGj\nw3uXcfhadd64R8JTEYIox6ajXQrlqgLZiSMUKcrjHIc6aWLGzDlX+EWOx0zVFYqU\nAriUdm5Bu7IFkKw7X33jI8Z34OoeuAAC2hXxvXSNlq02wdzbYbCXns0VGAox2GH+\nRfYOo2GylEZfjF48bACoRnVAMgXrMxFKisxMm8VpJAIToJj4KVcFcdChmwsjOeCG\ns/hL+TONRpnmkBOb7LjRxfL5Fw9yoQNWB0At9Nj9jG0KGvk/D4UhT/XBACxZhxla\n+Q1xfjwe8escj1R+RI8E5dd6myub1UfgoNKy9zlzfpVOIl3iaycvyNVREYQ3RNjv\noMxn7tIXAgMBAAECggEAS25denYX4EhnfIDbp8FanF025OjtQfIQ65Rcow0wPDsM\nuYJ2r4kASOiFzGLWwQ8SN2tqB9lo2HeWwoh4/bACWFmnRnA8z5crseX6oHwD3nak\n+nvMZjurmD1a8eeoNdXkBXS4ZXmGvsR5rht6Abw57mqbkztwIrINaIHF6shecvKl\nf4Yalho1ErNF4rwjJsmfN+7g6jIzIktBuxtLzE4cvkbB81Ef+408JiktanymL1OD\n5jXuERg/9z2ROUvP96fE0qXunMsfFdNQ/cA86AikeG2miKYRWv2OCS7OyS56nwKc\nnzGOY+wGIB5yWgsw1BHL8wCKIIyDDoNtAYnMUcmOoQKBgQD+gRzw4dGHGfGONOQJ\nsuGCwL3ahye9He89x0YC+zcDvgF1Lh+7C4ieMeqKgIZaJ/p4aMoT+Fm3/L5c5nri\nShExmoT8Y7ODfvLiUU1Tag97sRO48JmYR0ygWc9FUSaZaWjNELVdRwrjMAKgyzWm\nRDLHX+/weztncTI4BqDO9MLHmQKBgQC/1B5gL2OkZW8ViVmvODKJdC9NLWahgXIt\nmQCp95nS7xhEAZaIWysVjePJdFZ5U3uC/UJYSOZuYAMXZjKYIzHpomDbMlepk0WY\ngE5p7ws9Au6KcEE+0kQam7aPFK8YzxS6KElXiujH/d/BT38CKvGky9U1fWwM5zD9\nz943XZW1LwKBgAPQP3TEjXUuyFXPKROUIJjq9m1N1SSaTDlqwPvOc9aUhEUTOdp9\no8BrEw6cOmcjbjdbqpt9/yoomVmfAnxdi8BohlGZ1NjFkDIf8b6sOisqThdZU5Pa\njaVhcx+gxalK0Q0xkOYi6GDbGU77fIRPRUuDfn7l+c/k/FGml8ZCGKERAoGBAKAa\n/9tR0j2E96knATawleWJlm045n8IFm8eU6KI6NdX/Y3NMYHPbe9IhQVAV2heGCll\nDfm3prQa6JmgD7xRK7iPcX2hz+7V33GALXJXNK8Qgl4DgUFYp8T5j+5t2hK/y9Hw\nC/7IDq/VIesrWZtKknL0OZiyfPtr/sTouNTHBEu7AoGBAI5WL39pI+XS43o8PUzh\n0NjbwXbdHjQIJzsun7ElWzSzEAj85u8uyP2WlZId41pwkT4CJvm18T3/ED8whNa4\ns9LYKXZCuji08z+z64DjftosBbJlFXNmYcNEhrLtmcfS7yXCvVYnKNkHkMWlBfme\nNcLVHLtchTjzHPqQejEuKwzq\n-----END PRIVATE KEY-----\n",
+  "client_email": "gestionstagesuploadfiles@storagejs-424215.iam.gserviceaccount.com",
+  "client_id": "103380652092079571347",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gestionstagesuploadfiles%40storagejs-424215.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
+'

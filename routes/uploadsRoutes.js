@@ -30,29 +30,35 @@ let data=[]
 let items=[]
 let fileName;
 
-router.get('/upload', (req, res) => {
-  getAllTablesAndStructure()
-    .then(tablesStructure => {
-      // List of table names you want to exclude
-      const excludedTables = ['user_registrations','sidebar_items',,'stage','stagepostulation','candidature'];
+router.get('/upload', async (req, res) => {
+  try {
+    const tablesStructure = await getAllTablesAndStructures();
+    console.log('Raw tables structure:', tablesStructure);
+    
+    if (!tablesStructure) {
+      throw new Error('Failed to retrieve tables structure');
+    }
 
-      // Filter out the excluded table names
-      const filteredTablesStructure = Object.fromEntries(
-        Object.entries(tablesStructure).filter(([tableName]) => !excludedTables.includes(tableName))
-      );
+    // List of table names you want to exclude
+    const excludedTables = ['user_registrations', 'sidebar_items', 'stage', 'stagepostulation', 'candidature'];
+    
+    // Filter out the excluded table names
+    const filteredTablesStructure = Object.fromEntries(
+      Object.entries(tablesStructure).filter(([tableName]) => !excludedTables.includes(tableName))
+    );
 
-      items = filteredTablesStructure;
-     // console.log('items from upload : ', items);
+    console.log('Filtered tables structure:', filteredTablesStructure);
 
-      return res.render('uploads', { dt: data, items: filteredTablesStructure ,fileName:fileName});
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      res.status(500).send('Une erreur s\'est produite lors de la récupération des tables et de leurs structures ',error);
-    });
+    // Render the page with the filtered table structure
+    res.render('uploads', { items: filteredTablesStructure, dt: data, fileName: fileName });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Une erreur s\'est produite lors de la récupération des tables et de leurs structures: ' + error.message);
+  }
 });
 
- 
+
+
 
 router.post('/upload', upload.single('file'), async (req, res) => {
   const file = req.file;
@@ -209,6 +215,50 @@ router.post('/saveToDatabase', async (req, res) => {
 
     res.render('uploads',{dt : data, items:items ,fileName:fileName });
 });
+
+
+async function getAllTablesAndStructures() {
+  try {
+    const tablesAndColumns = await sequelize.query(`
+      SELECT table_name AS "TABLE_NAME", column_name AS "COLUMN_NAME"
+      FROM information_schema.columns
+      WHERE table_schema = :databaseName;
+    `, {
+      replacements: { databaseName: sequelize.config.database },
+      type: sequelize.QueryTypes.SELECT
+    });
+
+  /*   console.log('tablesAndColumns:', tablesAndColumns); */
+
+    if (!Array.isArray(tablesAndColumns) || tablesAndColumns.length === 0) {
+      throw new Error('No tables and columns found');
+    }
+
+    const tablesStructure = {};
+    tablesAndColumns.forEach(row => {
+      const { TABLE_NAME, COLUMN_NAME } = row;
+      if (!tablesStructure[TABLE_NAME]) {
+        tablesStructure[TABLE_NAME] = [];
+      }
+      tablesStructure[TABLE_NAME].push(COLUMN_NAME);
+    });
+/*   
+    console.log('Tables structure:', tablesStructure); */
+
+    // You can proceed to filter out any unwanted tables here if necessary
+    const excludedTables = ['user_registrations', 'sidebar_items', 'stage', 'stagepostulation', 'candidature'];
+    const filteredTablesStructure = Object.fromEntries(
+      Object.entries(tablesStructure).filter(([tableName]) => !excludedTables.includes(tableName))
+    );
+
+    /* console.log('Filtered tables structure:', filteredTablesStructure); */
+
+    return filteredTablesStructure;
+  } catch (error) {
+    console.error('Error fetching tables structure:', error);
+    return null;
+  }
+}
 
 
 

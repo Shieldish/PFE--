@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { enseignant, encadrant, etudiant, sequelize } = require('../model/model');
+const { createConnection } = require('../model/mysql');
+const {sequelize, enseignant, encadrant, etudiant } = require('../model/model');
 const { v4: uuidv4 } = require('uuid');
 const user_registration = require('../controllers/UserRegistration');
+const { Op } = require('sequelize');
 
 const router = express.Router();
 
@@ -12,46 +14,65 @@ router.use(bodyParser.json());
 let filteredArrayGlobal;
 let countGlobal;
 
-// Get all tables
 router.get('/', async (req, res) => {
   try {
-    const tables = await sequelize.getQueryInterface().showAllTables();
-    const tablesToRemove = ['sidebar_items', 'stage', 'stagepostulation', 'candidature', 'soutenance'];
-    const filteredTables = tables.filter(table => !tablesToRemove.includes(table));
+    const connection = await createConnection();
+    const [results] = await connection.query('SHOW TABLES');
 
-    res.render('index', { tables: filteredTables.map(table => ({ Tables_in_fss: table })) });
+    const tablesToRemove = ['sidebar_items', 'stage', 'stagepostulation', 'candidature', 'soutenance'];
+    const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
+      .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
+
+    res.render('index', { tables });
   } catch (err) {
     req.flash('error', 'Erreur lors de la récupération des noms de table');
     res.render('index', { messages: req.flash() });
   }
 });
 
-// Get data from a specific table
 router.get('/:tableName', async (req, res) => {
   const tableName = req.params.tableName;
 
   try {
-    const Model = getModelFromTableName(tableName);
-    if (!Model) {
-      req.flash('error', `Modèle introuvable pour la table ${tableName}`);
-      return res.redirect('/');
-    }
+    const connection = await createConnection();
+    const [results] = await connection.query(`SELECT * FROM ${tableName}`);
 
-    const results = await Model.findAll();
-
-    const count = results.length;
+    let count = results.length;
     const keysToRemove = ['PASSWORD', 'TOKEN', 'UUID', 'lastEmailSentTime', 'lastEmailResetSent', 'lastEmailResetTime'];
 
     const filteredArray = results.map(obj => {
-      const data = obj.toJSON();
-      keysToRemove.forEach(key => delete data[key]);
-      return data;
+      keysToRemove.forEach(key => delete obj[key]);
+      return obj;
     });
 
     filteredArray.forEach(obj => {
-      if (obj.createdAt) obj.createdAt = formatDate(obj.createdAt);
-      if (obj.updatedAt) obj.updatedAt = formatDate(obj.updatedAt);
-      if (obj.DATE) obj.DATE = formatDate(obj.DATE, 'date');
+      if (obj.createdAt) {
+        obj.createdAt = new Date(obj.createdAt).toLocaleString('fr-FR', {
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+      if (obj.updatedAt) {
+        obj.updatedAt = new Date(obj.updatedAt).toLocaleString('fr-FR', {
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+      if (obj.DATE) {
+        obj.DATE = new Date(obj.DATE).toLocaleString('fr-FR', {
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric'
+        });
+      }
     });
 
     req.flash('success', `Données récupérées avec succès depuis la table ${tableName}`);
@@ -64,7 +85,6 @@ router.get('/:tableName', async (req, res) => {
   }
 });
 
-// Add a new entry to a table
 router.post('/:tableName/add', async (req, res) => {
   const tableName = req.params.tableName;
   const { EMAIL, ...otherFields } = req.body;
@@ -85,6 +105,7 @@ router.post('/:tableName/add', async (req, res) => {
     }
 
     otherFields.UUID = uuidv4();
+    delete otherFields.createdAt;
 
     await Model.create({
       EMAIL,
@@ -100,7 +121,6 @@ router.post('/:tableName/add', async (req, res) => {
   }
 });
 
-// Update an entry in a table
 router.post('/:tableName/update/:email', async (req, res) => {
   const tableName = req.params.tableName;
   const { EMAIL, ...otherFields } = req.body;
@@ -112,6 +132,10 @@ router.post('/:tableName/update/:email', async (req, res) => {
       req.flash('error', `Modèle introuvable pour la table ${tableName}`);
       return res.redirect(`/gestion/${tableName}`);
     }
+
+    delete otherFields.createdAt;
+    delete otherFields.updatedAt;
+    delete otherFields.id;
 
     for (let key in otherFields) {
       if (otherFields[key] === '') {
@@ -132,22 +156,13 @@ router.post('/:tableName/update/:email', async (req, res) => {
   }
 });
 
-// Delete an entry from a table
 router.get('/:tableName/delete/:email', async (req, res) => {
   const tableName = req.params.tableName;
   const email = req.params.email;
 
   try {
-    const Model = getModelFromTableName(tableName);
-
-    if (!Model) {
-      req.flash('error', `Modèle introuvable pour la table ${tableName}`);
-      return res.redirect(`/gestion/${tableName}`);
-    }
-
-    await Model.destroy({
-      where: { EMAIL: email }
-    });
+    const connection = await createConnection();
+    await connection.query(`DELETE FROM ${tableName} WHERE EMAIL=?`, [email]);
 
     req.flash('info', `Données de ${email} supprimées avec succès de la table: ${tableName}`);
     res.redirect(`/gestion/${tableName}`);
@@ -158,7 +173,6 @@ router.get('/:tableName/delete/:email', async (req, res) => {
   }
 });
 
-// Utility function to map table names to Sequelize models
 function getModelFromTableName(tableName) {
   switch (tableName) {
     case 'enseignant':
@@ -174,21 +188,6 @@ function getModelFromTableName(tableName) {
     default:
       return null;
   }
-}
-
-// Utility function to format dates
-function formatDate(date, type = 'datetime') {
-  const options = {
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric',
-    ...(type === 'datetime' && {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    }),
-  };
-  return new Date(date).toLocaleString('fr-FR', options);
 }
 
 module.exports = router;
