@@ -24,17 +24,3 @@ NODEMAILER_USER="gabiamsamuelnathan@gmail.com"
 NODEMAILER_PASS="fkjo fycc cmgy oses"
 
 
-GOOGLE_CREDENTIALS='{
-  "type": "service_account",
-  "project_id": "storagejs-424215",
-  "private_key_id": "ac0280a46bc0c9a59b87f587e6c6ebfb56aa0a51",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC8YgmnDV2JPvgM\nhwDBAfyKczHW2BEMQ8YJQzJXuAU/O9iEJRKPDmnvLW3o8OJAsdXAMu9gynRhTmrK\nqFu+e2bCBUPmTQ4ZTAN9YjuayvZTr3k/i6I+WJO1TJVYU8zU7TXVPMZtCpc8wQ2Z\nJRlfKDk4yhuDc/DMdiEbprjuy7Cc7cEE12voB9aCKY90nFkyix8AfeUx6C4RsBN5\ndI1Oke7MkEEjKCEjcho6uCsntYP+i+V8+8haiE7AbYxJDiS34zV4+VETIEly0J+t\nVOOOyIsbjkci9qm/Rh1OEoPa8c2832Zler7veuCjW1Uywon0/rRW2LmxzHD/Qr4Z\nmZzLR1wjAgMBAAECggEADju7Y6N54Wh1kL9pNNaz6w4LF6LZnuXxV4/RL5mCzqVJ\n6v9raI2mlAtdq4+lDfhMddTOC1p18p2HKhVltn2tD5RwQz1ShwzG6A6nrD67in/O\nlxjeGFHUTzV1xJJdqT+G+rvjI31SXKUazusOVgc8U5MfAw6b2gbu4h+gXMKHxJjS\nQuYJ+Gbu/xHvYTlv4unU55V0QRcOzoJJsD6kz+R2eMtoaAuCbTLxnMBOT7txZopy\nPEevDTBIwIYURzC9iKZc3m57RPrQmu3lTtlzTohgdIVQGJLD+VqGtG/8dqh1CaL4\ncSO6GHRHlGHK5xwOiyDwrW+d9N74545nJp8dq9L96QKBgQDlxa1LOQ2KkJd0nRoI\n6K00JiaSNQmZx6zsKCSC3w8WEnZGaUVt6J38KIlA35CeIgljcNqdcIRQo/M8G0Ch\nQCywGkbIUfQMmKdlJZqDLu8rLa7EHY2E853ACJnS8l6IlMu+oyGemOxRwLbuiO7W\nKrHKoXW1UuRNjcnPKyG7MlswfQKBgQDR4uZArhqSOH02TatxlRH0OTnhg1vez5UX\ngSKPLEC0KXOmnyTVjmhvxb2jQvg48ZgPpmN7NeBSpnkiZLlmPLHFse7iHp/XtMpq\njiJRwvCAm9ZqTBvTBIBlvBqaQ+GTmPRE/V0CRiGkaPBeI1LQxFjiAMjGwPwkAHms\nGYU4zPwBHwKBgEpFW361MmtX0Z0gKwo2K8Zvjog0HKZYpMyxLRwgff/kd9bKsGaW\ninq3n6YYneZ/mglKsV+yvxJR7I3BQWLeG5PQ6pBV7U0lCvbm8Mr2oNiUK6m448XV\n+WfZX9+P+H6tmi5FDNj3FWxXnsn7+TfBFTcqeaHi6WkoK9OLXZvk6xUBAoGBAM68\n+yR22kFxVxSoSNmmhnrT64mQxGuieS8fyhTQ+CL+OabEV5nrnj+KvZMVIj+k6a1w\nrcjtdrqys9sG8AAehNVAwRcGJ1hoAoIW4wM6S3/DAN7PfRDL/FU5hdKyTn3+SY2z\nK2xT/Etf+nQfwzFUVmC3eQ0dhr9HoJG+yZT7hLbtAoGBAMRPDJi6y8YIhMcvlnAo\n4qtjAXZnJKxvvIv7bIs21Umq0qw0VD9ATV6WFbBK71asDVKiVzzZLoz+PgOK8sJq\n5VOP4Cvqyewxl9eOEC5juRIKcgfHQnFg0P0l+JesZalVissRPyR+NgoHHZyZt/xs\nIjHAFNd9RPFg/BzJ2N4ZrLLD\n-----END PRIVATE KEY-----\n",
-  "client_email": "gestionstagesuploadfiles@storagejs-424215.iam.gserviceaccount.com",
-  "client_id": "103380652092079571347",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gestionstagesuploadfiles%40storagejs-424215.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
-'
