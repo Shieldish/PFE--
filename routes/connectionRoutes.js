@@ -319,14 +319,27 @@ router.post('/login', async (req, res) => {
     // Mettre à jour les données utilisateur de la session
     req.session.user = user.toJSON();
     
-    // Générer le token JWT
-    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
+    const token = jwt.sign(
+      { userId: user.UUID, email: user.EMAIL, role: user.role },
+      process.env.secretKey,
+      { expiresIn: '1d' } // 1 day
+    );
     
-    // Mettre à jour les cookies avec le token et les données utilisateur
-    res.cookie('token', token, { httpOnly: true, maxAge: 60 * 1000 });
-
-    // Setting the user cookie with a max age of 1 minute (60,000 milliseconds)
-    res.cookie('user', JSON.stringify(user), { maxAge: 60 * 1000 });
+    // Setting the token cookie with secure and sameSite attributes
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: true,               // Only send over HTTPS
+      sameSite: 'Strict'          // Cookie is not sent with cross-site requests
+    });
+    
+    // Setting the user cookie with secure and sameSite attributes
+    res.cookie('user', JSON.stringify(user), {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: true,               // Only send over HTTPS
+      sameSite: 'Strict'          // Cookie is not sent with cross-site requests
+    });
+    
 
     req.flash('success', 'Connexion réussie !');
 
