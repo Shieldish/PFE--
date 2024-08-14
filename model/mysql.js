@@ -40,19 +40,9 @@ const createConnection = async () => {
   return connection;
 };
 
-const closeConnection = async () => {
-  if (connection) {
-    try {
-      await connection.end();
-      console.log('Database connection closed.');
-    } catch (err) {
-      console.error('Error closing database connection:', err);
-      throw err;
-    }
-  }
-};
+
 
 module.exports = {
   createConnection,
-  closeConnection
+
 };

@@ -36,6 +36,7 @@ app.use((req, res, next) => {
 
 
 router.get(['/', '/login'], (req, res) => {
+ 
     res.render('../connection/login', { title: 'Login' });
   });
 
@@ -45,6 +46,10 @@ router.get(['/', '/login'], (req, res) => {
 
   router.get('/logout', (req , res)=> {
     res.clearCookie('token');
+    res.clearCookie('user');
+
+
+
     res.redirect('../connection/login');
   })
 
@@ -318,10 +323,15 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
     
     // Mettre à jour les cookies avec le token et les données utilisateur
-    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('token', token, { httpOnly: true, maxAge: 60 * 1000 });
+
+    // Setting the user cookie with a max age of 1 minute (60,000 milliseconds)
+    res.cookie('user', JSON.stringify(user), { maxAge: 60 * 1000 });
 
     req.flash('success', 'Connexion réussie !');
+
+
+
     
     // Récupérer returnTo depuis la session ou utiliser la page d'accueil par défaut
     const returnTo = req.session.returnTo || '/';
@@ -335,10 +345,22 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/profiles', (req, res) => {
-  const userInfo = req.session.user;
+       if(req.cookies.user)
+       {
+        const user = JSON.parse(req.cookies.user);
 
-  res.json(userInfo)
-     
+        const NOM = user.NOM;
+        const PRENOM= user.PRENOM;
+        const EMAIL=user.EMAIL;
+    
+    const userInfo = {
+      NOM :NOM,
+      PRENOM:PRENOM,
+      EMAIL:EMAIL
+    }
+  
+    res.json(userInfo)
+       } 
 });
 
 function generateRandomToken(length) {
@@ -374,10 +396,19 @@ router.post('/loging', async (req, res) => {
     // Générer le token JWT
     console.log('Utilisateur :', user.toJSON());
 
-    const token = jwt.sign({ userId: user.UUID, email: user.EMAIL, role: user.role }, process.env.secretKey, { expiresIn: '1d' });
-
-    res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
+    const token = jwt.sign(
+      { userId: user.UUID, email: user.EMAIL, role: user.role },
+      process.env.secretKey,
+      { expiresIn: '10y' } // 10 years
+    );
+    
+    // Setting the token cookie with a very long max age (e.g., 10 years)
+    res.cookie('token', token, { httpOnly: true, maxAge: 10 * 365 * 24 * 60 * 60 * 1000 }); // 10 years
+    
+    // Setting the user cookie with a very long max age (e.g., 10 years)
+    res.cookie('user', JSON.stringify(user), { maxAge: 10 * 365 * 24 * 60 * 60 * 1000 }); // 10 years
+    
+    
 
     // Retourner le token et les données utilisateur dans la réponse
     res.status(200).json({

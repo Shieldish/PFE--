@@ -5,11 +5,15 @@ const checkRole = (roles) => {
       console.log('User role:', userRole);
       console.log('Allowed roles:', roles);
       console.log('Requested path:', req.path);
+
+      console.log('req.cookies.token :',req.cookies.token)
+      console.log('req.session.user :',req.session.user)
+      console.log('req.cookies.user :',req.cookies.user)
   
       if (!userRole) {
         console.log('No user role found');
         req.flash('error', 'You must be logged in to access this page');
-        return res.redirect('/login');
+        return res.redirect('/connection/login');
       }
   
       if (roles.includes(userRole)) {

@@ -87,7 +87,7 @@ const main = async () => {
   try {
     await connectToDatabase();
     const sidebarItems = await fetchSidebarItems('en', 'USER');
-    console.log('Sidebar Items:', sidebarItems);
+   /*  console.log('Sidebar Items:', sidebarItems); */
   } catch (err) {
     console.error('Error:', err);
   }

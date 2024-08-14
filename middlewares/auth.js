@@ -8,7 +8,7 @@ const authenticate = (req, res, next) => {
     req.session.returnTo = req.originalUrl;
     
     // No token provided, redirect to login
-    return res.redirect('/connection');
+    return res.redirect('/connection/login');
   }
 
   try {
@@ -18,7 +18,7 @@ const authenticate = (req, res, next) => {
     next();
   } catch (err) {
     // Invalid token, redirect to login
-    res.redirect('/connection');
+    res.redirect('/connection/login');
   }
 };
 

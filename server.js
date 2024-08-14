@@ -16,6 +16,7 @@ const planificationRoutes = require('./routes/planificationRoutes');
 const authenticate = require('./middlewares/auth');
 const checkRole = require('./middlewares/roles');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const flash = require('connect-flash');
 const stage = require('./model/stagesModel');
 
@@ -87,6 +88,11 @@ app.get('/postulate/:id', async (req, res) => {
 
 app.get(['/', '/home'], authenticate, (req, res) => {
     const user = req.session.user;
+
+    console.log('req.cookies.token :',req.cookies.token)
+    console.log('req.session.user :',req.session.user)
+    console.log('req.cookies.user :',req.cookies.user)
+
     if (user) {
         delete user.PASSWORD;
     }
@@ -96,6 +102,27 @@ app.get(['/', '/home'], authenticate, (req, res) => {
 app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
 });
+
+app.get('/check-token', authenticateToken, (req, res) => {
+    // If this point is reached, the token is valid
+    res.status(200).json({ valid: true });
+  });
+  
+  function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (token == null) return res.sendStatus(401);
+  
+    jwt.verify(token, process.env.secretKey, (err, user) => {
+      if (err) return res.sendStatus(403);
+      req.user = user;
+      next();
+    });
+  }
+
+
+
 
 const PORT = process.env.PORT || 3000;
 

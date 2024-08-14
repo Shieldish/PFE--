@@ -6,8 +6,10 @@ const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
 const user_registration = require('../controllers/UserRegistration');
 const router = express.Router();
+const cookieParser = require('cookie-parser');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(flash());
@@ -17,10 +19,13 @@ app.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
-  try {
-    if (req.session.user) {
-      const user = req.session.user;
+
+
+    try {
+    if (req.cookies.user) {
+      const user = JSON.parse(req.cookies.user);
       const email = user.EMAIL;
+  
 
       // Fetch user data from database
       const userData = await user_registration.findOne({ where: { email } });
