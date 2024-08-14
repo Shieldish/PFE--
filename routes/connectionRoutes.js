@@ -259,6 +259,8 @@ router.get('/reset-password', async (req, res) => {
 router.post('/reseting-password', async (req, res) => {
   const { email, password, confirmPassword, token } = req.body;
 
+    console.log('req.body:',req.body)
+     
   // Vérifiez si les mots de passe correspondent
   if (password !== confirmPassword) {
     req.flash('error', 'Les mots de passe ne correspondent pas');
@@ -269,6 +271,7 @@ router.post('/reseting-password', async (req, res) => {
     // Trouver l'utilisateur par email et token
     const user = await user_registration.findOne({ where: { EMAIL: email, TOKEN: token } });
 
+    console.log('user',user)
     // Si l'utilisateur n'est pas trouvé ou si le token a expiré
     if (!user || user.TOKEN === '0') {
       return res.send('Votre token de réinitialisation a expiré');

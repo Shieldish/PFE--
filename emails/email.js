@@ -280,9 +280,9 @@ async function sendUserResetPasswordMail(email, resetToken) {
           <div class="message">
             <p>Bonjour,</p>
             <p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.</p>
-            <a href="${process.env.FRONTEND_URL}/newPassword?TOKEN=${resetToken}" class="reset-password-btn">Réinitialiser le mot de passe</a>
+            <a href="${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}" class="reset-password-btn">Réinitialiser le mot de passe</a>
             <p>Ce lien expirera dans 24 heures. Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.</p>
-            <p>Cliquez ici: ${process.env.FRONTEND_URL}/newPassword?TOKEN=${resetToken}</p>
+            <p>Cliquez ici: ${process.env.FRONTEND_URL}/connection/reset-password?email=${email}&token=${resetToken}</p>
           </div>
           <div class="signature">
             <p>Cordialement,</p>

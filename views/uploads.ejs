@@ -38,7 +38,7 @@
                               <label for="file">
                               <i class="fa fa-file"></i> <strong> Choisissez un fichier Excel : </strong>
                               </label>
-                              <div class="input-wrapper" style="display: flex;">
+                              <div class="input-wrapper" style="display: flex; margin-top: 20px;">
                                  <input type="file" class="form-control form-control-lg form-control-file" id="file" name="file" required accept=".csv, .xlsx">
                                  <button type="button" class="btn btn-primary" id="uploadButton">
                                  <i class="fas fa-upload"></i> soumettre le fichier
@@ -47,9 +47,10 @@
                            </div>
                         </form>
                      </div>
-                     <div class="form-group col-md-6 myformA " style="display: flex;">
-                        <%- include('./partial/schemaInfo') %>
-                     </div>
+                   
+                  </div>
+                  <div >
+                     <%- include('./partial/schemaInfo') %>
                   </div>
                   <hr class="dashed-line">
                   <%- include('./partial/u_table_save') %>
