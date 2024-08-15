@@ -54,6 +54,10 @@ router.get('/All', async (req, res) => {
             { Libelle: { [Op.like]: `%${search}%` } },
             { Description: { [Op.like]: `%${search}%` } },
             { State: { [Op.like]: `%${search}%` } },
+            { Address: { [Op.like]: `%${search}%` } },
+            { Experience: { [Op.like]: `%${search}%` } },
+            { Langue: { [Op.like]: `%${search}%` } },
+            
             // Add more search conditions as needed
           ],
         };
