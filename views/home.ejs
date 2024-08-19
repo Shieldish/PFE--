@@ -92,7 +92,7 @@
 }
 
 .domain-header:hover {
-    transform: scale(1.05);
+  
     color: darkgreen;
 }
 
@@ -219,7 +219,7 @@
                     const domain = domainKeys[i];
                     const jobs = groupedJobs[domain];
                     const $companySection = $('<div class="company-section">');
-                    $companySection.append(`<hr style="margin-bottom: 20px;"><h2 class="domain-header">${domain}</h2>`);
+                    $companySection.append(`<hr style="margin-bottom: 20px;"><h2 class="domain-header"> <a href="/search?q=${domain}"</a>${domain}</h2>`);
 
 
 
@@ -342,7 +342,10 @@
                 const sortOption = $('#sortSelect').val();
 
                 filteredJobData = jobData.filter(job => {
-                    const matchesSearchTerm = job.Titre.toLowerCase().includes(searchTerm);
+                    const searchFields = ['Titre', 'Domaine', 'Experience', 'State','Address', 'Niveau','Libelle','Nom','Description']; // Add more fields as needed
+     const matchesSearchTerm = searchFields.some(field => 
+         job[field] && job[field].toLowerCase().includes(searchTerm)
+     );
                     const matchesDomain = selectedDomain === "" || job.Domaine === selectedDomain;
                     const matchesExperience = selectedExperience === "" || job.Niveau === selectedExperience;
                     const matchesState = selectedState === "" || job.Address === selectedState;

@@ -147,46 +147,6 @@ app.get('/check-token', authenticateToken, (req, res) => {
   }
 
 
-/* 
-  app.get('/search', async (req, res) => {
-    const query = req.query.q;
-    if (!query) {
-        return res.redirect('/'); // Redirect to home if query is empty
-    }
-
-    try {
-        // Perform search across tables
-        const jobs = await stage.findAll({
-            where: {
-              [Op.or]: [
-                { Titre: { [Op.like]:  `%${query}%`} },
-                { Domaine: { [Op.like]:  `%${query}%`} },
-                { Libelle: { [Op.like]:  `%${query}%`} },
-                { Description: { [Op.like]:  `%${query}%`} },
-                { Niveau: { [Op.like]:  `%${query}%`} },
-                { Experience: { [Op.like]:  `%${query}%`} },
-                { Langue: { [Op.like]:  `%${query}%`} },
-                { Address: { [Op.like]:  `%${query}%`} },
-                { State: { [Op.like]:  `%${query}%`} }
-              ]
-            }
-          });
-          
-
-     
-
-        res.render('searchResults', {
-            jobs :jobs,
-            applications :[],
-            users:[],
-            query
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).render('404.ejs', { error: error.message });
-    }
-});
- */
 /* app.get('/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
