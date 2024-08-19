@@ -86,7 +86,7 @@ app.get('/postulate/:id', async (req, res) => {
     }
 });
 
-app.get(['/', '/home'], authenticate, (req, res) => {
+/* app.get(['/', '/home'], authenticate, (req, res) => {
     const user = req.session.user;
 
 
@@ -95,8 +95,29 @@ app.get(['/', '/home'], authenticate, (req, res) => {
         delete user.PASSWORD;
     }
     res.render('home', { user, userJSON: JSON.stringify(user) });
-});
+}); */
 
+
+ app.get(['/', '/home'], authenticate, async (req, res) => {
+  try {
+    const stages = await stage.findAll() || [];
+
+    res.render('home', { stages });
+  } catch (error) {
+    console.error('Error fetching stages:', error);
+    res.status(500).render('error', { message: 'An error occurred while fetching data.' });
+  }
+}); 
+
+app.get('/api/stages', authenticate, async (req, res) => {
+    try {
+      const stages = await stage.findAll() || [];
+      res.json(stages);
+    } catch (error) {
+      console.error('Error fetching stages:', error);
+      res.status(500).json({ error: 'An error occurred while fetching data.' });
+    }
+  });
 app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
 });

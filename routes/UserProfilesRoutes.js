@@ -22,9 +22,10 @@ router.get('/', async (req, res) => {
 
 
     try {
-    if (req.cookies.user) {
       const user = JSON.parse(req.cookies.user);
       const email = user.EMAIL;
+    if (req.cookies.user) {
+     
   
 
       // Fetch user data from database

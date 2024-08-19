@@ -22,22 +22,25 @@ app.use(express.json());
 router.post('/creactionStage', async (req, res) => {
   try {
       // Check if user is logged in and session contains user object
-      if (!req.session.user || !req.session.user.id) {
+      const user = JSON.parse(req.cookies.user);
+      const entreprise = user.EMAIL;
+
+      if (!user || !user.id) {
          
          req.flash('error', 'Utilisateur non authentifié');
          return res.redirect('/Entreprise');
         
       }
-          console.log(req.session.user)
+        
       // Extract user ID from session
-      const createdBy = req.session.user.EMAIL;
+      const createdBy = user.EMAIL;
 
       // Extract stage data from request body
       const stageData = req.body;
 
       // Check if stageData object exists and is not null
       if (!stageData) {
-          req.flash('error', 'Les données de scène sont manquantes');
+          req.flash('error', 'Les données de stages sont manquantes');
           return res.redirect('/Entreprise');
       }
 
@@ -62,7 +65,8 @@ router.post('/creactionStage', async (req, res) => {
 
 router.get('/stages', async (req, res) => {
   try {
-      const user = req.session.user;
+    const user = JSON.parse(req.cookies.user);
+      const entreprise = user.EMAIL;
       if (!user) {
           req.flash('info','Session perdue, veuillez vous reconnecter pour récupérer les données');
           return res.status(401).end();
@@ -94,7 +98,8 @@ router.get('/stages', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
       // Check if the user is authenticated and get their email
-      const  user = req.session.user;
+      const user = JSON.parse(req.cookies.user);
+      const entreprise = user.EMAIL;
          if(!user)
             {
                 req.flash('info', 'la session est perdue, reconnectez-vous pour récupérer les données  ');

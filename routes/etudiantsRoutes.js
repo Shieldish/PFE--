@@ -490,11 +490,13 @@ router.get('/check-email', async (req, res) => {
 
 router.get('/stage_postuler', async (req, res) => {
     try {
-      if (!req.session.user) {
+      const user = JSON.parse(req.cookies.user);
+     
+      if (!user) {
         return res.status(401).json({ error: 'Non autorisé' });
       }
   
-      const etudiants = req.session.user.EMAIL; 
+      const etudiants = user.EMAIL; 
      
   
       if (!etudiants) {
