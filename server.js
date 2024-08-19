@@ -117,7 +117,9 @@ app.get('/postulate/:id', async (req, res) => {
 
 app.get('/api/stages', authenticate, async (req, res) => {
     try {
-      const stages = await stage.findAll() || [];
+        const stages = await stage.findAll({
+            order: [['createdAt', 'DESC']]
+        }) || [];
       res.json(stages);
     } catch (error) {
       console.error('Error fetching stages:', error);
