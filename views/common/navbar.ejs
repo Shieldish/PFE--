@@ -47,8 +47,8 @@
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
             </form> -->
-        <form class=" input-group w-auto my-auto ">
-            <input autocomplete="off" type="search" class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
+        <form class=" input-group w-auto my-auto " action="/search" method="GET">
+            <input autocomplete="on" type="search"  name="q"  class="form-control rounded  mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 300px;" />
            <button class="btn btn-outline-success rounded-lg bg-green-500 text-white px-4 py-2 hover:bg-green-600" type="submit">
                     <i class="fas fa-search"></i>
                 </button>

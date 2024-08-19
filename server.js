@@ -19,6 +19,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const flash = require('connect-flash');
 const stage = require('./model/stagesModel');
+const { Op } = require('sequelize');
 
 const app = express();
 
@@ -43,6 +44,11 @@ app.use(
         saveUninitialized: false,
     })
 );
+// Catch-all route for handling 404 errors
+// Other route handlers above...
+
+// Catch-all route for handling 404 errors
+
 
 app.use((req, res, next) => {
     res.locals.messages = req.flash();
@@ -141,6 +147,129 @@ app.get('/check-token', authenticateToken, (req, res) => {
   }
 
 
+/* 
+  app.get('/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.redirect('/'); // Redirect to home if query is empty
+    }
+
+    try {
+        // Perform search across tables
+        const jobs = await stage.findAll({
+            where: {
+              [Op.or]: [
+                { Titre: { [Op.like]:  `%${query}%`} },
+                { Domaine: { [Op.like]:  `%${query}%`} },
+                { Libelle: { [Op.like]:  `%${query}%`} },
+                { Description: { [Op.like]:  `%${query}%`} },
+                { Niveau: { [Op.like]:  `%${query}%`} },
+                { Experience: { [Op.like]:  `%${query}%`} },
+                { Langue: { [Op.like]:  `%${query}%`} },
+                { Address: { [Op.like]:  `%${query}%`} },
+                { State: { [Op.like]:  `%${query}%`} }
+              ]
+            }
+          });
+          
+
+     
+
+        res.render('searchResults', {
+            jobs :jobs,
+            applications :[],
+            users:[],
+            query
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('404.ejs', { error: error.message });
+    }
+});
+ */
+/* app.get('/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.redirect('/'); // Redirect to home if query is empty
+    }
+
+    // Split the query into individual words (e.g., 'devops engineer' -> ['devops', 'engineer'])
+    const queryTerms = query.split(' ').map(term => term.trim());
+
+    try {
+        // Perform search across tables
+        const jobs = await stage.findAll({
+            where: {
+                [Op.and]: queryTerms.map(term => ({
+                    [Op.or]: [
+                        { Titre: { [Op.like]: `%${term}%` } },
+                        { Domaine: { [Op.like]: `%${term}%` } },
+                        { Libelle: { [Op.like]: `%${term}%` } },
+                        { Description: { [Op.like]: `%${term}%` } },
+                        { Niveau: { [Op.like]: `%${term}%` } },
+                        { Experience: { [Op.like]: `%${term}%` } },
+                        { Langue: { [Op.like]: `%${term}%` } },
+                        { Address: { [Op.like]: `%${term}%` } },
+                        { State: { [Op.like]: `%${term}%` } }
+                    ]
+                }))
+            }
+        });
+
+        res.render('searchResults', {
+            jobs,
+           
+            query
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('404.ejs', { error: error.message });
+    }
+});
+ */
+app.get('/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.redirect('/'); // Redirect to home if query is empty
+    }
+
+    // Split the query into individual words (e.g., 'gd sfax devops' -> ['gd', 'sfax', 'devops'])
+    const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
+
+    try {
+        // Perform search across tables
+        const jobs = await stage.findAll({
+            where: {
+                [Op.or]: queryTerms.map(term => ({
+                    [Op.or]: [
+                        { Titre: { [Op.like]: term } },
+                        { Domaine: { [Op.like]: term } },
+                        { Libelle: { [Op.like]: term } },
+                        { Description: { [Op.like]: term } },
+                        { Niveau: { [Op.like]: term } },
+                        { Experience: { [Op.like]: term } },
+                        { Langue: { [Op.like]: term } },
+                        { Address: { [Op.like]: term } },
+                        { State: { [Op.like]: term } },
+                        { Nom: { [Op.like]: term } }
+                    ]
+                }))
+            },
+            
+        });
+
+        res.render('searchResults', {
+            jobs,
+            applications: [], // Replace with actual application search if needed
+            users: [], // Replace with actual user search if needed
+            query,
+           length:jobs.length
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('404.ejs', { error: error.message });
+    }
+});
 
 
 const PORT = process.env.PORT || 3000;

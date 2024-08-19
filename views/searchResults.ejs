@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Stages - Recherche</title>
+  <%- include('./common/head') %>
+
+
+  <style>
+  .custom-container {
+    display: flex;
+    font-weight: bolder;
+   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+  
+    align-items: center;
+  }
+  
+  .job-link, .application-link, .user-link {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .job-link:hover, .application-link:hover, .user-link:hover {
+    text-decoration: underline;
+  }
+  
+  .voir-plus {
+    color: #28a745;
+    text-decoration: none;
+  }
+  
+  .voir-plus:hover {
+    text-decoration: underline;
+  }
+  
+  .job-description, .application-description, .user-description {
+    margin-top: 5px;
+    color: #6c757d;
+  }
+  </style>
+</head>
+<body>
+  <div class="custom-container">
+    <%- include('./common/sidebar') %>
+    <div class="main-content">
+      <%- include('./common/navbar') %>
+      <h5 style="padding-left: 15px;">Résultats de recherche pour <i style="color: #007bff;"> "<%= query %>"</i>  <strong> ("<%= length %>")</strong></h5>
+    
+      <div style="padding: 20px;">
+       
+        <h2 style="padding: 50px; text-align: center;">Les offres d' Emplois et stages</h2>
+        <% if (jobs.length > 0) { %>
+          
+          <ul>
+            <% jobs.forEach(job => { %>
+              <li style="padding: 15px;">
+                <a href="/postulate/<%= job.id %>"class="job-link">  <i class="bi bi-arrow-right"></i> <%= job.Domaine %>  :  <%= job.Libelle %>  - <i class="bi bi-geo-alt"></i> <%= job.Address %></a>
+                <p><i><%= job.Nom %> </i></p>
+                <p class="job-description"> <i> <%= job.Description.substring(0, 99) %></i> </p>
+                <p class="job-description"> <i> <%= job.Description.substring(100, 199)  %>... </i> <a href="/postulate/<%= job.id %>" class="voir-plus">voir plus</a> </p>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p style="color: red;">Aucun emploi trouvé.</p>
+        <% } %>
+
+       
+      </div>
+   
+      <%- include('./common/footer') %>
+    </div>
+  </div>
+</body>
+</html>

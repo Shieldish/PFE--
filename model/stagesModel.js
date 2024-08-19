@@ -106,7 +106,7 @@ const stage = sequelize.define('stage', {
   },
   Zip: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false 
   },
   gridCheck: {
     type: DataTypes.BOOLEAN,

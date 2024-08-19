@@ -1,25 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <head>
-       <title>Error 404 - Page Not Found</title>
-       <%-include('./common/head') %>
-       <!-- Your other CSS files -->
-       <style>
-
-
-
-
-       </style>
- </head>
- </head>
- <body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error 404 - Page Not Found</title>
+    <%- include('./common/head') %>
+    <!-- Your other CSS files -->
+    <style>
+   
+      .jumbotron {
+        background-color: #f1f1f1;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        animation: fadeIn 1.5s ease-in-out;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+  
+      .jumbotron .display-4 {
+        font-size: 2.5rem;
+        color: #dc3545;
+        font-weight: bold;
+      }
+  
+      .jumbotron p {
+        font-size: 1.2rem;
+        color: #6c757d;
+      }
+  
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+</head>
+<body>
     <div class="custom-container">
-       <%-include('./common/sidebar') %>
-       <div class="main-content">
-          <%-include('./common/navbar') %>
-          <h1>Erreur 404 - Page Introuvable</h1>
-          <p>Oups ! Il semblerait que la page que vous cherchez est actuellement indisponible.</p>
-          <hr>
-       </div>
-       <%-include('./common/footer') %>
+        <%- include('./common/sidebar') %>
+        <div class="main-content">
+            <%- include('./common/navbar') %>
+            <div>
+                <div class="jumbotron jumbotron-fluid">
+                    <div class="container">
+                        <h1 class="display-4">Erreur</h1>
+                        <p>Oups ! Il semblerait que la page que vous cherchez est actuellement indisponible.</p>
+                        <% if (typeof error !== 'undefined' && error) { %>
+                           <p><strong>Détails de l'erreur :</strong> <%= error %></p>
+                         <% } %>
+
+                    </div>
+                </div>
+            </div>
+            <%- include('./common/footer') %>
+        </div>
     </div>
- </body>
+</body>
+</html>
