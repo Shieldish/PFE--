@@ -133,4 +133,65 @@ router.get('/', async (req, res) => {
     }
   });
 
+
+  router.get('/get-soutenances', (req, res) => {
+    // Fetch all soutenances from the database
+    Soutenance.findAll()
+        .then(soutenances => {
+            res.json({ soutenances });
+        })
+        .catch(error => {
+            console.error('Error fetching soutenances:', error);
+            res.status(500).send('Server error');
+        });
+});
+
+
+
+router.post('/validate-soutenances', (req, res) => {
+  const soutenances = req.body.soutenances;
+  let duplicates = [];
+
+  // Perform checks for duplicate dates, times, and salles
+  for (let i = 0; i < soutenances.length; i++) {
+    for (let j = i + 1; j < soutenances.length; j++) {
+        if (soutenances[i].date === soutenances[j].date && 
+            soutenances[i].time === soutenances[j].time) {
+
+            // Check for duplicates in 'salle' ignoring empty fields
+            if (soutenances[i].salle && soutenances[j].salle && 
+                soutenances[i].salle === soutenances[j].salle) {
+                duplicates.push({
+                    id: soutenances[i].id,
+                    fields: ['date', 'time', 'salle']
+                });
+                duplicates.push({
+                    id: soutenances[j].id,
+                    fields: ['date', 'time', 'salle']
+                });
+            }
+
+            const roleFields = ['president', 'rapporteur', 'encadrantAcademique', 'encadrantProfessionnel'];
+            roleFields.forEach(field => {
+                // Check for duplicates in role fields ignoring empty fields
+                if (soutenances[i][field] && soutenances[j][field] && 
+                    soutenances[i][field] === soutenances[j][field]) {
+                    duplicates.push({
+                        id: soutenances[i].id,
+                        fields: [field]
+                    });
+                    duplicates.push({
+                        id: soutenances[j].id,
+                        fields: [field]
+                    });
+                }
+            });
+        }
+    }
+}
+
+res.json({ duplicates });
+
+})
+
 module.exports = router;

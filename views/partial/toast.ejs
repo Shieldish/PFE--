@@ -323,7 +323,7 @@ th:nth-child(16), td:nth-child(16) { width: 150px; } /* Entreprise */
     }
     
     .conflict{
-        background-color:beige;
+        background-color:rgb(255, 255, 255);
         color: rgb(0, 0, 0);
         padding: 2px;
         border-radius: 20px;
@@ -338,5 +338,26 @@ th:nth-child(16), td:nth-child(16) { width: 150px; } /* Entreprise */
 .language-selector {
 display: none;
 }
+
+.is-invalid {
+    border-color: red;
+    border-width: 15px;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    animation: pulse 0.5s ease-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+
 
 </style>
