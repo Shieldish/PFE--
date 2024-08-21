@@ -580,9 +580,7 @@ router.get('/stage_postuler', async (req, res) => {
         etudiants = decoded.email;
         req.userId = decoded.userId;
         req.role=decoded.role
-        console.log('Decoded Email:',etudiants);
-        console.log('userId',  req.userId);
-        console.log('role',req.role)
+     
       } catch (err) {
         console.error('JWT Verification Error:', err);
         return res.status(401).json({ error: 'Invalid token' });
@@ -601,7 +599,7 @@ router.get('/stage_postuler', async (req, res) => {
       }
   
       const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
-      console.log('Etudiant ID:', etudiantIdValue);
+     
   
       const postulated = await stagepostulation.findAll({
         where: {

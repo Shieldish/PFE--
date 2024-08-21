@@ -192,8 +192,9 @@ router.get(['/', '/login'], (req, res) => {
       // Répondre avec un message de succès
       return res.render('../connection/login');
     } catch (error) {
-      console.error('Erreur:', error);
-      res.status(500).send('Erreur Interne du Serveur');
+     /*  console.error('Erreur:', error);
+      res.status(500).send('Erreur Interne du Serveur'); */
+      res.render('404.ejs', { error: error.message });
     }
   });
   
@@ -274,7 +275,8 @@ router.post('/reseting-password', async (req, res) => {
     console.log('user',user)
     // Si l'utilisateur n'est pas trouvé ou si le token a expiré
     if (!user || user.TOKEN === '0') {
-      return res.send('Votre token de réinitialisation a expiré');
+     
+     return res.render('404.ejs', { error: 'Votre token de réinitialisation a expiré' });
     }
 
     // Générer le sel et hacher le nouveau mot de passe
@@ -291,7 +293,8 @@ router.post('/reseting-password', async (req, res) => {
     return res.redirect('../connection/login');
   } catch (error) {
     console.error('Erreur lors de la réinitialisation du mot de passe :', error);
-    return res.status(500).json({ error: 'Une erreur est survenue lors de la réinitialisation du mot de passe' });
+   /*  return res.status(500).json({ error: 'Une erreur est survenue lors de la réinitialisation du mot de passe' }); */
+    return  res.render('404.ejs', { error: error.message });
   }
 });
 

@@ -143,7 +143,11 @@ stage.beforeCreate((stage, _) => {
 
 const { faker } = require('@faker-js/faker');
 
-const fakeDatas = Array.from({ length: 3 }, (_, index) => {
+function getRandomNumber() {
+  return Math.floor(Math.random() * 10) + 1;
+}
+
+const fakeDatas = Array.from({ length: getRandomNumber() }, (_, index) => {
   const titre = faker.helpers.arrayElement([
     "Software Engineer", "Data Scientist", "UX/UI Designer", "Product Manager", 
     "AI/Machine Learning Engineer", "Cybersecurity Specialist", "Cloud Architect", 

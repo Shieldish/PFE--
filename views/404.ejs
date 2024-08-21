@@ -38,6 +38,9 @@
           transform: scale(1);
         }
       }
+      .language-selector {
+    display: none;
+}
     </style>
 </head>
 <body>
@@ -54,6 +57,15 @@
                            <p><strong>Détails de l'erreur :</strong> <%= error %></p>
                          <% } %>
 
+                         <ul class="nav-item">
+                          <div class="language-selector">
+                              <select id="language-select" class="form-control">
+                                  <option value="en">English</option>
+                                  <option value="fr">Français</option>
+                                  <option value="ar">arabe</option>
+                              </select>
+                          </div>
+                      </ul>
                     </div>
                 </div>
             </div>

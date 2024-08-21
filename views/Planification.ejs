@@ -2,6 +2,8 @@
     <title>Gestion des Stages - Plannification</title>
     <%-include('./common/head') %>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -10,6 +12,13 @@
             margin: 0;
             padding: 0;
         
+
+        }
+        .modal-body .row {
+            margin-bottom: 10px;
+        }
+        .modal-body label {
+            font-weight: bold;
         }
 
         .custom-container {
@@ -67,21 +76,23 @@
         }
 
 
-        th:nth-child(1), td:nth-child(1) { width: 50px; }  /* ID */
-        th:nth-child(2), td:nth-child(2) { width: 120px; } /* Date */
-        th:nth-child(3), td:nth-child(3) { width: 120px; }  /* Time */
-        th:nth-child(4), td:nth-child(4) { width: 80px; }  /* Salle */
-        th:nth-child(5), td:nth-child(5) { width: 100px; }  /* Groupe */
-        th:nth-child(6), td:nth-child(6) { width: 120px; } /* Type */
-        th:nth-child(7), td:nth-child(7),
-        th:nth-child(8), td:nth-child(8),
-        th:nth-child(9), td:nth-child(9) { width: 120px; } /* Etudiants */
-        th:nth-child(10), td:nth-child(10) { width: 300px; } /* Sujet */
-        th:nth-child(11), td:nth-child(11),
-        th:nth-child(12), td:nth-child(12) { width: 150px; } /* President, Rapporteur */
-        th:nth-child(13), td:nth-child(13),
-        th:nth-child(14), td:nth-child(14) { width: 180px; } /* Encadrants */
-        th:nth-child(15), td:nth-child(15) { width: 150px; } /* Entreprise */
+th:nth-child(1), td:nth-child(1) { width: 50px; }  /* New Column */
+th:nth-child(2), td:nth-child(2) { width: 50px; }  /* ID */
+th:nth-child(3), td:nth-child(3) { width: 120px; } /* Date */
+th:nth-child(4), td:nth-child(4) { width: 120px; } /* Time */
+th:nth-child(5), td:nth-child(5) { width: 80px; }  /* Salle */
+th:nth-child(6), td:nth-child(6) { width: 100px; } /* Groupe */
+th:nth-child(7), td:nth-child(7) { width: 120px; } /* Type */
+th:nth-child(8), td:nth-child(8),
+th:nth-child(9), td:nth-child(9),
+th:nth-child(10), td:nth-child(10) { width: 120px; } /* Etudiants */
+th:nth-child(11), td:nth-child(11) { width: 300px; } /* Sujet */
+th:nth-child(12), td:nth-child(12),
+th:nth-child(13), td:nth-child(13) { width: 150px; } /* President, Rapporteur */
+th:nth-child(14), td:nth-child(14),
+th:nth-child(15), td:nth-child(15) { width: 180px; } /* Encadrants */
+th:nth-child(16), td:nth-child(16) { width: 150px; } /* Entreprise */
+
 
         th {
             background-color: #f2f2f2;
@@ -127,6 +138,18 @@
         .update-success {
             animation: pulse 0.5s ease-out;
         }
+        
+        .conflict{
+            background-color:beige;
+            color: rgb(0, 0, 0);
+            padding: 2px;
+            border-radius: 1px;
+          border-width: 3px;
+            border-color: red;
+       
+            font-weight: bold;
+            animation: pulse 0.5s ease-out;
+        }
 
         /* Hide the language selector */
 .language-selector {
@@ -138,17 +161,124 @@
 <body>
     <div class="custom-container">
         <%-include('./common/sidebar') %>
-        <div class="main-content">
+        <div class="main-content"  style="margin-left: 5px;">
+
         
-            <li class="nav-item">
+            <ul class="nav-item">
                 <div class="language-selector">
                     <select id="language-select" class="form-control">
                         <option value="en">English</option>
                         <option value="fr">Français</option>
-                        <option value="ar">العربية</option>
+                        <option value="ar">arabe</option>
                     </select>
                 </div>
-            </li>
+            </ul>
+
+
+
+            <%-include('./partial/toast') %>
+                       
+
+            <!-- Add Soutenance Modal -->
+<div class="modal fade" id="addSoutenanceModal" tabindex="-1" aria-labelledby="addSoutenanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSoutenanceModalLabel">Ajouter une nouvelle Soutenance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addSoutenanceForm">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="time" class="form-label">Heure</label>
+                            <input type="time" class="form-control" id="time" name="time" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="salle" class="form-label">Salle</label>
+                            <input type="text" class="form-control" id="salle" name="salle" placeholder="Numéro de salle" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label for="groupe" class="form-label">Groupe</label>
+                            <input type="text" class="form-control" id="groupe" name="groupe" placeholder="Groupe" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-control" id="type" name="type" required>
+                                <option value="">Choisir...</option>
+                                <option value="Binome">Binôme</option>
+                                <option value="Monome">Monôme</option>
+                                <option value="Trinome">Trinôme</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label for="etudiant1" class="form-label">Étudiant 1</label>
+                            <input type="text" class="form-control" id="etudiant1" name="etudiant1" placeholder="Nom de l'étudiant" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="etudiant2" class="form-label">Étudiant 2</label>
+                            <input type="text" class="form-control" id="etudiant2" name="etudiant2" placeholder="Nom de l'étudiant">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="etudiant3" class="form-label">Étudiant 3</label>
+                            <input type="text" class="form-control" id="etudiant3" name="etudiant3" placeholder="Nom de l'étudiant">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label for="sujet" class="form-label">Sujet</label>
+                            <textarea rows="2" type="text" class="form-control" id="sujet" name="sujet" placeholder="Sujet de la soutenance" required></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="president" class="form-label">Président</label>
+                            <input type="text" class="form-control" id="president" name="president" placeholder="Nom du président" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="rapporteur" class="form-label">Rapporteur</label>
+                            <input type="text" class="form-control" id="rapporteur" name="rapporteur" placeholder="Nom du rapporteur" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="encadrantAcademique" class="form-label">Encadrant Académique</label>
+                            <input type="text" class="form-control" id="encadrantAcademique" name="encadrantAcademique" placeholder="Nom de l'encadrant académique" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="encadrantProfessionnel" class="form-label">Encadrant Professionnel</label>
+                            <input type="text" class="form-control" id="encadrantProfessionnel" name="encadrantProfessionnel" placeholder="Nom de l'encadrant professionnel" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label for="entreprise" class="form-label">Entreprise</label>
+                            <input type="text" class="form-control" id="entreprise" name="entreprise" placeholder="Nom de l'entreprise" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">fermer</button>
+                <button type="button" class="btn btn-primary" id="submitSoutenance">enregistrer Soutenances</button>
+            </div>
+        </div>
+    </div>
+</div>
+                            
+            <div class="d-flex justify-content-start mt-3">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addSoutenanceModal">
+                    <i class="bi bi-person-plus"></i> Ajouter une Soutenance
+                </button>
+            </div>
 
 
             <h1>Soutenances</h1>
@@ -157,6 +287,8 @@
             <table id="soutenances-table" class="  searchable sortable">
                 <thead>
                     <tr>
+                        <th>Action</th>  <!-- Add a new column for action buttons -->
+                        
                         <th>ID</th>
                         <th>Date</th>
                         <th>Heure</th>
@@ -177,6 +309,24 @@
                 <tbody>
                     <% soutenances.forEach(function(soutenance) { %>
                         <tr data-id="<%= soutenance.id %>">
+                            <td>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="<%= soutenance.id %>">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+
+
+
+
+
+
+
+
+
+
+
+
+
                             <td><%= soutenance.id %></td>
                             <td><input type="date" value="<%= soutenance.date %>" data-field="date"></td>
                             <td><input type="time" value="<%= soutenance.time %>" data-field="time"></td>
@@ -208,7 +358,7 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         $(document).ready(function() {
             $('input, select').on('blur', function() {
                 var $input = $(this);
@@ -222,7 +372,13 @@
                     method: 'PUT',
                     data: { [field]: value },
                     success: function(response) {
-                        console.log('Updated successfully:', response);
+                      //  console.log('Updated successfully:', response);
+                      $('#successToast .toast-body').text(`Soutenance id : ${id} mise à jour avec succès.`);
+
+                            var successToastEl = document.getElementById('successToast');
+                              var successToast = new bootstrap.Toast(successToastEl);
+                             successToast.show();
+
                         $row.addClass('update-success');
                         setTimeout(function() {
                             $row.removeClass('update-success');
@@ -230,14 +386,204 @@
                     },
                     error: function(err) {
                         console.error('Error updating:', err);
-                        alert('Error updating. Please try again.');
+                        $('#errorToast .toast-body').text('Erreur lors de la mise à jour de la soutenance. Veuillez réessayer.');
+
+                       var errorToastEl = document.getElementById('errorToast');
+                       var errorToast = new bootstrap.Toast(errorToastEl);
+                       errorToast.show();
+       
                     }
                 });
             });
         });
+    </script> -->
+
+   <!--  <script>
+     $(document).ready(function() {
+  $('#soutenances-table input, #soutenances-table select').on('blur', function() {
+    var $row = $(this).closest('tr');
+    var id = $row.data('id');
+    var formData = {};
+    $row.find('input, select').each(function() {
+      var field = $(this).data('field');
+      var value = $(this).val();
+      formData[field] = value;
+    });
+
+    $.ajax({
+      url: '/planification/soutenances/' + id,
+      method: 'PUT',
+      data: formData,
+      success: function(response) {
+        $('#successToast .toast-body').text(`Soutenance id : ${id} mise à jour avec succès.`);
+        var successToastEl = document.getElementById('successToast');
+        var successToast = new bootstrap.Toast(successToastEl);
+        successToast.show();
+
+        $row.removeClass('conflict');
+        $row.addClass('update-success');
+        setTimeout(function() {
+          $row.removeClass('update-success');
+        }, 500);
+      },
+      error: function(err) {
+        console.error('Error updating:', err);
+        if (err.responseJSON && err.responseJSON.conflictingData) {
+          // Afficher les conflits dans la ligne
+          var conflictingData = err.responseJSON.conflictingData;
+          var conflictIds = err.responseJSON.conflictIds;
+          var conflictMessage = 'Conflit détecté avec les soutenances suivantes : ';
+          conflictingData.forEach(function(conflict) {
+            conflictMessage += `\n- ID: ${conflict.id}, Date: ${conflict.date}, Heure: ${conflict.time}, Salle: ${conflict.salle}`;
+            if (conflict.president) conflictMessage += `, Président: ${conflict.president}`;
+            if (conflict.rapporteur) conflictMessage += `, Rapporteur: ${conflict.rapporteur}`;
+            if (conflict.encadrantAcademique) conflictMessage += `, Encadrant Académique: ${conflict.encadrantAcademique}`;
+            if (conflict.encadrantProfessionnel) conflictMessage += `, Encadrant Professionnel: ${conflict.encadrantProfessionnel}`;
+          });
+          $row.addClass('conflict');
+          $row.prop('title', conflictMessage);
+
+          // Mettre en surbrillance les lignes en conflit
+          conflictIds.forEach(function(conflictId) {
+            $(`tr[data-id="${conflictId}"]`).addClass('conflict');
+          });
+        } else {
+          $('#errorToast .toast-body').text('Erreur lors de la mise à jour de la soutenance. Veuillez réessayer.');
+          var errorToastEl = document.getElementById('errorToast');
+          var errorToast = new bootstrap.Toast(errorToastEl);
+          errorToast.show();
+        }
+      },
+    });
+  });
+});
+    </script> -->
+
+    <script>
+$(document).ready(function() {
+  $('#soutenances-table input, #soutenances-table select').on('blur', function() {
+    var $row = $(this).closest('tr');
+    var id = $row.data('id');
+    var formData = {};
+    $row.find('input, select').each(function() {
+      var field = $(this).data('field');
+      var value = $(this).val();
+      if (value.trim() !== '') {
+        formData[field] = value;
+      }
+    });
+    $.ajax({
+      url: '/planification/soutenances/' + id,
+      method: 'POST',
+      data: formData,
+      success: function(response) {
+  if (response.conflictingData && response.conflictingData.length > 0) {
+    var conflictingData = response.conflictingData;
+    var conflictMessage = 'Conflit détecté avec les soutenances suivantes : ';
+
+    conflictingData.forEach(function(conflict) {
+      // Clean up the conflict object by removing undefined or empty string values
+      var cleanedConflict = {};
+      for (var key in conflict) {
+        if (conflict[key] !== undefined && conflict[key] !== '') {
+          cleanedConflict[key] = conflict[key];
+        }
+      }
+
+      conflictMessage += '\n- La table ID: ' + (cleanedConflict.id || 'Non spécifié');
+      if (cleanedConflict.date) conflictMessage += ', Date: ' + cleanedConflict.date;
+      if (cleanedConflict.time) conflictMessage += ', Heure: ' + cleanedConflict.time;
+      if (cleanedConflict.salle) conflictMessage += ', Salle: ' + cleanedConflict.salle;
+      if (cleanedConflict.president) conflictMessage += ', Président: ' + cleanedConflict.president;
+      if (cleanedConflict.rapporteur) conflictMessage += ', Rapporteur: ' + cleanedConflict.rapporteur;
+      if (cleanedConflict.encadrantAcademique) conflictMessage += ', Encadrant Académique: ' + cleanedConflict.encadrantAcademique;
+      if (cleanedConflict.encadrantProfessionnel) conflictMessage += ', Encadrant Professionnel: ' + cleanedConflict.encadrantProfessionnel;
+    });
+          $row.addClass('conflict');
+          // Dispose the old tooltip if any
+          $row.tooltip('dispose');
+          // Dynamically set tooltip content
+          $row.tooltip({
+            title: conflictMessage,
+            placement: 'top',
+            container: 'body',
+            trigger: 'hover' // Change this to 'hover' to keep the tooltip visible
+          });
+          $row.tooltip('show'); // Show the tooltip immediately
+        } else {
+          // No conflicts, show success message
+          $('#successToast .toast-body').text(`Soutenance id : ${id} mise à jour avec succès.`);
+          var successToastEl = document.getElementById('successToast');
+          var successToast = new bootstrap.Toast(successToastEl);
+          successToast.show();
+          // Remove conflict class and tooltip
+          $row.removeClass('conflict');
+          $row.tooltip('dispose');
+          $row.addClass('update-success');
+          setTimeout(function() {
+            $row.removeClass('update-success');
+          }, 500);
+        }
+      },
+      error: function(err) {
+        console.error('Error updating:', err);
+        $('#errorToast .toast-body').text('Erreur lors de la mise à jour de la soutenance. Veuillez réessayer.');
+        var errorToastEl = document.getElementById('errorToast');
+        var errorToast = new bootstrap.Toast(errorToastEl);
+        errorToast.show();
+      }
+    });
+  });
+
+  // Remove the mousemove and mouseleave events, as they are no longer needed
+  // when the tooltip is set to 'hover' mode
+});
+        </script>
+        
+        
+<script>
+    $(document).ready(function() {
+        // Your existing code for updating soutenances
+    
+        // Handle form submission
+        $('#submitSoutenance').on('click', function() {
+            var formData = $('#addSoutenanceForm').serialize();
+
+            console.log(formData)
+        
+            
+            $.ajax({
+    url: '/planification/Addsoutenances',
+    method: 'POST',
+    data: formData,
+    success: function(response) {
+        console.log('Soutenance added successfully:', response);
+        $('#addSoutenanceModal').modal('hide');
+
+        // Set success message and show the toast
+        $('#successToast .toast-body').text('Soutenance ajoutée avec succès.');
+        var successToastEl = document.getElementById('successToast');
+        var successToast = new bootstrap.Toast(successToastEl);
+        successToast.show();
+
+       location.reload(); // Optionally, refresh the table or add the new row
+    },
+    error: function(err) {
+        console.error('Error adding soutenance:', err);
+        
+        // Set error message and show the toast
+        $('#errorToast .toast-body').text('Erreur lors de l\'ajout de la soutenance. Veuillez réessayer.');
+        var errorToastEl = document.getElementById('errorToast');
+        var errorToast = new bootstrap.Toast(errorToastEl);
+        errorToast.show();
+    }
+});
+
+        });
+    });
     </script>
-</body>
-</html>
 
-
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</html>

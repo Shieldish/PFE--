@@ -90,7 +90,7 @@
 
         function populateFilterOptions(stages, filterElementId, propertyName) {
     const filterElement = document.getElementById(filterElementId);
-    filterElement.innerHTML = '<option value="">Tous les ' + filterElementId.replace('Filter', '') + '</option>'; // Clear previous options and add the default option
+    filterElement.innerHTML = '<option value="">Tou(te)s les ' + filterElementId.replace('Filter', '') + '</option>'; // Clear previous options and add the default option
 
     const uniqueValues = new Set(stages.map(stage => stage[propertyName]));
     uniqueValues.forEach(value => {
@@ -208,7 +208,7 @@
         url += `&Titre=${encodeURIComponent(titreFilter)}`;
     }
     if (stateFilter) {
-        url += `&State=${encodeURIComponent(stateFilter)}`;
+        url += `&Address=${encodeURIComponent(stateFilter)}`;
     }
     if (searchInput) {
         url += `&search=${encodeURIComponent(searchInput)}`;
@@ -238,7 +238,7 @@
             populateFilterOptions(stages, "domainFilter", "Domaine");
             populateFilterOptions(stages, "nomFilter", "Nom");
             populateFilterOptions(stages, "titreFilter", "Titre");
-            populateFilterOptions(stages, "stateFilter", "State");
+            populateFilterOptions(stages, "stateFilter", "Address");
 
             // Set the previously selected filter values
             document.getElementById('domainFilter').value = selectedDomain;
@@ -315,7 +315,7 @@
         <strong><i class="fas fa-users me-2"></i>Nombre de poste:</strong> ${stage.PostesVacants}
     </p>
     <p class="card-text">
-        <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong> ${stage.State}
+        <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong> ${stage.State} :  ${stage.Address}
     </p>
     <hr class="divider">
     <p class="card-text">
@@ -353,8 +353,8 @@
         overflow: hidden;
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         border-radius: 15px;
-      /*   background: linear-gradient(145deg, #e2e8f0, #cbd5e1); */
-        background-color:"white";
+        /* background: linear-gradient(145deg, #e2e8f0, #cbd5e1);  */
+        background-color:"f5f5f5";
         box-shadow: 20px 20px 60px #a7aeb8, -20px -20px 60px #f7ffff;
         padding: 20px;
         margin: 20px;
@@ -362,6 +362,7 @@
 
     .card-body:hover {
         transform: scale(1.05);
+       
         box-shadow: 30px 30px 70px #9ca3af, -30px -30px 70px #ffffff;
     }
 

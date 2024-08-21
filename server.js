@@ -49,7 +49,33 @@ app.use(
 
 // Catch-all route for handling 404 errors
 
+/* app.use((req, res, next) => {
+    const error = new Error(`Cannot GET ${req.originalUrl}`);
+    error.status = 404;
+    next(error);
+});
 
+// Error handling middleware
+app.use((error, req, res, next) => {
+    if (error.status === 404) {
+        res.status(404).render('404.ejs', { error: error.message });
+    } else {
+        // Handle other types of errors
+        res.status(error.status || 500);
+        res.render('error.ejs', { error: error.message });
+    }
+}); */
+
+/* app.use((req, res, next) => {
+    res.status(404).render('404.ejs', { error: 'Page not found' });
+  });
+  
+  // General error handler
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('404.ejs', { error: err.message || 'Something went wrong!' });
+  });
+ */
 app.use((req, res, next) => {
     res.locals.messages = req.flash();
     next();
@@ -104,7 +130,7 @@ app.get('/postulate/:id', async (req, res) => {
 }); */
 
 
- app.get(['/', '/home'], authenticate, async (req, res) => {
+ app.get(['/', '/home'],authenticate, async (req, res) => {
   try {
     const stages = await stage.findAll() || [];
 
