@@ -109,4 +109,28 @@ router.get('/', async (req, res) => {
     }
   })
 
+
+  router.delete('/soutenances/:id', async (req, res) => {
+    try {
+      const id = req.params.id;
+      
+      // Find the soutenance by ID
+      const soutenance = await Soutenance.findByPk(id);
+      
+      // Check if the soutenance exists
+      if (!soutenance) {
+        return res.status(404).json({ error: 'Soutenance non trouvée' });
+      }
+  
+      // Delete the soutenance
+      await soutenance.destroy();
+      
+      // Send a success response
+      res.status(200).json({ message: 'Soutenance supprimée avec succès' });
+    } catch (error) {
+      console.error('Error deleting soutenance:', error);
+      res.status(500).json({ error: 'Erreur lors de la suppression de la soutenance' });
+    }
+  });
+
 module.exports = router;
