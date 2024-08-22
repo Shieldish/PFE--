@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Gestion des Tables</title>
+    <%- include('./common/head') %>
+
+    <link rel="stylesheet" href="../public/css/dashboard.css">
+
+    <style>
+        body {
+            background-color: white;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: rgb(13, 10, 10);
+            color: #fdf9f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: auto;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f0efef;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .search-bar input {
+            background-color: transparent;
+            border: none;
+            color: #100f0f;
+            width: 600px;
+            padding: 5px;
+            outline: none;
+        }
+
+        .search-bar i {
+            color: #077c19;
+            margin-right: 5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .user-info i {
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .user-avatar img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-container {
+            display: flex;
+            margin: 0;
+            padding: 0 !important;
+            max-width: none;
+            top: 0;
+            bottom: 0;
+            flex-grow: 1;
+            min-height: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0;
+            margin: 0;
+            width: auto;
+            height: auto;
+            overflow: auto;
+        }
+
+                /* Card styling */
+.card {
+    max-width: 850px;
+    margin: 2rem auto;
+    border-width: 10px;
+    padding: 4rem;
+    border-radius: 10px;
+    
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+   /*  border: none; */
+}
+
+.card:hover {
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    transform: translateY(-5px);
+}
+
+/* Form header */
+.card-body h2 {
+    color: #007bff;
+    margin-bottom: 2rem;
+    transition: color 0.3s ease;
+   align-self: center;
+   
+}
+
+.card-body h2:hover {
+    color: #0056b3;
+}
+
+/* Input fields */
+.form-control {
+    border-radius: 0;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #007bff;
+}
+
+/* Custom file input */
+.custom-file-label {
+    border-radius: 0;
+}
+
+/* Submit button */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 0;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Section headers */
+h4 {
+    color: #007bff;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin: 1rem;
+    }
+}
+    </style>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="custom-container">
+        <%- include('./common/sidebar') %>
+        <div class="main-content">
+            <%- include('./common/navbar') %>
+
+
+            <main class="candidature" >
+             
+
+                <div class="container mt-5">
+                    <div class="card">
+                      <div class="card-body">
+                        <h2 class="text-center font-weight-bold mb-4">
+                          <i class="bi bi-file-earmark-text"></i> Candidature
+                        </h2>
+                        <form action="/etudiant/postulate/<%= stage.id %>" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="nom"><i class="bi bi-person"></i> Nom</label>
+                              <input type="text" class="form-control" id="nom" name="nom" required>
+                              <div class="invalid-feedback">Veuillez saisir votre nom.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="prenom"><i class="bi bi-person"></i> Prénom</label>
+                              <input type="text" class="form-control" id="prenom" name="prenom" required>
+                              <div class="invalid-feedback">Veuillez saisir votre prénom.</div>
+                            </div>
+                          </div>
+                  
+                          <div class="row">
+                            <div class="col-md-4 mb-3">
+                              <label for="date-naissance"><i class="bi bi-calendar"></i> Date de naissance</label>
+                              <input type="date" class="form-control" id="date-naissance" name="date_naissance" required>
+                              <div class="invalid-feedback">Veuillez sélectionner votre date de naissance.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                              <label for="telephone"><i class="bi bi-telephone"></i> Téléphone</label>
+                              <input type="tel" class="form-control" id="telephone" name="telephone" required>
+                              <div class="invalid-feedback">Veuillez saisir votre numéro de téléphone.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                              <label for="email"><i class="bi bi-envelope"></i> Email</label>
+                              <input type="email" class="form-control" id="email" name="email" required>
+                              <div id="email-feedback" class="invalid-feedback">
+                                Veuillez saisir une adresse email valide.
+                            </div>
+                              <!-- <div id="email-feedback" class="invalid-feedback" style="display: none;">
+                                Cet e-mail est déjà utilisé pour postuler à ce stage.
+                            </div> -->
+                            </div>
+                          </div>
+                  
+                          <div class="mb-3">
+                            <label for="adresse"><i class="bi bi-house"></i> Adresse</label>
+                            <input type="text" class="form-control" id="adresse" name="adresse" required>
+                            <div class="invalid-feedback">Veuillez saisir votre adresse.</div>
+                          </div>
+                  
+                          <hr class="my-4">
+                  
+                          <h4 class="mb-3"><i class="bi bi-mortarboard"></i> Formation</h4>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="niveau-etudes">Niveau d'études actuel</label>
+                              <select class="custom-select d-block w-100" id="niveau-etudes" name="niveau_etudes" required>
+                                <option value="">Sélectionner un niveau</option>
+                                <option>Baccalauréat</option>
+                                <option>Licence</option>
+                                <option>Master</option>
+                                <option>Ingénieur</option>
+                                <option>Doctorat</option>
+                              </select>
+                              <div class="invalid-feedback">Veuillez sélectionner votre niveau d'études.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="institution">Institution/Université</label>
+                              <input type="text" class="form-control" id="institution" name="institution" required>
+                              <div class="invalid-feedback">Veuillez saisir votre institution/université.</div>
+                            </div>
+                          </div>
+                  
+                          <div class="row">
+                            <div class="col-md-4 mb-3">
+                              <label for="domaine-etudes"><i class="bi bi-book"></i> Domaine d'études</label>
+                              <input type="text" class="form-control" id="domaine-etudes" name="domaine_etudes" required>
+                              <div class="invalid-feedback">Veuillez saisir votre domaine d'études.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                              <label for="section"><i class="bi bi-diagram-3"></i> Section</label>
+                              <input type="text" class="form-control" id="section" name="section" required>
+                              <div class="invalid-feedback">Veuillez saisir votre section.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                              <label for="annee-obtention"><i class="bi bi-calendar-check"></i> Année d'obtention du diplôme</label>
+                              <input type="number" class="form-control" id="annee-obtention" name="annee_obtention" required>
+                              <div class="invalid-feedback">Veuillez saisir l'année d'obtention.</div>
+                            </div>
+                          </div>
+                  
+                          <hr class="my-4">
+                  
+                          <h4 class="mb-3"><i class="bi bi-briefcase"></i> Expérience et Motivations</h4>
+                          <div class="mb-3">
+                            <label>Avez-vous déjà effectué un stage ?</label>
+                            <div class="custom-control custom-radio">
+                              <input id="experience-oui" name="experience" type="radio" class="custom-control-input" value="oui" required>
+                              <label class="custom-control-label" for="experience-oui">Oui</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                              <input id="experience-non" name="experience" type="radio" class="custom-control-input" value="non" required>
+                              <label class="custom-control-label" for="experience-non">Non</label>
+                            </div>
+                            <div class="invalid-feedback">Veuillez sélectionner une option.</div>
+                          </div>
+                  
+                          <div class="mb-3">
+                            <label for="experience-description"><i class="bi bi-chat-quote"></i> Si oui, décrivez brièvement votre expérience</label>
+                            <textarea class="form-control" id="experience-description" name="experience_description"></textarea>
+                          </div>
+                  
+                          <div class="mb-3">
+                            <label for="motivation"><i class="bi bi-lightbulb"></i> Quelles sont vos motivations pour postuler à ce stage ?</label>
+                            <textarea class="form-control" id="motivation" name="motivation" required></textarea>
+                            <div class="invalid-feedback">Veuillez saisir vos motivations.</div>
+                          </div>
+                  
+                          <hr class="my-4">
+                  
+                          <h4 class="mb-3"><i class="bi bi-gear"></i> Compétences</h4>
+                          <div class="row">
+                            <div class="col-md-4 mb-3">
+                              <label for="langues"><i class="bi bi-translate"></i> Langues parlées/écrites</label>
+                              <input type="text" class="form-control" id="langues" name="langues" required>
+                              <div class="invalid-feedback">Veuillez saisir les langues.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                              <label for="logiciels"><i class="bi bi-pc-display"></i> Logiciels/Outils maîtrisés</label>
+                              <input type="text" class="form-control" id="logiciels" name="logiciels">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                              <label for="competences_autres"><i class="bi bi-star"></i> Autres compétences pertinentes</label>
+                              <input type="text" class="form-control" id="competences_autres" name="competences_autres">
+                            </div>
+                          </div>
+                  
+                          <hr class="my-4">
+                  
+                          <h4 class="mb-3"><i class="bi bi-calendar-range"></i> Disponibilités</h4>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="date-debut">Dates de début de stage souhaitées</label>
+                              <input type="date" class="form-control" id="date-debut" name="date_debut">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="duree-stage">Durée de stage souhaitée</label>
+                              <select class="custom-select d-block w-100" id="duree-stage" name="duree_stage">
+                                <option value="">Sélectionner une durée</option>
+                                <option value="1">1 mois</option>
+                                <option value="2">2 mois</option>
+                                <option value="3">3 mois</option>
+                                <option value="6">6 mois</option>
+                                <option value="12">12 mois</option>
+                              </select>
+                            </div>
+                          </div>
+                  
+                          <hr class="my-4">
+                  
+                          <h4 class="mb-3"><i class="bi bi-file-earmark"></i> Pièces justificatives</h4>
+                          <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="cv" name="cv" accept=".pdf" required>
+                            <label class="custom-file-label" for="cv">CV (obligatoire, format PDF)</label>
+                            <div class="invalid-feedback">Veuillez uploader votre CV.</div>
+                          </div>
+                          <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="lettre-motivation" name="lettre_motivation">
+                            <label class="custom-file-label" for="lettre-motivation">Lettre de motivation (optionnel)</label>
+                          </div>
+                          <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="releves-notes" name="releves_notes" accept=".pdf">
+                            <label class="custom-file-label" for="releves-notes">Relevés de notes (optionnel, format PDF)</label>
+                          </div>
+                  
+                          <hr class="my-4">
+                  
+                          <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="certify" required>
+                            <label class="custom-control-label" for="certify">Je certifie l'exactitude des informations fournies.</label>
+                            <div class="invalid-feedback">Vous devez certifier l'exactitude des informations avant de soumettre.</div>
+                          </div>
+                  
+                          <p class="text-danger mb-4">NB : Après soumission, il n'est plus possible de modifier !</p>
+                  
+                          <button class="btn btn-primary btn-lg btn-block" type="submit">
+                            <i class="bi bi-send"></i> Soumettre la candidature
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <script>
+                  // Example starter JavaScript for disabling form submissions if there are invalid fields
+                  (function() {
+                    'use strict';
+                    window.addEventListener('load', function() {
+                      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                      var forms = document.getElementsByClassName('needs-validation');
+                      // Loop over them and prevent submission
+                      var validation = Array.prototype.filter.call(forms, function(form) {
+                        form.addEventListener('submit', function(event) {
+                          if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                          }
+                          form.classList.add('was-validated');
+                        }, false);
+                      });
+                    }, false);
+                  })();
+                  </script>
+            </main>
+
+            <%- include('./common/footer') %>
+        </div>
+        <div id="tableData" class="mt-3"></div>
+    </div>
+    <%- include('./common/scripts') %>
+</body>
+<!-- <script>
+    document.getElementById('email').addEventListener('blur', async () => {
+        const emailInput = document.getElementById('email');
+        const email = emailInput.value.trim();
+        if (email === '') return;
+    
+        const stageId = '<%= stage.id %>';
+    
+        try {
+            const response = await fetch(`/etudiant/check-email?email=${email}&stageId=${stageId}`);
+            const data = await response.json();
+            if (data.exists) {
+                emailInput.setCustomValidity('Email is already in use.');
+                emailInput.classList.add('is-invalid');
+                document.getElementById('email-feedback').style.display = 'block';
+            } else {
+                emailInput.setCustomValidity('');
+                emailInput.classList.remove('is-invalid');
+                document.getElementById('email-feedback').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error checking email:', error);
+        }
+    });
+    </script> -->
+
+    <script>
+        document.getElementById('email').addEventListener('blur', async () => {
+            const emailInput = document.getElementById('email');
+            const emailFeedback = document.getElementById('email-feedback');
+            const email = emailInput.value.trim();
+        
+            // Check if email is empty or invalid format
+            if (email === '' || !emailInput.checkValidity()) {
+                emailInput.setCustomValidity('');
+                emailFeedback.textContent = 'Veuillez saisir une adresse email valide.';
+                emailInput.classList.add('is-invalid');
+                return;
+            }
+        
+            const stageId = '<%= stage.id %>';
+        
+            try {
+                const response = await fetch(`/etudiant/check-email?email=${email}&stageId=${stageId}`);
+                const data = await response.json();
+                if (data.exists) {
+                    emailInput.setCustomValidity('Cet e-mail est déjà utilisé pour postuler à ce stage.');
+                    emailFeedback.textContent = 'Cet e-mail est déjà utilisé pour postuler à ce stage.';
+                    emailInput.classList.add('is-invalid');
+                } else {
+                    emailInput.setCustomValidity('');
+                    emailInput.classList.remove('is-invalid');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la vérification de l\'email:', error);
+            }
+        });
+        </script>
+
+
+
+
+<script>
+  document.getElementById('candidatureForm').addEventListener('submit', function(event) {
+    // Check if the checkbox is checked
+    if (!document.getElementById('flexCheckDefault').checked) {
+      // If not checked, prevent form submission
+      event.preventDefault();
+      // Display the error message
+      document.querySelector('.invalid-feedback').style.display = 'block';
+    }
+  });
+</script>
+    <script>// Initialize custom file input
+      $('.custom-file-input').on('change', function() {
+        let fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').addClass('selected').html(fileName);
+      });</script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</html>

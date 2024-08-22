@@ -817,4 +817,26 @@ router.post('/stages/byIds', async (req, res) => {
   }
 });
 
+
+router.get('/application/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log('id', id);
+
+    const exist = await stage.findByPk(id);
+
+    if (!exist) {
+      return res.render('404', { error: 'Le stage auquel vous voulez postuler est introuvable' });
+    }
+
+    // Pass the stage information to the template
+    res.render('postulerMaintenant', { stage: exist });
+
+  } catch (error) {
+    console.log('error', error);
+    res.render('404', { error: 'Une erreur est survenue lors du chargement de la page' });
+  }
+});
+
+
 module.exports = router;
