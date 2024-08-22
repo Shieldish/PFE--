@@ -4,6 +4,86 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    z-index: 1000;
+    padding: 20px;
+    margin-left:calc(230px + 30px); /* Sidebar width plus additional spacing */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.scrollable-content {
+    margin-top: 150px; /* Adjust this value based on the height of your fixed header */
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.table-container {
+    padding: 20px;
+}
+
+/* Existing table styles */
+#soutenances-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#soutenances-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#soutenances-table th,
+#soutenances-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+#soutenances-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #f8f9fa;
+}
+
+.sticky-column {
+    position: sticky;
+    background-color: #f8f9fa;
+    z-index: 1;
+}
+
+#soutenances-table th.sticky-column:nth-child(1) { left: 0; z-index: 3; }
+#soutenances-table th.sticky-column:nth-child(2) { left: 50px; z-index: 3; }
+#soutenances-table td.sticky-column:nth-child(1) { left: 0; }
+#soutenances-table td.sticky-column:nth-child(2) { left: 50px; }
+
+/* Ensure the corner cells stay on top */
+#soutenances-table th.sticky-column {
+    z-index: 4;
+}
+</style>
  
 </head>
 <body>
@@ -28,28 +108,30 @@
 
 
 
-
-            <h1>Soutenances</h1>
-            <div class="d-flex justify-content-start mt-3">
-                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#addSoutenanceModal">
-                    <i class="bi bi-person-plus"></i> Ajouter une Soutenance
-                </button>
-                <button type="button" class="btn btn-outline-secondary ms-auto update-btn" id="updateTableButton">
-                    <i class="bi bi-arrow-repeat"></i> Mettre à jour le table
-                </button>
+         <div class="page-container">
+            <div class="fixed-header">
+                <h1>Soutenances</h1>
+                <div class="button-container">
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#addSoutenanceModal">
+                        <i class="bi bi-person-plus"></i> Ajouter une Soutenance
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary ms-auto update-btn" id="updateTableButton">
+                        <i class="bi bi-arrow-repeat"></i> Mettre à jour le table
+                    </button>
+                </div>
             </div>
-            
+       
 
-           
             <hr style="padding: 5px;">
-          <div class="myElement">  
+          <div class="myElement scrollable-content ">  
+            <div class="table-container"></div>
             <table id="soutenances-table" class="  searchable sortable">
                 <thead>
                     <tr>
                         <th>Action</th>  <!-- Add a new column for action buttons -->
                         
-                        <th>ID</th>
-                        <th>Date</th>
+                        <th class="sticky-column">Action</th>
+                          <th class="sticky-column">ID</th>
                         <th>Heure</th>
                         <th>Salle</th>
                         <th>Groupe</th>
@@ -68,12 +150,12 @@
                 <tbody>
                     <% soutenances.forEach(function(soutenance) { %>
                         <tr data-id="<%= soutenance.id %>">
-                            <td>
+                            <td class="sticky-column">
                                 <button class="btn btn-sm btn-outline-warning delete-btn" data-id="<%= soutenance.id %>">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>
-                            <td><%= soutenance.id %></td>
+                            <td class="sticky-column"><%= soutenance.id %></td>
                             <td><input type="date" value="<%= soutenance.date %>" data-field="date"></td>
                             <td><input type="time" value="<%= soutenance.time %>" data-field="time"></td>
                             <td><input type="text" value="<%= soutenance.salle %>" data-field="salle"></td>
@@ -98,10 +180,13 @@
                     <% }); %>
                 </tbody>
             </table>
+            </div>
         </div>     
+    </div>
             <hr>
-            <%-include('./common/footer') %>
+         
         </div>
+      
     </div>
 
 
@@ -459,71 +544,6 @@ document.addEventListener('DOMContentLoaded', function () {
    </script>
 
 
-<!--     <script> 
-document.addEventListener('DOMContentLoaded', function () {
-    const updateButton = document.getElementById('updateTableButton');
-    const table = document.getElementById('soutenances-table');
-  
-    updateButton.addEventListener('click', function () {
-      const rows = Array.from(table.querySelectorAll('tbody tr'));
-      const dataToCheck = rows.map(row => {
-        return {
-          id: row.getAttribute('data-id'),
-          date: row.querySelector('input[data-field="date"]').value,
-          time: row.querySelector('input[data-field="time"]').value,
-          salle: row.querySelector('input[data-field="salle"]').value,
-          president: row.querySelector('input[data-field="president"]').value,
-          rapporteur: row.querySelector('input[data-field="rapporteur"]').value,
-          encadrantAcademique: row.querySelector('input[data-field="encadrantAcademique"]').value,
-          encadrantProfessionnel: row.querySelector('input[data-field="encadrantProfessionnel"]').value
-        };
-      });
-  
-      // Send the data to the backend for validation
-      fetch('/planification/validate-soutenances', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ soutenances: dataToCheck }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Clear previous highlights
-        rows.forEach(row => {
-          row.querySelectorAll('input, select').forEach(input => {
-            input.classList.remove('is-invalid');
-          });
-        });
-  
-        data.duplicates.forEach(duplicate => {
-            const row = table.querySelector(`tr[data-id="${duplicate.id}"]`);
-            if (row) {
-                duplicate.fields.forEach(field => {
-                    const input = row.querySelector(`[data-field="${field}"]`);
-                    if (input) {
-                        input.classList.add('is-invalid');
-
-                        // Find the conflicting row's data
-                        const conflictingRow = rows.find(r => {
-                            const id = r.getAttribute('data-id');
-                            return data.duplicates.some(d => d.id === id && d.fields.includes(field));
-                        });
-
-                        if (conflictingRow) {
-                            const conflictingId = conflictingRow.getAttribute('data-id');
-                            const conflictingValue = conflictingRow.querySelector(`[data-field="${field}"]`).value;
-                            input.setAttribute('title', `Conflit avec ID: ${conflictingId},  ${field} : ${conflictingValue}`);
-                        }
-                    }
-                });
-            }
-        });
-    })
-      .catch(error => console.error('Error:', error));
-    });
-  });
-</script>   -->
 
 <script> 
     document.addEventListener('DOMContentLoaded', function () {
