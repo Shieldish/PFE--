@@ -1,5 +1,5 @@
 const express = require('express');
-const Soutenance=require('../model/Soutenance')
+const Soutenance=require('../model/soutenanceModel')
 const router = express.Router();
 const { Op } = require('sequelize');
 const fs = require('fs');
@@ -44,59 +44,116 @@ router.get('/', async (req, res) => {
       res.status(400).json({ error: error.message });
     }
   });
-  async function checkConflicts(data, id) {
-    const conflictConditions = [];
-    const conflictFields = ['id'];
-  
-    // Add conditions to the array based on the provided data fields
-    if (data.date && data.time && data.salle) {
-      conflictConditions.push({ date: data.date, time: data.time, salle: data.salle });
-      conflictFields.push('date', 'time', 'salle');
-    }
-    if (data.date && data.president) {
-      conflictConditions.push({ date: data.date, president: data.president });
-      conflictFields.push('date', 'president');
-    }
-    if (data.date && data.rapporteur) {
-      conflictConditions.push({ date: data.date, rapporteur: data.rapporteur });
-      conflictFields.push('date', 'rapporteur');
-    }
-    if (data.date && data.encadrantAcademique) {
-      conflictConditions.push({ date: data.date, encadrantAcademique: data.encadrantAcademique });
-      conflictFields.push('date', 'encadrantAcademique');
-    }
-    if (data.date && data.encadrantProfessionnel) {
-      conflictConditions.push({ date: data.date, encadrantProfessionnel: data.encadrantProfessionnel });
-      conflictFields.push('date', 'encadrantProfessionnel');
-    }
-  
-    // If no conditions were added, return an empty array (no conflicts)
-    if (conflictConditions.length === 0) {
-      return [];
-    }
-  
-    // Perform the query with the built conditions and return only the fields in conflict
-    const conflictingData = await Soutenance.findAll({
-      where: {
-        id: { [Op.ne]: id },
-        [Op.or]: conflictConditions,
-      },
-      attributes: conflictFields // Return only the conflicting fields
-    });
 
-    const cleanedConflicts = conflictingData.map(conflict => {
-      const cleanedConflict = {};
-      for (const key in conflict.dataValues) {
-        if (conflict.dataValues[key] !== undefined && conflict.dataValues[key] !== '') {
-          cleanedConflict[key] = conflict.dataValues[key];
-        }
-      }
-      return cleanedConflict;
 
-    });
-    return cleanedConflicts;
+/* async function checkConflicts(data, id) {
+  const conflictConditions = [];
+  const conflictFields = ['id'];
+
+  // Handle the first condition only if date, time, and salle are all provided and not empty
+  if (data.date && data.time && data.salle && data.salle.trim()) {
+    conflictConditions.push({ date: data.date, time: data.time.trim(), salle: data.salle.trim() });
+    conflictFields.push('date', 'time', 'salle');
+  }
+
+  // Add conditions for president, rapporteur, encadrantAcademique, and encadrantProfessionnel
+  // These conditions only consider date and the respective role fields
+
+  if (data.date && data.president && data.president.trim()) {
+    conflictConditions.push({ date: data.date, president: data.president.trim() });
+    conflictFields.push('date', 'president');
   }
   
+  if (data.date && data.rapporteur && data.rapporteur.trim()) {
+    conflictConditions.push({ date: data.date, rapporteur: data.rapporteur.trim() });
+    conflictFields.push('date', 'rapporteur');
+  }
+  
+  if (data.date && data.encadrantAcademique && data.encadrantAcademique.trim()) {
+    conflictConditions.push({ date: data.date, encadrantAcademique: data.encadrantAcademique.trim() });
+    conflictFields.push('date', 'encadrantAcademique');
+  }
+  
+  if (data.date && data.encadrantProfessionnel && data.encadrantProfessionnel.trim()) {
+    conflictConditions.push({ date: data.date, encadrantProfessionnel: data.encadrantProfessionnel.trim() });
+    conflictFields.push('date', 'encadrantProfessionnel');
+  }
+
+  // If no conditions were added, return an empty array (no conflicts)
+  if (conflictConditions.length === 0) {
+    return [];
+  }
+
+  // Perform the query with the built conditions and return only the fields in conflict
+  const conflictingData = await Soutenance.findAll({
+    where: {
+      id: { [Op.ne]: id },
+      [Op.or]: conflictConditions,
+    },
+    attributes: conflictFields // Return only the conflicting fields
+  });
+
+  // Clean the conflicts by removing undefined and empty string values, and trimming strings
+  const cleanedConflicts = conflictingData.map(conflict => {
+    const cleanedConflict = {};
+    for (const key in conflict.dataValues) {
+      const value = conflict.dataValues[key];
+      if (value !== undefined && value !== '' && typeof value === 'string') {
+        cleanedConflict[key] = value.trim();
+      } else if (value !== undefined && value !== '') {
+        cleanedConflict[key] = value; // Retain non-string values as they are
+      }
+    }
+    return cleanedConflict;
+  });
+
+  return cleanedConflicts;
+}
+
+ */
+
+async function checkConflicts(data, id) {
+  const duplicates = [];
+
+  // Fetch all soutenances except the one being updated
+  const soutenances = await Soutenance.findAll({
+    where: {
+      id: { [Op.ne]: id }
+    }
+  });
+
+  // Loop through all soutenances and compare
+  for (let i = 0; i < soutenances.length; i++) {
+    // Only compare with the provided data (similar to soutenances[j])
+    if (soutenances[i].date === data.date && 
+        soutenances[i].time.trim() === data.time.trim()) {
+
+      // Check for duplicates in 'salle' ignoring empty fields
+      if (soutenances[i].salle && data.salle && 
+          soutenances[i].salle.trim() === data.salle.trim()) {
+        duplicates.push({
+          id: soutenances[i].id,
+          fields: ['date', 'time', 'salle']
+        });
+      }
+
+      // Role fields to check
+      const roleFields = ['president', 'rapporteur', 'encadrantAcademique', 'encadrantProfessionnel'];
+      roleFields.forEach(field => {
+        // Check for duplicates in role fields ignoring empty fields
+        if (soutenances[i][field] && data[field] && 
+            soutenances[i][field].trim() === data[field].trim()) {
+          duplicates.push({
+            id: soutenances[i].id,
+            fields: [field]
+          });
+        }
+      });
+    }
+  }
+
+  return duplicates;
+}
 
 
   router.post('/Addsoutenances', async (req,res)=>{
@@ -156,11 +213,11 @@ router.post('/validate-soutenances', (req, res) => {
   for (let i = 0; i < soutenances.length; i++) {
     for (let j = i + 1; j < soutenances.length; j++) {
         if (soutenances[i].date === soutenances[j].date && 
-            soutenances[i].time === soutenances[j].time) {
+            soutenances[i].time.trim() === soutenances[j].time.trim()) {
 
             // Check for duplicates in 'salle' ignoring empty fields
             if (soutenances[i].salle && soutenances[j].salle && 
-                soutenances[i].salle === soutenances[j].salle) {
+                soutenances[i].salle.trim() === soutenances[j].salle.trim()) {
                 duplicates.push({
                     id: soutenances[i].id,
                     fields: ['date', 'time', 'salle']
@@ -175,7 +232,7 @@ router.post('/validate-soutenances', (req, res) => {
             roleFields.forEach(field => {
                 // Check for duplicates in role fields ignoring empty fields
                 if (soutenances[i][field] && soutenances[j][field] && 
-                    soutenances[i][field] === soutenances[j][field]) {
+                    soutenances[i][field].trim() === soutenances[j][field].trim()) {
                     duplicates.push({
                         id: soutenances[i].id,
                         fields: [field]
@@ -188,10 +245,10 @@ router.post('/validate-soutenances', (req, res) => {
             });
         }
     }
-}
+  }
 
-res.json({ duplicates });
+  res.json({ duplicates });
+});
 
-})
 
 module.exports = router;

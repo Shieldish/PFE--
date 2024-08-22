@@ -4,7 +4,7 @@ const zlib = require('node:zlib');
 const { sequelize } = require('./model');
 const Stages=require('./stagesModel');
 const { enseignant, encadrant, etudiant } = require('./model');
-const Soutenance = require('./Soutenance');
+const Soutenance = require('./soutenanceModel');
 const { faker } = require('@faker-js/faker');
 
 

@@ -91,58 +91,58 @@
                        
 
             <!-- Add Soutenance Modal -->
-<div class="modal fade" id="addSoutenanceModal" tabindex="-1" aria-labelledby="addSoutenanceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addSoutenanceModalLabel">Ajouter une nouvelle Soutenance</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addSoutenanceForm">
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label for="date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="date" name="date" required>
+            <div class="modal fade" id="addSoutenanceModal" tabindex="-1" aria-labelledby="addSoutenanceModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSoutenanceModalLabel">Ajouter une nouvelle Soutenance</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <label for="time" class="form-label">Heure</label>
-                            <input type="time" class="form-control" id="time" name="time" required>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label for="salle" class="form-label">Salle</label>
-                            <input type="text" class="form-control" id="salle" name="salle" placeholder="Numéro de salle" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label for="groupe" class="form-label">Groupe</label>
-                            <input type="text" class="form-control" id="groupe" name="groupe" placeholder="Groupe" required>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label for="type" class="form-label">Type</label>
-                            <select class="form-control" id="type" name="type" required>
-                                <option value="">Choisir...</option>
-                                <option value="Binome">Binôme</option>
-                                <option value="Monome">Monôme</option>
-                                <option value="Trinome">Trinôme</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label for="etudiant1" class="form-label">Étudiant 1</label>
-                            <input type="text" class="form-control" id="etudiant1" name="etudiant1" placeholder="Nom de l'étudiant" required>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label for="etudiant2" class="form-label">Étudiant 2</label>
-                            <input type="text" class="form-control" id="etudiant2" name="etudiant2" placeholder="Nom de l'étudiant">
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label for="etudiant3" class="form-label">Étudiant 3</label>
-                            <input type="text" class="form-control" id="etudiant3" name="etudiant3" placeholder="Nom de l'étudiant">
-                        </div>
-                    </div>
+                        <div class="modal-body">
+                            <form id="addSoutenanceForm">
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="date" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="date" name="date" required>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="time" class="form-label">Heure</label>
+                                        <input type="time" class="form-control" id="time" name="time" required>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="salle" class="form-label">Salle</label>
+                                        <input type="text" class="form-control" id="salle" name="salle" placeholder="Numéro de salle" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="groupe" class="form-label">Groupe</label>
+                                        <input type="text" class="form-control" id="groupe" name="groupe" placeholder="Groupe" required>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="type" class="form-label">Type</label>
+                                        <select class="form-control" id="type" name="type" required>
+                                            <option value="">Choisir...</option>
+                                            <option value="Monome">Monôme</option>
+                                            <option value="Binome">Binôme</option>
+                                            <option value="Trinome">Trinôme</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="etudiant1" class="form-label">Étudiant 1</label>
+                                        <input type="text" class="form-control" id="etudiant1" name="etudiant1" placeholder="Nom de l'étudiant" required>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="etudiant2" class="form-label">Étudiant 2</label>
+                                        <input type="text" class="form-control" id="etudiant2" name="etudiant2" placeholder="Nom de l'étudiant">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="etudiant3" class="form-label">Étudiant 3</label>
+                                        <input type="text" class="form-control" id="etudiant3" name="etudiant3" placeholder="Nom de l'étudiant">
+                                    </div>
+                                </div>
                     <div class="row">
                         <div class="col-md-12 mb-2">
                             <label for="sujet" class="form-label">Sujet</label>
@@ -185,6 +185,66 @@
     </div>
 </div>
                             
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var typeSelect = document.getElementById('type');
+        var etudiant1 = document.getElementById('etudiant1');
+        var etudiant2 = document.getElementById('etudiant2');
+        var etudiant3 = document.getElementById('etudiant3');
+
+        function updateFields() {
+            var type = typeSelect.value;
+            var tooltipMessage = "Vous devez d'abord choisir le type";
+
+            if (type === 'Monome') {
+                enableField(etudiant1);
+                disableField(etudiant2, tooltipMessage);
+                disableField(etudiant3, tooltipMessage);
+            } else if (type === 'Binome') {
+                enableField(etudiant1);
+                enableField(etudiant2);
+                disableField(etudiant3, tooltipMessage);
+            } else if (type === 'Trinome') {
+                enableField(etudiant1);
+                enableField(etudiant2);
+                enableField(etudiant3);
+            } else {
+                disableField(etudiant1, tooltipMessage);
+                disableField(etudiant2, tooltipMessage);
+                disableField(etudiant3, tooltipMessage);
+            }
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.removeAttribute('data-bs-toggle');
+            field.removeAttribute('title');
+            field.classList.remove('disabled-tooltip');
+        }
+
+        function disableField(field, tooltipMessage) {
+            field.disabled = true;
+            field.setAttribute('data-bs-toggle', 'tooltip');
+            field.setAttribute('title', tooltipMessage);
+            field.classList.add('disabled-tooltip');
+            new bootstrap.Tooltip(field); // Initialize Bootstrap tooltip
+        }
+
+        // Initial check when the modal is opened
+        updateFields();
+
+        // Update fields whenever the type changes
+        typeSelect.addEventListener('change', updateFields);
+    });
+</script>
+
+<!-- Optional: Add some CSS for visual feedback -->
+<style>
+    .disabled-tooltip {
+        cursor: not-allowed;
+    }
+</style>
+
 <style>
     body {
         font-family: 'Arial', sans-serif;
