@@ -40,7 +40,7 @@
     background-color: #343a40;
     border-radius: 8px;
     padding: 1rem;
-    min-width: 200px;
+    min-width: 250px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -64,6 +64,8 @@
         .user-info {
             color: #ffffff;
             margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            text-align: center;
         }
 
         .menu-item {
@@ -91,6 +93,31 @@
             outline: none;
             box-shadow: 0 0 0 0.2rem rgba(255,255,255,.25);
 }
+
+.language-selector {
+                margin-bottom: 1rem;
+            }
+
+            .logout-btn {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+        .fancy-hr {
+            border: none;
+            border-top: 2px solid #17a2b8;
+            border-radius: 1px;
+            margin: 1rem 0;
+        }
+
+        .logout-btn {
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -125,20 +152,27 @@
             <li class="nav-item user-profile">
                 <img src="../public/images/user/2.png" alt="User Logo" class="rounded-full w-8 h-8" loading="lazy">
                 <div class="user-menu">
-                    <div class="user-info text-center">User Info</div>
+                    <div class="user-info text-center"></i></div>
                     <hr class="border-gray-600">
-                    <div class="user-name menu-item"></div>
+                    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100">
+                    <div class="user-name menu-item"></i></div>
                     <div class="user-prenom menu-item"></div>
                     <div class="user-email menu-item"></div>
                     <hr class="border-gray-600">
+                    <hr class="fancy-hr">
                     <a class="menu-item block" href="/settings">
-                        <i class="fas fa-user-cog mr-2"></i> Edit Profile
+                        <i class="fas fa-user-cog mr-2"></i> Editer Profiles
                     </a>
-                    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100">
+                 <!--    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100">
         <button class="btn btn-outline-danger logout-btn w-full text-left" id="logoutButton">
             <i class="fas fa-sign-out-alt"></i> Logout
         </button>
-                </div>
+                </div> -->
+
+                <hr class="fancy-hr">
+                <button class="btn btn-outline-danger logout-btn" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
             </li>
 
           <!--   <li class="nav-item">
