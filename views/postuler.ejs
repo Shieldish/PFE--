@@ -10,27 +10,9 @@
   <title><%= stage.Titre %></title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
+  
 
-    h1 {
-      color: #333;
-    }
-    h3{
-    text-align: center;
-    color: #4A90E2;
-    }
-
-    .job-details {
-      border: 1px solid #ccc;
-      font-size: 20px;
-      padding: 20px;
-      margin: 20px;
-      background-color:rgb(234, 234, 234);
-  /*     max-width: 30%; */
-      /* float: left; */
-    }
+  
 
     .job-details h2 {
       margin-top: 0;
@@ -40,208 +22,34 @@
     .job-details p {
       margin-bottom: 5px;
     }
+    .job-details {
+    border: 1px solid #ccc;
+    font-size: 20px;
+    padding: 20px;
+    margin: 20px;
+    background-color: rgb(234, 234, 234);
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
 
-   /*  .application-form {
-      width: 60%;
-     float: right ; 
-      padding: 20px;
-      border: 1px solid #ccc;
-      margin: 20px;
-   
-    
-    } */
+  .job-title {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-align: center; /* Center the job title */
+  }
 
-    /* Add styles for invalid input fields */
-.application-form .is-invalid {
-  border-color: #dc3545; /* Red border color */
-}
-
-/* Add styles for error message */
-.application-form .invalid-feedback {
-  color: #dc3545; /* Red text color */
-  display: block; /* Ensure the error message is displayed */
-  margin-top: 5px; /* Add some space between the input field and the error message */
-}
-
-
-    .application-form {
-   width: 100%; /* Set the width of the application form */
-   font-weight: bold;
-   padding: 20px;
-   border: 1px solid #ccc;
- 
-}
-    .application-form h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
-
-    .application-form label {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .application-form input[type="text"],
-    .application-form textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    .application-form input[type="tel"],
-    .application-form input[type="email"]
-    {
-      width: 50%;
-      padding: 5px;
-    }
-    .application-form select {
-      width: 100%;
-      height: 35px;
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-
-    .application-form input[type="checkbox"] {
-      margin-right: 5px;
-    }
-
-    .application-form label[for="experience-description"] {
-      display: inline-block;
-      margin-bottom: 5px;
-    }
-
-    .application-form textarea[name="experience-description"] {
-      width: 100%;
-      height: 100px;
-      resize: vertical;
-    }
-
-    .application-form input[type="file"] {
-      margin-bottom: 10px;
-    }
-
-    .application-form button {
-      padding: 10px 20px;
-      background-color:#4A90E2;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 1px;
-    }
-
- 
-
-  </style>
-</head>
-<body>
-  <div class="custom-container">
-    <%- include('./common/sidebar') %>
-
-    <div class="main-content">
-      <%- include('./common/navbar') %>
-
-      <a style="margin: 15px; " href="/etudiant" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left"></i> Retour
-     </a>
-
-      <h1 style="margin: 15px; padding: 15px;">Stage :</h1>
-     
-      <hr>
-      <%-include('./partial/flaskMessages') %>
-     
-
-      <div class="job-details animate__animated animate__fadeIn">
-        <h3 class="job-title">
-          <i class="fas fa-briefcase"></i> <%= stage.Titre %> 
-          <span class="job-location"><i class="fas fa-map-marker-alt"></i> <%= stage.Address %></span>
-        </h3>
-        <hr class="fancy-hr">
-        <h2 class="company-name"><i class="fas fa-building"></i> <%= stage.Nom %></h2>
-        <p class="job-location-full"><i class="fas fa-map-pin"></i> <%= stage.Address %></p>
-        <p class="job-duration">
-          <i class="fas fa-calendar-alt"></i> Du <%= new Date(stage.createdAt).toLocaleString('fr-FR', { dateStyle: 'long' }) %> 
-          <i class="fas fa-long-arrow-alt-right"></i> 
-          Au <%= new Date(stage.DateFin).toLocaleString('fr-FR', { dateStyle: 'long' }) %>
-        </p>
-        <hr class="fancy-hr">
-        <div class="job-info-grid">
-          <p><i class="fas fa-users"></i> <strong>Postes vacants:</strong> <%= stage.PostesVacants %> poste(s) ouvert(s)</p>
-          <p><i class="fas fa-star"></i> <strong>Experience :</strong> <%= stage.Experience %></p>
-          <p><i class="fas fa-graduation-cap"></i> <strong>Niveau :</strong> <%= stage.Niveau %></p>
-          <p><i class="fas fa-language"></i> <strong>Langue :</strong> <%= stage.Langue %></p>
-        </div>
-        <hr class="fancy-hr">
-        <div class="contact-info">
-          <p>
-            <i class="fas fa-envelope"></i> <strong>Email :</strong> 
-            <a href="mailto:<%= stage.Email %>" class="email-link"><%= stage.Email %></a>
-            <% if (stage.Email2) { %>
-              / <a href="mailto:<%= stage.Email2 %>" class="email-link"><%= stage.Email2 %></a>
-            <% } %>
-          </p>
-          <p><i class="fas fa-phone"></i> <strong>Tél :</strong> <%= stage.Telephone %></p>
-          <p><i class="fas fa-fax"></i> <strong>Fax :</strong> <%= stage.Fax %></p>
-        </div>
-        <hr class="fancy-hr">
-        <div class="job-description">
-          <h4><i class="fas fa-file-alt"></i> Description de l'emploi</h4>
-          <p><%= stage.Description %></p>
-        </div>
-      </div>
-
-
-      <a href="/etudiant/application/<%= stage.id %>" class="apply-button">
-        <i class="fas fa-paper-plane"></i> Postuler maintenant
-    </a>
-
-    <style>
-      .apply-button {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 20px;
-    font-size: 16px;
-    text-decoration: none;
-    color: #ffffff;
-    background-color: #007bff; /* Bootstrap primary color */
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.apply-button i {
-    margin-right: 8px;
-}
-
-.apply-button:hover {
-    background-color: #0056b3; /* Darker shade for hover effect */
-    transform: scale(1.05);
-}
-
-.apply-button:active {
-    background-color: #004085; /* Even darker shade for active effect */
-}
-
-    </style>
-
-      <style>.job-details {
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
-        margin-bottom: 2rem;
-      }
-      
-      .job-title {
-        font-size: 1.8rem;
-        color: #2c3e50;
-        text-transform: uppercase;
-        margin-bottom: 1rem;
-      }
-      
-      .job-location {
-        font-size: 1rem;
-        color: #7f8c8d;
-        margin-left: 1rem;
-      }
+   .job-location {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin-left: 1rem;
+    display: block; /* Ensure the location appears on a new line */
+    text-align: center; /* Center the location */
+  }
       
       .company-name {
         font-size: 1.5rem;
@@ -264,11 +72,11 @@
       
       .fancy-hr {
         border: 0;
-        height: 1px;
+        height: 3px;
         background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
         margin: 1.5rem 0;
       }
-      
+   
       .job-info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -314,240 +122,128 @@
       i {
         margin-right: 0.5rem;
        
-      }</style>
+      }
 
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-md-8">
-            <div class="application-form">
-              <h2 class="text-center font-weight-bold">Formulaire de Candidature pour un Stage</h2>
-              <hr>
-              <form action="/etudiant/postulate/<%= stage.id %>" method="post" enctype="multipart/form-data">
-                <div class="application-form-section">
-                  <h3>Informations personnelles</h3>
-                  <div class="form-group">
-                    <label for="nom">Nom :</label>
-                    <input type="text" class="form-control" id="nom" name="nom" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="prenom">Prénom :</label>
-                    <input type="text" class="form-control" id="prenom" name="prenom" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="date-naissance">Date de naissance :</label>
-                    <input type="date" class="form-control" id="date-naissance" name="date_naissance" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="adresse">Adresse :</label>
-                    <input type="text" class="form-control" id="adresse" name="adresse" required>
-                  </div>
-                   
-                   <div class="form-group">
-                    <label for="telephone">Téléphone :</label>
-                    <input type="tel" class="form-control" id="telephone" name="telephone" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email :</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                    <div id="email-feedback" class="invalid-feedback" style="display: none;color: #dc3545; "><i style="font-weight: bold; color: #dc3545;">Cet e-mail est déjà utilisé pour postuler à ce stage</i></div>
-                  </div>
-                </div> 
 
-                <hr>
-                <div class="application-form-section">
-                  <h3>Formation</h3>
-                  <div class="form-group">
-                    <label for="niveau-etudes">Niveau d'études actuel :</label>
-                    <select class="form-control" id="niveau-etudes" name="niveau_etudes" required>
-                      <option value="">Sélectionner un niveau</option>
-                      <option value="Baccalauréat">Baccalauréat</option>
-                      <option value="Licence">Licence</option>
-                      <option value="Master">Master</option>
-                      <option value="Master">Ingenieur</option>
-                      <option value="Doctorat">Doctorat</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="institution">Institution/Université :</label>
-                    <input type="text" class="form-control" id="institution" name="institution" required>
-                  </div>
-                  <div class="form -group">
-                    <label for="domaine-etudes">Domaine d'études :</label>
-                    <input type="text" class="form-control" id="domaine-etudes" name="domaine_etudes" required>
-                  </div>
-                  <div class="form -group">
-                    <label for="section">Section :</label>
-                    <input type="text" class="form-control" id="section" name="section" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="annee-obtention">Année d'obtention du diplôme (prévue) :</label>
-                    <input type="number" class="form-control" id="annee-obtention" name="annee_obtention" required>
-                  </div>
-                </div>
-                <hr>
-                <div class="application-form-section">
-                  <h3>Expérience pertinente</h3>
-                  <div class="form-group">
-                    <label>Avez-vous déjà effectué un stage ?</label>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" id="experience-oui" name="experience" value="oui" required>
-                      <label class="form-check-label" for="experience-oui">Oui</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" id="experience-non" name="experience" value="non" required>
-                      <label class="form-check-label" for="experience-non">Non</label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="experience-description">Si oui, décrivez brièvement votre expérience :</label>
-                    <textarea class="form-control" id="experience-description" name="experience_description"></textarea>
-                  </div>
-                </div>
-                <hr>
-                <div class="application-form-section">
-                  <h3>Motivation pour ce stage</h3>
-                  <div class="form-group">
-                    <label for="motivation">Quelles sont vos motivations pour postuler à ce stage ?</label>
-                    <textarea class="form-control" id="motivation" name="motivation" required></textarea>
-                  </div>
-                </div>
-                <hr>
-                <div class="application-form-section">
-                  <h3>Compétences</h3>
-                  <div class="form-group">
-                    <label>Langues parlées/écrites :</label>
-                    <input type="text" class="form-control" name="langues" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Logiciels/Outils maîtrisés :</label>
-                    <input type="text" class="form-control" name="logiciels" >
-                  </div>
-                  <div class="form-group">
-                    <label>Autres compétences pertinentes :</label>
-                    <input type="text" class="form-control" name="competences_autres">
-                  </div>
-                </div>
-                <hr>
-                <div class="application-form-section">
-                  <h3>Disponibilités</h3>
-                  <div class="form -group">
-                    <label for="date-debut">Dates de début de stage souhaitées :</label>
-                    <input type="date" class="form-control" id="date-debut" name="date_debut" >
-                  </div>
-                  <div class="form-group">
-                    <label for="duree-stage">Durée de stage souhaitée :</label>
-                    <select class="form-control" id="duree-stage" name="duree_stage" >
-                      <option value="">Sélectionner une durée</option>
-                      <option value="1">1 mois</option>
-                      <option value="2">2 mois</option>
-                      <option value="3">3 mois</option>
-                      <option value="4">4 mois</option>
-                      <option value="5">5 mois</option>
-                      <option value="6">6 mois</option>
-                      <option value="7">7 mois</option>
-                      <option value="8">8 mois</option>
-                      <option value="9">9 mois</option>
-                      <option value="10">10 mois</option>
-                      <option value="11">11 mois</option>
-                      <option value="12">12 mois</option>
-                    </select>
-                  </div>
-                </div>
-                <hr>
-                <div class="application-form-section">
-                  <h3>Pièces justificatives</h3>
-                  <div class="form-group">
-                    <label for="cv">Veuillez joindre votre CV format pdf (obligatoire) :</label>
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="cv" name="cv" accept=".pdf" required>
-                      <label class="custom-file-label" for="cv">Choisir le fichier CV</label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="lettre-motivation">Veuillez joindre une lettre de motivation <i style="color: green;">(optionnel)</i> :</label>
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="lettre-motivation" name="lettre_motivation">
-                      <label class="custom-file-label" for="lettre-motivation">Choisir le fichier :une lettre de motivation  </label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="releves-notes">Veuillez joindre vos derniers relevés de notes <i style="color: green;">(optionnel)</i> :</label>
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="releves-notes" name="releves_notes" accept=".pdf">
-                      <label class="custom-file-label" for="releves-notes">Choisir le fichier : relevés de notes </label>
-                    </div>
-                  </div>
-                </div>
-                <hr>
-                <div class="application-form-section">
-                  <p>En soumettant ce formulaire, j'atteste que les informations fournies sont exactes et complètes.</p>
-                  <p style="color: #dc3545;">NB : Après soumission il n'est plus possible de modifier !</p>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Je certifie l'exactitude des informations fournies.
-                    </label>
-                    <div class="invalid-feedback" style="display: none;">Vous devez certifier l'exactitude des informations fournies avant de soumettre le formulaire.</div>
-                  </div>
-                  <hr>
-                  <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">Soumettre</button>
-                </div>
-              </form>
-            </div>
-          </div>
+  </style>
+      
+      <style>
+        .apply-button {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         padding: 10px 20px;
+         background-color: #007bff; /* Button color */
+         color: white;
+         border: none;
+         border-radius: 5px;
+         text-decoration: none;
+         font-weight: bold;
+         font-size: 16px;
+         transition: background-color 0.3s ease, transform 0.2s ease;
+         align-self: flex-end; /* Align the button to the flex-end */
+     }
+     
+     .apply-button i {
+         margin-right: 8px; /* Spacing between icon and text */
+         animation: fly 2s infinite;
+     }
+     
+     @keyframes fly {
+         0% {
+             transform: translateX(0);
+         }
+         50% {
+             transform: translateX(5px);
+         }
+         100% {
+             transform: translateX(0);
+         }
+     }
+     
+     .apply-button:hover {
+         background-color: #ebf400; /* Darker shade on hover */
+         transform: scale(1.05); /* Slightly enlarge the button */
+     }
+     
+     .apply-button:active {
+         background-color: #004085; /* Even darker shade on click */
+         transform: scale(0.95); /* Slightly shrink the button on click */
+     }
+     
+      </style>
+</head>
+<body>
+  <div class="custom-container">
+    <%- include('./common/sidebar') %>
+
+    <div class="main-content">
+      <%- include('./common/navbar') %>
+
+      <a style="margin: 15px; " href="/etudiant" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour
+     </a>
+
+  
+     
+      <hr>
+      <%-include('./partial/flaskMessages') %>
+     
+
+      <div class="job-details animate__animated animate__fadeIn">
+        <h3 class="job-title">
+          <i class="fas fa-briefcase"></i> <%= stage.Titre %> 
+          <span class="job-location"><i class="fas fa-map-marker-alt"></i> <%= stage.Address %></span>
+        </h3>
+        <hr class="fancy-hr">
+        <h2 class="company-name"><i class="fas fa-building"></i> <%= stage.Nom %></h2>
+        <p class="job-location-full"><i class="fas fa-map-pin"></i> <%= stage.Address %></p>
+        <p class="job-duration">
+          <i class="fas fa-calendar-alt"></i> Du <%= new Date(stage.createdAt).toLocaleString('fr-FR', { dateStyle: 'long' }) %> 
+          <i class="fas fa-long-arrow-alt-right"></i> 
+          Au <%= new Date(stage.DateFin).toLocaleString('fr-FR', { dateStyle: 'long' }) %>
+        </p>
+        <hr class="fancy-hr">
+        <div class="job-info-grid">
+          <p><i class="fas fa-users"></i> <strong>Postes vacants:</strong> <%= stage.PostesVacants %> poste(s) ouvert(s)</p>
+          <p><i class="fas fa-star"></i> <strong>Experience :</strong> <%= stage.Experience %></p>
+          <p><i class="fas fa-graduation-cap"></i> <strong>Niveau :</strong> <%= stage.Niveau %></p>
+          <p><i class="fas fa-language"></i> <strong>Langue :</strong> <%= stage.Langue %></p>
         </div>
+        <hr class="fancy-hr">
+        <div class="contact-info">
+          <p>
+            <i class="fas fa-envelope"></i> <strong>Email :</strong> 
+            <a href="mailto:<%= stage.Email %>" class="email-link"><%= stage.Email %></a>
+            <% if (stage.Email2) { %>
+              / <a href="mailto:<%= stage.Email2 %>" class="email-link"><%= stage.Email2 %></a>
+            <% } %>
+          </p>
+          <p><i class="fas fa-phone"></i> <strong>Tél :</strong> <%= stage.Telephone %></p>
+          <p><i class="fas fa-fax"></i> <strong>Fax :</strong> <%= stage.Fax %></p>
+        </div>
+        <hr class="fancy-hr">
+        <div class="job-description">
+          <h4><i class="fas fa-file-alt"></i> Description de l'emploi</h4>
+          <p><%= stage.Description %></p>
+        </div>
+
+        <a href="/etudiant/application/<%= stage.id %>" class="apply-button">
+          <i class="fas fa-paper-plane"></i> Postuler maintenant
+        </a>
       </div>
 
-    
+
+   
+            <div class="domaine-suggest">
+             
+            </div>
+  
+
+          <%- include('./common/footer') %>
     </div>
-    <%- include('./common/footer') %>
+  
   </div>
 
-  <script>
-    document.getElementById('email').addEventListener('blur', async () => {
-        const emailInput = document.getElementById('email');
-        const email = emailInput.value.trim();
-        if (email === '') return;
-    
-        const stageId = '<%= stage.id %>';
-    
-        try {
-            const response = await fetch(`/etudiant/check-email?email=${email}&stageId=${stageId}`);
-            const data = await response.json();
-            if (data.exists) {
-                emailInput.setCustomValidity('Email is already in use.');
-                emailInput.classList.add('is-invalid');
-                document.getElementById('email-feedback').style.display = 'block';
-            } else {
-                emailInput.setCustomValidity('');
-                emailInput.classList.remove('is-invalid');
-                document.getElementById('email-feedback').style.display = 'none';
-            }
-        } catch (error) {
-            console.error('Error checking email:', error);
-        }
-    });
-    </script>
-
-
-
-
-<script>
-  document.getElementById('candidatureForm').addEventListener('submit', function(event) {
-    // Check if the checkbox is checked
-    if (!document.getElementById('flexCheckDefault').checked) {
-      // If not checked, prevent form submission
-      event.preventDefault();
-      // Display the error message
-      document.querySelector('.invalid-feedback').style.display = 'block';
-    }
-  });
-</script>
-    <script>// Initialize custom file input
-      $('.custom-file-input').on('change', function() {
-        let fileName = $(this).val().split('\\').pop();
-        $(this).next('.custom-file-label').addClass('selected').html(fileName);
-      });</script>
 </body>
 </html>
