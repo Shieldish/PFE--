@@ -7,7 +7,44 @@
     <%- include('./common/head') %>
     <!-- Your other CSS files -->
     <style>
-   
+    
+    
+
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-container {
+            display: flex;
+            margin: 0;
+            padding: 0 !important;
+            max-width: none;
+            top: 0;
+            bottom: 0;
+            flex-grow: 1;
+            min-height: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0;
+            margin: 0;
+            width: auto;
+            height: auto;
+            overflow: auto;
+        }
+
       .jumbotron {
         background-color: #f1f1f1;
         padding: 2rem;

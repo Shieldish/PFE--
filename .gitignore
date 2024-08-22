@@ -1,6 +1,7 @@
 node_modules/
 stockages/
 Uploads/
+.env1
 .env
 .env.local
 env*

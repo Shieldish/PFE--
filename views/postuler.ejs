@@ -235,9 +235,27 @@
 
 
    
-            <div class="domaine-suggest">
+
+
+              <div class="domain-suggest">
+                <p style="font-weight: bold; font-size:xx-large; text-align: center;padding-top: 200px; padding-bottom: 20px; color: gray;">Domaines similaires</p>
+                <div id="domainCarousel" class="carousel slide" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                    <!-- Carousel items will be dynamically added here -->
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#domainCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#domainCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </button>
+                </div>
+              </div>
+              
              
-            </div>
+            
   
 
           <%- include('./common/footer') %>
@@ -245,5 +263,116 @@
   
   </div>
 
+  <style>
+    
+
+
+.domain-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .domain-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  .animated-icon {
+    color: #007bff;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  #domainCarousel .carousel-control-prev,
+  #domainCarousel .carousel-control-next {
+    width: 5%;
+  }
+
+  #domainCarousel .carousel-control-prev-icon,
+  #domainCarousel .carousel-control-next-icon {
+    background-color:gray;
+    border-radius: 50%;
+    padding: 10px;
+  }
+  </style>
+
+
+
+  
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const stageDomain = '<%= stage.Domaine %>'; // Get the current stage's domain
+
+  fetch('/etudiant/domaine-suggest', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ domaine: stageDomain }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        const similarDomains = data.domaines;
+        console.log(similarDomains);
+        const carouselInner = document.querySelector('#domainCarousel .carousel-inner');
+        
+        similarDomains.forEach((domain, index) => {
+          const item = document.createElement('div');
+          item.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+          item.innerHTML = `
+            <div class="domain-card d-flex flex-column justify-content-center align-items-center p-3" style="height: 300px; cursor: pointer;" data-id="${domain.id}">
+              <i class="fas fa-briefcase fa-3x mb-3 animated-icon"></i>
+              <h5>${domain.Domaine}</h5>
+              <p class="text-center mb-1"><strong>${domain.Nom}</strong> - ${domain.Titre}</p>
+              <p class="mb-1"><i class="fas fa-user-graduate"></i> ${domain.Niveau} | <i class="fas fa-star"></i> ${domain.Experience}</p>
+              <p class="mb-1"><i class="fas fa-language"></i> ${domain.Langue} | <i class="fas fa-users"></i> ${domain.PostesVacants} postes</p>
+              <p class="mb-1"><i class="fas fa-calendar-alt"></i> ${new Date(domain.DateDebut).toLocaleDateString()} - ${new Date(domain.DateFin).toLocaleDateString()}</p>
+              <p class="mb-1"><i class="fas fa-map-marker-alt"></i> ${domain.Address}</p>
+              <p class="mb-1"><i class="fas fa-info-circle"></i> ${domain.State}</p>
+            </div>
+          `;
+          carouselInner.appendChild(item);
+
+
+          
+
+          // Add click event to redirect to stage details
+        /*   item.querySelector('.domain-card').addEventListener('click', function() {
+            window.location.href = `/postulate/${this.dataset.id}`;
+          }); */
+          carouselInner.addEventListener('click', (event) => {
+        const target = event.target.closest('.domain-card');
+        if (target) {
+          const id = target.getAttribute('data-id');
+          const url = `/postulate/${id}`;
+          window.open(url, '_blank'); // Open URL in a new tab
+        }
+      });
+        });
+
+      } else {
+        console.error('Failed to fetch similar domains:', data.message);
+      }
+    })
+    .catch(error => console.error('Error fetching similar domains:', error));
+});
+
+
+    </script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </body>
 </html>

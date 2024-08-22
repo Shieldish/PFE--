@@ -1,21 +1,20 @@
 <style>
   /* General Styles */
   .flash-message {
-    text-align: center; /* Center-align text */
-    padding: 10px; /* Add padding for better visibility */
-    margin-bottom: 10px; /* Add margin between flash messages */
+    text-align: center; /* Centrer le texte */
+    padding: 10px; /* Ajouter un padding pour une meilleure visibilité */
+    margin-bottom: 10px; /* Ajouter un espace entre les messages flash */
 }
 
 .flash-message.success {
-    background-color: #dff0d8; /* Green background color for success messages */
-    color: #3c763d; /* Dark green text color for success messages */
+    background-color: #dff0d8; /* Couleur de fond verte pour les messages de succès */
+    color: #3c763d; /* Couleur du texte vert foncé pour les messages de succès */
 }
 
 .flash-message.error {
-    background-color: #f2dede; /* Red background color for error messages */
-    color: #a94442; /* Dark red text color for error messages */
+    background-color: #f2dede; /* Couleur de fond rouge pour les messages d'erreur */
+    color: #a94442; /* Couleur du texte rouge foncé pour les messages d'erreur */
 }
-
 
   body {
     font-family: Arial, sans-serif;
@@ -110,46 +109,45 @@
 <body>
 <div class="container">
     <div class="content-wrapper">
-      <h1 >Email Validation</h1>
-      <p>Thank you <strong style="color: rgb(0, 0, 0);"> <%= NOM %> </strong> for signing up.</p>
-      <p>An email with a validation link was sent to your email <span class="email"> <%= EMAIL %> </span>. Please open your email inbox and click on the validation link to proceed with signing up.</p>
-      <p>If you have not received an email, please check your spam folder, or click the "Resend Validation Link Email" button below to have it sent again.</p>
+      <h1>Validation d'Email</h1>
+      <p>Merci <strong style="color: rgb(0, 0, 0);"><%= NOM %></strong> pour votre inscription.</p>
+      <p>Un email avec un lien de validation a été envoyé à votre adresse <span class="email"><%= EMAIL %></span>. Veuillez ouvrir votre boîte de réception et cliquer sur le lien de validation pour finaliser votre inscription.</p>
+      <p>Si vous n'avez pas reçu d'email, vérifiez votre dossier de spam, ou cliquez sur le bouton "Renvoyer l'Email de Validation" ci-dessous pour le renvoyer.</p>
       <!-- Flash message container -->
       <div id="flashMessages"></div>
       <div class="button-wrapper">
-         <button class="logout-btn" onclick="window.location.href='/connection/login'">Login</button> 
-       
-        <button id="resendButton" class="resend-btn">Resend Validation Link Email</button>
+        <button class="logout-btn" onclick="window.location.href='/connection/login'">Connexion</button> 
+        <button id="resendButton" class="resend-btn">Renvoyer l'Email de Validation</button>
       </div>
     </div>
   </div>
 
   <script>
     document.getElementById('resendButton').addEventListener('click', function() {
-        // Disable the button to prevent multiple clicks
+        // Désactiver le bouton pour empêcher les clics multiples
         document.getElementById('resendButton').disabled = true;
-    
-        // Retrieve NOM and EMAIL from server-side variables
+
+        // Récupérer NOM et EMAIL depuis les variables côté serveur
         var NOM = '<%= NOM %>';
         var EMAIL = '<%= EMAIL %>';
-    
-        // Send data to backend endpoint using AJAX
+
+        // Envoyer les données au backend via AJAX
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/connection/resendmail', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                // Re-enable the button regardless of the response
+                // Réactiver le bouton quel que soit le résultat
                 document.getElementById('resendButton').disabled = false;
-    
+
                 if (xhr.status === 200) {
-                    // Handle successful response
+                    // Gérer la réponse en cas de succès
                     var response = JSON.parse(xhr.responseText);
                     fetchFlashMessages(response);
                 } else {
-                    // Handle error response
+                    // Gérer la réponse en cas d'erreur
                     document.getElementById('resendButton').disabled = true;
-                    console.error('Failed to resend email');
+                    console.error('Échec de l\'envoi de l\'email');
                     var errorResponse = JSON.parse(xhr.responseText);
                     fetchFlashMessages(errorResponse);
                 }
@@ -157,11 +155,11 @@
         };
         xhr.send(JSON.stringify({ NOM: NOM, EMAIL: EMAIL }));
     });
-    
+
     function fetchFlashMessages(response) {
         var flashMessagesContainer = document.getElementById('flashMessages');
         flashMessagesContainer.innerHTML = '';
-    
+
         var div = document.createElement('div');
         div.textContent = response.message;
         if (response.message.includes('success')) {
@@ -171,5 +169,4 @@
         }
         flashMessagesContainer.appendChild(div);
     }
-    </script>
-    
+  </script>

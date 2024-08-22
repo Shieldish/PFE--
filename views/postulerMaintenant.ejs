@@ -4,7 +4,8 @@
 <head>
     <title>Gestion des Tables</title>
     <%- include('./common/head') %>
-
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="../public/css/dashboard.css">
 
     <style>
@@ -208,6 +209,9 @@ h4 {
              
 
                 <div class="container mt-5">
+
+                    <%- include('./partial/flaskMessages') %>
+
                     <div class="card">
                       <div class="card-body">
                         <h2 class="text-center font-weight-bold mb-4">

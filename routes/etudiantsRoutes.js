@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { sequelize, DataTypes, etudiant } = require('../model/model');
-const { Op } = require('sequelize');
+const { Op, fn, col } = require('sequelize');
 const flash = require('connect-flash');
 require('dotenv').config();
 const stage = require('../model/stagesModel');
@@ -116,24 +116,6 @@ const storage = multer.diskStorage({
 
 // Configure multer with the disk storage
 const upload = multer({ storage: multer.memoryStorage() });
-
-/* const CREDENTIALS_PATH = './cred.json';
-
-
-function initializeDriveClient() {
-  const credentialsPath = path.resolve(CREDENTIALS_PATH);
-  const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
-
-  const auth = new google.auth.GoogleAuth({
-    credentials: credentials,
-    scopes: ['https://www.googleapis.com/auth/drive.file']
-  });
-
-  return google.drive({ version: 'v3', auth });
-}
-
- */
-
 
 
 
@@ -388,7 +370,7 @@ router.post('/postulates/:id', upload.fields([
       
         if (!stages) {
             req.flash('error', 'Stage not found');
-            return res.redirect(`/etudiant/postulate/${id}`);
+            return res.redirect(`/etudiant/application/${id}`);
         }
 
         // Create a new instance of the candidature model
@@ -458,7 +440,7 @@ router.post('/postulates/:id', upload.fields([
         await t.rollback();
         console.error('Erreur lors de la soumission de la candidature:', err);
         req.flash('error', `Une erreur s'est produite lors de la soumission de la candidature: ${err.message}`);
-        return res.redirect(`/postulate/${id}`);
+        return res.redirect(`/etudiant/application/${id}`);
     }
 });
  
@@ -838,5 +820,27 @@ router.get('/application/:id', async (req, res) => {
   }
 });
 
+
+
+router.post('/domaine-suggest', async (req, res) => {
+  try {
+      const { domaine } = req.body;
+      
+      // Find similar domaines and order them randomly
+      const similarDomaines = await stage.findAll({
+          where: { Domaine: { [Op.like]: `%${domaine}%` } },
+          raw: true, // Ensures the result is in plain object format
+          order: fn('RAND') // Orders results randomly in MySQL
+      });
+
+      console.log('similarDomaines', similarDomaines.length);
+      // Return the result as a JSON response
+      res.json({ success: true, domaines: similarDomaines }); 
+
+  } catch (error) {
+      console.error('Error:', error);
+      res.json({ success: false, message: 'An error occurred while fetching similar domaines.' });
+  }
+});
 
 module.exports = router;

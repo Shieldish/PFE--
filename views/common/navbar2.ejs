@@ -83,25 +83,14 @@
         .logout-btn:hover {
             transform: scale(1.05);
         }
-        .navbar-toggler {
-            border-color: rgba(255,255,255,.5);
-       }
-
-       .navbar-toggler:focus {
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(255,255,255,.25);
-}
     </style>
 </head>
 <body>
 
 <nav id="main-navbar" class="navbar navbar-expand-lg custom-navbar">
     <div class="container-fluid">
-       <!--  <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button> -->
         <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fas fa-bars text-white"></i>
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <form class="search-form input-group w-auto my-auto" action="/search" method="GET">
@@ -170,26 +159,6 @@
         userEmailElement.textContent = `Email: ${userData.EMAIL}`;
     }
 </script>
-<script>
-    document.getElementById('logoutButton').addEventListener('click', function() {
-        // Make an AJAX request to the backend logout endpoint
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/connection/logout', true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    // Logout successful, redirect to login page
-                    window.location.href = '/connection/login';
-                } else {
-                    // Handle error response if needed
-                    console.error('Error logging out:', xhr.responseText);
-                }
-            }
-        };
-        xhr.send();
-    });
-</script>
-
 
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>

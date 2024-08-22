@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
+  <title>Inscription</title>
   <!-- MDB CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <style>
-    /* Custom CSS to center the container */
+    /* CSS personnalisé pour centrer le conteneur */
     html,
     body {
       height: 100%;
@@ -20,25 +20,22 @@
       align-items: center;
     }
     .content-wrapper {
-    background-color: white;
-    padding: 50px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    width: auto;
-  
- 
-  }
-  h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #007bff;
-  }
+      background-color: white;
+      padding: 50px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      width: auto;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
     .container {
       max-width: 500px;
     }
-
-    /* Custom CSS for eye icon */
+    /* CSS personnalisé pour l'icône de l'œil */
     .eye-icon {
       cursor: pointer;
       position: absolute;
@@ -51,71 +48,68 @@
 
 <body>
   <div class="container">
-   
-   <!--  <form action="/connection/register"  method="POST" > -->
     <div class="content-wrapper">
-    <form  action="/connection/register" method="POST">
+      <form action="/connection/register" method="POST">
 
-      <div class="text-center">
+        <div class="text-center">
+          <h1>Inscription</h1>
+        </div>
 
-        <h1>Register</h1>
-      </div>
-                  <div class="text-center">
-                    <% if (messages && messages.error) { %>
-                      <div class="alert alert-danger"><%= messages.error %></div>
-                    <% } %>
-                  </div>
+        <div class="text-center">
+          <% if (messages && messages.error) { %>
+            <div class="alert alert-danger"><%= messages.error %></div>
+          <% } %>
+        </div>
 
-      <div class="form-outline mb-3">
-        <input type="text" id="registerName" class="form-control" name="nom" required />
-        <label class="form-label" for="registerName">Name</label>
-      </div>
-    
-      <!-- Username input -->
-      <div class="form-outline mb-3">
-        <input type="text" id="registerUsername" class="form-control" name="prenom" required/>
-        <label class="form-label" for="registerUsername">Username</label>
-      </div>
-    
-      <!-- Email input -->
-      <div class="form-outline mb-3">
-        <input type="email" id="registerEmail" class="form-control" name="email" required/>
-        <label class="form-label" for="registerEmail">Email</label>
-      </div>
-                 
-      <!-- Password input -->
-      <div class="form-outline position-relative mb-3">
-        <input type="password" id="registerPassword" class="form-control" name="password" required/>
-        <label class="form-label" for="registerPassword">Password</label>
-        <!-- Eye icon to show/hide password -->
-        <i class="fas fa-eye eye-icon" onclick="togglePasswordVisibility('registerPassword')"></i>
-      </div>
-    
-      <!-- Repeat Password input -->
-      <div class="form-outline position-relative mb-3">
-        <input type="password" id="registerRepeatPassword" class="form-control" name="repeatPassword" required/>
-        <label class="form-label" for="registerRepeatPassword">Repeat password</label>
-        <!-- Eye icon to show/hide password -->
-        <i class="fas fa-eye eye-icon" onclick="togglePasswordVisibility('registerRepeatPassword')"></i>
-      </div>
-    
-      <!-- Checkbox -->
-      <div class="form-check d-flex justify-content-center mb-3">
-        <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked aria-describedby="registerCheckHelpText" required/>
-        <label class="form-check-label" for="registerCheck">
-          I have read and agree to the terms
-        </label>
-      </div>
-      <!-- Submit button -->
-     <!--  <button type="submit" class="btn btn-primary btn-block mb-3"  >Register</button> -->
-     <button id="submitButton" type="submit" class="btn btn-primary btn-block mb-3" >Register</button>
+        <div class="form-outline mb-3">
+          <input type="text" id="registerName" class="form-control" name="nom" required />
+          <label class="form-label" for="registerName">Nom</label>
+        </div>
 
-    
-      <!-- Already has account message -->
-      <div class="text-center">
-        <p>Already have an account ? <a href="login">Login</a></p>
-      </div>
-    </form>
+        <!-- Prénom input -->
+        <div class="form-outline mb-3">
+          <input type="text" id="registerUsername" class="form-control" name="prenom" required/>
+          <label class="form-label" for="registerUsername">Prénom</label>
+        </div>
+
+        <!-- Email input -->
+        <div class="form-outline mb-3">
+          <input type="email" id="registerEmail" class="form-control" name="email" required/>
+          <label class="form-label" for="registerEmail">E-mail</label>
+        </div>
+
+        <!-- Mot de passe input -->
+        <div class="form-outline position-relative mb-3">
+          <input type="password" id="registerPassword" class="form-control" name="password" required/>
+          <label class="form-label" for="registerPassword">Mot de passe</label>
+          <!-- Icône de l'œil pour afficher/masquer le mot de passe -->
+          <i class="fas fa-eye eye-icon" onclick="togglePasswordVisibility('registerPassword')"></i>
+        </div>
+
+        <!-- Répéter mot de passe input -->
+        <div class="form-outline position-relative mb-3">
+          <input type="password" id="registerRepeatPassword" class="form-control" name="repeatPassword" required/>
+          <label class="form-label" for="registerRepeatPassword">Répéter le mot de passe</label>
+          <!-- Icône de l'œil pour afficher/masquer le mot de passe -->
+          <i class="fas fa-eye eye-icon" onclick="togglePasswordVisibility('registerRepeatPassword')"></i>
+        </div>
+
+        <!-- Checkbox -->
+        <div class="form-check d-flex justify-content-center mb-3">
+          <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked aria-describedby="registerCheckHelpText" required/>
+          <label class="form-check-label" for="registerCheck">
+            J'ai lu et j'accepte les termes
+          </label>
+        </div>
+
+        <!-- Bouton d'inscription -->
+        <button id="submitButton" type="submit" class="btn btn-primary btn-block mb-3">S'inscrire</button>
+
+        <!-- Déjà un compte message -->
+        <div class="text-center">
+          <p>Vous avez déjà un compte ? <a href="login">Se connecter</a></p>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -127,47 +121,6 @@
       input.type = input.type === 'password' ? 'text' : 'password';
     }
   </script>
-
-<script>
-
-  function submitForm(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    
-    // Log form data to the console
-    var formData = {
-      name: document.getElementById("registerName").value,
-      username: document.getElementById("registerUsername").value,
-      email: document.getElementById("registerEmail").value,
-      password: document.getElementById("registerPassword").value,
-     // repeatPassword: document.getElementById("registerRepeatPassword").value,
-    //  termsAgreed: document.getElementById("registerCheck").checked
-    };
-    console.log(formData);
-
-    // Here you can add code to send the form data to the backend using fetch or XMLHttpRequest
-    // For example:
-/* 
-    fetch('/connection/register', {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      if (response.ok) {
-        // Handle successful submission
-      } else {
-        // Handle submission error
-      }
-    })
-    .catch(error => {
-      // Handle network error
-    });
-     */
-  }
-</script>
-
 </body>
 
 </html>
