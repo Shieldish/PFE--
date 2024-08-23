@@ -1,117 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <%-include('./common/head') %>
-      <title>Upload Excel File</title>
-  
-      <style>
-         .input-wrapper {
-         display: flex;
-         gap: 8px; /* Adjust spacing as needed */
-         }
-         /* Optional: Style the upload button */
-         .btn-primary {
-         width: 250px;
-         height: 35px;
-         }
-         .myformA{
-         padding-top: 35px;  
-         }
+<head>
+    <meta charset="UTF-8">
+    <%- include('./common/head') %>
+    <title>Upload Excel File</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .input-wrapper {
+            display: flex;
+            gap: 10px; /* Adjusted spacing */
+            align-items: center; /* Align input and button vertically */
+        }
 
+        .btn-primary {
+            width: auto;
+            height: 35px;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
 
+        .myform {
+            padding-top: 35px;
+        }
 
+        .input-group-text {
+            width: 200px; /* Adjust width as necessary */
+        }
 
-      </style>
-   </head>
-   <body>
-      <div class="custom-container">
-         <%-include('./common/sidebar') %>
-         <div class="main-content">
-            <%-include('./common/navbar') %>
-            <main >
-               <div class="my-custom-class">
-                  <hr>
-                  <div class="form-row">
-                     <div class="form-group col-md-6 myform" style="display: flex;">
+        .form-control-file {
+            width: calc(100% - 200px - 10px); /* Adjust width considering input group text and gap */
+        }
+    </style>
+</head>
+<body>
+<div class="custom-container">
+    <%- include('./common/sidebar') %>
+    <div class="main-content">
+        <%- include('./common/navbar') %>
+        <main>
+            <div class="my-custom-class">
+                <hr>
+                <div class="form-row">
+                    <div class="form-group col-md-6 myform">
                         <form class="mt-3" id="uploadForm" action="/files/upload" method="post" enctype="multipart/form-data">
-                           <div class="">
-                              <label for="file">
-                              <i class="fa fa-file"></i> <strong> Choisissez un fichier Excel : </strong>
-                              </label>
-                              <div class="input-wrapper" style="display: flex; margin-top: 20px;">
-                                 <input type="file" class="form-control form-control-lg form-control-file" id="file" name="file" required accept=".csv, .xlsx">
-                                 <button type="button" class="btn btn-primary" id="uploadButton">
-                                 <i class="fas fa-upload"></i> soumettre le fichier
-                                 </button>
-                              </div>
-                           </div>
+                            <label for="file">
+                                <i class="fa fa-file"></i> <strong> Choisissez un fichier Excel : </strong>
+                            </label>
+                            <div class="input-wrapper">
+                                <!-- div class="input-group-prepend">
+                                    <span class="input-group-text">Choisir un fichier Excel</span>
+                                </div> -->
+                                <input type="file" class="form-control form-control-lg form-control-file" id="file" name="file" required accept=".csv, .xlsx">
+                                <button type="button" class="btn btn-primary" id="uploadButton">
+                                    <i class="fas fa-upload"></i> Soumettre le fichier
+                                </button>
+                            </div>
                         </form>
-                     </div>
-                   
-                  </div>
-                  <div >
-                     <%- include('./partial/schemaInfo') %>
-                  </div>
-                  <hr class="dashed-line">
-                  <%- include('./partial/u_table_save') %>
-                  <%- include('./partial/fadeError') %>
-               </div>
-               <%-include('./common/footer') %>
-            </main>
-         
-         </div>
-       
-      </div>
+                    </div>
+                </div>
+                <div>
+                    <%- include('./partial/schemaInfo') %>
+                </div>
+                <hr class="dashed-line">
+                <%- include('./partial/u_table_save') %>
+                <%- include('./partial/fadeError') %>
+            </div>
+            <%- include('./common/footer') %>
+        </main>
+    </div>
+</div>
 
-    
-      <!-- Modal for Error Message -->
-      <%-include('./common/scripts')%>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <script>
-         document.getElementById('uploadButton').addEventListener('click', function() {
-           const fileInput = document.getElementById('file');
-           const file = fileInput.files[0];
-         
-           if (!file) {
-             showModal('noFileSelectedModal');
-           } else if (!['csv', 'xlsx'].includes(file.name.split('.').pop().toLowerCase())) {
-             showModal('invalidFileModal');
-           } else {
-             document.getElementById('uploadForm').submit();
-           }
-         });
-         
-         function showModal(modalId) {
-           const modal = document.getElementById(modalId);
-           modal.style.display = 'block';
-           modal.classList.add('show');
-         
-           const closeBtn = document.getElementById(`${modalId}Close`);
-           const closeModalBtn = document.getElementById(`${modalId}CloseBtn`);
-         
-           closeBtn.addEventListener('click', () => {
-             hideModal(modalId);
-           });
-         
-           closeModalBtn.addEventListener('click', () => {
-             hideModal(modalId);
-           });
-         
-           window.addEventListener('click', (event) => {
-             if (event.target == modal) {
-               hideModal(modalId);
-             }
-           });
-         }
-         
-         function hideModal(modalId) {
-           const modal = document.getElementById(modalId);
-           modal.style.display = 'none';
-           modal.classList.remove('show');
-         }
-      </script>
-   </body>
+<!-- Modal for Error Message -->
+<%- include('./common/scripts') %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('uploadButton').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            showModal('noFileSelectedModal');
+        } else if (!['csv', 'xlsx'].includes(file.name.split('.').pop().toLowerCase())) {
+            showModal('invalidFileModal');
+        } else {
+            document.getElementById('uploadForm').submit();
+        }
+    });
+
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+        modal.classList.add('show');
+
+        const closeBtn = document.getElementById(`${modalId}Close`);
+        const closeModalBtn = document.getElementById(`${modalId}CloseBtn`);
+
+        closeBtn.addEventListener('click', () => {
+            hideModal(modalId);
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            hideModal(modalId);
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                hideModal(modalId);
+            }
+        });
+    }
+
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    }
+</script>
+</body>
 </html>

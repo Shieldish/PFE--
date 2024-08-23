@@ -19,7 +19,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const flash = require('connect-flash');
 const stage = require('./model/stagesModel');
-const { Op } = require('sequelize');
+const { Op, literal, fn, col ,Sequelize} = require('sequelize');
 
 const app = express();
 
@@ -135,7 +135,7 @@ function authenticateToken(req, res, next) {
     });
 }
 
-app.get('/search', async (req, res) => {
+/* app.get('/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
         return res.redirect('/'); // Redirect to home if query is empty
@@ -169,6 +169,205 @@ app.get('/search', async (req, res) => {
             users: [],
             query,
             length: jobs.length
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('404.ejs', { error: error.message });
+    }
+}); */
+/* app.get('/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.redirect('/'); // Redirect to home if query is empty
+    }
+
+    const page = parseInt(req.query.page) || 1; // Get the page number from query params, default to 1
+    const limit = 10; // Number of items per page
+    const offset = (page - 1) * limit;
+
+    const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
+
+    try {
+        const { count, rows: jobs } = await stage.findAndCountAll({
+            where: {
+                [Op.or]: queryTerms.map(term => ({
+                    [Op.or]: [
+                        { Titre: { [Op.like]: term } },
+                        { Domaine: { [Op.like]: term } },
+                        { Libelle: { [Op.like]: term } },
+                        { Description: { [Op.like]: term } },
+                        { Niveau: { [Op.like]: term } },
+                        { Experience: { [Op.like]: term } },
+                        { Langue: { [Op.like]: term } },
+                        { Address: { [Op.like]: term } },
+                        { State: { [Op.like]: term } },
+                        { Nom: { [Op.like]: term } }
+                    ]
+                }))
+            },
+            limit: limit,
+            offset: offset
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        res.render('searchResults', {
+            jobs,
+            applications: [],
+            users: [],
+            query,
+            length: count,
+            currentPage: page,
+            totalPages: totalPages
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('404.ejs', { error: error.message });
+    }
+});
+ */
+
+
+
+
+/* app.get('/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.redirect('/'); // Redirect to home if query is empty
+    }
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+    const queryTerms = query.split(' ').map(term => term.trim());
+
+    try {
+        const relevanceScore = queryTerms.map((term, index) => `
+            (CASE
+                WHEN Titre LIKE :term${index} THEN 10
+                WHEN Domaine LIKE :term${index} THEN 8
+                WHEN Libelle LIKE :term${index} THEN 7
+                WHEN Description LIKE :term${index} THEN 5
+                WHEN Niveau LIKE :term${index} THEN 4
+                WHEN Experience LIKE :term${index} THEN 4
+                WHEN Langue LIKE :term${index} THEN 3
+                WHEN Address LIKE :term${index} THEN 2
+                WHEN State LIKE :term${index} THEN 2
+                WHEN Nom LIKE :term${index} THEN 1
+                ELSE 0
+            END)
+        `).join(' + ');
+
+        const { count, rows: jobs } = await stage.findAndCountAll({
+            attributes: {
+                include: [
+                    [literal(`(${relevanceScore})`), 'relevance']
+                ]
+            },
+            where: {
+                [Op.or]: queryTerms.flatMap((term, index) => [
+                    { Titre: { [Op.like]: `%${term}%` } },
+                    { Domaine: { [Op.like]: `%${term}%` } },
+                    { Libelle: { [Op.like]: `%${term}%` } },
+                    { Description: { [Op.like]: `%${term}%` } },
+                    { Niveau: { [Op.like]: `%${term}%` } },
+                    { Experience: { [Op.like]: `%${term}%` } },
+                    { Langue: { [Op.like]: `%${term}%` } },
+                    { Address: { [Op.like]: `%${term}%` } },
+                    { State: { [Op.like]: `%${term}%` } },
+                    { Nom: { [Op.like]: `%${term}%` } }
+                ])
+            },
+            order: [
+                [literal('relevance'), 'DESC']
+            ],
+            limit: limit,
+            offset: offset,
+            replacements: queryTerms.reduce((acc, term, index) => ({ ...acc, [`term${index}`]: `%${term}%` }), {})
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        res.render('searchResults', {
+            jobs,
+            applications: [],
+            users: [],
+            query,
+            length: count,
+            currentPage: page,
+            totalPages: totalPages
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('404.ejs', { error: error.message });
+    }
+}); */
+
+const ITEMS_PER_PAGE = 10;
+
+app.get('/search', async (req, res) => {
+    const query = req.query.q;
+    const page = parseInt(req.query.page) || 1;
+    
+    if (!query) {
+        return res.redirect('/'); // Redirect to home if query is empty
+    }
+
+    const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
+
+    try {
+        const { count, rows: jobs } = await stage.findAndCountAll({
+            where: {
+                [Op.or]: queryTerms.map(term => ({
+                    [Op.or]: [
+                        { Titre: { [Op.like]: term } },
+                        { Domaine: { [Op.like]: term } },
+                        { Libelle: { [Op.like]: term } },
+                        { Description: { [Op.like]: term } },
+                        { Niveau: { [Op.like]: term } },
+                        { Experience: { [Op.like]: term } },
+                        { Langue: { [Op.like]: term } },
+                        { Address: { [Op.like]: term } },
+                        { State: { [Op.like]: term } },
+                        { Nom: { [Op.like]: term } }
+                    ]
+                }))
+            },
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(`
+                            (
+                                (CASE WHEN "Titre" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Domaine" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Libelle" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Description" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Niveau" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Experience" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Langue" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Address" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "State" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
+                                (CASE WHEN "Nom" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END)
+                            )
+                        `),
+                        'relevanceScore'
+                    ]
+                ]
+            },
+            order: [[Sequelize.literal('relevanceScore'), 'DESC']],
+            limit: ITEMS_PER_PAGE,
+            offset: (page - 1) * ITEMS_PER_PAGE
+        });
+
+        const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+
+        res.render('searchResults', {
+            jobs,
+            applications: [],
+            users: [],
+            query,
+            length: count,
+            currentPage: page,
+            totalPages
         });
     } catch (error) {
         console.error(error);
