@@ -1,0 +1,122 @@
+
+<title>Gestion des Stages : About</title>
+<%-include('./common/head') %>
+<link rel="stylesheet" href="../public/css/dashboard.css">
+
+<style>
+    .my-custom-class-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the content is centered vertically */
+    text-align: center; /* Center the text */
+}
+
+.content {
+    max-width: 800px; /* Optional: Limit the width of the content */
+    width: 100%;
+    font-family:'Times New Roman', Times, serif
+}
+.title{
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #343a40;
+    font-weight: bold;
+
+}
+p{
+    font-size: 1.2rem;
+    color: #343a40;
+    font-weight: normal;
+    line-height: 1.5;
+
+}
+strong{
+    font-weight: bold;
+    color: #343a40;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    padding: 2rem;
+   
+ 
+}
+.subTitle{
+    font-size: 1.2rem;
+    color: #343a40;
+    font-weight: bold;
+    line-height: 1.5;
+ 
+}
+
+</style>
+</head>
+<body>
+   <div class="custom-container">
+      <%-include('./common/sidebar') %>
+      <div class="main-content">
+         <%-include('./common/navbar') %>
+         <main class="my-custom-class-1">
+            
+            <div class="content">
+                <h1 class="title">GESTION STAGES</h1>
+                
+                <p class="paragraph">
+                    <strong>Option 1 : Présentation concise et percutante</strong><br>
+                    Gestion simplifiée de vos stages
+                </p>
+                <p class="paragraph">
+                    Simplifiez la gestion de vos stages avec notre application intuitive ! Du recrutement des stagiaires à l'évaluation finale, toutes les étapes sont centralisées. Gagnez du temps et optimisez votre suivi.
+                </p>
+                
+                <p class="paragraph">
+                    <strong>Option 2 : Axée sur les bénéfices pour l'utilisateur</strong><br>
+                    Dites adieu aux tâches administratives
+                </p>
+                <p class="paragraph">
+                    Notre application révolutionne la gestion des stages. En automatisant les processus, vous libérez du temps pour vous concentrer sur l'essentiel : l'accompagnement de vos stagiaires.
+                </p>
+                
+                <h2 class="subTitle">Les avantages clés :</h2>
+                <ul>
+                    <li class="listItem">Centralisation des données : Accédez à toutes les informations en un seul endroit.</li>
+                    <li class="listItem">Suivi personnalisé : Suivez l'évolution de chaque stagiaire en temps réel.</li>
+                    <li class="listItem">Communication facilitée : Échangez avec les stagiaires et les tuteurs en toute simplicité.</li>
+                    <li class="listItem">Évaluation simplifiée : Générez des rapports personnalisés en quelques clics.</li>
+                </ul>
+                
+                <p class="paragraph">
+                    <strong>Option 3 : Ciblant les établissements d'enseignement</strong><br>
+                    Une solution complète pour les établissements
+                </p>
+                <p class="paragraph">
+                    Facilitez la mise en place de stages de qualité pour vos étudiants. Notre application vous permet de :
+                </p>
+                <ul>
+                    <li class="listItem">Publier des offres de stage auprès d'un large réseau d'entreprises.</li>
+                    <li class="listItem">Suivre les stages en temps réel et garantir leur bon déroulement.</li>
+                    <li class="listItem">Évaluer les compétences acquises par les étudiants.</li>
+                    <li class="listItem">Améliorer l'insertion professionnelle de vos diplômés.</li>
+                </ul>
+                
+                <p class="paragraph">
+                    <strong>Option 4 : Mettant en avant les fonctionnalités techniques</strong><br>
+                    Une application sur mesure pour vos besoins
+                </p>
+                <p class="paragraph">
+                    Notre application intègre de nombreuses fonctionnalités pour répondre à vos besoins spécifiques :
+                </p>
+                <ul>
+                    <li class="listItem">Base de données de stages personnalisable</li>
+                    <li class="listItem">Module de suivi des conventions de stage</li>
+                    <li class="listItem">Outil de génération de rapports</li>
+                    <li class="listItem">Intégration avec votre système d'information</li>
+                </ul>
+            </div>
+            
+         </main>
+         <%-include('./common/footer') %>
+      </div>
+      <div id="tableData" class="mt-3"></div>
+   </div>
+   <%-include('./common/scripts')%>
+</body>

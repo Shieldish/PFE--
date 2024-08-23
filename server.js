@@ -98,6 +98,10 @@ app.get(['/', '/home'], authenticate, async (req, res) => {
     }
 });
 
+app.get('/about', async( req,res)=>{
+    res.render('About');
+})
+
 app.get('/api/stages', authenticate, async (req, res) => {
     try {
         const stages = await stage.findAll({
