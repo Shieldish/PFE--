@@ -75,13 +75,35 @@ body, html {
 }
 
 #soutenances-table th.sticky-column:nth-child(1) { left: 0; z-index: 3; }
-#soutenances-table th.sticky-column:nth-child(2) { left: 50px; z-index: 3; }
+#soutenances-table th.sticky-column:nth-child(2) { left: 0px; z-index: 3; }
 #soutenances-table td.sticky-column:nth-child(1) { left: 0; }
-#soutenances-table td.sticky-column:nth-child(2) { left: 50px; }
+#soutenances-table td.sticky-column:nth-child(2) { left: 70px; }
 
 /* Ensure the corner cells stay on top */
 #soutenances-table th.sticky-column {
     z-index: 4;
+}
+
+
+.table-resizable th {
+  position: relative;
+  cursor: col-resize;
+}
+
+.table-resizable th::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 5px;
+  background-color: #ddd;
+  cursor: col-resize;
+}
+
+.table-resizable th.resizing {
+  cursor: col-resize;
+  user-select: none;
 }
 </style>
  
@@ -125,13 +147,14 @@ body, html {
             <hr style="padding: 5px;">
           <div class="myElement scrollable-content ">  
             <div class="table-container"></div>
-            <table id="soutenances-table" class="  searchable sortable">
+            <table id="soutenances-table" class="  searchable sortable table-resizable">
                 <thead>
                     <tr>
                      
                         
                         <th class="sticky-column">Action</th>
                           <th class="sticky-column">ID</th>
+                        <th>Date</th>
                         <th>Heure</th>
                         <th>Salle</th>
                         <th>Groupe</th>
@@ -637,6 +660,44 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         });
     });
+    </script>
+
+    <script>
+      
+      document.addEventListener('DOMContentLoaded', function() {
+  const table = document.getElementById('soutenances-table');
+  const headers = table.querySelectorAll('th');
+  let resizingHeader = null;
+  let startX, startWidth;
+
+  headers.forEach(header => {
+    header.addEventListener('mousedown', startResize);
+  });
+
+  document.addEventListener('mousemove', resize);
+  document.addEventListener('mouseup', stopResize);
+
+  function startResize(e) {
+    resizingHeader = e.target;
+    startX = e.pageX;
+    startWidth = resizingHeader.offsetWidth;
+    resizingHeader.classList.add('resizing');
+  }
+
+  function resize(e) {
+    if (resizingHeader) {
+      const diff = e.pageX - startX;
+      resizingHeader.style.width = `${startWidth + diff}px`;
+    }
+  }
+
+  function stopResize() {
+    if (resizingHeader) {
+      resizingHeader.classList.remove('resizing');
+      resizingHeader = null;
+    }
+  }
+});
     </script>
     
     
