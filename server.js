@@ -44,38 +44,7 @@ app.use(
         saveUninitialized: false,
     })
 );
-// Catch-all route for handling 404 errors
-// Other route handlers above...
 
-// Catch-all route for handling 404 errors
-
-/* app.use((req, res, next) => {
-    const error = new Error(`Cannot GET ${req.originalUrl}`);
-    error.status = 404;
-    next(error);
-});
-
-// Error handling middleware
-app.use((error, req, res, next) => {
-    if (error.status === 404) {
-        res.status(404).render('404.ejs', { error: error.message });
-    } else {
-        // Handle other types of errors
-        res.status(error.status || 500);
-        res.render('error.ejs', { error: error.message });
-    }
-}); */
-
-/* app.use((req, res, next) => {
-    res.status(404).render('404.ejs', { error: 'Page not found' });
-  });
-  
-  // General error handler
-  app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).render('404.ejs', { error: err.message || 'Something went wrong!' });
-  });
- */
 app.use((req, res, next) => {
     res.locals.messages = req.flash();
     next();
@@ -86,6 +55,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, '')));
 
+// Route Definitions
 app.use('/people', authenticate, routes);
 app.use('/connection', connectionRoutes);
 app.use('/etudiant', authenticate, checkRole(['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT']), etudiantsRoutes);
@@ -118,114 +88,58 @@ app.get('/postulate/:id', async (req, res) => {
     }
 });
 
-/* app.get(['/', '/home'], authenticate, (req, res) => {
-    const user = req.session.user;
-
-
-
-    if (user) {
-        delete user.PASSWORD;
+app.get(['/', '/home'], authenticate, async (req, res) => {
+    try {
+        const stages = await stage.findAll() || [];
+        res.render('home', { stages });
+    } catch (error) {
+        console.error('Error fetching stages:', error);
+        res.status(500).render('error', { message: 'An error occurred while fetching data.' });
     }
-    res.render('home', { user, userJSON: JSON.stringify(user) });
-}); */
-
-
- app.get(['/', '/home'],authenticate, async (req, res) => {
-  try {
-    const stages = await stage.findAll() || [];
-
-    res.render('home', { stages });
-  } catch (error) {
-    console.error('Error fetching stages:', error);
-    res.status(500).render('error', { message: 'An error occurred while fetching data.' });
-  }
-}); 
+});
 
 app.get('/api/stages', authenticate, async (req, res) => {
     try {
         const stages = await stage.findAll({
             order: [['createdAt', 'DESC']]
         }) || [];
-      res.json(stages);
+        res.json(stages);
     } catch (error) {
-      console.error('Error fetching stages:', error);
-      res.status(500).json({ error: 'An error occurred while fetching data.' });
+        console.error('Error fetching stages:', error);
+        res.status(500).json({ error: 'An error occurred while fetching data.' });
     }
-  });
+});
+
 app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
 });
 
 app.get('/check-token', authenticateToken, (req, res) => {
-    // If this point is reached, the token is valid
     res.status(200).json({ valid: true });
-  });
-  
-  function authenticateToken(req, res, next) {
+});
+
+function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-  
+
     if (token == null) return res.sendStatus(401);
-  
+
     jwt.verify(token, process.env.secretKey, (err, user) => {
-      if (err) return res.sendStatus(403);
-      req.user = user;
-      next();
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
     });
-  }
+}
 
-
-/* app.get('/search', async (req, res) => {
-    const query = req.query.q;
-    if (!query) {
-        return res.redirect('/'); // Redirect to home if query is empty
-    }
-
-    // Split the query into individual words (e.g., 'devops engineer' -> ['devops', 'engineer'])
-    const queryTerms = query.split(' ').map(term => term.trim());
-
-    try {
-        // Perform search across tables
-        const jobs = await stage.findAll({
-            where: {
-                [Op.and]: queryTerms.map(term => ({
-                    [Op.or]: [
-                        { Titre: { [Op.like]: `%${term}%` } },
-                        { Domaine: { [Op.like]: `%${term}%` } },
-                        { Libelle: { [Op.like]: `%${term}%` } },
-                        { Description: { [Op.like]: `%${term}%` } },
-                        { Niveau: { [Op.like]: `%${term}%` } },
-                        { Experience: { [Op.like]: `%${term}%` } },
-                        { Langue: { [Op.like]: `%${term}%` } },
-                        { Address: { [Op.like]: `%${term}%` } },
-                        { State: { [Op.like]: `%${term}%` } }
-                    ]
-                }))
-            }
-        });
-
-        res.render('searchResults', {
-            jobs,
-           
-            query
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).render('404.ejs', { error: error.message });
-    }
-});
- */
 app.get('/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
         return res.redirect('/'); // Redirect to home if query is empty
     }
 
-    // Split the query into individual words (e.g., 'gd sfax devops' -> ['gd', 'sfax', 'devops'])
     const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
 
     try {
-        // Perform search across tables
         const jobs = await stage.findAll({
             where: {
                 [Op.or]: queryTerms.map(term => ({
@@ -242,16 +156,15 @@ app.get('/search', async (req, res) => {
                         { Nom: { [Op.like]: term } }
                     ]
                 }))
-            },
-            
+            }
         });
 
         res.render('searchResults', {
             jobs,
-            applications: [], // Replace with actual application search if needed
-            users: [], // Replace with actual user search if needed
+            applications: [],
+            users: [],
             query,
-           length:jobs.length
+            length: jobs.length
         });
     } catch (error) {
         console.error(error);
@@ -259,6 +172,10 @@ app.get('/search', async (req, res) => {
     }
 });
 
+// Catch-all 404 route should be defined last
+app.use((req, res, next) => {
+    res.status(404).render('404', { error: req.originalUrl });
+});
 
 const PORT = process.env.PORT || 3000;
 
