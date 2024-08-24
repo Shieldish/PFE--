@@ -4,7 +4,7 @@ res.cookie('user', JSON.stringify(user), { maxAge: 24 * 60 * 60 * 1000 });
 res.cookie('token', token, { httpOnly: true, maxAge: 60 * 1000, secure: true, sameSite: 'Strict' });
 res.cookie('user', JSON.stringify(user), { maxAge: 60 * 1000, secure: true, sameSite: 'Strict' });
 
-
+FRONTEND_URL=https://pfe2024.onrender.com
 FRONTEND_URL=http://localhost:3000
 FRONTEND_URL=https://pfe2024.onrender.com
 
