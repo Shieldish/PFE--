@@ -9,7 +9,7 @@ const checkRole = (roles) => {
 
 
     if (!userRole) {
-      console.log('Aucun rôle utilisateur trouvé');
+     
       req.flash('error', 'Vous devez être connecté pour accéder à cette page');
       return res.redirect('/connection/login');
     }

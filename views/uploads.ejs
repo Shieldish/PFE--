@@ -7,28 +7,130 @@
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        .input-wrapper {
-            display: flex;
-            gap: 10px; /* Adjusted spacing */
-            align-items: center; /* Align input and button vertically */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .btn-primary {
-            width: auto;
-            height: 35px;
-            white-space: nowrap; /* Prevent text wrapping */
+        .custom-container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            flex-grow: 1;
+           
+            overflow-y: auto;
         }
 
         .myform {
             padding-top: 35px;
         }
 
-        .input-group-text {
-            width: 200px; /* Adjust width as necessary */
+        .input-wrapper {
+            display: flex;
+            gap: 10px; /* Adjusted spacing */
+            align-items: center; /* Align input and button vertically */
         }
 
         .form-control-file {
-            width: calc(100% - 200px - 10px); /* Adjust width considering input group text and gap */
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .form-control-file:focus {
+            border-color: #0056b3;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+        }
+
+        .btn-primary {
+            padding: 10px 20px;
+            font-size: 16px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .accordion .accordion-button {
+            background-color: #f7f8f9;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .accordion .accordion-button:not(.collapsed) {
+            background-color: #aeaeae;
+        }
+
+        .accordion .accordion-button:hover {
+            background-color: #8296ab;
+        }
+
+        .accordion-body {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .accordion-item {
+            margin-bottom: 10px;
+        }
+
+        .table-bordered {
+            border-color: #007bff;
+        }
+
+        .table-sm td, .table-sm th {
+            padding: 0.5rem;
+            font-size: 14px;
+        }
+
+        /* Custom dashed line for visual separation */
+        .dashed-line {
+            border: 0;
+            border-top: 2px dashed #007bff;
+            margin: 30px 0;
+        }
+
+        /* Custom modal styles */
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+       <style>
+        .myform {
+            padding-top: 35px;
+        }
+
+        .input-group-custom {
+            width: 100%; /* Full width for the input group */
+        }
+
+        .input-group-custom .form-control-file {
+            border-radius: 0; /* Remove border radius for consistent styling */
+        }
+
+        .input-group-custom .btn {
+            border-radius: 0; /* Remove border radius for consistent styling */
+        }
+
+        .btn-primary {
+            white-space: nowrap; /* Prevent text wrapping */
         }
     </style>
 </head>
@@ -40,16 +142,13 @@
         <main>
             <div class="my-custom-class">
                 <hr>
-                <div class="form-row">
+               <!--  <div class="form-row">
                     <div class="form-group col-md-6 myform">
                         <form class="mt-3" id="uploadForm" action="/files/upload" method="post" enctype="multipart/form-data">
-                            <label for="file">
-                                <i class="fa fa-file"></i> <strong> Choisissez un fichier Excel : </strong>
+                            <label for="file" class="form-label">
+                                <i class="fas fa-file-excel"></i> <strong> Choisissez un fichier Excel : </strong>
                             </label>
                             <div class="input-wrapper">
-                                <!-- div class="input-group-prepend">
-                                    <span class="input-group-text">Choisir un fichier Excel</span>
-                                </div> -->
                                 <input type="file" class="form-control form-control-lg form-control-file" id="file" name="file" required accept=".csv, .xlsx">
                                 <button type="button" class="btn btn-primary" id="uploadButton">
                                     <i class="fas fa-upload"></i> Soumettre le fichier
@@ -57,10 +156,25 @@
                             </div>
                         </form>
                     </div>
+                </div> -->
+
+                <div class="form-row">
+                    <div class="form-group col-md-6 myform">
+                        <form class="mt-3" id="uploadForm" action="/files/upload" method="post" enctype="multipart/form-data">
+                            <label for="file" class="form-label">
+                                <i class="fas fa-file-excel"></i> <strong> Choisissez un fichier Excel : </strong>
+                            </label>
+                            <div class="input-group input-group-custom">
+                                <input type="file" class="form-control form-control-file" id="file" name="file" required accept=".csv, .xlsx">
+                                <button type="button" class="btn btn-primary" id="uploadButton">
+                                    <i class="fas fa-upload"></i> Soumettre le fichier
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                    <%- include('./partial/schemaInfo') %>
-                </div>
+
+                <%- include('./partial/schemaInfo') %>
                 <hr class="dashed-line">
                 <%- include('./partial/u_table_save') %>
                 <%- include('./partial/fadeError') %>
@@ -116,6 +230,33 @@
         const modal = document.getElementById(modalId);
         modal.style.display = 'none';
         modal.classList.remove('show');
+    }
+
+    function showContents() {
+        const menus = document.getElementById("menus");
+        const selectedValue = menus.value;
+        const contentsDiv = document.getElementById("contents");
+        const items = <%- JSON.stringify(items) %>; // Accessing the 'items' object
+
+        if (selectedValue === "") {
+            contentsDiv.innerHTML = "<p>Please select a table.</p>";
+            return;
+        }
+
+        const contents = items[selectedValue];
+
+        if (contents) {
+            let contentsHTML = "<div><table class='table table-bordered table-sm'><tr>";
+            contents.forEach(function(item) {
+                contentsHTML += "<td>" + item + "</td>";
+            });
+            contentsHTML += "</tr></table></div>";
+            contentsDiv.innerHTML = contentsHTML;
+        } else {
+            contentsDiv.innerHTML = "<p>No contents available for this item.</p>";
+        }
+        console.log(selectedValue);
+        return selectedValue;
     }
 </script>
 </body>

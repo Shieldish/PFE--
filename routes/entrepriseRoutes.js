@@ -182,7 +182,7 @@ router.delete('/delete/:id', async (req, res) => {
 router.post('/edit/:id', function (req, res) {
   const id = req.params.id;
   const updatedData = req.body; 
-  console.log(updatedData); 
+
 
   for (let key in updatedData) {
     if (updatedData[key] === '') {

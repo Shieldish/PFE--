@@ -53,7 +53,7 @@ router.get('/expo/:UUID', async (req, res) => {
   const { UUID } = req.params;
 
   if (UUID) {
-    console.log(UUID);
+   
 
     try {
       const userData = await user_registration.findOne({ where: { UUID } });

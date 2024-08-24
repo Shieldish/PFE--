@@ -28,14 +28,14 @@ router.get('/', async (req, res) => {
   
       // Mettre à jour la soutenance avec les nouvelles données
       await soutenance.update(req.body);
-      console.log(req.body)
+    /*   console.log(req.body) */
 
  
   
       // Vérifier les conflits avec les nouvelles données
       const conflictingData = await checkConflicts(req.body, soutenance.id);
       if (conflictingData.length > 0) {
-        console.log('conflictingData :',conflictingData)
+      /*   console.log('conflictingData :',conflictingData) */
         return res.status(200).json({ conflictingData });
       } else {
         return res.status(200).json({ conflictingData: [] });
@@ -157,7 +157,7 @@ async function checkConflicts(data, id) {
 
 
   router.post('/Addsoutenances', async (req,res)=>{
-    console.log(req.body);
+   /*  console.log(req.body); */
     try {
       const newSoutenance = await Soutenance.create(req.body);
       res.status(201).json(newSoutenance);

@@ -36,7 +36,7 @@ async function sendUserRegistrationMail(email, name, confirmationToken) {
           .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #fef3c7;
+            background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -140,7 +140,7 @@ async function resendRegistrationMail(email, name, token) {
           .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #fef3c7;
+            background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -241,7 +241,7 @@ async function sendUserResetPasswordMail(email, resetToken) {
           .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #fef3c7;
+            background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);

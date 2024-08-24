@@ -202,7 +202,7 @@ router.get(['/', '/login'], (req, res) => {
   router.post('/reset-password', async (req, res) => {
     const { email } = req.body;
   
-    console.log(Date.now(), ':', req.body);
+ 
   
     try {
       // Trouver l'enregistrement de l'utilisateur par email
@@ -260,7 +260,6 @@ router.get('/reset-password', async (req, res) => {
 router.post('/reseting-password', async (req, res) => {
   const { email, password, confirmPassword, token } = req.body;
 
-    console.log('req.body:',req.body)
      
   // Vérifiez si les mots de passe correspondent
   if (password !== confirmPassword) {
@@ -272,7 +271,6 @@ router.post('/reseting-password', async (req, res) => {
     // Trouver l'utilisateur par email et token
     const user = await user_registration.findOne({ where: { EMAIL: email, TOKEN: token } });
 
-    console.log('user',user)
     // Si l'utilisateur n'est pas trouvé ou si le token a expiré
     if (!user || user.TOKEN === '0') {
      
@@ -303,7 +301,7 @@ router.post('/reseting-password', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(email, password);
+
 
   try {
     const user = await user_registration.findOne({ where: { email } });
@@ -354,7 +352,11 @@ router.post('/login', async (req, res) => {
     
     // Récupérer returnTo depuis la session ou utiliser la page d'accueil par défaut
     const returnTo = req.session.returnTo || '/';
+    console.log('ReturnTo URL:', req.session.returnTo);
+
     delete req.session.returnTo; // Effacer l'URL de retour stockée
+    console.log('ReturnTo URL:', req.session.returnTo);
+
     res.redirect(returnTo);
 
   } catch (err) {
@@ -412,8 +414,7 @@ router.post('/loging', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Mot de passe incorrect. Veuillez réessayer.' });
     }
 
-    // Générer le token JWT
-    console.log('Utilisateur :', user.toJSON());
+  
 
     const token = jwt.sign(
       { userId: user.UUID, email: user.EMAIL, role: user.role },
@@ -448,8 +449,7 @@ router.post('/registration', async function (req, res) {
   try {
     const { nom, prenom, email, password, repeatPassword } = req.body;
 
-    // Log request data (useful for debugging)
-    console.log(req.body);
+;
 
     // Check if password and repeatPassword match
     if (password !== repeatPassword) {

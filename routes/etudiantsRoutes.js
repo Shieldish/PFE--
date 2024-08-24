@@ -124,7 +124,7 @@ function initializeDriveClient() {
   if (!process.env.GOOGLE_CREDENTIALS) {
     throw new Error('GOOGLE_CREDENTIALS environment variable is not defined');
   }
-  console.log(process.env.GOOGLE_CREDENTIALS);
+ 
 
   // Parse the JSON string from the environment variable
   let credentials;
@@ -145,9 +145,9 @@ function initializeDriveClient() {
 
 async function uploadFileToDrive(driveClient, fileObject, fileName) {
 
-  console.log('Uploading file:', fileName);
+/*   console.log('Uploading file:', fileName);
   console.log('File size:', fileObject.size);
-  console.log('File mimetype:', fileObject.mimetype);
+  console.log('File mimetype:', fileObject.mimetype); */
 
   return new Promise((resolve, reject) => {
     const fileStream = new Readable();
@@ -216,7 +216,7 @@ router.post('/postulates/:id', upload.fields([
       duree_stage
     } = req.body;
 
-    console.log(req.body);
+ 
 
     // Extract file paths from request files
 /*     const cvPath = req.files['cv'] ? req.files['cv'][0].path : null;
@@ -228,9 +228,6 @@ router.post('/postulates/:id', upload.fields([
     
 
 
-          console.log('cvFile',cvFile);
-          console.log('lettreFile',lettreFile);
-          console.log('relevesFile ',relevesFile );
 
 
     // Find the stage by ID
@@ -356,9 +353,6 @@ router.post('/postulates/:id', upload.fields([
         const lettreFile = req.files['lettre_motivation'] ? await uploadFileToDrive(driveClient, req.files['lettre_motivation'][0], `LM_${email}_${Date.now()}`) : null;
         const relevesFile = req.files['releves_notes'] ? await uploadFileToDrive(driveClient, req.files['releves_notes'][0], `RN_${email}_${Date.now()}`) : null;
     
-              console.log('cvFile',cvFile);
-              console.log('lettreFile',lettreFile);
-              console.log('relevesFile ',relevesFile );
     
 
         const stages = await stage.findByPk(id);
@@ -499,7 +493,7 @@ router.get('/stage_postuler', async (req, res) => {
       }
   
       const etudiantIdValue = etudiantID.ID ? etudiantID.ID : etudiantID.UUID;
-      console.log(etudiantIdValue);
+  
   
    const postulated = await stagepostulation.findAll({
         where: {
@@ -525,7 +519,7 @@ router.get('/stage_postuler', async (req, res) => {
         return modifiedpostulated;
       });
   
-      console.log(postulatedJson);
+   
   
       return res.status(200).json({ postulant: postulatedJson });
     } catch (error) {
@@ -540,7 +534,7 @@ router.get('/stage_postuler', async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
   
-      console.log('Authorization Header:', authHeader);
+  
   
       if (!authHeader) {
         return res.status(401).json({ error: 'Non autorisé' });
@@ -548,7 +542,7 @@ router.get('/stage_postuler', async (req, res) => {
   
       const token = authHeader.split(' ')[1];
   
-      console.log('JWT Token:', token);
+   
   
       if (!token) {
         return res.status(401).json({ error: 'Non autorisé' });
@@ -605,7 +599,7 @@ router.get('/stage_postuler', async (req, res) => {
         return modifiedpostulated;
       });
   
-      console.log('Postulated Data:', postulatedJson);
+     
   
       return res.status(200).json({ postulant: postulatedJson });
     } catch (error) {
@@ -758,9 +752,6 @@ router.get('/candidatures2', async (req, res) => {
 
       // Send JSON response with data
 
-      console.log("modifiedcandidature",modifiedcandidature)
-      console.log("stageDataJSON",stageDataJSON)
-
       res.status(200).json({
           candidature: modifiedcandidature,
           stage: stageDataJSON,
@@ -803,7 +794,7 @@ router.post('/stages/byIds', async (req, res) => {
 router.get('/application/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    console.log('id', id);
+   
 
     const exist = await stage.findByPk(id);
 
@@ -833,13 +824,23 @@ router.post('/domaine-suggest', async (req, res) => {
           order: fn('RAND') // Orders results randomly in MySQL
       });
 
-      console.log('similarDomaines', similarDomaines.length);
+   
       // Return the result as a JSON response
       res.json({ success: true, domaines: similarDomaines }); 
 
   } catch (error) {
       console.error('Error:', error);
       res.json({ success: false, message: 'An error occurred while fetching similar domaines.' });
+  }
+});
+
+router.get('/postulate/:id', async (req, res) => {
+  const id = req.params.id;
+  const Onestage = await stage.findByPk(id);
+  if (Onestage) {
+      res.render('postuler', { stage: Onestage });
+  } else {
+      res.render('404');
   }
 });
 

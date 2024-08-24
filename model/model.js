@@ -23,7 +23,7 @@ const sequelize = new Sequelize(
         rejectUnauthorized: true, // Ensures the server certificate is validated
       },
     },
-    logging: true, 
+    logging: false, 
 
   }
 );

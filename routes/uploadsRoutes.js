@@ -47,7 +47,6 @@ router.get('/upload', async (req, res) => {
       Object.entries(tablesStructure).filter(([tableName]) => !excludedTables.includes(tableName))
     );
 
-    console.log('Filtered tables structure:', filteredTablesStructure);
     items=filteredTablesStructure
     // Render the page with the filtered table structure
     res.render('uploads', { items: filteredTablesStructure, dt: data, fileName: fileName });
@@ -166,7 +165,7 @@ router.post('/saveToDatabase', async (req, res) => {
           ignoreDuplicates: true, // Ignore duplicate entry errors
         });
     
-        console.log(`${result.length}lignes insérées avec succès.`);
+      
         await transaction.commit();
         res.status(200).json({ message: 'Données insérées avec succès.' });
       } catch (error) {

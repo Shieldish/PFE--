@@ -1,10 +1,28 @@
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
   .accordion {
     width: auto;
   }
-</style>
 
+  .table-container {
+    width: 100%;
+    overflow-x: auto; /* Allows horizontal scrolling if needed */
+  }
+
+  .table-wrapper {
+    display: block; /* Change to block to manage wrapping */
+    overflow-x: auto; /* Allows horizontal scrolling if needed */
+    white-space: nowrap; /* Prevents table cells from wrapping within rows */
+  }
+
+  .minitable {
+    min-width: 100%; /* Ensures the table takes the full width of its container */
+  }
+
+  table {
+    width: 100%; /* Ensures the table takes the full width of its container */
+    table-layout: auto; /* Adjusts column width based on content */
+  }
+</style>
 <div class="accordion" id="accordionExample" style="margin-top: 20px;">
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingThree">
@@ -25,24 +43,20 @@
             <% } %>
           </select>
         </div>
-        <div id="contents">
+        <div id="contents" class="table-container">
           <!-- Contents will be displayed here -->
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   function showContents() {
     var menus = document.getElementById("menus");
     var selectedValue = menus.value;
     var contentsDiv = document.getElementById("contents");
     var items = <%- JSON.stringify(items) %>; // Accessing the 'items' object
-    
+
     if (selectedValue === "") {
       contentsDiv.innerHTML = "<p>Please select a table.</p>";
       return;
@@ -51,7 +65,7 @@
     var contents = items[selectedValue];
 
     if (contents) {
-      var contentsHTML = "<div><table class='table table-bordered table-sm'><tr>";
+      var contentsHTML = "<div class='table-wrapper'><table class='table table-bordered table-sm minitable'><tr>";
       contents.forEach(function(item) {
         contentsHTML += "<td>" + item + "</td>";
       });
@@ -59,7 +73,7 @@
       contentsDiv.innerHTML = contentsHTML;
     } else {
       contentsDiv.innerHTML = "<p>No contents available for this item.</p>";
-    } 
+    }
     console.log(selectedValue);
     return selectedValue;
   }

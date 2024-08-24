@@ -78,15 +78,7 @@ app.post('/sidebar', authenticate, async (req, res) => {
     }
 });
 
-app.get('/postulate/:id', async (req, res) => {
-    const id = req.params.id;
-    const Onestage = await stage.findByPk(id);
-    if (Onestage) {
-        res.render('postuler', { stage: Onestage });
-    } else {
-        res.render('404');
-    }
-});
+
 
 app.get(['/', '/home'], authenticate, async (req, res) => {
     try {
@@ -114,9 +106,9 @@ app.get('/api/stages', authenticate, async (req, res) => {
     }
 });
 
-app.get(['/favicon.ico', '/sidebar'], (req, res) => {
+ app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
-});
+}); 
 
 app.get('/check-token', authenticateToken, (req, res) => {
     res.status(200).json({ valid: true });
@@ -135,97 +127,6 @@ function authenticateToken(req, res, next) {
     });
 }
 
-/* app.get('/search', async (req, res) => {
-    const query = req.query.q;
-    if (!query) {
-        return res.redirect('/'); // Redirect to home if query is empty
-    }
-
-    const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
-
-    try {
-        const jobs = await stage.findAll({
-            where: {
-                [Op.or]: queryTerms.map(term => ({
-                    [Op.or]: [
-                        { Titre: { [Op.like]: term } },
-                        { Domaine: { [Op.like]: term } },
-                        { Libelle: { [Op.like]: term } },
-                        { Description: { [Op.like]: term } },
-                        { Niveau: { [Op.like]: term } },
-                        { Experience: { [Op.like]: term } },
-                        { Langue: { [Op.like]: term } },
-                        { Address: { [Op.like]: term } },
-                        { State: { [Op.like]: term } },
-                        { Nom: { [Op.like]: term } }
-                    ]
-                }))
-            }
-        });
-
-        res.render('searchResults', {
-            jobs,
-            applications: [],
-            users: [],
-            query,
-            length: jobs.length
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).render('404.ejs', { error: error.message });
-    }
-}); */
-/* app.get('/search', async (req, res) => {
-    const query = req.query.q;
-    if (!query) {
-        return res.redirect('/'); // Redirect to home if query is empty
-    }
-
-    const page = parseInt(req.query.page) || 1; // Get the page number from query params, default to 1
-    const limit = 10; // Number of items per page
-    const offset = (page - 1) * limit;
-
-    const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
-
-    try {
-        const { count, rows: jobs } = await stage.findAndCountAll({
-            where: {
-                [Op.or]: queryTerms.map(term => ({
-                    [Op.or]: [
-                        { Titre: { [Op.like]: term } },
-                        { Domaine: { [Op.like]: term } },
-                        { Libelle: { [Op.like]: term } },
-                        { Description: { [Op.like]: term } },
-                        { Niveau: { [Op.like]: term } },
-                        { Experience: { [Op.like]: term } },
-                        { Langue: { [Op.like]: term } },
-                        { Address: { [Op.like]: term } },
-                        { State: { [Op.like]: term } },
-                        { Nom: { [Op.like]: term } }
-                    ]
-                }))
-            },
-            limit: limit,
-            offset: offset
-        });
-
-        const totalPages = Math.ceil(count / limit);
-
-        res.render('searchResults', {
-            jobs,
-            applications: [],
-            users: [],
-            query,
-            length: count,
-            currentPage: page,
-            totalPages: totalPages
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).render('404.ejs', { error: error.message });
-    }
-});
- */
 
 
 
@@ -393,5 +294,4 @@ const startServer = async () => {
         process.exit(1);
     }
 };
-
 startServer();

@@ -123,59 +123,77 @@
 </head>
 <body>
 
-    
-   
-    <nav id="main-navbar" class="navbar navbar-expand-lg custom-navbar">
-        <div class="container-fluid">
-            <div class="d-flex align-items-center w-100">
-                <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-bars text-dark"></i>
+<nav id="main-navbar" class="navbar navbar-expand-lg custom-navbar" >
+    <div class="container-fluid">
+       <!--  <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> -->
+        <button class="navbar-toggler" type="button" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars text-dark"></i>
+        </button>
+
+        <form class="input-group w-auto my-auto" action="/search" method="GET">
+            <input autocomplete="on" type="search" name="q" class="form-control" placeholder='Search (ctrl + "/" to focus)' style="min-width: 500px;" />
+            <div class="input-group-append">
+                <button class="btn btn-success" type="submit">
+                    <i class="fas fa-search"></i>
                 </button>
-    
-                <form class="d-flex flex-grow-1" action="/search" method="GET">
-                    <div class="input-group">
-                        <input autocomplete="on" type="search" name="q" class="form-control" placeholder='Search (ctrl + "/" to focus)' style="min-width: 100px; max-width: 600px;">
-                        <button class="btn btn-success" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
             </div>
-    
-            <div class="collapse navbar-collapse mt-2 mt-lg-0" id="navbarContent">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mb-2 mb-lg-0">
-                        <div class="language-selector">
-                            <select id="language-select" class="form-select">
-                                <option value="en">English</option>
-                                <option value="fr">Français</option>
-                                <option value="ar">العربية</option>
-                            </select>
-                        </div>
-                    </li>
-                    <li class="nav-item user-profile">
-                        <img src="../public/images/user/2.png" alt="User Logo" class="rounded-circle me-2" width="32" height="32" loading="lazy">
-                        <div class="user-menu">
-                            <div class="user-info text-center"></div>
-                            <hr class="my-2">
-                            <div class="user-name menu-item"></div>
-                            <div class="user-prenom menu-item"></div>
-                            <div class="user-email menu-item"></div>
-                            <hr class="my-2">
-                            <a class="menu-item d-block" href="/settings">
-                                <i class="fas fa-user-cog me-2"></i> Editer Profiles
-                            </a>
-                            <hr class="my-2">
-                            <button class="btn btn-outline-danger logout-btn w-100" id="logoutButton">
-                                <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
-                            </button>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
+        </form>
+        
+<!-- 
+        <form class="search-form input-group w-auto my-auto" action="/search" method="GET">
+            <input autocomplete="on" type="search" name="q" class="form-control rounded mr-sm-2" placeholder='Search (ctrl + "/" to focus)' style="min-width: 250px;" />
+            <button class="btn btn-outline-success rounded-lg bg-green-500 text-white px-4 py-2 hover:bg-green-600" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form> -->
+
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+            <li class="nav-item">
+                <div class="language-selector">
+                    <select id="language-select" class="form-control">
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                </div>
+            </li>
+
+            <li class="nav-item user-profile">
+                <img src="../public/images/user/2.png" alt="User Logo" class="rounded-full w-8 h-8" loading="lazy">
+                <div class="user-menu">
+                    <div class="user-info text-center"></i></div>
+                    <hr class="border-gray-600">
+                    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100">
+                    <div class="user-name menu-item"></i></div>
+                    <div class="user-prenom menu-item"></div>
+                    <div class="user-email menu-item"></div>
+                    <hr class="border-gray-600">
+                    <hr class="fancy-hr">
+                    <a class="menu-item block" href="/settings">
+                        <i class="fas fa-user-cog mr-2"></i> Editer Profiles
+                    </a>
+                 <!--    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100">
+        <button class="btn btn-outline-danger logout-btn w-full text-left" id="logoutButton">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+                </div> -->
+
+                <hr class="fancy-hr">
+                <button class="btn btn-outline-danger logout-btn" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </li>
+
+          <!--   <li class="nav-item">
+                <button class="btn btn-outline-danger logout-btn" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </li> -->
+        </ul>
+    </div>
+</nav>
 
 <script>
     fetch('/connection/profiles')
