@@ -3,11 +3,11 @@ const { v4: uuidv4 } = require('uuid');
 const { Sequelize, DataTypes } = require('sequelize');
 const path = require('path');
  const fs = require('fs/promises'); 
- const rf = require('fs'); 
+ const f = require('fs'); 
 
 
 const caFilePath = path.join(__dirname, '../certificate.pem');
-const ca = rf.readFileSync(caFilePath, 'utf8');
+const ca = f.readFileSync(caFilePath, 'utf8');
 
 const sequelize = new Sequelize(
   process.env.DATABASE_NAME,
@@ -23,7 +23,7 @@ const sequelize = new Sequelize(
         rejectUnauthorized: true, // Ensures the server certificate is validated
       },
     },
-    logging: false, 
+    logging: true, 
 
   }
 );

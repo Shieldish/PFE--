@@ -1,0 +1,186 @@
+<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+/* Card Styles */
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 400px; /* Set the desired width */
+  height: auto; /* Set the desired height */
+  max-height: fit-content;
+  background-color: rgb(255, 255, 255);
+  padding: 5px;
+  margin: 5px;
+  
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  background-color:beige;
+ 
+}
+
+.card-body {
+  padding: 20px;
+  height: 100%; /* Make the card-body take up the full height of the card */
+  display: flex;
+  flex-direction: column; /* Stack the content vertically */
+ 
+}
+
+.card-body > * {
+  margin-bottom: 10px; /* Add some spacing between card elements */
+}
+
+.card-body > *:last-child {
+  margin-bottom: 0; /* Remove the bottom margin from the last element */
+}
+
+/* Grid Container */
+
+#stageGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Minimum card width of 400px for larger screens */
+    grid-gap: 10px;
+    grid-auto-rows: auto; /* Set the desired height for each row */
+}
+
+@media (max-width: 600px) { /* Adjust the breakpoint as needed */
+    #stageGrid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Minimum card width of 250px for mobile screens */
+    }
+}
+.mybtn {
+           font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                align-self: end;
+                font-size: 15px;
+                width: fit-content;
+                height: auto;
+            }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<div class="container">
+    <div style="text-align: center;">
+        <h3 style="margin: 5px; padding: 5px;">Les Stages</h3>
+    </div>
+  <hr>
+    <div id="stageGrid" class="row">
+        <!-- Stage grid will be dynamically populated here -->
+    </div>
+</div>
+
+
+
+<script>
+    // Fetch all stages from the server
+    fetch('/entreprise/stages')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const stages = Array.isArray(data) ? data : [data]; // Ensure stages is an array
+          
+            // Reference to the stageGrid container
+            const stageGrid = document.getElementById('stageGrid');
+            // Loop through each stage and create grid item
+
+          // Loop through each stage and create grid item
+stages.forEach(stage => {
+
+    const stageItem = document.createElement('div');
+    stageItem.classList.add('col-md-8'); // Adjust column width as needed
+    stageItem.classList.add('card', 'animate__animated', 'animate__fadeInUp');
+
+    const descriptionLines = stage.Description.split('\n');
+    const shortDescription = descriptionLines.slice(0, 5).join('\n');
+    const longDescription = stage.Description; // Use the original description for full text
+    const dateFin = new Date(stage.DateFin);
+    const dateDebut = new Date(stage.DateDebut);
+    const formattedDateFin = dateFin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const formattedDateDebut = dateDebut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const createdAt = new Date(stage.createdAt);
+    const updatedAt = new Date(stage.updatedAt);
+    const timeSinceCreated = getTimeSinceCreated(createdAt);
+    const timeSinceUpdate = getTimeSinceCreated(updatedAt);
+
+    stageItem.innerHTML = `
+ 
+            <div class="card-body">
+                <h5 class="card-title" style="text-transform: uppercase; text-align: center;"> <strong >${stage.Domaine}</strong> </h5>
+                <hr>
+                <h5 class="card-title"> Chez : ${stage.Nom}</h5>
+                <h5 class="card-title"> Titre : ${stage.Titre}</h5>
+                <p class="card-text"><strong>Domaine:</strong> ${stage.Libelle}</p>
+                <details class="description-wrapper">
+                    <summary><strong>Description :</strong></summary>
+                  
+                    <p class="long-description">${longDescription}</p>
+                </details>
+                <p class="card-text"><strong>Niveau:</strong> ${stage.Niveau }</p>
+                <p class="card-text"><strong>Nombre de poste:</strong> ${stage.PostesVacants}</p>
+                <p class="card-text"><strong>Lieu:</strong> ${stage.State}</p>
+                <hr>
+                <p class="card-text"><strong>Date debut:</strong> ${formattedDateDebut}</p>
+                <p class="card-text"><strong>Date fin:</strong> ${formattedDateFin}</p>
+              
+             
+                <div class="card-footer">
+            <span class="published-time">Publié  ${timeSinceCreated}</span> <br>
+            <span class="published-time">mettre à jours ${timeSinceUpdate}</span>
+            <hr>
+      <div class="d-flex justify-content-between align-items-center">
+    <a href="/entreprise/edit/${stage.id}" class="btn btn-outline-success btn-sm mybtn d-flex align-items-center">
+        <i class="bi bi-pencil-square"></i> Edit
+    </a>
+    <a href="/entreprise/delete/${stage.id}" class="btn btn-outline-danger btn-sm mybtn d-flex align-items-center">
+        <i class="bi bi-trash3-fill"></i> Delete
+    </a>
+</div>
+
+
+
+        </div>
+            </div>
+
+       
+    `;
+
+    // Append grid item to the stageGrid container
+    stageGrid.appendChild(stageItem);
+});
+
+        })
+        .catch(error => console.error('Error fetching stages:', error.message));
+
+
+        function getTimeSinceCreated(createdAt) {
+  const now = new Date();
+  const diffMs = now.getTime() - createdAt.getTime();
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffSeconds < 60) {
+    return `il y a ${diffSeconds} secondes`;
+  } else if (diffMinutes < 60) {
+    return `il y a ${diffMinutes} minutes`;
+  } else if (diffHours < 24) {
+    return `il y a ${diffHours} heures`;
+  } else {
+    return `il y a ${diffDays} jours`;
+  }
+}
+</script>
+<!-- <script>
+     <a href="/entreprise/edit/${stage.id}" class="btn btn btn-outline-success btn-sm mybtn"><i class="bi bi-pencil-square"></i> edit</a>
+     <a href="/entreprise/delete/${stage.id}" class="btn btn btn-outline-danger btn-sm mybtn">  <i class="bi bi-trash3-fill"></i> delete</a>
+</script> -->

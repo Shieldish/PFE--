@@ -95,10 +95,10 @@
           <ul>
             <% jobs.forEach(job => { %>
               <li style="padding: 15px;">
-                <a href="/postulate/<%= job.id %>"class="job-link">  <i class="bi bi-arrow-right"></i> <%= job.Domaine %>  :  <%= job.Libelle %>  - <i class="bi bi-geo-alt"></i> <%= job.Address %></a>
+                <a href="/etudiant/postulate/<%= job.id %>"class="job-link">  <i class="bi bi-arrow-right"></i> <%= job.Domaine %>  :  <%= job.Libelle %>  - <i class="bi bi-geo-alt"></i> <%= job.Address %></a>
                 <p><i><%= job.Nom %> </i></p>
                 <p class="job-description"> <i> <%= job.Description.substring(0, 99) %></i> </p>
-                <p class="job-description"> <i> <%= job.Description.substring(100, 199)  %>... </i> <a href="/postulate/<%= job.id %>" class="voir-plus">voir plus</a> </p>
+                <p class="job-description"> <i> <%= job.Description.substring(100, 199)  %>... </i> <a href="/etudiant/postulate/<%= job.id %>" class="voir-plus">voir plus</a> </p>
               </li>
             <% }) %>
           </ul>

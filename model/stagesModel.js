@@ -164,7 +164,7 @@ const fakeDatas = Array.from({ length: getRandomNumber() }, (_, index) => {
   ]);
 
   return {
-    id: faker.datatype.uuid(),
+    id:faker.string.uuid(),
     Nom: faker.helpers.arrayElement([
       "Tunisair", "Tunisie Télécom", "Banque Internationale Arabe de Tunisie (BIAT)",
       "Banque de l'Habitat (BH)", "Groupe Délice", "Société Tunisienne de l'Electricité et du Gaz (STEG)",

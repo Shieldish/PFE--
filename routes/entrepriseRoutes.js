@@ -454,6 +454,15 @@ router.get('/postulant', async (req, res) => {
   }
 });
 
+router.post('/deletes/:id', (req, res) => {
+  const stageId = req.params.id;
+
+  stage.destroy({ where: { id: stageId } })
+    .then(() => res.status(200).send({ success: true }))
+    .catch(err => res.status(500).send({ error: 'Failed to delete stage' }));
+});
+
+
 
 module.exports = router;
 

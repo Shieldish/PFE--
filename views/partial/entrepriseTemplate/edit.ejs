@@ -1,156 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Editer Stage</title>
-      <%-include('../../common/head') %>
-      <!-- Bootstrap CSS -->
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-      <style>
+<title>Gestion des Stages : editer</title>
+<%-include('../../common/head') %>
+<link rel="stylesheet" href="../../../public/css/dashboard.css">
+
+
+<style>
         
-         h1 {
-         font-size: 24px;
-         font-weight: bold;
-         margin-bottom: 20px;
-         color: #007bff;
-         text-align: center;
-         }
-         .content-wrapper {
-         font-weight: bold;
-         border: -1px solid #000;
-         background-color: rgb(255, 255, 255);
-         padding: 30px;
-         margin-top: 20px;
-         padding-top: 20px;
-         border-radius: 8px;
-         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-         width: 50%;
-         margin: 0 auto; /* Center the container */
-         overflow-y: auto; /* Add vertical scroll if content exceeds wrapper height */
-         height: auto; /* Example max height, adjust as needed */
-       
-         }
 
-         @media only screen and (max-width: 768px) {
-    .content-wrapper {
-        padding: 20px;
-        margin-top: 10px;
-        width: 100%; /* Adjust width to fit smaller screens */
-    }
+        
+   h1{
+   font-size: 24px;
+   font-weight: bold;
+   margin-bottom: 20px;
+   color: #007bff;
+   text-align: center;
+   padding: 30px;
+   }
+   .content-wrapper {
+   font-weight: bold;
+   border: -1px solid #000;
+   background-color: rgb(255, 255, 255);
+   padding: 30px;
+   margin-top: 20px;
+   padding-top: 20px;
+   border-radius: 8px;
+   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+   width: 65%;
+   margin: 0 auto; /* Center the container */
+   overflow-y: auto; /* Add vertical scroll if content exceeds wrapper height */
+   height: auto; /* Example max height, adjust as needed */
+ 
+   }
+
+   @media only screen and (max-width: 768px) {
+.content-wrapper {
+  padding: 20px;
+  margin-top: 10px;
+  width: 100%; /* Adjust width to fit smaller screens */
 }
-      </style>
-   </head>
-   <body>
-      <hr>
-      <h1 >Editer formulaire de stage</h1>
-      <a style="margin-left: 15px;" href="/entreprise" class="btn btn-outline-secondary">
-         <i class="bi bi-arrow-left"></i> Go Back
-       </a>
-      <hr>
-      <div class="content-wrapper ">
-         <form id="stageForm" action="/entreprise/edit/<%= data.id %>" method="POST" class="row g-3">
-            <div class="col-md-12">
-               <label for="inputNom" class="form-label">Nom de la société / Entreprise / start-up:</label>
-               <input type="text" class="form-control" id="inputNom" name="Nom" value="<%= data.Nom %>">
-            </div>
-            <div class="col-md-12">
-               <label for="inputDomaine" class="form-label">Domaine :</label>
-               <input type="text" class="form-control" id="inputDomaine" name="Domaine" value="<%= data.Domaine %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputTitre" class="form-label">Titre :</label>
-               <input type="text" class="form-control" id="inputTitre" name="Titre" value="<%= data.Titre %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputDescription" class="form-label">Libellé :</label>
-               <input type="text" class="form-control" id="inputDescription" name="Libelle" value="<%= data.Libelle %>">
-            </div>
-            <div class="col-md-12">
-               <label for="inputLibelle" class="form-label">Description :</label>
-               <textarea class="form-control" id="inputLibelle" name="Description" rows="5"><%= data.Description %></textarea>
-            </div>
-            <div class="col-md-6">
-               <label for="inputNiveau" class="form-label">Niveau d'étude :</label>
-               <input type="text" class="form-control" id="inputNiveau" name="Niveau" value="<%= data.Niveau %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputExperience" class="form-label">Experience :</label>
-               <input type="text" class="form-control" id="inputExperience" name="Experience" value="<%= data.Experience %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputLangue" class="form-label">Langue :</label>
-               <input type="text" class="form-control" id="inputLangue" name="Langue" value="<%= data.Langue %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputPlace" class="form-label">Postes vacants :</label>
-               <input type="text" class="form-control" id="inputPlace" name="PostesVacants" value="<%= data.PostesVacants %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputTel1" class="form-label">Téléphone :</label>
-               <input type="number" class="form-control" id="inputTel1" name="Telephone" value="<%= data.Telephone %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputTel2" class="form-label">Fax :</label>
-               <input type="number" class="form-control" id="inputTel2" name="Fax" value="<%= data.Fax %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputEmail" class="form-label">Email :</label>
-               <input type="email" class="form-control" id="inputEmail" name="Email" value="<%= data.Email %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputEmail2" class="form-label">Email 2 :</label>
-               <input type="email" class="form-control" id="inputEmail2" name="Email2" value="<%= data.Email2 %>">
-            </div>
-            <!--  <div class="col-md-6">
-               <label for="inputdate" class="form-label">Date debut:</label>
-               <input type="date" class="form-control" id="inputdate" name="DateDebut" value="<%= data.DateDebut %>">
+}
+</style>
+
+</head>
+<body>
+   <div class="custom-container">
+      <%-include('../../common/sidebar') %>
+      <div class="main-content">
+         <%-include('../../common/navbar') %>
+      
+
+
+          
+              
+              
+               <hr>
+               <a style="margin-left: 15px;" href="/entreprise" class="btn btn-outline-secondary">
+                  <i class="bi bi-arrow-left"></i> Go Back
+                </a>
+               <hr>
+               <h1  style="font-size: xx-large;" >Editer formulaire de stage</h1>
+
+
+               <div class="content-wrapper ">
+                  <form id="stageForm" action="/entreprise/edit/<%= data.id %>" method="POST" class="row g-3">
+                     <div class="col-md-12">
+                        <label for="inputNom" class="form-label">Nom de la société / Entreprise / start-up:</label>
+                        <input type="text" class="form-control" id="inputNom" name="Nom" value="<%= data.Nom %>">
+                     </div>
+                     <div class="col-md-12">
+                        <label for="inputDomaine" class="form-label">Domaine :</label>
+                        <input type="text" class="form-control" id="inputDomaine" name="Domaine" value="<%= data.Domaine %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputTitre" class="form-label">Titre :</label>
+                        <input type="text" class="form-control" id="inputTitre" name="Titre" value="<%= data.Titre %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputDescription" class="form-label">Libellé :</label>
+                        <input type="text" class="form-control" id="inputDescription" name="Libelle" value="<%= data.Libelle %>">
+                     </div>
+                     <div class="col-md-12">
+                        <label for="inputLibelle" class="form-label">Description :</label>
+                        <textarea class="form-control" id="inputLibelle" name="Description" rows="5"><%= data.Description %></textarea>
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputNiveau" class="form-label">Niveau d'étude :</label>
+                        <input type="text" class="form-control" id="inputNiveau" name="Niveau" value="<%= data.Niveau %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputExperience" class="form-label">Experience :</label>
+                        <input type="text" class="form-control" id="inputExperience" name="Experience" value="<%= data.Experience %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputLangue" class="form-label">Langue :</label>
+                        <input type="text" class="form-control" id="inputLangue" name="Langue" value="<%= data.Langue %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputPlace" class="form-label">Postes vacants :</label>
+                        <input type="text" class="form-control" id="inputPlace" name="PostesVacants" value="<%= data.PostesVacants %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputTel1" class="form-label">Téléphone :</label>
+                        <input type="number" class="form-control" id="inputTel1" name="Telephone" value="<%= data.Telephone %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputTel2" class="form-label">Fax :</label>
+                        <input type="number" class="form-control" id="inputTel2" name="Fax" value="<%= data.Fax %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputEmail" class="form-label">Email :</label>
+                        <input type="email" class="form-control" id="inputEmail" name="Email" value="<%= data.Email %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputEmail2" class="form-label">Email 2 :</label>
+                        <input type="email" class="form-control" id="inputEmail2" name="Email2" value="<%= data.Email2 %>">
+                     </div>
+                
+                     <div class="col-md-6">
+                        <label for="inputdate" class="form-label">Date debut:</label>
+                        <input type="date" class="form-control" id="inputdate" name="DateDebut" value="<%= formattedDateDebut %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputdate2" class="form-label">Date fin:</label>
+                        <input type="date" class="form-control" id="inputdate2" name="DateFin" value="<%= formattedDateFin %>">
+                     </div>
+                     <div class="col-12">
+                        <label for="inputAddress" class="form-label">Address :</label>
+                        <input type="text" class="form-control" id="inputAddress" name="Address" placeholder="1234 Main St" value="<%= data.Address %>">
+                     </div>
+                     <div class="col-md-6">
+                        <label for="inputRue" class="form-label">Rue :</label>
+                        <input type="text" class="form-control" id="inputRue" name="Rue" placeholder="Apartment, studio, or floor" value="<%= data.Rue %>">
+                     </div>
+                     <div class="col-md-4">
+                        <label for="inputState" class="form-label">State :</label>
+                        <select id="inputState" class="form-select" name="State" value="<%= data.State %>">
+                           <option >choisir emplacement...</option>
+                           <%-include('tunisieSelected') %>
+                        </select>
+                     </div>
+                     <div class="col-md-2">
+                        <label for="inputZip" class="form-label">Zip :</label>
+                        <input type="text" class="form-control" id="inputZip" name="Zip" value="<%= data.Zip %>">
+                     </div>
+                     <div class="col-12" style="padding-top: 20px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                           <div>
+                              <button type="button" onclick="window.location.href='/entreprise'" class="btn btn-secondary">retour</button>
+                           </div>
+                           <div>
+                              <button type="submit" class="btn btn-primary">sauvegarder</button>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
                </div>
-               <div class="col-md-6">
-               <label for="inputdate2" class="form-label">Date fin:</label>
-               <input type="date" class="form-control" id="inputdate2" name="DateFin" value="<%= data.DateFin %>">
-               </div> -->
-            <div class="col-md-6">
-               <label for="inputdate" class="form-label">Date debut:</label>
-               <input type="date" class="form-control" id="inputdate" name="DateDebut" value="<%= formattedDateDebut %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputdate2" class="form-label">Date fin:</label>
-               <input type="date" class="form-control" id="inputdate2" name="DateFin" value="<%= formattedDateFin %>">
-            </div>
-            <div class="col-12">
-               <label for="inputAddress" class="form-label">Address :</label>
-               <input type="text" class="form-control" id="inputAddress" name="Address" placeholder="1234 Main St" value="<%= data.Address %>">
-            </div>
-            <div class="col-md-6">
-               <label for="inputRue" class="form-label">Rue :</label>
-               <input type="text" class="form-control" id="inputRue" name="Rue" placeholder="Apartment, studio, or floor" value="<%= data.Rue %>">
-            </div>
-            <div class="col-md-4">
-               <label for="inputState" class="form-label">State :</label>
-               <select id="inputState" class="form-select" name="State" value="<%= data.State %>">
-                  <option >choisir emplacement...</option>
-                  <%-include('tunisieSelected') %>
-               </select>
-            </div>
-            <div class="col-md-2">
-               <label for="inputZip" class="form-label">Zip :</label>
-               <input type="text" class="form-control" id="inputZip" name="Zip" value="<%= data.Zip %>">
-            </div>
-            <div class="col-12" style="padding-top: 20px;">
-               <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                     <button type="button" onclick="window.location.href='/entreprise'" class="btn btn-secondary">retour</button>
-                  </div>
-                  <div>
-                     <button type="submit" class="btn btn-primary">sauvegarder</button>
-                  </div>
-               </div>
-            </div>
-         </form>
+         
+        
+
+            
+         
+         <%-include('../../common/footer') %>
       </div>
+      <div id="tableData" class="mt-3"></div>
+   </div>
+   <%-include('../../common/scripts')%>
+</body>
 
-   </body>
-
-   <%-include('../../common/footer') %>
-</html>
