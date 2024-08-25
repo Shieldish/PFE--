@@ -112,7 +112,7 @@ router.get('/', async (req, res) => {
 
  */
 
-async function checkConflicts(data, id) {
+/* async function checkConflicts(data, id) {
   const duplicates = [];
 
   // Fetch all soutenances except the one being updated
@@ -154,7 +154,57 @@ async function checkConflicts(data, id) {
 
   return duplicates;
 }
+ */
+async function checkConflicts(data, id) {
+  const duplicates = [];
 
+  // Fetch all soutenances except the one being updated
+  const soutenances = await Soutenance.findAll({
+    where: {
+      id: { [Op.ne]: id }
+    }
+  });
+
+  // Loop through all soutenances and compare
+  for (let i = 0; i < soutenances.length; i++) {
+    // Only compare with the provided data (similar to soutenances[j])
+    if (
+      soutenances[i].date.toLowerCase() === data.date.toLowerCase() && 
+      soutenances[i].time.trim().toLowerCase() === data.time.trim().toLowerCase()
+    ) {
+
+      // Check for duplicates in 'salle' ignoring empty fields
+      if (
+        soutenances[i].salle &&
+        data.salle &&
+        soutenances[i].salle.trim().toLowerCase() === data.salle.trim().toLowerCase()
+      ) {
+        duplicates.push({
+          id: soutenances[i].id,
+          fields: ['date', 'time', 'salle']
+        });
+      }
+
+      // Role fields to check
+      const roleFields = ['president', 'rapporteur', 'encadrantAcademique', 'encadrantProfessionnel'];
+      roleFields.forEach(field => {
+        // Check for duplicates in role fields ignoring empty fields
+        if (
+          soutenances[i][field] &&
+          data[field] &&
+          soutenances[i][field].trim().toLowerCase() === data[field].trim().toLowerCase()
+        ) {
+          duplicates.push({
+            id: soutenances[i].id,
+            fields: [field]
+          });
+        }
+      });
+    }
+  }
+
+  return duplicates;
+}
 
   router.post('/Addsoutenances', async (req,res)=>{
    /*  console.log(req.body); */
@@ -205,7 +255,7 @@ async function checkConflicts(data, id) {
 
 
 
-router.post('/validate-soutenances', (req, res) => {
+/* router.post('/validate-soutenances', (req, res) => {
   const soutenances = req.body.soutenances;
   let duplicates = [];
 
@@ -249,6 +299,58 @@ router.post('/validate-soutenances', (req, res) => {
 
   res.json({ duplicates });
 });
+ */
+router.post('/validate-soutenances', (req, res) => {
+  const soutenances = req.body.soutenances;
+  let duplicates = [];
 
+  // Perform checks for duplicate dates, times, and salles
+  for (let i = 0; i < soutenances.length; i++) {
+    for (let j = i + 1; j < soutenances.length; j++) {
+      if (
+        soutenances[i].date.toLowerCase() === soutenances[j].date.toLowerCase() &&
+        soutenances[i].time.trim().toLowerCase() === soutenances[j].time.trim().toLowerCase()
+      ) {
+
+        // Check for duplicates in 'salle' ignoring empty fields
+        if (
+          soutenances[i].salle &&
+          soutenances[j].salle &&
+          soutenances[i].salle.trim().toLowerCase() === soutenances[j].salle.trim().toLowerCase()
+        ) {
+          duplicates.push({
+            id: soutenances[i].id,
+            fields: ['date', 'time', 'salle'],
+          });
+          duplicates.push({
+            id: soutenances[j].id,
+            fields: ['date', 'time', 'salle'],
+          });
+        }
+
+        const roleFields = ['president', 'rapporteur', 'encadrantAcademique', 'encadrantProfessionnel'];
+        roleFields.forEach((field) => {
+          // Check for duplicates in role fields ignoring empty fields
+          if (
+            soutenances[i][field] &&
+            soutenances[j][field] &&
+            soutenances[i][field].trim().toLowerCase() === soutenances[j][field].trim().toLowerCase()
+          ) {
+            duplicates.push({
+              id: soutenances[i].id,
+              fields: [field],
+            });
+            duplicates.push({
+              id: soutenances[j].id,
+              fields: [field],
+            });
+          }
+        });
+      }
+    }
+  }
+
+  res.json({ duplicates });
+});
 
 module.exports = router;

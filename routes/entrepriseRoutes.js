@@ -154,20 +154,22 @@ router.get('/edit/:id', async (req, res) => {
     req.flash('error','Une erreur s\'est produite lors de la récupération des données stages : ' + error.message);
     return res.redirect('/entreprise');
   }
-         
+        
 });
 
 router.delete('/delete/:id', async (req, res) => {
   const stageId = req.params.id;
+console.log('stageid',stageId)
+
   try {
     // Example deletion logic using Sequelize with async/await
-    await stage.destroy({
+   const t= await stage.destroy({
       where: {
         id: stageId
       }
     });
     // Send a success response
-    console.log(' deleted successfully')
+    console.log(' deleted successfully',t)
     req.flash('info', `Stage avec  id : ${stageId} Supprimé avec succès`);
     return res.redirect('/entreprise');
   } catch (err) {
@@ -454,13 +456,26 @@ router.get('/postulant', async (req, res) => {
   }
 });
 
-router.post('/deletes/:id', (req, res) => {
+/* router.post('/deletes/:id', (req, res) => {
   const stageId = req.params.id;
 
   stage.destroy({ where: { id: stageId } })
     .then(() => res.status(200).send({ success: true }))
     .catch(err => res.status(500).send({ error: 'Failed to delete stage' }));
 });
+
+
+
+router.delete('/delete1/:id', async (req, res) => {
+  const stageId = req.params.id;
+  try {
+    console.log('id:', stageId);
+    await stage.destroy({ where: { id: stageId } });
+    res.json({ success: true });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+}); */
 
 
 
