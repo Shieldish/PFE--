@@ -234,7 +234,7 @@ router.get(['/', '/login'], (req, res) => {
       await userRegistration.save();
   
       // Envoyer un e-mail de réinitialisation de mot de passe
-      await sendUserResetPasswordMail(email, resetToken);
+      await sendUserResetPasswordMail(email.toLowerCase(), resetToken);
   
       // Envoyer une réponse de succès
       const message = 'Les instructions de réinitialisation de mot de passe ont été envoyées avec succès à:';
@@ -284,7 +284,7 @@ router.post('/reseting-password', async (req, res) => {
 
     // Mettre à jour le mot de passe de l'utilisateur et réinitialiser le token
     await user_registration.update(
-      { PASSWORD: hashedPassword, TOKEN: '0', ISVALIDATED: true }, // Définir le token à '0' pour le marquer comme utilisé
+      { PASSWORD: password, TOKEN: '0', ISVALIDATED: true }, // Définir le token à '0' pour le marquer comme utilisé
       { where: { EMAIL: email } }
     );
 
@@ -314,11 +314,16 @@ router.post('/login', async (req, res) => {
     if (!user.ISVALIDATED) {
       req.flash('info', 'Compte non activé. Veuillez vérifier votre e-mail et confirmer votre inscription avant de vous connecter !');
       return res.render('../connection/login', { messages: req.flash() });
+
+
     }
-    if (!user.validPassword(password)) {
+
+    console.log('pass :' ,user.validPassword(password))
+
+     if (!user.validPassword(password)) {
       req.flash('error', 'Mot de passe incorrect. Veuillez réessayer.');
       return res.render('../connection/login', { messages: req.flash() });
-    }
+    } 
     
     // Mettre à jour les données utilisateur de la session
     req.session.user = user.toJSON();
@@ -475,7 +480,7 @@ router.post('/registration', async function (req, res) {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+/*     const hashedPassword = await bcrypt.hash(password, 10); */
 
     // Generate registration token
     const registrationToken = generateRandomToken(100);
@@ -487,7 +492,7 @@ router.post('/registration', async function (req, res) {
       NOM: nom.trim().toUpperCase(),
       PRENOM: prenom.trim(),
       EMAIL: email.trim().toLowerCase(),
-      PASSWORD: hashedPassword, // Updated to use hashed password
+      PASSWORD: password, // Updated to use hashed password
       TOKEN: registrationToken,
       UUID: uuid,
     });

@@ -74,8 +74,8 @@ const user_registration = sequelize.define('user_registration', {
     hooks: {
       beforeCreate: async (user_registration) => {
         if (user_registration.PASSWORD) {
-          const salt = await bcrypt.genSalt(10); // Removed the second argument
-          user_registration.PASSWORD = await bcrypt.hash(user_registration.PASSWORD, salt); // Used await here
+          const salt = await bcrypt.genSalt(10); 
+          user_registration.PASSWORD = await bcrypt.hash(user_registration.PASSWORD, salt);
         }
       }
     }

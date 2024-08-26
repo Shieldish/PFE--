@@ -28,7 +28,7 @@
     "express-async-handler": "^1.2.0",
     "express-rate-limit": "^7.2.0",
     "express-session": "^1.18.0",
-    "faker": "^6.6.6",
+    "faker": "^5.5.3",
     "flash-message": "^2.0.1",
     "fs": "^0.0.1-security",
     "googleapi": "^1.0.2",
