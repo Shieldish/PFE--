@@ -263,8 +263,6 @@ app.get('/search', async (req, res) => {
 
         res.render('searchResults', {
             jobs,
-            applications: [],
-            users: [],
             query,
             length: count,
             currentPage: page,

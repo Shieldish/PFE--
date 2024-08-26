@@ -16,7 +16,8 @@
        margin: 1rem auto;
        } 
        .button-container {
-       text-align: center;
+          cursor: none;
+      
        }
        th, td {
        border: 1px solid #dddddd;
@@ -35,33 +36,40 @@
           <%-include('./common/navbar') %>
           <div class="my-custom-class">
              <%-include('./partial/flaskMessages')  %>
-             <h5 >
+             
+             <div class="d-flex justify-content-between align-items-center mb-3">
                <a href="/gestion" class="btn btn-outline-secondary">
-                  <i class="bi bi-arrow-left"></i> Retour
+                   <i class="bi bi-arrow-left"></i> Retour
                </a>
-             </h5>
-             <% if (tableName !== null && typeof tableName !== 'undefined') { %>
-             <script>
-                const globalTableName = '<%= tableName %>';
-             </script>
-             <!-- Button to add new entry -->
-             <button type="button" class="btn btn-outline-success mb-3 float-right" data-toggle="modal" data-target="#addModal">
-             <i class="fas fa-plus"></i>Ajouter un Nouveau <%= tableName %>
-             </button>
+           
+               <button class="btn btn-warning btn-sm button-container" >
+                <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %> : <%= count %></strong>
+               </button>
+
+
+               <% if (tableName !== null && typeof tableName !== 'undefined') { %>
+           
+               <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#addModal">
+                   <i class="fas fa-plus"></i> Ajouter un Nouveau <%= tableName %>
+               </button>
+            
+           </div>
+           
+
+
+             
              <!-- Button container for displaying table name and count -->
              <div class="button-container">
-                <button class="btn btn-outline-light btn-sm" >
-                   <h6> <strong style="color:rgb(0, 0, 0);">Les Données - <%= tableName.toUpperCase() %> : [<%= count %>]</strong></h6>
-                </button>
+              
              </div>
              <% } %>
              <% if (data.length > 0) { %>
-             <div class="mb-6">
-                <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
+             <div class="mb-6"  style="padding-top: 20px;" >
+                <input type="text"id="searchInput" class="form-control mr-sm-2" placeholder="rechercher...">
              </div>
              <!--  <div class=" table-responsive  my-color " style=" border-radius: 5px;" > -->
-             <div  class="table-responsive " style="padding-left: 15px; padding-right: 15px; padding-top: 20px;">
-                <table class=" table table-hover  searchable sortable">
+             <div  class="table-responsive " >
+                <table class=" table table-hover  table-striped searchable sortable">
                    <thead class="thead-dark">
                       <tr>
                          <% Object.keys(data[0]).forEach(key => { %>

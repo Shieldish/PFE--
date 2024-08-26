@@ -75,10 +75,58 @@
     <input type="text" id="searchInput" class="form-control mr-sm-2" placeholder="Search...">
 </div> -->
 <hr>
-  <div class="d-flex justify-content-end mb-3">
+<style>
+ .d-flex {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-bottom: 1rem;
+}
+
+.view-toggle {
+    display: flex;
+    align-items: center;
+    background-color: #007bff; /* Default background color */
+    color: #ffffff; /* Text and icon color */
+    border: none;
+    padding: 10px 20px;
+    margin-left: 1rem; /* Space between buttons */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1rem;
+}
+
+.view-toggle i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.view-toggle:hover {
+    background-color: #d97706; /* Hover background color */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.view-toggle.active {
+    background-color: #d97706; /* Keep selected color */
+}
+
+
+</style>
+
+ <!--  <div class="d-flex justify-content-end mb-3">
     <i class="bi bi-card-list view-toggle" id="cardViewIcon"></i>
     <i class="bi bi-list-task view-toggle" id="tableViewIcon"></i>
-  </div>
+  </div> -->
+
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn view-toggle"id="cardViewIcon">
+        <i class="bi bi-card-list"></i> Card View
+    </button>
+    <button class="btn view-toggle" id="tableViewIcon">
+        <i class="bi bi-list-task"></i> Table View
+    </button>
+</div>
+
 
   <hr>
   
@@ -110,9 +158,9 @@
     <!-- Stage cards will be dynamically populated here -->
   </div>
   <div id="stageTableContainer" class="table-responsive d-none">
-    <table class="table table-striped table-bordered table-hover   searchable sortable">
-      <thead>
-        <tr>
+    <table class="table table-striped table-bordered table-hover table-secondary searchable sortable">
+      <thead class="table-dark">
+        <tr  >
           <th>Domaine</th>
           <th>Nom</th>
           <th>Titre</th>
@@ -184,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
       stages.forEach(stage => {
         // Create card item
         const stageItem = document.createElement('div');
-        stageItem.classList.add('col-md-8', 'card', 'animate__animated', 'animate__fadeInUp');
+        stageItem.classList.add( 'card', 'animate__animated', 'animate__fadeInUp');
 
         const descriptionLines = stage.Description.split('\n');
         const longDescription = stage.Description; // Use the original description for full text
@@ -363,5 +411,24 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener('DOMContentLoaded', function () {
   
 });
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cardViewBtn = document.getElementById('cardViewIcon');
+    const tableViewBtn = document.getElementById('tableViewIcon');
+
+    cardViewBtn.addEventListener('click', function() {
+        cardViewBtn.classList.add('active');
+        tableViewBtn.classList.remove('active');
+    });
+
+    tableViewBtn.addEventListener('click', function() {
+        tableViewBtn.classList.add('active');
+        cardViewBtn.classList.remove('active');
+    });
+});
+
 
 </script>
