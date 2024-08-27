@@ -278,9 +278,9 @@ router.post('/reseting-password', async (req, res) => {
     }
 
     // Générer le sel et hacher le nouveau mot de passe
-    const saltRounds = 10;
+/*     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt); */
 
     // Mettre à jour le mot de passe de l'utilisateur et réinitialiser le token
     await user_registration.update(

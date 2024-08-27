@@ -106,9 +106,9 @@ app.get('/api/stages', authenticate, async (req, res) => {
     }
 });
 
- app.get(['/favicon.ico', '/sidebar'], (req, res) => {
+/*  app.get(['/favicon.ico', '/sidebar'], (req, res) => {
     res.redirect('/home');
-}); 
+});  */
 
 app.get('/check-token', authenticateToken, (req, res) => {
     res.status(200).json({ valid: true });
