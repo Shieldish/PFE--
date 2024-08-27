@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-
+const { exportData } = require('../controllers/exportController');
 
 router.get('/', async (req, res) => {
     try {
@@ -41,7 +41,8 @@ router.get('/', async (req, res) => {
         return res.status(200).json({ conflictingData: [] });
       }
     } catch (error) {
-      res.status(400).json({ error: error.message });
+   /*    res.status(400).json({ error: error.message }); */
+      res.status(400).render('404.ejs', { error: error.message });
     }
   });
 
@@ -129,6 +130,7 @@ async function checkConflicts(data, id) {
     } catch (error) {
       console.error('Error deleting soutenance:', error);
       res.status(500).json({ error: 'Erreur lors de la suppression de la soutenance' });
+      
     }
   });
 
@@ -199,5 +201,13 @@ router.post('/validate-soutenances', (req, res) => {
 
   res.json({ duplicates });
 });
+
+
+
+router.post('/export', exportData);
+
+
+
+
 
 module.exports = router;
