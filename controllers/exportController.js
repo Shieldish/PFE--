@@ -66,9 +66,19 @@ async function generateXLSX(data) {
   return workbook.xlsx.writeBuffer();
 }
 
+function  getFormattedDateTime() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
 
+    return `${day}-${month}-${year}_${hours}-${minutes}-${seconds}`;
+}
 
-    async function generatePDF(data) {
+   /*  async function generatePDF(data) {
         const doc = new PDFDocument({ layout: 'landscape' });
         const buffers = [];
         doc.on('data', buffers.push.bind(buffers));
@@ -165,4 +175,102 @@ async function generateXLSX(data) {
         const seconds = String(now.getSeconds()).padStart(2, '0');
     
         return `${day}-${month}-${year}_${hours}-${minutes}-${seconds}`;
-    }
+    } */
+ 
+        async function generatePDF(data) {
+            const doc = new PDFDocument({ layout: 'landscape' });
+            const buffers = [];
+            doc.on('data', buffers.push.bind(buffers));
+            doc.on('end', () => {});
+          
+            const headers = Object.keys(data[0]);
+            const tableData = data.map(item => headers.map(header => item[header]));
+          
+            const margin = 30;
+            const cellPadding = 3;
+            const cellWidth = (doc.page.width - 2 * margin) / headers.length;
+            const cellHeight = 16;
+            const headerHeight = 30; // Increased header height
+            const fontSize = 8;
+            const headerFontSize = 9;
+            const rowsPerPage = Math.floor((doc.page.height - 2 * margin - headerHeight) / cellHeight);
+          
+            function drawTableHeader() {
+              doc.font('Helvetica-Bold').fontSize(headerFontSize);
+              headers.forEach((header, i) => {
+                doc.text(header, i * cellWidth + margin + cellPadding, margin + cellPadding, {
+                  width: cellWidth - 2 * cellPadding,
+                  height: headerHeight - 2 * cellPadding,
+                  align: 'left',
+                  valign: 'center',
+                  lineBreak: true
+                });
+              });
+            }
+          
+            function drawTableContent(startRow, endRow) {
+              doc.font('Helvetica').fontSize(fontSize);
+              for (let rowIndex = startRow; rowIndex < endRow && rowIndex < tableData.length; rowIndex++) {
+                const row = tableData[rowIndex];
+                row.forEach((cell, cellIndex) => {
+                  const cellValue = cell !== null && cell !== undefined ? cell.toString() : '';
+                  doc.text(
+                    cellValue,
+                    cellIndex * cellWidth + margin + cellPadding,
+                    (rowIndex - startRow) * cellHeight + margin + headerHeight + cellPadding,
+                    {
+                      width: cellWidth - 2 * cellPadding,
+                      height: cellHeight - 2 * cellPadding,
+                      align: 'left',
+                      lineBreak: true
+                    }
+                  );
+                });
+              }
+            }
+          
+            function drawTableLines(rowCount) {
+              doc.lineWidth(0.5);
+              // Horizontal lines
+              doc.moveTo(margin, margin)
+                 .lineTo(doc.page.width - margin, margin)
+                 .stroke(); // Top of header
+              doc.moveTo(margin, margin + headerHeight)
+                 .lineTo(doc.page.width - margin, margin + headerHeight)
+                 .stroke(); // Bottom of header
+              for (let i = 1; i <= rowCount; i++) {
+                doc.moveTo(margin, i * cellHeight + margin + headerHeight)
+                   .lineTo(doc.page.width - margin, i * cellHeight + margin + headerHeight)
+                   .stroke();
+              }
+              // Vertical lines
+              for (let i = 0; i <= headers.length; i++) {
+                doc.moveTo(i * cellWidth + margin, margin)
+                   .lineTo(i * cellWidth + margin, rowCount * cellHeight + margin + headerHeight)
+                   .stroke();
+              }
+            }
+          
+            let currentRow = 0;
+            while (currentRow < tableData.length) {
+              if (currentRow > 0) {
+                doc.addPage();
+              }
+              drawTableHeader();
+              const rowsToRender = Math.min(rowsPerPage, tableData.length - currentRow);
+              drawTableContent(currentRow, currentRow + rowsToRender);
+              drawTableLines(rowsToRender);
+              currentRow += rowsToRender;
+            }
+          
+            doc.end();
+          
+            return new Promise((resolve) => {
+              doc.on('end', () => {
+                resolve(Buffer.concat(buffers));
+              });
+            });
+          } 
+
+
+          
