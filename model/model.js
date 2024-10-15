@@ -137,6 +137,40 @@ etudiant.beforeCreate((etudiant, _) => {
   etudiant.ID = uuidv4();
 });
 
+
+
+const entreprise = sequelize.define('entreprise', {
+  EMAIL: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    unique: true,
+    allowNull: false
+  },
+  NOM: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  DOMAINE: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  VILLE: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  ADDRESSE : {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  TELEPHONE: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
+}, {
+  tableName: 'entreprise',
+  timestamps: true
+});
+
 /* async function getAllTablesAndStructure() {
   try {
     const tablesAndColumns = await sequelize.query(`
@@ -227,6 +261,7 @@ async function syncModel() {
     await enseignant.sync({ alter: true });
     await encadrant.sync({ alter: true });
     await etudiant.sync({ alter: true });
+    await entreprise.sync({alter:true});
   } catch (error) {
     console.error('Error syncing models:', error);
   }
@@ -266,6 +301,7 @@ module.exports = {
   enseignant,
   etudiant,
   encadrant,
+  entreprise,
   getAllTablesAndStructure,
   getDataFromTable,
   sequelize,

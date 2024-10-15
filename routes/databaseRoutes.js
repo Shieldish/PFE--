@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { enseignant, encadrant, etudiant, sequelize } = require('../model/model');
+const { enseignant, encadrant, etudiant,entreprise, sequelize } = require('../model/model');
 const { v4: uuidv4 } = require('uuid');
 const user_registration = require('../controllers/UserRegistration');
 
@@ -171,6 +171,8 @@ function getModelFromTableName(tableName) {
       return user_registration;
     case 'etudiant':
       return etudiant;
+    case 'entreprise':
+      return entreprise;
     default:
       return null;
   }
