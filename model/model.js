@@ -17,12 +17,12 @@ const sequelize = new Sequelize(
     host: process.env.DATABASE_HOST,
     dialect: process.env.DATABASE_DIALECT,
     port: process.env.DATABASE_PORT,
-    dialectOptions: {
+  /*   dialectOptions: {
       ssl: {
         ca: ca, // Include the CA certificate
         rejectUnauthorized: true, // Ensures the server certificate is validated
       },
-    },
+    }, */
     logging: false, 
 
   }
