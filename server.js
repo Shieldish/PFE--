@@ -1,10 +1,16 @@
+'use strict';
+
+require('dotenv').config();
+
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
-const ejs = require('ejs');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
+
 const routes = require('./routes/routes');
-const { fetchSidebarItems, connectToDatabase } = require('./model/dbConfig');
 const connectionRoutes = require('./routes/connectionRoutes');
 const uploadsRoutes = require('./routes/uploadsRoutes');
 const databaseRoutes = require('./routes/databaseRoutes');
@@ -13,23 +19,52 @@ const entrepriseRoutes = require('./routes/entrepriseRoutes');
 const etudiantsRoutes = require('./routes/etudiantsRoutes');
 const encadrementRoutes = require('./routes/encadrementRoutes');
 const planificationRoutes = require('./routes/planificationRoutes');
+
 const authenticate = require('./middlewares/auth');
 const checkRole = require('./middlewares/roles');
-const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
-const flash = require('connect-flash');
+const logger = require('./logs/logger');
+
+const { fetchSidebarItems, connectToDatabase } = require('./model/dbConfig');
+const { sequelize } = require('./config/database');
 const stage = require('./model/stagesModel');
-const { Op, literal, fn, col ,Sequelize} = require('sequelize');
+const { syncStageModel } = require('./model/stagesModel');
+const { syncSoutenanceModel } = require('./model/soutenanceModel');
+const { syncPostulationModels } = require('./model/stagePostulationModel');
+const { syncUserModel } = require('./model/userModel');
+const { syncModel } = require('./model/model');
+const { Op } = require('sequelize');
 
 const app = express();
 
+// ── Security headers ──────────────────────────────────────────────────────────
+app.use(helmet());
+
+// ── CORS ──────────────────────────────────────────────────────────────────────
 app.use(cors({
-    origin: '*',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
 
+// ── Rate limiters ─────────────────────────────────────────────────────────────
+const connectionLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: 'Too many requests from this IP, please try again later.',
+});
+
+const searchLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: 'Too many search requests from this IP, please try again later.',
+});
+
+// ── Core middleware ───────────────────────────────────────────────────────────
 app.use(cookieParser());
 app.use(flash());
 app.use(express.json({ limit: '50mb' }));
@@ -50,14 +85,16 @@ app.use((req, res, next) => {
     next();
 });
 
+// ── Static files (public/ only) ───────────────────────────────────────────────
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ── View engine ───────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(__dirname, '')));
-
-// Route Definitions
+// ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/people', authenticate, routes);
-app.use('/connection', connectionRoutes);
+app.use('/connection', connectionLimiter, connectionRoutes);
 app.use('/etudiant', authenticate, checkRole(['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT']), etudiantsRoutes);
 app.use('/entreprise', authenticate, checkRole(['ENTREPRISE', 'DEPARTEMENT', 'ADMIN']), entrepriseRoutes);
 app.use('/encadrement', authenticate, checkRole(['DEPARTEMENT', 'ADMIN']), encadrementRoutes);
@@ -66,230 +103,153 @@ app.use('/settings', authenticate, checkRole(['USER', 'ENTREPRISE', 'DEPARTEMENT
 app.use('/gestion', authenticate, checkRole(['ADMIN']), databaseRoutes);
 app.use('/files', authenticate, checkRole(['ADMIN']), uploadsRoutes);
 
-app.post('/sidebar', authenticate, async (req, res) => {
+app.post('/sidebar', authenticate, async (req, res, next) => {
     try {
         const { lang } = req.body || 'fr';
         const userRole = req.role;
         const sidebarItems = await fetchSidebarItems(lang, userRole);
         res.json(sidebarItems);
     } catch (error) {
-        console.error('Erreur lors de la récupération des éléments de la barre latérale:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 });
 
-
-
-app.get(['/', '/home'], authenticate, async (req, res) => {
+app.get(['/', '/home'], authenticate, async (req, res, next) => {
     try {
         const stages = await stage.findAll() || [];
-        res.render('home', { stages });
+        res.render('pages/home', { stages });
     } catch (error) {
-        console.error('Error fetching stages:', error);
-        res.status(500).render('error', { message: 'An error occurred while fetching data.' });
+        next(error);
     }
 });
 
-app.get('/about', async( req,res)=>{
-    res.render('About');
-})
+app.get('/about', (req, res) => {
+    res.render('pages/about');
+});
 
-app.get('/api/stages', authenticate, async (req, res) => {
+app.get('/api/stages', authenticate, async (req, res, next) => {
     try {
         const stages = await stage.findAll({
             order: [['createdAt', 'DESC']]
         }) || [];
         res.json(stages);
     } catch (error) {
-        console.error('Error fetching stages:', error);
-        res.status(500).json({ error: 'An error occurred while fetching data.' });
+        next(error);
     }
 });
 
-/*  app.get(['/favicon.ico', '/sidebar'], (req, res) => {
-    res.redirect('/home');
-});  */
-
-app.get('/check-token', authenticateToken, (req, res) => {
+app.get('/check-token', authenticate, (req, res) => {
     res.status(200).json({ valid: true });
 });
 
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, process.env.secretKey, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
-
-
-
-
-
-/* app.get('/search', async (req, res) => {
-    const query = req.query.q;
-    if (!query) {
-        return res.redirect('/'); // Redirect to home if query is empty
-    }
-    const page = parseInt(req.query.page) || 1;
-    const limit = 10;
-    const offset = (page - 1) * limit;
-    const queryTerms = query.split(' ').map(term => term.trim());
-
-    try {
-        const relevanceScore = queryTerms.map((term, index) => `
-            (CASE
-                WHEN Titre LIKE :term${index} THEN 10
-                WHEN Domaine LIKE :term${index} THEN 8
-                WHEN Libelle LIKE :term${index} THEN 7
-                WHEN Description LIKE :term${index} THEN 5
-                WHEN Niveau LIKE :term${index} THEN 4
-                WHEN Experience LIKE :term${index} THEN 4
-                WHEN Langue LIKE :term${index} THEN 3
-                WHEN Address LIKE :term${index} THEN 2
-                WHEN State LIKE :term${index} THEN 2
-                WHEN Nom LIKE :term${index} THEN 1
-                ELSE 0
-            END)
-        `).join(' + ');
-
-        const { count, rows: jobs } = await stage.findAndCountAll({
-            attributes: {
-                include: [
-                    [literal(`(${relevanceScore})`), 'relevance']
-                ]
-            },
-            where: {
-                [Op.or]: queryTerms.flatMap((term, index) => [
-                    { Titre: { [Op.like]: `%${term}%` } },
-                    { Domaine: { [Op.like]: `%${term}%` } },
-                    { Libelle: { [Op.like]: `%${term}%` } },
-                    { Description: { [Op.like]: `%${term}%` } },
-                    { Niveau: { [Op.like]: `%${term}%` } },
-                    { Experience: { [Op.like]: `%${term}%` } },
-                    { Langue: { [Op.like]: `%${term}%` } },
-                    { Address: { [Op.like]: `%${term}%` } },
-                    { State: { [Op.like]: `%${term}%` } },
-                    { Nom: { [Op.like]: `%${term}%` } }
-                ])
-            },
-            order: [
-                [literal('relevance'), 'DESC']
-            ],
-            limit: limit,
-            offset: offset,
-            replacements: queryTerms.reduce((acc, term, index) => ({ ...acc, [`term${index}`]: `%${term}%` }), {})
-        });
-
-        const totalPages = Math.ceil(count / limit);
-
-        res.render('searchResults', {
-            jobs,
-            applications: [],
-            users: [],
-            query,
-            length: count,
-            currentPage: page,
-            totalPages: totalPages
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).render('404.ejs', { error: error.message });
-    }
-}); */
-
+// ── Search ────────────────────────────────────────────────────────────────────
 const ITEMS_PER_PAGE = 10;
 
-app.get('/search', async (req, res) => {
+app.get('/search', searchLimiter, async (req, res, next) => {
     const query = req.query.q;
-    const page = parseInt(req.query.page) || 1;
-    
-    if (!query) {
-        return res.redirect('/'); // Redirect to home if query is empty
+    if (!query || !query.trim()) {
+        return res.redirect('/home');
     }
 
-    const queryTerms = query.split(' ').map(term => `%${term.trim()}%`);
+    const page = parseInt(req.query.page, 10) || 1;
+    const terms = query.split(' ').map(t => t.trim()).filter(Boolean);
 
     try {
         const { count, rows: jobs } = await stage.findAndCountAll({
             where: {
-                [Op.or]: queryTerms.map(term => ({
-                    [Op.or]: [
-                        { Titre: { [Op.like]: term } },
-                        { Domaine: { [Op.like]: term } },
-                        { Libelle: { [Op.like]: term } },
-                        { Description: { [Op.like]: term } },
-                        { Niveau: { [Op.like]: term } },
-                        { Experience: { [Op.like]: term } },
-                        { Langue: { [Op.like]: term } },
-                        { Address: { [Op.like]: term } },
-                        { State: { [Op.like]: term } },
-                        { Nom: { [Op.like]: term } }
-                    ]
-                }))
+                [Op.or]: terms.flatMap(term => [
+                    { Titre:   { [Op.like]: `%${term}%` } },
+                    { Domaine: { [Op.like]: `%${term}%` } },
+                    { Niveau:  { [Op.like]: `%${term}%` } },
+                    { Langue:  { [Op.like]: `%${term}%` } },
+                    { Address: { [Op.like]: `%${term}%` } },
+                    { State:   { [Op.like]: `%${term}%` } },
+                    { Nom:     { [Op.like]: `%${term}%` } },
+                ])
             },
-            attributes: {
-                include: [
-                    [
-                        Sequelize.literal(`
-                            (
-                                (CASE WHEN "Titre" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Domaine" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Libelle" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Description" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Niveau" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Experience" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Langue" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Address" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "State" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END) +
-                                (CASE WHEN "Nom" LIKE '${queryTerms[0]}' THEN 1 ELSE 0 END)
-                            )
-                        `),
-                        'relevanceScore'
-                    ]
-                ]
-            },
-            order: [[Sequelize.literal('relevanceScore'), 'DESC']],
             limit: ITEMS_PER_PAGE,
-            offset: (page - 1) * ITEMS_PER_PAGE
+            offset: (page - 1) * ITEMS_PER_PAGE,
         });
 
         const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 
-        res.render('searchResults', {
+        res.render('pages/search-results', {
             jobs,
             query,
             length: count,
             currentPage: page,
-            totalPages
+            totalPages,
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).render('404.ejs', { error: error.message });
+        next(error);
     }
 });
 
-// Catch-all 404 route should be defined last
-app.use((req, res, next) => {
-    res.status(404).render('404', { error: req.originalUrl });
+// ── 404 handler ───────────────────────────────────────────────────────────────
+app.use((req, res) => {
+    res.status(404).render('pages/404', { error: req.originalUrl });
 });
 
+// ── Global error handler ──────────────────────────────────────────────────────
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+    logger.error(err.stack || err.message);
+    res.status(500).render('pages/404', { error: 'Internal server error' });
+});
+
+// ── Startup ───────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
+let server;
+
+async function syncAllModels() {
+    await syncModel();
+    await syncStageModel();
+    await syncSoutenanceModel();
+    await syncPostulationModels();
+    await syncUserModel();
+}
 
 const startServer = async () => {
     try {
         await connectToDatabase();
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
+        await syncAllModels();
+        server = app.listen(PORT, () => {
+            logger.info(`Server is running on http://localhost:${PORT}`);
         });
     } catch (error) {
-        console.error('Failed to connect to the database:', error);
+        logger.error('Failed to start server:', error);
         process.exit(1);
     }
 };
+
 startServer();
+
+// ── Graceful shutdown ─────────────────────────────────────────────────────────
+const shutdown = async (signal) => {
+    logger.info(`Received ${signal}. Shutting down gracefully.`);
+    if (server) {
+        server.close(async () => {
+            try {
+                await sequelize.close();
+                logger.info('Database connection closed.');
+            } catch (err) {
+                logger.error('Error closing database connection:', err);
+            }
+            process.exit(0);
+        });
+    } else {
+        process.exit(0);
+    }
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+// ── Process-level error handlers ──────────────────────────────────────────────
+process.on('uncaughtException', (err) => {
+    logger.error('Uncaught exception:', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+    logger.error('Unhandled rejection:', reason);
+});

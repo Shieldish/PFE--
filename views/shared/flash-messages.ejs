@@ -1,0 +1,23 @@
+<% if (typeof messages !== 'undefined' && messages) { %>
+  <% if (messages.error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" data-auto-dismiss>
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <%= messages.error %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+  <% } %>
+  <% if (messages.success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" data-auto-dismiss>
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <%= messages.success %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+  <% } %>
+  <% if (messages.info) { %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" data-auto-dismiss>
+      <i class="bi bi-info-circle-fill me-2"></i>
+      <%= messages.info %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+  <% } %>
+<% } %>

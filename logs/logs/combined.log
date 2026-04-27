@@ -11,3 +11,5 @@
 {"level":"error","message":"Error: Cannot convert undefined or null to object","stack":"TypeError: Cannot convert undefined or null to object\n    at Function.entries (<anonymous>)\n    at C:\\Users\\gabia\\PFE---2\\routes\\uploadsRoutes.js:41:16\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-15T23:29:20.037Z"}
 {"EMAIL":"test.nodemailer.pfe2024@gmail.com","NOM":"SAMUEL","PRENOM":"gabiam","level":"info","message":"user conecteted :","timestamp":"2024-04-15T23:29:45.422Z"}
 {"EMAIL":"test.nodemailer.pfe2024@gmail.com","NOM":"SAMUEL","PRENOM":"gabiam","level":"info","message":"user conecteted :","timestamp":"2024-04-15T23:30:26.861Z"}
+{"level":"info","message":"roles OK","timestamp":"2026-04-27T05:14:09.832Z"}
+{"level":"info","message":"roles OK","timestamp":"2026-04-27T05:20:52.443Z"}

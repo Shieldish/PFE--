@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Candidature' }) %>
+  <style>
+    .watermark-container { position: relative; }
+    .watermark {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) rotate(-45deg);
+      font-size: 4em; font-weight: bold;
+      color: rgba(0,0,0,.12); pointer-events: none;
+      user-select: none; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <a href="/etudiant" class="btn btn-outline-secondary btn-sm mb-3">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
+
+      <%- include('../shared/flash-messages') %>
+
+      <h5 class="mb-1"><i class="fas fa-info-circle me-2"></i>Détails</h5>
+      <h6 class="text-primary mb-3">
+        <i class="fas fa-file-alt me-2"></i>Candidature : <%= stage.stageDomaine %> / <%= stage.stageSujet %> / <%= stage.entrepriseName %>
+      </h6>
+      <hr>
+
+      <input type="hidden" id="stageId"    data-stage-id="<%= stage.stageId %>">
+      <input type="hidden" id="stageEmail" data-stage-email="<%= stage.etudiantEmail %>">
+
+      <div class="row">
+        <div class="col-lg-8">
+          <% if (candidature) { %>
+          <div class="card watermark-container">
+            <div class="card-body">
+              <h5 class="text-center text-uppercase mb-3">
+                <i class="fas fa-user me-2"></i><%= candidature.nom %> <%= candidature.prenom %>
+              </h5>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-user me-2"></i>Informations personnelles</h6>
+              <p><strong>Date de naissance :</strong> <%= candidature.date_naissance %></p>
+              <p><strong>Adresse :</strong> <%= candidature.adresse %></p>
+              <p><strong>Téléphone :</strong> <%= candidature.telephone %></p>
+              <p><strong>Email :</strong> <%= candidature.email %></p>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-graduation-cap me-2"></i>Formation</h6>
+              <p><strong>Niveau d'études :</strong> <%= candidature.niveau_etudes %></p>
+              <p><strong>Institution :</strong> <%= candidature.institution %></p>
+              <p><strong>Domaine :</strong> <%= candidature.domaine_etudes %></p>
+              <p><strong>Section :</strong> <%= candidature.section %></p>
+              <p><strong>Année d'obtention :</strong> <%= candidature.annee_obtention %></p>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-briefcase me-2"></i>Expérience</h6>
+              <p><strong>Expérience :</strong> <%= candidature.experience ? 'Oui' : 'Non' %></p>
+              <% if (candidature.experience_description) { %>
+                <p><strong>Description :</strong> <%= candidature.experience_description %></p>
+              <% } %>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-star me-2"></i>Motivation</h6>
+              <p><%= candidature.motivation %></p>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-cogs me-2"></i>Compétences</h6>
+              <p><strong>Langues :</strong> <%= candidature.langues %></p>
+              <p><strong>Logiciels :</strong> <%= candidature.logiciels %></p>
+              <p><strong>Autres :</strong> <%= candidature.competences_autres %></p>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-calendar-alt me-2"></i>Disponibilités</h6>
+              <p><strong>Date de début :</strong> <%= candidature.date_debut %></p>
+              <p><strong>Durée :</strong> <%= candidature.duree_stage %> mois</p>
+              <hr>
+
+              <h6 class="text-muted"><i class="fas fa-file-alt me-2"></i>Pièces justificatives</h6>
+              <p><strong>CV :</strong> <a href="<%= candidature.cv %>" target="_blank"><i class="fas fa-file-pdf me-1"></i>Ouvrir CV</a></p>
+              <% if (candidature.lettre_motivation && candidature.lettre_motivation !== 'document pas fournis') { %>
+                <p><strong>Lettre de motivation :</strong> <a href="<%= candidature.lettre_motivation %>" target="_blank">Ouvrir</a></p>
+              <% } else { %>
+                <p><strong>Lettre de motivation :</strong> <span class="text-danger"><i class="fas fa-times-circle me-1"></i>Non fournie</span></p>
+              <% } %>
+              <% if (candidature.releves_notes && candidature.releves_notes !== 'document pas fournis') { %>
+                <p><strong>Relevés de notes :</strong> <a href="<%= candidature.releves_notes %>" target="_blank">Ouvrir</a></p>
+              <% } else { %>
+                <p><strong>Relevés de notes :</strong> <span class="text-danger"><i class="fas fa-times-circle me-1"></i>Non fournis</span></p>
+              <% } %>
+
+              <div class="watermark"><%= stage.status %></div>
+            </div>
+          </div>
+          <% } else { %>
+            <div class="alert alert-warning">Aucune candidature trouvée.</div>
+          <% } %>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+function submitDecision() {
+  const decision   = document.getElementById('decision').value;
+  const stageId    = document.getElementById('stageId').getAttribute('data-stage-id');
+  const stageEmail = document.getElementById('stageEmail').getAttribute('data-stage-email');
+  fetch('/entreprise/decision', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ decision, stageId, stageEmail })
+  }).then(r => { location.reload(); }).catch(() => location.reload());
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Entreprise' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <%- include('../shared/flash-messages') %>
+
+      <div class="page-nav-layout">
+        <nav class="page-nav" data-nav-key="entreprise">
+          <button class="page-nav-btn active" data-panel="ent-postulants">
+            <i class="bi bi-people"></i> Postulant(e)s
+          </button>
+          <button class="page-nav-btn" data-panel="ent-creer">
+            <i class="bi bi-plus-circle"></i> Créer un stage
+          </button>
+          <button class="page-nav-btn" data-panel="ent-mes-stages">
+            <i class="bi bi-briefcase"></i> Mes stages
+          </button>
+          <button class="page-nav-btn" data-panel="ent-edit">
+            <i class="bi bi-pencil-square"></i> Edit stages
+          </button>
+          <button class="page-nav-btn" data-panel="ent-contact">
+            <i class="bi bi-envelope"></i> Contact
+          </button>
+          <button class="page-nav-btn" data-panel="ent-profil">
+            <i class="bi bi-person-circle"></i> Profiles
+          </button>
+        </nav>
+
+        <div class="page-panels">
+          <div class="page-panel active" id="ent-postulants">
+            <%- include('./postulants') %>
+          </div>
+          <div class="page-panel" id="ent-creer">
+            <div class="row justify-content-center mt-3">
+              <div class="col-lg-8">
+                <%- include('./create-stage') %>
+              </div>
+            </div>
+          </div>
+          <div class="page-panel" id="ent-mes-stages">
+            <%- include('./mes-stages') %>
+          </div>
+          <div class="page-panel" id="ent-edit">
+            <%- include('./stages-crud') %>
+          </div>
+          <div class="page-panel" id="ent-contact"></div>
+          <div class="page-panel" id="ent-profil"></div>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+// Form validation
+const stageForm = document.getElementById("stageForm");
+if (stageForm) {
+  stageForm.addEventListener("submit", function(e) {
+    if (!document.getElementById("inputDomaine").value.trim() ||
+        !document.getElementById("inputTitre").value.trim() ||
+        !document.getElementById("inputDescription").value.trim()) {
+      e.preventDefault();
+      alert("Veuillez remplir tous les champs obligatoires.");
+    }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription — Gestion des Stages</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; background: #f0f4f8; }
+
+    /* Left form panel */
+    .auth-form-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      animation: slideInLeft .4s ease;
+    }
+    .auth-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.08);
+    }
+    .auth-card h2 { font-size: 1.6rem; font-weight: 700; color: #1e293b; margin-bottom: 6px; }
+    .auth-card .subtitle { color: #64748b; font-size: .9rem; margin-bottom: 28px; }
+
+    /* Input groups */
+    .input-icon-group { position: relative; margin-bottom: 18px; }
+    .input-icon-group .icon-left {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; font-size: 1rem; pointer-events: none;
+    }
+    .input-icon-group input {
+      width: 100%; padding: 12px 44px 12px 42px;
+      border: 1.5px solid #e2e8f0; border-radius: 10px;
+      font-size: .9rem; color: #1e293b; background: #f8fafc;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .input-icon-group input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+      background: #fff;
+    }
+    .input-icon-group input::placeholder { color: #94a3b8; }
+    .input-icon-group .icon-right {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; cursor: pointer; font-size: 1rem;
+      transition: color .2s;
+    }
+    .input-icon-group .icon-right:hover { color: #3b82f6; }
+    .input-label { font-size: .8rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block; letter-spacing: .03em; text-transform: uppercase; }
+
+    /* Two-column row */
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Submit button */
+    .btn-auth {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #fff; border: none; border-radius: 10px;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      margin-top: 8px;
+    }
+    .btn-auth:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,.35); }
+    .btn-auth:active { transform: translateY(0); }
+
+    /* Alerts */
+    .auth-alert { padding: 10px 14px; border-radius: 8px; font-size: .85rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .auth-alert.danger { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+    /* Links */
+    .auth-link { color: #3b82f6; text-decoration: none; font-weight: 500; }
+    .auth-link:hover { color: #2563eb; text-decoration: underline; }
+    .auth-footer { text-align: center; margin-top: 20px; font-size: .875rem; color: #64748b; }
+
+    /* Terms checkbox */
+    .auth-terms { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: .85rem; color: #475569; }
+    .auth-terms input { width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer; flex-shrink: 0; }
+
+    /* Right branding panel */
+    .auth-brand {
+      width: 42%;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 60%, #3b82f6 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-brand::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+      top: -80px; right: -80px;
+      animation: float 6s ease-in-out infinite;
+    }
+    .auth-brand::after {
+      content: '';
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.07);
+      bottom: -50px; left: -50px;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    .brand-circle {
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      animation: pulse-ring 2s ease-in-out infinite;
+    }
+    .brand-circle i { font-size: 2.5rem; color: #fff; }
+    .brand-title { color: #fff; font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 12px; }
+    .brand-sub { color: rgba(255,255,255,.7); font-size: .95rem; text-align: center; line-height: 1.6; max-width: 280px; }
+    .brand-steps { margin-top: 40px; display: flex; flex-direction: column; gap: 18px; }
+    .brand-step { display: flex; align-items: flex-start; gap: 14px; color: rgba(255,255,255,.85); font-size: .875rem; }
+    .brand-step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .8rem; color: #fff; flex-shrink: 0;
+    }
+    .brand-step-text { line-height: 1.5; }
+    .brand-step-text strong { display: block; color: #fff; margin-bottom: 2px; }
+
+    /* Animations */
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    @keyframes pulse-ring { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,.3); } 50% { box-shadow: 0 0 0 12px rgba(255,255,255,0); } }
+
+    @media (max-width: 768px) {
+      .auth-brand { display: none; }
+      .auth-form-panel { padding: 20px; }
+      .auth-card { padding: 32px 24px; }
+      .input-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Left form -->
+  <div class="auth-form-panel">
+    <div class="auth-card">
+      <h2>Créer un compte ✨</h2>
+      <p class="subtitle">Rejoignez la plateforme de gestion des stages</p>
+
+      <% if (messages && messages.error) { %>
+        <div class="auth-alert danger"><i class="bi bi-exclamation-circle-fill"></i> <%= messages.error %></div>
+      <% } %>
+
+      <form action="/connection/register" method="POST">
+        <div class="input-row">
+          <div>
+            <label class="input-label" for="registerName">Nom</label>
+            <div class="input-icon-group">
+              <i class="bi bi-person icon-left"></i>
+              <input type="text" id="registerName" name="nom" placeholder="Votre nom" required>
+            </div>
+          </div>
+          <div>
+            <label class="input-label" for="registerPrenom">Prénom</label>
+            <div class="input-icon-group">
+              <i class="bi bi-person icon-left"></i>
+              <input type="text" id="registerPrenom" name="prenom" placeholder="Votre prénom" required>
+            </div>
+          </div>
+        </div>
+
+        <label class="input-label" for="registerEmail">Adresse e-mail</label>
+        <div class="input-icon-group">
+          <i class="bi bi-envelope icon-left"></i>
+          <input type="email" id="registerEmail" name="email" placeholder="votre@email.com" required>
+        </div>
+
+        <label class="input-label" for="registerPassword">Mot de passe</label>
+        <div class="input-icon-group">
+          <i class="bi bi-lock icon-left"></i>
+          <input type="password" id="registerPassword" name="password" placeholder="••••••••" required>
+          <i class="bi bi-eye icon-right" id="togglePwd1" onclick="togglePwd('registerPassword','togglePwd1')"></i>
+        </div>
+
+        <label class="input-label" for="registerRepeatPassword">Répéter le mot de passe</label>
+        <div class="input-icon-group">
+          <i class="bi bi-lock icon-left"></i>
+          <input type="password" id="registerRepeatPassword" name="repeatPassword" placeholder="••••••••" required>
+          <i class="bi bi-eye icon-right" id="togglePwd2" onclick="togglePwd('registerRepeatPassword','togglePwd2')"></i>
+        </div>
+
+        <label class="auth-terms">
+          <input type="checkbox" id="registerCheck" required checked>
+          J'ai lu et j'accepte les <a href="#" class="auth-link">termes et conditions</a>
+        </label>
+
+        <button type="submit" class="btn-auth">
+          <i class="bi bi-person-plus me-2"></i>S'inscrire
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Vous avez déjà un compte ? <a href="/connection/login" class="auth-link">Se connecter</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right branding -->
+  <div class="auth-brand">
+    <div class="brand-circle"><i class="bi bi-mortarboard-fill"></i></div>
+    <div class="brand-title">Gestion des Stages</div>
+    <div class="brand-sub">Créez votre compte et commencez à gérer vos stages dès aujourd'hui</div>
+    <div class="brand-steps">
+      <div class="brand-step">
+        <div class="brand-step-num">1</div>
+        <div class="brand-step-text">
+          <strong>Créez votre compte</strong>
+          Remplissez le formulaire d'inscription
+        </div>
+      </div>
+      <div class="brand-step">
+        <div class="brand-step-num">2</div>
+        <div class="brand-step-text">
+          <strong>Accédez à la plateforme</strong>
+          Connectez-vous avec vos identifiants
+        </div>
+      </div>
+      <div class="brand-step">
+        <div class="brand-step-num">3</div>
+        <div class="brand-step-text">
+          <strong>Gérez vos stages</strong>
+          Publiez, postulez et suivez vos stages
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function togglePwd(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash icon-right';
+      } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye icon-right';
+      }
+    }
+  </script>
+</body>
+</html>

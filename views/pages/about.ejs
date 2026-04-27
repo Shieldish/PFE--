@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'À propos' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body" style="font-family:'Times New Roman',Times,serif;">
+              <h2 class="text-center mb-4" style="color:var(--primary);font-weight:700;">GESTION STAGES</h2>
+
+              <p><strong>Option 1 : Présentation concise et percutante</strong><br>
+              Gestion simplifiée de vos stages</p>
+              <p>Simplifiez la gestion de vos stages avec notre application intuitive ! Du recrutement des stagiaires à l'évaluation finale, toutes les étapes sont centralisées. Gagnez du temps et optimisez votre suivi.</p>
+
+              <p><strong>Option 2 : Axée sur les bénéfices pour l'utilisateur</strong><br>
+              Dites adieu aux tâches administratives</p>
+              <p>Notre application révolutionne la gestion des stages. En automatisant les processus, vous libérez du temps pour vous concentrer sur l'essentiel : l'accompagnement de vos stagiaires.</p>
+
+              <h5 class="mt-4 mb-2">Les avantages clés :</h5>
+              <ul>
+                <li>Centralisation des données : Accédez à toutes les informations en un seul endroit.</li>
+                <li>Suivi personnalisé : Suivez l'évolution de chaque stagiaire en temps réel.</li>
+                <li>Communication facilitée : Échangez avec les stagiaires et les tuteurs en toute simplicité.</li>
+                <li>Évaluation simplifiée : Générez des rapports personnalisés en quelques clics.</li>
+              </ul>
+
+              <p><strong>Option 3 : Ciblant les établissements d'enseignement</strong><br>
+              Une solution complète pour les établissements</p>
+              <p>Facilitez la mise en place de stages de qualité pour vos étudiants. Notre application vous permet de :</p>
+              <ul>
+                <li>Publier des offres de stage auprès d'un large réseau d'entreprises.</li>
+                <li>Suivre les stages en temps réel et garantir leur bon déroulement.</li>
+                <li>Évaluer les compétences acquises par les étudiants.</li>
+                <li>Améliorer l'insertion professionnelle de vos diplômés.</li>
+              </ul>
+
+              <p><strong>Option 4 : Mettant en avant les fonctionnalités techniques</strong><br>
+              Une application sur mesure pour vos besoins</p>
+              <ul>
+                <li>Base de données de stages personnalisable</li>
+                <li>Module de suivi des conventions de stage</li>
+                <li>Outil de génération de rapports</li>
+                <li>Intégration avec votre système d'information</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+</body>
+</html>

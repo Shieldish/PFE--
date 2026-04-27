@@ -10,7 +10,7 @@ const { isAdmin, isUser } = require('../middlewares/roles');
 const router = express.Router();
 
 router.get('/', async (req,res)=>{
-    return res.render('Encadrement')
+    return res.render('encadrement/index')
 })
 
 
@@ -60,7 +60,7 @@ router.get('/viewsMoreDetails', async (req, res) => {
         })
         const stageDataJSON = StageData.toJSON()
        
-        return res.render('partial/encadrementTemplate/viewsMoreDetails', {
+        return res.render('encadrement/candidature-details', {
             candidature: modifiedcandidature,
             stage: stageDataJSON,
         })

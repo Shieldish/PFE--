@@ -19,14 +19,14 @@ router.get('/', (req, res) => {
   connection.query('SHOW TABLES', (err, results) => {
     if (err) {
       req.flash('error', 'Erreur lors de la récupération des noms de table');
-      return res.render('index', { messages: req.flash() });
+      return res.render('admin/db-index', { messages: req.flash() });
     }
 
     const tablesToRemove = ['sidebar_items', 'stage', 'stagepostulation', 'candidature', 'soutenance'];
     const tables = results.map(row => ({ Tables_in_fss: row[`Tables_in_${connection.config.database}`] }))
       .filter(table => !tablesToRemove.includes(table['Tables_in_fss']));
 
-    res.render('index', { tables });
+    res.render('admin/db-index', { tables });
   });
 });
 
@@ -36,7 +36,7 @@ router.get('/:tableName', (req, res) => {
   connection.query(`SELECT * FROM ${tableName}`, (err, results) => {
     if (err) {
       req.flash('error', `Erreur lors de la récupération des données de la table ${tableName}`);
-      return res.render('crud', { messages: req.flash() });
+      return res.render('admin/crud', { messages: req.flash() });
     }
 
     let count = results.length;
@@ -81,7 +81,7 @@ router.get('/:tableName', (req, res) => {
     req.flash('success', `Données récupérées avec succès depuis la table ${tableName}`);
     filteredArrayGlobal = filteredArray;
     countGlobal = count;
-    res.render('crud', { data: filteredArrayGlobal, tableName, count: countGlobal });
+    res.render('admin/crud', { data: filteredArrayGlobal, tableName, count: countGlobal });
   });
 });
 

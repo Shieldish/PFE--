@@ -1,7 +1,7 @@
+'use strict';
+
 require('dotenv').config();
-const path = require('path');
-const fs = require('fs/promises');
-const { sequelize } = require('./model'); // Importing sequelize from your models
+const { sequelize } = require('../config/database');
 
 let isConnected = false;
 
@@ -14,12 +14,10 @@ const connectToDatabase = async () => {
     }
   } catch (err) {
     console.error('Error connecting to MySQL database:', err);
-    isConnected = false; // Set isConnected to false if the connection fails
+    isConnected = false;
     throw err;
   }
 };
-
-
 
 const fetchSidebarItems = async (lang, userRole) => {
   const sidebarSql = `
@@ -83,20 +81,8 @@ const hasAccess = (link, userRole) => {
   return roleAccess[link].includes(userRole);
 };
 
-const main = async () => {
-  try {
-    await connectToDatabase();
-    const sidebarItems = await fetchSidebarItems('en', 'USER');
-   /*  console.log('Sidebar Items:', sidebarItems); */
-  } catch (err) {
-    console.error('Error:', err);
-  }
-}; 
-
 module.exports = {
   sequelize,
   connectToDatabase,
-
   fetchSidebarItems,
-  main, 
 };

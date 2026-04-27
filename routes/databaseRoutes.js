@@ -19,10 +19,10 @@ router.get('/', async (req, res) => {
     const tablesToRemove = ['sidebar_items', 'stage', 'stagepostulation', 'candidature', 'soutenance'];
     const filteredTables = tables.filter(table => !tablesToRemove.includes(table));
 
-    res.render('index', { tables: filteredTables.map(table => ({ Tables_in_fss: table })) });
+    res.render('admin/db-index', { tables: filteredTables.map(table => ({ Tables_in_fss: table })) });
   } catch (err) {
     req.flash('error', 'Erreur lors de la récupération des noms de table');
-    res.render('index', { messages: req.flash() });
+    res.render('admin/db-index', { messages: req.flash() });
   }
 });
 
@@ -57,10 +57,10 @@ router.get('/:tableName', async (req, res) => {
     req.flash('success', `Données récupérées avec succès depuis la table ${tableName}`);
     filteredArrayGlobal = filteredArray;
     countGlobal = count;
-    res.render('crud', { data: filteredArrayGlobal, tableName, count: countGlobal });
+    res.render('admin/crud', { data: filteredArrayGlobal, tableName, count: countGlobal });
   } catch (err) {
     req.flash('error', `Erreur lors de la récupération des données de la table ${tableName}`);
-    res.render('crud', { messages: req.flash() });
+    res.render('admin/crud', { messages: req.flash() });
   }
 });
 

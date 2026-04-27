@@ -1,24 +1,7 @@
-/* const mysql = require('mysql2');
-
-const connection = mysql.createConnection({
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-  }
-  console.log('Connected to the database successfully.');
-});
-
-module.exports = connection; */
+'use strict';
 
 require('dotenv').config();
-const mysql = require('mysql2/promise'); // Use mysql2 for promise support
+const mysql = require('mysql2/promise');
 
 let connection = null;
 
@@ -40,9 +23,4 @@ const createConnection = async () => {
   return connection;
 };
 
-
-
-module.exports = {
-  createConnection,
-
-};
+module.exports = { createConnection };

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: stage.Titre }) %>
+  <style>
+    .job-details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-md); }
+    .job-title { font-size: 1.6rem; color: var(--primary); text-transform: uppercase; text-align: center; margin-bottom: .5rem; }
+    .job-location { font-size: .95rem; color: var(--text-muted); display: block; text-align: center; }
+    .company-name { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+    .fancy-hr { border: 0; height: 2px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 1.2rem 0; }
+    .job-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .email-link { color: var(--accent); }
+    .email-link:hover { color: var(--accent-hover); text-decoration: underline; }
+    .apply-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-weight: 600; font-size: .95rem; cursor: pointer; transition: background var(--transition), transform var(--transition); text-decoration: none; }
+    .apply-button:hover { background: var(--accent-hover); transform: scale(1.03); color: #fff; }
+    .domain-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); transition: transform var(--transition), box-shadow var(--transition); cursor: pointer; }
+    .domain-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .animated-icon { color: var(--accent); animation: pulse 2s infinite; }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <a href="/etudiant" class="btn btn-outline-secondary btn-sm mb-3">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
+      <hr>
+      <%- include('../shared/flash-messages') %>
+
+      <div class="job-details">
+        <h3 class="job-title">
+          <i class="fas fa-briefcase me-2"></i><%= stage.Titre %>
+          <span class="job-location"><i class="fas fa-map-marker-alt me-1"></i><%= stage.Address %></span>
+        </h3>
+        <hr class="fancy-hr">
+        <h4 class="company-name"><i class="fas fa-building me-2"></i><%= stage.Nom %></h4>
+        <p class="text-muted"><i class="fas fa-map-pin me-1"></i><%= stage.Address %></p>
+        <p class="text-muted">
+          <i class="fas fa-calendar-alt me-1"></i>
+          Du <%= new Date(stage.createdAt).toLocaleString('fr-FR',{dateStyle:'long'}) %>
+          <i class="fas fa-long-arrow-alt-right mx-2"></i>
+          Au <%= new Date(stage.DateFin).toLocaleString('fr-FR',{dateStyle:'long'}) %>
+        </p>
+        <hr class="fancy-hr">
+        <div class="job-info-grid">
+          <p><i class="fas fa-users me-1"></i><strong>Postes :</strong> <%= stage.PostesVacants %></p>
+          <p><i class="fas fa-star me-1"></i><strong>Expérience :</strong> <%= stage.Experience %></p>
+          <p><i class="fas fa-graduation-cap me-1"></i><strong>Niveau :</strong> <%= stage.Niveau %></p>
+          <p><i class="fas fa-language me-1"></i><strong>Langue :</strong> <%= stage.Langue %></p>
+        </div>
+        <hr class="fancy-hr">
+        <div>
+          <p>
+            <i class="fas fa-envelope me-1"></i><strong>Email :</strong>
+            <a href="mailto:<%= stage.Email %>" class="email-link"><%= stage.Email %></a>
+            <% if (stage.Email2) { %> / <a href="mailto:<%= stage.Email2 %>" class="email-link"><%= stage.Email2 %></a><% } %>
+          </p>
+          <p><i class="fas fa-phone me-1"></i><strong>Tél :</strong> <%= stage.Telephone %></p>
+          <p><i class="fas fa-fax me-1"></i><strong>Fax :</strong> <%= stage.Fax %></p>
+        </div>
+        <hr class="fancy-hr">
+        <div>
+          <h6><i class="fas fa-file-alt me-2"></i>Description</h6>
+          <p><%= stage.Description %></p>
+        </div>
+        <a href="/etudiant/application/<%= stage.id %>" class="apply-button mt-3">
+          <i class="fas fa-paper-plane"></i> Postuler maintenant
+        </a>
+      </div>
+
+      <!-- Similar domains carousel -->
+      <div class="mt-5">
+        <h5 class="text-center text-muted mb-4">Domaines similaires</h5>
+        <div id="domainCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner"></div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#domainCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" style="background-color:var(--text-muted);border-radius:50%;padding:10px;"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#domainCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" style="background-color:var(--text-muted);border-radius:50%;padding:10px;"></span>
+          </button>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const stageDomain = '<%= stage.Domaine %>';
+  fetch('/etudiant/domaine-suggest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ domaine: stageDomain })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (!data.success) return;
+    const inner = document.querySelector('#domainCarousel .carousel-inner');
+    data.domaines.forEach((d, i) => {
+      const item = document.createElement('div');
+      item.className = `carousel-item ${i===0?'active':''}`;
+      item.innerHTML = `
+        <div class="domain-card d-flex flex-column justify-content-center align-items-center p-4 text-center" style="min-height:260px;" data-id="${d.id}">
+          <i class="fas fa-briefcase fa-3x mb-3 animated-icon"></i>
+          <h6>${d.Domaine}</h6>
+          <p class="mb-1"><strong>${d.Nom}</strong> — ${d.Titre}</p>
+          <p class="small text-muted mb-1">${d.Niveau} | ${d.Experience} | ${d.Langue}</p>
+          <p class="small text-muted mb-1"><i class="fas fa-users me-1"></i>${d.PostesVacants} postes</p>
+          <p class="small text-muted mb-1"><i class="fas fa-map-marker-alt me-1"></i>${d.Address}</p>
+        </div>`;
+      inner.appendChild(item);
+    });
+    inner.addEventListener('click', e => {
+      const card = e.target.closest('.domain-card');
+      if (card) window.open(`/etudiant/postulate/${card.dataset.id}`, '_blank');
+    });
+  })
+  .catch(e => console.error(e));
+});
+</script>
+</body>
+</html>

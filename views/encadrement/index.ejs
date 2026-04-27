@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Encadrement' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <h4 class="mb-3">Encadrement</h4>
+
+      <div class="page-nav-layout">
+        <nav class="page-nav" data-nav-key="encadrement">
+          <button class="page-nav-btn active" data-panel="enc-home">
+            <i class="bi bi-house"></i> Home
+          </button>
+          <button class="page-nav-btn" data-panel="enc-affectation">
+            <i class="bi bi-diagram-3"></i> Affectation
+          </button>
+          <button class="page-nav-btn" data-panel="enc-stages">
+            <i class="bi bi-briefcase"></i> Gestion Stages
+          </button>
+          <button class="page-nav-btn" data-panel="enc-etudiant">
+            <i class="bi bi-mortarboard"></i> Gestion Étudiant
+          </button>
+          <button class="page-nav-btn" data-panel="enc-enseignant">
+            <i class="bi bi-person-badge"></i> Gestion Enseignant
+          </button>
+          <button class="page-nav-btn" data-panel="enc-entreprise">
+            <i class="bi bi-building"></i> Gestion Entreprise
+          </button>
+        </nav>
+
+        <div class="page-panels">
+          <div class="page-panel active" id="enc-home"></div>
+          <div class="page-panel" id="enc-affectation"></div>
+          <div class="page-panel" id="enc-stages">
+          <%- include('./gestion-stages') %>
+          </div>
+          <div class="page-panel" id="enc-etudiant"></div>
+          <div class="page-panel" id="enc-enseignant"></div>
+          <div class="page-panel" id="enc-entreprise"></div>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+</body>
+</html>

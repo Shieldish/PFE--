@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Paramètres' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <% if (userData) { %>
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Modifier le profil</h5>
+              </div>
+              <div class="card-body">
+                <%- include('../shared/flash-messages') %>
+
+                <form id="userEditForm" action="/settings/updateUserData" method="POST">
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="UUID" class="form-label"><i class="fas fa-id-card me-1"></i>ID</label>
+                      <input type="text" class="form-control" id="UUID" name="UUID" value="<%= userData.UUID.toUpperCase() %>" readonly>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="email" class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
+                      <input type="email" class="form-control" id="email" name="EMAIL" value="<%= userData.EMAIL %>" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="nom" class="form-label"><i class="fas fa-user me-1"></i>Nom</label>
+                      <input type="text" class="form-control" id="nom" name="NOM" value="<%= userData.NOM %>">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="prenom" class="form-label"><i class="fas fa-user me-1"></i>Prénom</label>
+                      <input type="text" class="form-control" id="prenom" name="PRENOM" value="<%= userData.PRENOM %>">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="DEPARTEMENT" class="form-label"><i class="fas fa-building me-1"></i>Département</label>
+                      <select class="form-select" id="DEPARTEMENT" name="DEPARTEMENT">
+                        <option value="">--- Sélectionner ---</option>
+                        <option value="department1" <%= userData.DEPARTEMENT==='department1'?'selected':'' %>>Département 1</option>
+                        <option value="department2" <%= userData.DEPARTEMENT==='department2'?'selected':'' %>>Département 2</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="ADDRESS" class="form-label"><i class="fas fa-map-marker-alt me-1"></i>Adresse</label>
+                      <select class="form-select" id="ADDRESS" name="ADDRESS">
+                        <option value="">Sélectionner une ville</option>
+                        <% const cities = ['Tunis','Ariana','Ben Arous','Manouba','Nabeul','Zaghouan','Bizerte','Béja','Jendouba','Le Kef','Siliana','Kairouan','Kasserine','Sidi Bouzid','Sousse','Monastir','Mahdia','Sfax','Gafsa','Tozeur','Kebili','Gabès','Medenine','Tataouine']; %>
+                        <% cities.forEach(c => { %>
+                          <option value="<%= c %>, Tunisie" <%= userData.ADDRESS===c+', Tunisie'?'selected':'' %>><%= c %>, Tunisie</option>
+                        <% }); %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="DATE" class="form-label"><i class="fas fa-calendar-alt me-1"></i>Date de naissance</label>
+                      <input type="date" class="form-control" id="DATE" name="DATE" value="<%= userData.DATE %>">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="Password" class="form-label"><i class="fas fa-lock me-1"></i>Nouveau mot de passe</label>
+                      <div class="input-group">
+                        <input type="password" class="form-control" id="Password" name="PASSWORD" placeholder="Mot de passe" required>
+                        <button class="btn btn-outline-secondary reveal-password" type="button"><i class="fas fa-eye"></i></button>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="Password2" class="form-label"><i class="fas fa-lock me-1"></i>Répéter le mot de passe</label>
+                      <div class="input-group">
+                        <input type="password" class="form-control" id="Password2" name="PASSWORD2" placeholder="Répéter" required>
+                        <button class="btn btn-outline-secondary reveal-password" type="button"><i class="fas fa-eye"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-save me-2"></i>Mettre à jour le profil
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+$(document).ready(function() {
+  $('.reveal-password').click(function() {
+    const $inp = $(this).closest('.input-group').find('input');
+    const type = $inp.attr('type');
+    $inp.attr('type', type === 'password' ? 'text' : 'password');
+  });
+});
+</script>
+</body>
+</html>

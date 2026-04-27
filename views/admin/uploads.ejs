@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Import Excel' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <div class="my-custom-class">
+        <h5 class="mb-3"><i class="fas fa-file-excel me-2 text-success"></i>Importer un fichier Excel</h5>
+        <hr>
+
+        <div class="row">
+          <div class="col-md-6">
+            <form id="uploadForm" action="/files/upload" method="post" enctype="multipart/form-data">
+              <label for="file" class="form-label">
+                <i class="fas fa-file-excel me-1"></i><strong>Choisissez un fichier Excel :</strong>
+              </label>
+              <div class="input-group">
+                <input type="file" class="form-control" id="file" name="file" required accept=".csv,.xlsx">
+                <button type="button" class="btn btn-primary" id="uploadButton">
+                  <i class="fas fa-upload me-1"></i>Soumettre
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <%- include('./schema-info') %>
+        <hr class="my-4">
+        <%- include('./table-save') %>
+        <%- include('./shared/fade-error') %>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+document.getElementById('uploadButton').addEventListener('click', function() {
+  const file = document.getElementById('file').files[0];
+  if (!file) {
+    showModal('noFileSelectedModal');
+  } else if (!['csv','xlsx'].includes(file.name.split('.').pop().toLowerCase())) {
+    showModal('invalidFileModal');
+  } else {
+    document.getElementById('uploadForm').submit();
+  }
+});
+
+function showContents() {
+  const menus = document.getElementById("menus");
+  const val   = menus.value;
+  const div   = document.getElementById("contents");
+  const items = <%- JSON.stringify(items) %>;
+  if (!val) { div.innerHTML = "<p>Veuillez sélectionner une table.</p>"; return; }
+  const contents = items[val];
+  if (contents) {
+    let html = "<table class='table table-bordered table-sm'><tr>";
+    contents.forEach(i => { html += `<td>${i}</td>`; });
+    html += "</tr></table>";
+    div.innerHTML = html;
+  } else {
+    div.innerHTML = "<p>Aucun contenu disponible.</p>";
+  }
+}
+</script>
+</body>
+</html>

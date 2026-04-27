@@ -33,19 +33,19 @@ router.get('/', async (req, res) => {
 
       if (userData) {
         req.flash('success', 'Données récupérées avec succès');
-        return res.render('UserSettingsProfiles', { userData: userData, messages: req.flash() });
+        return res.render('settings/profile', { userData: userData, messages: req.flash() });
       } else {
         req.flash('error', 'Données utilisateur non trouvées');
-        return res.render('UserSettingsProfiles', { userData: null, messages: req.flash() });
+        return res.render('settings/profile', { userData: null, messages: req.flash() });
       }
     } else {
       req.flash('error', 'Session utilisateur non trouvée');
-      return res.render('UserSettingsProfiles', { userData: null, messages: req.flash() });
+      return res.render('settings/profile', { userData: null, messages: req.flash() });
     }
   } catch (error) {
     console.error('Erreur lors de la récupération des données utilisateur :', error.message);
     req.flash('error', 'Une erreur est survenue lors de la récupération des données utilisateur. Veuillez réessayer plus tard.');
-    return res.render('UserSettingsProfiles', { userData: null, messages: req.flash() });
+    return res.render('settings/profile', { userData: null, messages: req.flash() });
   }
 });
 
@@ -95,11 +95,11 @@ router.post('/updateUserData', async (req, res) => {
     if (PASSWORD && PASSWORD2) {
       if (PASSWORD !== PASSWORD2) {
         req.flash('error', 'Les mots de passe ne correspondent pas, veuillez réessayer.');
-        return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+        return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
       }
       if (PASSWORD.length < 8 || PASSWORD2.length < 8) {
         req.flash('info', 'Le mot de passe est trop faible, il doit contenir au moins 8 caractères, veuillez réessayer.');
-        return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+        return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
       }
     }
 
@@ -113,13 +113,13 @@ router.post('/updateUserData', async (req, res) => {
     const existingUser = await user_registration.findOne({ where: { EMAIL } });
     if (!existingUser) {
       req.flash('error', `Utilisateur avec l'email (${EMAIL}) non trouvé.`);
-      return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+      return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
     }
 
     const existingUUID = await user_registration.findOne({ where: { UUID } });
     if (!existingUUID) {
       req.flash('error', `Utilisateur avec l'UUID fourni (${UUID}) non trouvé.`);
-      return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+      return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
     }
 
     await user_registration.update(fieldsWithoutPasswords, { where: { EMAIL } });
@@ -129,15 +129,15 @@ router.post('/updateUserData', async (req, res) => {
       const userData = updatedUserData.toJSON();
       req.session.user = userData;
       req.flash('success', 'Profil mis à jour avec succès.');
-      return res.render('UserSettingsProfiles', { userData, messages: req.flash() });
+      return res.render('settings/profile', { userData, messages: req.flash() });
     }
 
     req.flash('error', `Une erreur est survenue lors de la recherche des données utilisateur ${EMAIL}.`);
-    return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+    return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
   } catch (error) {
     console.error('Erreur lors de la mise à jour :', error);
     req.flash('error', `Une erreur est survenue lors de la mise à jour : ${error.message}`);
-    return res.render('UserSettingsProfiles', { userData: req.session.user, messages: req.flash() });
+    return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
   }
 });
 

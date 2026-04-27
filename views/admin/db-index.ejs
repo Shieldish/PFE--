@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Gestion des Tables' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <div class="my-custom-class-1 d-flex align-items-center gap-3 flex-wrap">
+        <span class="text-muted small">Sélectionner une table :</span>
+        <select id="tableName" class="form-select" style="width:200px;">
+          <option value="">-- Cliquez ici --</option>
+          <% if (tables && tables.length > 0) { %>
+            <% tables.forEach(table => { %>
+              <option value="<%= table.Tables_in_fss %>"><%= table.Tables_in_fss %></option>
+            <% }); %>
+          <% } else { %>
+            <option value="" disabled>Aucune table disponible</option>
+          <% } %>
+        </select>
+      </div>
+      <div id="tableData" class="mt-3"></div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+document.getElementById('tableName').addEventListener('change', () => {
+  const name = document.getElementById('tableName').value;
+  if (!name.trim()) { document.getElementById('tableData').innerHTML = ''; return; }
+  history.pushState(null, null, `/gestion/${name}`);
+  window.location.href = `/gestion/${name}`;
+});
+</script>
+</body>
+</html>

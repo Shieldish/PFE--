@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Planification' }) %>
+  <style>
+    .fixed-header {
+      position: sticky;
+      top: 60px;
+      background: var(--surface);
+      z-index: 100;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .scrollable-content { overflow-x: auto; }
+    #soutenances-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    #soutenances-table th, #soutenances-table td { padding: 8px 10px; border: 1px solid var(--border); }
+    #soutenances-table thead { position: sticky; top: 0; background: var(--bg); z-index: 2; }
+    .sticky-column { position: sticky; background: var(--bg); z-index: 1; }
+    #soutenances-table th.sticky-column:nth-child(1) { left: 0; z-index: 3; }
+    #soutenances-table th.sticky-column:nth-child(2) { left: 0; z-index: 3; }
+    #soutenances-table td.sticky-column:nth-child(1) { left: 0; }
+    #soutenances-table td.sticky-column:nth-child(2) { left: 70px; }
+    .table-resizable th { position: relative; cursor: col-resize; }
+    .table-resizable th::after { content:''; position:absolute; right:0; top:25%; height:50%; width:4px; background:var(--border); cursor:col-resize; }
+    #soutenances-table input, #soutenances-table select { border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px; font-size: .8rem; width: 100%; background: var(--surface); color: var(--text); }
+    #soutenances-table input.is-invalid { border-color: var(--danger); }
+    tr.conflict td { background: rgba(239,68,68,.08); }
+    tr.update-success td { background: rgba(16,185,129,.08); transition: background .5s; }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <%- include('./toast-modals') %>
+
+      <div class="fixed-header">
+        <h5 class="mb-2">Tableau de planification des soutenances</h5>
+        <div class="d-flex gap-2 flex-wrap">
+          <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSoutenanceModal">
+            <i class="bi bi-person-plus"></i> Ajouter une soutenance
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm ms-auto" id="exportTableButton" data-bs-toggle="modal" data-bs-target="#exportTableModal">
+            <i class="fa-solid fa-download"></i> Télécharger un modèle
+          </button>
+          <button type="button" class="btn btn-outline-info btn-sm" id="updateTableButton">
+            <i class="bi bi-arrow-repeat"></i> Mettre à jour
+          </button>
+        </div>
+      </div>
+
+      <div class="scrollable-content">
+        <table id="soutenances-table" class="searchable sortable table-resizable">
+          <thead>
+            <tr>
+              <th class="sticky-column">Action</th>
+              <th class="sticky-column">ID</th>
+              <th>Date</th><th>Heure</th><th>Salle</th><th>Groupe</th><th>Type</th>
+              <th>Étudiant 1</th><th>Étudiant 2</th><th>Étudiant 3</th>
+              <th>Sujet</th><th>Président</th><th>Rapporteur</th>
+              <th>Encadrant Académique</th><th>Encadrant Professionnel</th><th>Entreprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% soutenances.forEach(function(s) { %>
+              <tr data-id="<%= s.id %>">
+                <td class="sticky-column">
+                  <button class="btn btn-outline-danger btn-sm delete-btn" data-id="<%= s.id %>">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+                <td class="sticky-column"><%= s.id %></td>
+                <td><input type="date"  value="<%= s.date %>"                   data-field="date"></td>
+                <td><input type="time"  value="<%= s.time %>"                   data-field="time"></td>
+                <td><input type="text"  value="<%= s.salle %>"                  data-field="salle"></td>
+                <td><input type="text"  value="<%= s.groupe %>"                 data-field="groupe"></td>
+                <td>
+                  <select data-field="type">
+                    <option value="Binome"  <%= s.type==='Binome'  ?'selected':'' %>>Binome</option>
+                    <option value="Monome"  <%= s.type==='Monome'  ?'selected':'' %>>Monome</option>
+                    <option value="Trinome" <%= s.type==='Trinome' ?'selected':'' %>>Trinome</option>
+                  </select>
+                </td>
+                <td><input type="text" value="<%= s.etudiant1 %>"              data-field="etudiant1"></td>
+                <td><input type="text" value="<%= s.etudiant2 %>"              data-field="etudiant2"></td>
+                <td><input type="text" value="<%= s.etudiant3 %>"              data-field="etudiant3"></td>
+                <td><input type="text" value="<%= s.sujet %>"                  data-field="sujet"></td>
+                <td><input type="text" value="<%= s.president %>"              data-field="president"></td>
+                <td><input type="text" value="<%= s.rapporteur %>"             data-field="rapporteur"></td>
+                <td><input type="text" value="<%= s.encadrantAcademique %>"    data-field="encadrantAcademique"></td>
+                <td><input type="text" value="<%= s.encadrantProfessionnel %>" data-field="encadrantProfessionnel"></td>
+                <td><input type="text" value="<%= s.entreprise %>"             data-field="entreprise"></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+// Etudiant fields based on type
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('#soutenances-table tbody tr').forEach(row => {
+    const sel = row.querySelector('select[data-field="type"]');
+    const e1  = row.querySelector('input[data-field="etudiant1"]');
+    const e2  = row.querySelector('input[data-field="etudiant2"]');
+    const e3  = row.querySelector('input[data-field="etudiant3"]');
+    function update() {
+      const v = sel.value;
+      e2.disabled = v === 'Monome';
+      e3.disabled = v !== 'Trinome';
+    }
+    update();
+    sel.addEventListener('change', update);
+  });
+
+  // Column resize
+  const headers = document.querySelectorAll('#soutenances-table th');
+  let resizing = null, startX, startW;
+  headers.forEach(h => h.addEventListener('mousedown', e => { resizing=e.target; startX=e.pageX; startW=resizing.offsetWidth; resizing.classList.add('resizing'); }));
+  document.addEventListener('mousemove', e => { if(resizing) resizing.style.width = (startW + e.pageX - startX) + 'px'; });
+  document.addEventListener('mouseup', () => { if(resizing) { resizing.classList.remove('resizing'); resizing=null; } });
+});
+
+$(document).ready(function() {
+  // Inline update on blur
+  $('#soutenances-table input, #soutenances-table select').on('blur', function() {
+    const $row = $(this).closest('tr');
+    const id   = $row.data('id');
+    const data = {};
+    $row.find('input, select').each(function() {
+      const f = $(this).data('field'), v = $(this).val();
+      if (v && v.trim()) data[f] = v;
+    });
+    $.ajax({ url: '/planification/soutenances/' + id, method: 'POST', data,
+      success: function(res) {
+        validateAndHighlight();
+        if (res.conflictingData && res.conflictingData.length) {
+          $row.addClass('conflict');
+        } else {
+          $row.removeClass('conflict').addClass('update-success');
+          showToast('successToast', `Soutenance ID ${id} mise à jour.`);
+          setTimeout(() => $row.removeClass('update-success'), 600);
+        }
+      },
+      error: function() { showToast('errorToast', 'Erreur lors de la mise à jour.'); }
+    });
+  });
+
+  // Delete
+  $('#soutenances-table').on('click', '.delete-btn', function() {
+    const id = $(this).data('id');
+    $('#delete-soutenance-id').text(id);
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal'));
+    $('#deleteModal').data('id', id);
+    modal.show();
+  });
+  $('#deleteModal').on('click', '.delete-confirm-btn', function() {
+    const id = $('#deleteModal').data('id');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+    $.ajax({ url: '/planification/soutenances/' + id, method: 'DELETE',
+      success: function() {
+        showToast('successToast', `Soutenance ID ${id} supprimée.`);
+        $(`tr[data-id="${id}"]`).remove();
+        modal.hide();
+      },
+      error: function() { showToast('errorToast', 'Erreur lors de la suppression.'); modal.hide(); }
+    });
+  });
+
+  // Add soutenance
+  $('#submitSoutenance').on('click', function() {
+    $.ajax({ url: '/planification/Addsoutenances', method: 'POST', data: $('#addSoutenanceForm').serialize(),
+      success: function() {
+        bootstrap.Modal.getInstance(document.getElementById('addSoutenanceModal')).hide();
+        showToast('successToast', 'Soutenance ajoutée avec succès.');
+        location.reload();
+      },
+      error: function() { showToast('errorToast', "Veuillez choisir la date et le type avant de soumettre."); }
+    });
+  });
+
+  // Update / validate button
+  document.getElementById('updateTableButton').addEventListener('click', validateAndHighlight);
+
+  function validateAndHighlight() {
+    const rows = Array.from(document.querySelectorAll('#soutenances-table tbody tr'));
+    const data = rows.map(r => ({
+      id: r.getAttribute('data-id'),
+      date: r.querySelector('[data-field="date"]').value,
+      time: r.querySelector('[data-field="time"]').value,
+      salle: r.querySelector('[data-field="salle"]').value,
+      president: r.querySelector('[data-field="president"]').value,
+      rapporteur: r.querySelector('[data-field="rapporteur"]').value,
+      encadrantAcademique: r.querySelector('[data-field="encadrantAcademique"]').value,
+      encadrantProfessionnel: r.querySelector('[data-field="encadrantProfessionnel"]').value
+    }));
+    fetch('/planification/validate-soutenances', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ soutenances: data })
+    }).then(r => r.json()).then(res => {
+      rows.forEach(r => r.querySelectorAll('input,select').forEach(i => { i.classList.remove('is-invalid'); i.removeAttribute('title'); }));
+      if (res.duplicates.length) {
+        res.duplicates.forEach(dup => {
+          const row = document.querySelector(`tr[data-id="${dup.id}"]`);
+          if (!row) return;
+          dup.fields.forEach(f => {
+            const inp = row.querySelector(`[data-field="${f}"]`);
+            if (inp) { inp.classList.add('is-invalid'); inp.setAttribute('title', `Conflit sur: ${f}`); }
+          });
+        });
+        showToast('warningToast', 'Conflits détectés — champs en rouge.');
+      } else {
+        showToast('successToast', 'Aucun conflit détecté.');
+      }
+    }).catch(e => console.error(e));
+  }
+
+  function showToast(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.querySelector('.toast-body').textContent = msg;
+    new bootstrap.Toast(el).show();
+  }
+});
+</script>
+</body>
+</html>

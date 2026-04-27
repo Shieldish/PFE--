@@ -1,0 +1,52 @@
+<nav class="topbar" id="mainTopbar">
+  <!-- Sidebar toggle -->
+  <button class="sidebar-toggle" aria-label="Toggle sidebar">
+    <i class="bi bi-list"></i>
+  </button>
+
+  <!-- Search -->
+  <form class="topbar-search" action="/search" method="GET">
+    <div class="input-group">
+      <input type="search" name="q" class="form-control" placeholder='Rechercher… (Ctrl+/ pour focus)' autocomplete="off">
+      <button class="btn btn-primary" type="submit" aria-label="Rechercher">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </form>
+
+  <!-- Right side -->
+  <div class="topbar-right">
+    <!-- Language selector -->
+    <select class="lang-select" aria-label="Langue">
+      <option value="fr">🇫🇷 FR</option>
+      <option value="en">🇬🇧 EN</option>
+      <option value="ar">🇹🇳 AR</option>
+    </select>
+
+    <!-- Theme toggle -->
+    <button class="theme-toggle" aria-label="Basculer le thème">
+      <i class="bi bi-moon"></i>
+    </button>
+
+    <!-- User dropdown -->
+    <div class="user-dropdown">
+      <button class="user-avatar-btn" aria-label="Menu utilisateur">
+        <img src="/images/user/2.png" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=U&background=3b82f6&color=fff&size=34'">
+        <span class="user-name-text">Utilisateur</span>
+        <i class="bi bi-chevron-down" style="font-size:.7rem;color:var(--text-muted)"></i>
+      </button>
+      <div class="user-dropdown-menu" id="userDropdownMenu">
+        <div class="user-dropdown-header">
+          <div class="name"><span class="profile-prenom"></span> <span class="profile-name"></span></div>
+          <div class="email profile-email"></div>
+        </div>
+        <a href="/settings" class="user-dropdown-item">
+          <i class="bi bi-person-gear"></i> Modifier le profil
+        </a>
+        <button class="user-dropdown-item danger logout-btn">
+          <i class="bi bi-box-arrow-right"></i> Déconnexion
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

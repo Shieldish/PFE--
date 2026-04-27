@@ -28,7 +28,7 @@ app.use(express.json());
 
 router.get('/', (req, res)=>
 {
-    return res.render('etudiant')
+    return res.render('etudiant/index')
 })
 
 router.get('/All', async (req, res) => {
@@ -83,7 +83,7 @@ router.get('/All', async (req, res) => {
 
 router.get('/postuler/', async (req , res)=>{
   
-    res.render('home');
+    res.render('pages/home');
   
 })
 
@@ -697,7 +697,7 @@ router.get('/candidatures', async (req, res) => {
           },
       })
       const stageDataJSON = StageData.toJSON()
-      return res.render('candidatures', {
+      return res.render('etudiant/candidatures', {
           candidature: modifiedcandidature,
           stage: stageDataJSON,
       })
@@ -799,15 +799,15 @@ router.get('/application/:id', async (req, res) => {
     const exist = await stage.findByPk(id);
 
     if (!exist) {
-      return res.render('404', { error: 'Le stage auquel vous voulez postuler est introuvable' });
+      return res.render('pages/404', { error: 'Le stage auquel vous voulez postuler est introuvable' });
     }
 
     // Pass the stage information to the template
-    res.render('postulerMaintenant', { stage: exist });
+    res.render('etudiant/postuler-maintenant', { stage: exist });
 
   } catch (error) {
     console.log('error', error);
-    res.render('404', { error: 'Une erreur est survenue lors du chargement de la page' });
+    res.render('pages/404', { error: 'Une erreur est survenue lors du chargement de la page' });
   }
 });
 
@@ -838,9 +838,9 @@ router.get('/postulate/:id', async (req, res) => {
   const id = req.params.id;
   const Onestage = await stage.findByPk(id);
   if (Onestage) {
-      res.render('postuler', { stage: Onestage });
+      res.render('etudiant/postuler', { stage: Onestage });
   } else {
-      res.render('404');
+      res.render('pages/404');
   }
 });
 

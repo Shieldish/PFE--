@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Étudiant' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <%- include('../shared/flash-messages') %>
+
+      <div class="page-nav-layout">
+        <nav class="page-nav" data-nav-key="etudiant">
+          <button class="page-nav-btn active" data-panel="etu-accueil">
+            <i class="bi bi-house"></i> Accueil
+          </button>
+          <button class="page-nav-btn" data-panel="etu-offres">
+            <i class="bi bi-search"></i> Offres de stage
+          </button>
+          <button class="page-nav-btn" data-panel="etu-postules">
+            <i class="bi bi-send"></i> Stages postulés
+          </button>
+          <button class="page-nav-btn" data-panel="etu-resultats">
+            <i class="bi bi-trophy"></i> Résultats
+          </button>
+        </nav>
+
+        <div class="page-panels">
+          <div class="page-panel active" id="etu-accueil"></div>
+
+          <div class="page-panel" id="etu-offres">
+            <div class="container-fluid px-0">
+              <div class="row g-2 mb-3">
+                <div class="col-md-2">
+                  <select class="form-select" id="domainFilter"><option value="">Tous les domaines</option></select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" id="nomFilter"><option value="">Tous les noms</option></select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" id="titreFilter"><option value="">Tous les titres</option></select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" id="stateFilter"><option value="">Tous les états</option></select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" id="sortFilter">
+                    <option value="asc">Date ↑</option>
+                    <option value="desc">Date ↓</option>
+                  </select>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="searchInput" placeholder="Rechercher...">
+              </div>
+              <div id="stageGrid" class="row g-3"></div>
+              <nav aria-label="Pagination">
+                <ul class="pagination justify-content-center mt-3" id="stagePagination"></ul>
+              </nav>
+            </div>
+          </div>
+
+          <div class="page-panel" id="etu-postules"></div>
+          <div class="page-panel" id="etu-resultats"></div>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<%- include('./filter-stage') %>
+<script>
+async function fetchPostulantData() {
+  try {
+    const r = await fetch("/etudiant/stage_postuler");
+    if (!r.ok) throw new Error("Failed");
+    const d = await r.json();
+    return d.postulant;
+  } catch(e) { console.error(e); return []; }
+}
+
+async function renderPostulantTab() {
+  const pane = document.getElementById("etu-postules");
+  const list = await fetchPostulantData();
+  pane.innerHTML = `
+    <div class="container-fluid px-0 mt-3">
+      <h5 class="mb-3">Stages postulés</h5>
+      <div class="row g-3">
+        ${list.map(p => `
+          <div class="col-md-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-user-graduate me-2"></i>${p.etudiantName}</h6>
+                <hr>
+                <p class="small mb-1"><i class="fas fa-envelope me-1"></i>${p.etudiantEmail}</p>
+                <p class="small mb-1"><i class="fas fa-university me-1"></i>${p.etudiantInstitue}</p>
+                <p class="small mb-1"><i class="fas fa-bookmark me-1"></i>${p.stageDomaine}</p>
+                <p class="small mb-1"><i class="fas fa-building me-1"></i>${p.entrepriseName}</p>
+                <p class="small mb-2">
+                  <strong>Statut :</strong>
+                  <span class="badge ${p.status==='Accepté'?'badge-success':p.status==='Refusé'?'badge-danger':'badge-warning'}">${p.status}</span>
+                </p>
+                <div class="d-flex gap-2">
+                  <a href="${p.CVPath}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fas fa-file-pdf me-1"></i>CV</a>
+                  <a href="/etudiant/candidatures?etudiantEmail=${p.etudiantEmail}&stageId=${p.stageId}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-eye me-1"></i>Détails</a>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderPostulantTab();
+});
+</script>
+</body>
+</html>

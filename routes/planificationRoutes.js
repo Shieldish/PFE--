@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
       const soutenances = await Soutenance.findAll();
       //console.log( 'soutenance data : ',soutenances)
 
-      res.render('Planification', { soutenances : soutenances});
+      res.render('planification/index', { soutenances : soutenances});
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
       }
     } catch (error) {
    /*    res.status(400).json({ error: error.message }); */
-      res.status(400).render('404.ejs', { error: error.message });
+      res.status(400).render('pages/404', { error: error.message });
     }
   });
 

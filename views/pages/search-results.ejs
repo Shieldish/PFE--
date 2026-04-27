@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Résultats de recherche' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <h5 class="mb-4">
+        Résultats pour <span class="text-primary">"<%= query %>"</span>
+        <span class="badge badge-muted ms-2"><%= length %> résultat(s)</span>
+      </h5>
+
+      <h6 class="mb-3">Offres d'emploi et stages</h6>
+
+      <% if (jobs.length > 0) { %>
+        <ul class="list-unstyled">
+          <% jobs.forEach(job => { %>
+            <li class="card mb-3">
+              <div class="card-body">
+                <a href="/etudiant/postulate/<%= job.id %>" class="fw-semibold">
+                  <i class="bi bi-arrow-right me-1"></i><%= job.Domaine %> : <%= job.Libelle %>
+                  <span class="text-muted fw-normal">— <i class="bi bi-geo-alt"></i> <%= job.Address %></span>
+                </a>
+                <p class="text-muted small mb-1 mt-1"><em><%= job.Nom %></em></p>
+                <p class="text-muted small mb-0">
+                  <%= job.Description.substring(0, 199) %>…
+                  <a href="/etudiant/postulate/<%= job.id %>" class="text-success ms-1">voir plus</a>
+                </p>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+
+        <nav aria-label="Pagination">
+          <ul class="pagination justify-content-center">
+            <% if (currentPage > 1) { %>
+              <li class="page-item"><a class="page-link" href="?q=<%= query %>&page=<%= currentPage-1 %>">Précédent</a></li>
+            <% } %>
+
+            <% if (totalPages <= 7) { %>
+              <% for (let i=1; i<=totalPages; i++) { %>
+                <li class="page-item <%= i===currentPage?'active':'' %>">
+                  <a class="page-link" href="?q=<%= query %>&page=<%= i %>"><%= i %></a>
+                </li>
+              <% } %>
+            <% } else { %>
+              <% if (currentPage > 3) { %>
+                <li class="page-item"><a class="page-link" href="?q=<%= query %>&page=1">1</a></li>
+                <% if (currentPage > 4) { %><li class="page-item disabled"><span class="page-link">…</span></li><% } %>
+              <% } %>
+              <% for (let i=Math.max(1,currentPage-2); i<=Math.min(totalPages,currentPage+2); i++) { %>
+                <li class="page-item <%= i===currentPage?'active':'' %>">
+                  <a class="page-link" href="?q=<%= query %>&page=<%= i %>"><%= i %></a>
+                </li>
+              <% } %>
+              <% if (currentPage < totalPages-2) { %>
+                <% if (currentPage < totalPages-3) { %><li class="page-item disabled"><span class="page-link">…</span></li><% } %>
+                <li class="page-item"><a class="page-link" href="?q=<%= query %>&page=<%= totalPages %>"><%= totalPages %></a></li>
+              <% } %>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+              <li class="page-item"><a class="page-link" href="?q=<%= query %>&page=<%= currentPage+1 %>">Suivant</a></li>
+            <% } %>
+          </ul>
+        </nav>
+      <% } else { %>
+        <div class="alert alert-warning">Aucun résultat trouvé pour "<%= query %>".</div>
+      <% } %>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+</body>
+</html>

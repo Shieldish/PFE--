@@ -37,20 +37,17 @@ app.use((req, res, next) => {
 
 router.get(['/', '/login'], (req, res) => {
  
-    res.render('../connection/login', { title: 'Login' });
+    res.render('auth/login', { title: 'Login' });
   });
 
   router.get('/register', (req, res) => {
-    res.render('../connection/register', { title: 'register' });
+    res.render('auth/register', { title: 'register' });
   });
 
   router.get('/logout', (req , res)=> {
     res.clearCookie('token');
     res.clearCookie('user');
-
-
-
-    res.redirect('../connection/login');
+    res.redirect('/connection/login');
   })
 
   router.get('/protected', authenticate, (req, res) => {
@@ -64,14 +61,14 @@ router.get(['/', '/login'], (req, res) => {
       // Vérifiez si le mot de passe et le mot de passe répété correspondent
       if (password !== repeatPassword) {
         req.flash('error', 'Les mots de passe ne correspondent pas');
-        return res.render('../connection/register', { messages: req.flash() });
+        return res.render('auth/register', { messages: req.flash() });
       }
   
       // Regex pour vérifier le format de l'adresse e-mail
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (!emailRegex.test(email)) {
         req.flash('error', 'Adresse e-mail non valide');
-        return res.render('../connection/register', { messages: req.flash() });
+        return res.render('auth/register', { messages: req.flash() });
       }
   
       // Vérifiez si l'email existe déjà
@@ -79,7 +76,7 @@ router.get(['/', '/login'], (req, res) => {
   
       if (existingUser) {
         req.flash('error', `Erreur : l'adresse e-mail '${email}' existe déjà, essayez une autre adresse ou connectez-vous !`);
-        return res.render('../connection/register', { messages: req.flash() });
+        return res.render('auth/register', { messages: req.flash() });
       }
   
       // Générer un token d'inscription
@@ -87,27 +84,38 @@ router.get(['/', '/login'], (req, res) => {
   
       // Créer un nouvel utilisateur
       const uuid = uuidv4();
-  
+
+      // First user ever registered becomes ADMIN and is pre-validated
+      const userCount = await user_registration.count();
+      const isFirstUser = userCount === 0;
+
       const newUser = await user_registration.create({
         NOM: nom.trim().toUpperCase(),
         PRENOM: prenom.trim(),
         EMAIL: email.trim().toLowerCase(),
         PASSWORD: password,
-        TOKEN: registrationToken,
-        UUID: uuid
+        TOKEN: isFirstUser ? '0' : registrationToken,
+        UUID: uuid,
+        role: isFirstUser ? 'ADMIN' : 'USER',
+        ISVALIDATED: isFirstUser ? true : false,
       });
   
+      if (isFirstUser) {
+        req.flash('success', 'Compte administrateur créé avec succès. Vous pouvez vous connecter maintenant.');
+        return res.redirect('/connection/login');
+      }
+
       // Envoyer un email de confirmation d'inscription
       await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken).then(() => {
         const NOM = nom.trim().toUpperCase();
         const EMAIL = email.trim().toLowerCase();
   
-        return res.render('../connection/messages/RegisterSMS', { NOM, EMAIL });
+        return res.render('auth/messages/register-sms', { NOM, EMAIL });
       });
   
     } catch (error) {
       req.flash('error', `Une erreur s'est produite lors de l'inscription de l'utilisateur: ${error}`);
-      return res.render('../connection/register', { messages: req.flash() });
+      return res.render('auth/register', { messages: req.flash() });
     }
   });
   
@@ -176,7 +184,7 @@ router.get(['/', '/login'], (req, res) => {
       // Si l'enregistrement de l'utilisateur n'est pas trouvé ou si le compte est déjà validé
       if (!userRegistration || userRegistration.ISVALIDATED) {
         req.flash('error', 'Compte déjà activé ou token expiré, essayez de vous connecter à la place !');
-        return res.render('../connection/login', { messages: req.flash() });
+        return res.render('auth/login', { messages: req.flash() });
       }
   
       // Vérifier si le token est expiré
@@ -190,11 +198,11 @@ router.get(['/', '/login'], (req, res) => {
       await userRegistration.save();
   
       // Répondre avec un message de succès
-      return res.render('../connection/login');
+      return res.render('auth/login');
     } catch (error) {
      /*  console.error('Erreur:', error);
       res.status(500).send('Erreur Interne du Serveur'); */
-      res.render('404.ejs', { error: error.message });
+      res.render('pages/404', { error: error.message });
     }
   });
   
@@ -252,7 +260,7 @@ router.get('/reset-password', async (req, res) => {
   const { email, token } = req.query;
 
   // Render the reset password page and pass the email and token to the template
-   res.render('../connection/resetpassword',{email:email.toLowerCase() ,token:token}); 
+   res.render('auth/reset-password',{email:email.toLowerCase() ,token:token}); 
  // res.sendFile(path.join(__dirname, '../connection/resetpassword.ejs')); 
 });
 
@@ -264,7 +272,7 @@ router.post('/reseting-password', async (req, res) => {
   // Vérifiez si les mots de passe correspondent
   if (password !== confirmPassword) {
     req.flash('error', 'Les mots de passe ne correspondent pas');
-    return res.render('../connection/resetpassword', { email: email.toLowerCase(), token, messages: req.flash() });
+    return res.render('auth/reset-password', { email: email.toLowerCase(), token, messages: req.flash() });
   }
 
   try {
@@ -274,7 +282,7 @@ router.post('/reseting-password', async (req, res) => {
     // Si l'utilisateur n'est pas trouvé ou si le token a expiré
     if (!user || user.TOKEN === '0') {
      
-     return res.render('404.ejs', { error: 'Votre token de réinitialisation a expiré' });
+     return res.render('pages/404', { error: 'Votre token de réinitialisation a expiré' });
     }
 
     // Générer le sel et hacher le nouveau mot de passe
@@ -288,11 +296,11 @@ router.post('/reseting-password', async (req, res) => {
       { where: { EMAIL: email } }
     );
 
-    return res.redirect('../connection/login');
+    return res.redirect('/connection/login');
   } catch (error) {
     console.error('Erreur lors de la réinitialisation du mot de passe :', error);
    /*  return res.status(500).json({ error: 'Une erreur est survenue lors de la réinitialisation du mot de passe' }); */
-    return  res.render('404.ejs', { error: error.message });
+    return  res.render('pages/404', { error: error.message });
   }
 });
 
@@ -308,12 +316,12 @@ router.post('/login', async (req, res) => {
 
     if (!user) {
       req.flash('error', `Adresse e-mail ${email} non trouvée.`);
-      return res.render('../connection/login', { messages: req.flash() });
+      return res.render('auth/login', { messages: req.flash() });
     }
 
     if (!user.ISVALIDATED) {
       req.flash('info', 'Compte non activé. Veuillez vérifier votre e-mail et confirmer votre inscription avant de vous connecter !');
-      return res.render('../connection/login', { messages: req.flash() });
+      return res.render('auth/login', { messages: req.flash() });
 
 
     }
@@ -322,7 +330,7 @@ router.post('/login', async (req, res) => {
 
      if (!user.validPassword(password)) {
       req.flash('error', 'Mot de passe incorrect. Veuillez réessayer.');
-      return res.render('../connection/login', { messages: req.flash() });
+      return res.render('auth/login', { messages: req.flash() });
     } 
     
     // Mettre à jour les données utilisateur de la session
@@ -337,16 +345,15 @@ router.post('/login', async (req, res) => {
     // Setting the token cookie with secure and sameSite attributes
     res.cookie('token', token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      secure: true,               // Only send over HTTPS
-      sameSite: 'Strict'          // Cookie is not sent with cross-site requests
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
     });
     
-    // Setting the user cookie with secure and sameSite attributes
     res.cookie('user', JSON.stringify(user), {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      secure: true,               // Only send over HTTPS
-      sameSite: 'Strict'          // Cookie is not sent with cross-site requests
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
     });
     
 
@@ -366,7 +373,7 @@ router.post('/login', async (req, res) => {
 
   } catch (err) {
     req.flash('error', err.message);
-    res.render('../connection/login', { messages: req.flash() });
+    res.render('auth/login', { messages: req.flash() });
   }
 });
 

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../layouts/head', { title: 'Candidature' }) %>
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../layouts/sidebar') %>
+  <div class="main-area" id="mainArea">
+    <%- include('../layouts/navbar') %>
+    <main class="page-content">
+      <div class="container" style="max-width:860px;">
+        <%- include('../shared/flash-messages') %>
+
+        <div class="card">
+          <div class="card-body">
+            <h4 class="text-center mb-4">
+              <i class="bi bi-file-earmark-text me-2"></i>Candidature
+            </h4>
+
+            <form action="/etudiant/postulate/<%= stage.id %>" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="nom" class="form-label"><i class="bi bi-person me-1"></i>Nom</label>
+                  <input type="text" class="form-control" id="nom" name="nom" required>
+                  <div class="invalid-feedback">Veuillez saisir votre nom.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="prenom" class="form-label"><i class="bi bi-person me-1"></i>Prénom</label>
+                  <input type="text" class="form-control" id="prenom" name="prenom" required>
+                  <div class="invalid-feedback">Veuillez saisir votre prénom.</div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="date-naissance" class="form-label"><i class="bi bi-calendar me-1"></i>Date de naissance</label>
+                  <input type="date" class="form-control" id="date-naissance" name="date_naissance" required>
+                  <div class="invalid-feedback">Requis.</div>
+                </div>
+                <div class="col-md-4">
+                  <label for="telephone" class="form-label"><i class="bi bi-telephone me-1"></i>Téléphone</label>
+                  <input type="tel" class="form-control" id="telephone" name="telephone" required>
+                  <div class="invalid-feedback">Requis.</div>
+                </div>
+                <div class="col-md-4">
+                  <label for="email" class="form-label"><i class="bi bi-envelope me-1"></i>Email</label>
+                  <input type="email" class="form-control" id="email" name="email" required>
+                  <div id="email-feedback" class="invalid-feedback">Email invalide.</div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="adresse" class="form-label"><i class="bi bi-house me-1"></i>Adresse</label>
+                <select class="form-select" id="adresse" name="adresse" required>
+                  <option value="" disabled selected>Sélectionner votre ville</option>
+                  <% ['Tunis','Ariana','Ben Arous','Manouba','Nabeul','Zaghouan','Bizerte','Béja','Jendouba','Kef','Siliana','Kairouan','Kasserine','Sidi Bouzid','Sousse','Monastir','Mahdia','Sfax','Gafsa','Tozeur','Kebili','Gabès','Medenine','Tataouine'].forEach(c => { %>
+                    <option value="<%= c %>, Tunisie"><%= c %>, Tunisie</option>
+                  <% }); %>
+                </select>
+                <div class="invalid-feedback">Requis.</div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="mb-3"><i class="bi bi-mortarboard me-2"></i>Formation</h6>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="niveau-etudes" class="form-label">Niveau d'études</label>
+                  <select class="form-select" id="niveau-etudes" name="niveau_etudes" required>
+                    <option value="">Sélectionner</option>
+                    <option>Baccalauréat</option><option>Licence</option>
+                    <option>Master</option><option>Ingénieur</option><option>Doctorat</option>
+                  </select>
+                  <div class="invalid-feedback">Requis.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="institution" class="form-label">Institution / Université</label>
+                  <input type="text" class="form-control" id="institution" name="institution" required>
+                  <div class="invalid-feedback">Requis.</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="domaine-etudes" class="form-label">Domaine d'études</label>
+                  <input type="text" class="form-control" id="domaine-etudes" name="domaine_etudes" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="section" class="form-label">Section</label>
+                  <input type="text" class="form-control" id="section" name="section" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="annee-obtention" class="form-label">Année d'obtention</label>
+                  <input type="number" class="form-control" id="annee-obtention" name="annee_obtention" required>
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="mb-3"><i class="bi bi-briefcase me-2"></i>Expérience et motivations</h6>
+              <div class="mb-3">
+                <label class="form-label">Avez-vous déjà effectué un stage ?</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="experience" id="exp-oui" value="oui" required>
+                  <label class="form-check-label" for="exp-oui">Oui</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="experience" id="exp-non" value="non">
+                  <label class="form-check-label" for="exp-non">Non</label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="experience-description" class="form-label">Si oui, décrivez brièvement</label>
+                <textarea class="form-control" id="experience-description" name="experience_description" rows="2"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="motivation" class="form-label"><i class="bi bi-lightbulb me-1"></i>Motivations</label>
+                <textarea class="form-control" id="motivation" name="motivation" rows="3" required></textarea>
+                <div class="invalid-feedback">Requis.</div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="mb-3"><i class="bi bi-gear me-2"></i>Compétences</h6>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="langues" class="form-label">Langues</label>
+                  <input type="text" class="form-control" id="langues" name="langues" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="logiciels" class="form-label">Logiciels / Outils</label>
+                  <input type="text" class="form-control" id="logiciels" name="logiciels">
+                </div>
+                <div class="col-md-4">
+                  <label for="competences_autres" class="form-label">Autres compétences</label>
+                  <input type="text" class="form-control" id="competences_autres" name="competences_autres">
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="mb-3"><i class="bi bi-calendar-range me-2"></i>Disponibilités</h6>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="date-debut" class="form-label">Date de début souhaitée</label>
+                  <input type="date" class="form-control" id="date-debut" name="date_debut">
+                </div>
+                <div class="col-md-6">
+                  <label for="duree-stage" class="form-label">Durée souhaitée</label>
+                  <select class="form-select" id="duree-stage" name="duree_stage">
+                    <option value="">Sélectionner</option>
+                    <option value="1">1 mois</option><option value="2">2 mois</option>
+                    <option value="3">3 mois</option><option value="6">6 mois</option>
+                    <option value="12">12 mois</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="mb-3"><i class="bi bi-file-earmark me-2"></i>Pièces justificatives</h6>
+              <div class="mb-3">
+                <label for="cv" class="form-label">CV (obligatoire, PDF)</label>
+                <input type="file" class="form-control" id="cv" name="cv" accept=".pdf" required>
+                <div class="invalid-feedback">Requis.</div>
+              </div>
+              <div class="mb-3">
+                <label for="lettre-motivation" class="form-label">Lettre de motivation (optionnel)</label>
+                <input type="file" class="form-control" id="lettre-motivation" name="lettre_motivation">
+              </div>
+              <div class="mb-3">
+                <label for="releves-notes" class="form-label">Relevés de notes (optionnel, PDF)</label>
+                <input type="file" class="form-control" id="releves-notes" name="releves_notes" accept=".pdf">
+              </div>
+
+              <hr class="my-4">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="certify" required>
+                <label class="form-check-label" for="certify">Je certifie l'exactitude des informations fournies.</label>
+                <div class="invalid-feedback">Vous devez certifier avant de soumettre.</div>
+              </div>
+
+              <p class="text-danger small mb-3">NB : Après soumission, il n'est plus possible de modifier !</p>
+
+              <button class="btn btn-primary w-100" type="submit">
+                <i class="bi bi-send me-2"></i>Soumettre la candidature
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    <%- include('../layouts/footer') %>
+  </div>
+</div>
+<%- include('../layouts/scripts') %>
+<script>
+// Bootstrap validation
+(function() {
+  'use strict';
+  document.addEventListener('load', function() {
+    Array.from(document.getElementsByClassName('needs-validation')).forEach(form => {
+      form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) { e.preventDefault(); e.stopPropagation(); }
+        form.classList.add('was-validated');
+      });
+    });
+  });
+})();
+
+// Email duplicate check
+document.getElementById('email').addEventListener('blur', async function() {
+  const email = this.value.trim();
+  const feedback = document.getElementById('email-feedback');
+  if (!email || !this.checkValidity()) {
+    this.setCustomValidity('');
+    feedback.textContent = 'Veuillez saisir une adresse email valide.';
+    this.classList.add('is-invalid');
+    return;
+  }
+  const stageId = '<%= stage.id %>';
+  try {
+    const r = await fetch(`/etudiant/check-email?email=${encodeURIComponent(email)}&stageId=${stageId}`);
+    const d = await r.json();
+    if (d.exists) {
+      this.setCustomValidity('Email déjà utilisé.');
+      feedback.textContent = 'Cet e-mail est déjà utilisé pour ce stage.';
+      this.classList.add('is-invalid');
+    } else {
+      this.setCustomValidity('');
+      this.classList.remove('is-invalid');
+    }
+  } catch(e) { console.error(e); }
+});
+</script>
+</body>
+</html>

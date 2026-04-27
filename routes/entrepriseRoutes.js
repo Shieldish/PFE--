@@ -103,7 +103,7 @@ router.get('/', async (req, res) => {
          if(!user)
             {
                 req.flash('info', 'la session est perdue, reconnectez-vous pour récupérer les données  ');
-                return res.render('Entreprise', { stages: [] });
+                return res.render('entreprise/index', { stages: [] });
            }
 
      
@@ -111,7 +111,7 @@ router.get('/', async (req, res) => {
       // Fetch stage for the authenticated user
       if(!entrepriseEMAIL){
         req.flash('info', 'la session est perdue, reconnectez-vous pour récupérer les données ');
-        return res.render('Entreprise', { stages: [] });
+        return res.render('entreprise/index', { stages: [] });
       }
       const stages = entrepriseEMAIL ? await stage.findAll({ where: { Createdby: entrepriseEMAIL } }) : [];
 
@@ -123,7 +123,7 @@ router.get('/', async (req, res) => {
 
       
       // Render the page with the fetched stage
-      return res.render('Entreprise', { stages: stageJSON });
+      return res.render('entreprise/index', { stages: stageJSON });
   } catch (error) {
       // Handle any errors
       console.error('Error fetching stage:', error);
@@ -146,7 +146,7 @@ router.get('/edit/:id', async (req, res) => {
     const formattedDateDebut = stages.DateDebut.toISOString().slice(0, 10);
       const formattedDateFin = stages.DateFin.toISOString().slice(0, 10);
     // Render the edit page with the stage data
-    return res.render('partial/entrepriseTemplate/edit', { data:stages, formattedDateDebut, formattedDateFin });
+    return res.render('entreprise/edit-stage', { data:stages, formattedDateDebut, formattedDateFin });
   } 
   catch (error) {
     // Handle any errors
@@ -364,7 +364,7 @@ router.get('/postulant_detail', async (req, res) => {
       })
       const stageDataJSON = StageData.toJSON()
      
-      return res.render('partial/entrepriseTemplate/postulant_details', {
+      return res.render('entreprise/postulant-details', {
           candidature: modifiedcandidature,
           stage: stageDataJSON,
       })

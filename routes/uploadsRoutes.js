@@ -49,7 +49,7 @@ router.get('/upload', async (req, res) => {
 
     items=filteredTablesStructure
     // Render the page with the filtered table structure
-    res.render('uploads', { items: filteredTablesStructure, dt: data, fileName: fileName });
+    res.render('admin/uploads', { items: filteredTablesStructure, dt: data, fileName: fileName });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Une erreur s\'est produite lors de la récupération des tables et de leurs structures: ' + error.message);
@@ -95,7 +95,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
           });
           const rowCount = excelData.length;
           fileName += `: ${rowCount} Rows`;
-          return res.render('uploads', { dt: excelData, items: items, fileName: fileName });
+          return res.render('admin/uploads', { dt: excelData, items: items, fileName: fileName });
       } else if (fileType === '.csv') {
           // Read CSV file asynchronously
           const csvData = [];
@@ -114,7 +114,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
               .on('end', () => {
                   const rowCount = csvData.length;
                   fileName += `: ${rowCount} Rows`;
-                  return res.render('uploads', { dt: csvData, items: items, fileName: fileName });
+                  return res.render('admin/uploads', { dt: csvData, items: items, fileName: fileName });
               })
               .on('error', (err) => {
                   console.error('Error:', err);
@@ -209,10 +209,7 @@ router.post('/saveToDatabase', async (req, res) => {
 });
 
   router.get(['/','/upload'], (req, res) => { 
-
-   
-
-    res.render('uploads',{dt : data, items:items ,fileName:fileName });
+    res.render('admin/uploads',{dt : data, items:items ,fileName:fileName });
 });
 
 

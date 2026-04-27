@@ -1,0 +1,51 @@
+<!-- Modal: invalid file type -->
+<div class="modal fade" id="invalidFileModal" tabindex="-1" aria-labelledby="invalidFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="invalidFileModalLabel">
+          <i class="bi bi-exclamation-triangle text-warning me-2"></i>Type de fichier invalide
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Veuillez sélectionner un fichier au format <strong>.csv</strong> ou <strong>.xlsx</strong>.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: no file selected -->
+<div class="modal fade" id="noFileSelectedModal" tabindex="-1" aria-labelledby="noFileSelectedModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="noFileSelectedModalLabel">
+          <i class="bi bi-file-earmark-x text-danger me-2"></i>Aucun fichier sélectionné
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Veuillez sélectionner un fichier Excel (<strong>.csv</strong> ou <strong>.xlsx</strong>) à télécharger.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Helper used by uploads.ejs
+  function showModal(modalId) {
+    var el = document.getElementById(modalId);
+    if (el) { var m = new bootstrap.Modal(el); m.show(); }
+  }
+  function hideModal(modalId) {
+    var el = document.getElementById(modalId);
+    if (el) { var m = bootstrap.Modal.getInstance(el); if (m) m.hide(); }
+  }
+</script>

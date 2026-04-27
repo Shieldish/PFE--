@@ -1,32 +1,9 @@
-// model/model.js
+'use strict';
+
+require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
-const { Sequelize, DataTypes } = require('sequelize');
-const path = require('path');
- const fs = require('fs/promises'); 
- const f = require('fs'); 
-
-
-const caFilePath = path.join(__dirname, '../certificate.pem');
-const ca = f.readFileSync(caFilePath, 'utf8');
-
-const sequelize = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USER,
-  process.env.DATABASE_PASSWORD, 
-  {
-    host: process.env.DATABASE_HOST,
-    dialect: process.env.DATABASE_DIALECT,
-    port: process.env.DATABASE_PORT,
-  /*   dialectOptions: {
-      ssl: {
-        ca: ca, // Include the CA certificate
-        rejectUnauthorized: true, // Ensures the server certificate is validated
-      },
-    }, */
-    logging: false, 
-
-  }
-);
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
 const enseignant = sequelize.define('enseignant', {
   EMAIL: {
@@ -35,30 +12,12 @@ const enseignant = sequelize.define('enseignant', {
     unique: true,
     allowNull: false
   },
-  NOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  PRENOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  SEXE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DEPARTEMENT: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DATE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  }
-}, {
-  tableName: 'enseignant',
-  timestamps: true
-});
+  NOM: { type: DataTypes.STRING, allowNull: true },
+  PRENOM: { type: DataTypes.STRING, allowNull: true },
+  SEXE: { type: DataTypes.STRING, allowNull: true },
+  DEPARTEMENT: { type: DataTypes.STRING, allowNull: true },
+  DATE: { type: DataTypes.STRING, allowNull: true }
+}, { tableName: 'enseignant', timestamps: true });
 
 const encadrant = sequelize.define('encadrant', {
   EMAIL: {
@@ -67,30 +26,12 @@ const encadrant = sequelize.define('encadrant', {
     unique: true,
     allowNull: false
   },
-  NOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  PRENOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  SEXE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DEPARTEMENT: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DATE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  }
-}, {
-  tableName: 'encadrant',
-  timestamps: true
-});
+  NOM: { type: DataTypes.STRING, allowNull: true },
+  PRENOM: { type: DataTypes.STRING, allowNull: true },
+  SEXE: { type: DataTypes.STRING, allowNull: true },
+  DEPARTEMENT: { type: DataTypes.STRING, allowNull: true },
+  DATE: { type: DataTypes.STRING, allowNull: true }
+}, { tableName: 'encadrant', timestamps: true });
 
 const etudiant = sequelize.define('etudiant', {
   ID: {
@@ -104,40 +45,17 @@ const etudiant = sequelize.define('etudiant', {
     unique: true,
     allowNull: false
   },
-  NOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  PRENOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  SEXE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DEPARTEMENT: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  SPECIALITE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DATE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  }
-}, {
-  tableName: 'etudiant',
-  timestamps: true
+  NOM: { type: DataTypes.STRING, allowNull: true },
+  PRENOM: { type: DataTypes.STRING, allowNull: true },
+  SEXE: { type: DataTypes.STRING, allowNull: true },
+  DEPARTEMENT: { type: DataTypes.STRING, allowNull: true },
+  SPECIALITE: { type: DataTypes.STRING, allowNull: true },
+  DATE: { type: DataTypes.STRING, allowNull: true }
+}, { tableName: 'etudiant', timestamps: true });
+
+etudiant.beforeCreate((instance) => {
+  instance.ID = uuidv4();
 });
-
-etudiant.beforeCreate((etudiant, _) => {
-  etudiant.ID = uuidv4();
-});
-
-
 
 const entreprise = sequelize.define('entreprise', {
   EMAIL: {
@@ -146,81 +64,32 @@ const entreprise = sequelize.define('entreprise', {
     unique: true,
     allowNull: false
   },
-  NOM: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  DOMAINE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  VILLE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  ADDRESSE : {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  TELEPHONE: {
-    type: DataTypes.STRING,
-    allowNull: true
-  }
-}, {
-  tableName: 'entreprise',
-  timestamps: true
-});
+  NOM: { type: DataTypes.STRING, allowNull: true },
+  DOMAINE: { type: DataTypes.STRING, allowNull: true },
+  VILLE: { type: DataTypes.STRING, allowNull: true },
+  ADDRESSE: { type: DataTypes.STRING, allowNull: true },
+  TELEPHONE: { type: DataTypes.STRING, allowNull: true }
+}, { tableName: 'entreprise', timestamps: true });
 
-/* async function getAllTablesAndStructure() {
-  try {
-    const tablesAndColumns = await sequelize.query(`
-      SELECT table_name, column_name
-      FROM information_schema.columns
-      WHERE table_schema = :databaseName;
-    `, {
-      replacements: { databaseName: sequelize.config.database },
-      type: sequelize.QueryTypes.SELECT
-    });
-
-    if (!Array.isArray(tablesAndColumns) || tablesAndColumns.length === 0) {
-      throw new Error('No tables and columns found');
-    }
-
-    const tablesStructure = {};
-    tablesAndColumns.forEach(row => {
-      const { table_name, column_name } = row;
-      if (!tablesStructure[table_name]) {
-        tablesStructure[table_name] = [];
-      }
-      tablesStructure[table_name].push(column_name);
-    });
-
-    return tablesStructure;
-  } catch (error) {
-    return null;
-  }
-} */
 async function getAllTablesAndStructure() {
   try {
-    const tablesAndColumns = await sequelize.query(`
-      SELECT table_name, column_name
-      FROM information_schema.columns
-      WHERE table_schema = :databaseName;
-    `, {
-      replacements: { databaseName: sequelize.config.database },
-      type: sequelize.QueryTypes.SELECT
-    });
+    const tablesAndColumns = await sequelize.query(
+      `SELECT table_name, column_name
+       FROM information_schema.columns
+       WHERE table_schema = :databaseName;`,
+      {
+        replacements: { databaseName: sequelize.config.database },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
 
     if (!Array.isArray(tablesAndColumns) || tablesAndColumns.length === 0) {
       throw new Error('No tables and columns found');
     }
 
     const tablesStructure = {};
-    tablesAndColumns.forEach(row => {
-      const { table_name, column_name } = row;
-      if (!tablesStructure[table_name]) {
-        tablesStructure[table_name] = [];
-      }
+    tablesAndColumns.forEach(({ table_name, column_name }) => {
+      if (!tablesStructure[table_name]) tablesStructure[table_name] = [];
       tablesStructure[table_name].push(column_name);
     });
 
@@ -229,8 +98,7 @@ async function getAllTablesAndStructure() {
     return null;
   }
 }
-  
-  
+
 async function getDataFromTable(TableName) {
   try {
     const tableData = await sequelize.query(`SELECT * FROM ${TableName}`, {
@@ -261,41 +129,11 @@ async function syncModel() {
     await enseignant.sync({ alter: true });
     await encadrant.sync({ alter: true });
     await etudiant.sync({ alter: true });
-    await entreprise.sync({alter:true});
+    await entreprise.sync({ alter: true });
   } catch (error) {
     console.error('Error syncing models:', error);
   }
 }
-
-const executeSQLCommands = async (commands) => {
-  for (const sql of commands) {
-    try {
-      await sequelize.query(sql);
-    } catch (err) {
-      console.error('Error executing SQL query:', err);
-    }
-  }
-};
-
-const main = async () => {
-  try {
-    const sqlFilePath = path.join(__dirname, '../items.sql');
-    const sqlQuery = await fs.readFile(sqlFilePath, 'utf8');
-    const sqlCommands = sqlQuery.split(';').filter(command => command.trim() !== '');
-    await executeSQLCommands(sqlCommands);
-  } catch (err) {
-    console.error('Error:', err);
-  }
-};
-
-sequelize.sync().then(() => {
-  main();
-}).catch(err => {
-  console.error('Error syncing database:', err);
-});
-
-connectToDatabase();
-syncModel();
 
 module.exports = {
   enseignant,
@@ -304,6 +142,7 @@ module.exports = {
   entreprise,
   getAllTablesAndStructure,
   getDataFromTable,
+  syncModel,
   sequelize,
   DataTypes
 };
