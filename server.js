@@ -105,7 +105,7 @@ app.use('/files', authenticate, checkRole(['ADMIN']), uploadsRoutes);
 
 app.post('/sidebar', authenticate, async (req, res, next) => {
     try {
-        const { lang } = req.body || 'fr';
+        const lang = (req.body && req.body.lang) || 'fr';
         const userRole = req.role;
         const sidebarItems = await fetchSidebarItems(lang, userRole);
         res.json(sidebarItems);
@@ -116,8 +116,10 @@ app.post('/sidebar', authenticate, async (req, res, next) => {
 
 app.get(['/', '/home'], authenticate, async (req, res, next) => {
     try {
-        const stages = await stage.findAll() || [];
-        res.render('pages/home', { stages });
+        const stages = await stage.findAll({
+            order: [['created_at', 'DESC']]
+        }) || [];
+        res.render('pages/home', { stages: stages.map(s => s.toJSON()) });
     } catch (error) {
         next(error);
     }
@@ -130,9 +132,9 @@ app.get('/about', (req, res) => {
 app.get('/api/stages', authenticate, async (req, res, next) => {
     try {
         const stages = await stage.findAll({
-            order: [['createdAt', 'DESC']]
+            order: [['created_at', 'DESC']]
         }) || [];
-        res.json(stages);
+        res.json(stages.map(s => s.toJSON()));
     } catch (error) {
         next(error);
     }
@@ -158,13 +160,13 @@ app.get('/search', searchLimiter, async (req, res, next) => {
         const { count, rows: jobs } = await stage.findAndCountAll({
             where: {
                 [Op.or]: terms.flatMap(term => [
-                    { Titre:   { [Op.like]: `%${term}%` } },
-                    { Domaine: { [Op.like]: `%${term}%` } },
-                    { Niveau:  { [Op.like]: `%${term}%` } },
-                    { Langue:  { [Op.like]: `%${term}%` } },
-                    { Address: { [Op.like]: `%${term}%` } },
-                    { State:   { [Op.like]: `%${term}%` } },
-                    { Nom:     { [Op.like]: `%${term}%` } },
+                    { titre:   { [Op.like]: `%${term}%` } },
+                    { domaine: { [Op.like]: `%${term}%` } },
+                    { niveau:  { [Op.like]: `%${term}%` } },
+                    { langue:  { [Op.like]: `%${term}%` } },
+                    { adresse: { [Op.like]: `%${term}%` } },
+                    { ville:   { [Op.like]: `%${term}%` } },
+                    { nom_entreprise: { [Op.like]: `%${term}%` } },
                 ])
             },
             limit: ITEMS_PER_PAGE,
@@ -200,12 +202,37 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 const PORT = process.env.PORT || 3000;
 let server;
 
+// Error codes that indicate the table already has the correct schema.
+// These occur when the DB volume was created by a previous run and the
+// Sequelize alter tries to add columns / keys that already exist.
+const SYNC_IGNORABLE_CODES = new Set([
+  'ER_DUP_FIELDNAME',          // duplicate column name
+  'ER_DUP_KEYNAME',            // duplicate key name
+  'ER_MULTIPLE_PRI_KEY',       // multiple primary key defined
+  'ER_TRUNCATED_WRONG_VALUE',  // bad existing data blocks ALTER (e.g. 0000-00-00 dates)
+  'ER_CANT_DROP_FIELD_OR_KEY', // trying to drop a key that doesn't exist
+  'ER_DUP_ENTRY',              // duplicate entry on unique constraint
+]);
+
 async function syncAllModels() {
-    await syncModel();
-    await syncStageModel();
-    await syncSoutenanceModel();
-    await syncPostulationModels();
-    await syncUserModel();
+  const steps = [
+    ['syncModel (legacy tables)',   syncModel],
+    ['syncStageModel',              syncStageModel],
+    ['syncSoutenanceModel',         syncSoutenanceModel],
+    ['syncPostulationModels',       syncPostulationModels],
+    ['syncUserModel',               syncUserModel],
+  ];
+  for (const [label, fn] of steps) {
+    try {
+      await fn();
+    } catch (error) {
+      if (error.original && SYNC_IGNORABLE_CODES.has(error.original.code)) {
+        logger.warn(`[syncAllModels] ${label}: skipping alter — ${error.original.sqlMessage}`);
+      } else {
+        throw error;
+      }
+    }
+  }
 }
 
 const startServer = async () => {

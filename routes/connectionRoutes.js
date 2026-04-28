@@ -8,11 +8,86 @@ const crypto = require('crypto');
 const authenticate = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
 const {sendUserRegistrationMail,sendUserResetPasswordMail,resendRegistrationMail}=require('../emails/email');
-const user_registration  = require('../controllers/UserRegistration'); // Import UserRegistration model
+const user_registration  = require('../controllers/UserRegistration'); // Legacy model (backward compat)
 const flash = require('connect-flash');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const fetch = require('node-fetch');
+
+// NEW SCHEMA: import new UserRegistration model and user-type models (database-redesign spec)
+const { UserRegistration } = require('../model/UserRegistrationModel');
+const { Etudiant, Enseignant, Encadrant, Entreprise } = require('../model/UserTypeModels');
+
+/**
+ * Map legacy role values to new ENUM roles.
+ * Requirements: 2.1, 2.2, 3.1, 3.2
+ */
+const LEGACY_ROLE_MAP = {
+  USER:        'STUDENT',
+  DEPARTEMENT: 'SUPERVISOR',
+  ENTREPRISE:  'COMPANY',
+  ADMIN:       'ADMIN',
+};
+
+/**
+ * Create a record in the new user_registration table and the appropriate
+ * user-type table (etudiant/enseignant/encadrant/entreprise).
+ * Called after a successful legacy registration to keep new schema in sync.
+ *
+ * @param {object} opts
+ * @param {string} opts.email
+ * @param {string} opts.password  - plain-text password (will be hashed by model hook)
+ * @param {string} opts.role      - legacy role string
+ * @param {string} opts.nom
+ * @param {string} opts.prenom
+ * @param {string} opts.uuid      - UUID already generated for the legacy record
+ * @returns {Promise<object>} { userReg, userTypeRecord }
+ */
+async function createNewSchemaRecords({ email, password, role, nom, prenom, uuid }) {
+  const newRole = LEGACY_ROLE_MAP[role] || 'STUDENT';
+
+  // Create user_registration record in new schema
+  const userReg = await UserRegistration.create({
+    uuid,
+    email: email.trim().toLowerCase(),
+    password_hash: password, // hashed by beforeCreate hook in UserRegistrationModel
+    role: newRole,
+    is_active: true,
+  });
+
+  // Create the corresponding user-type record linked by user_id
+  let userTypeRecord = null;
+  const baseProfile = {
+    user_id: userReg.user_id,
+    uuid,
+    nom: nom ? nom.trim().toUpperCase() : null,
+    prenom: prenom ? prenom.trim() : null,
+  };
+
+  switch (newRole) {
+    case 'STUDENT':
+      userTypeRecord = await Etudiant.create(baseProfile);
+      break;
+    case 'TEACHER':
+      userTypeRecord = await Enseignant.create({ ...baseProfile, email: email.trim().toLowerCase() });
+      break;
+    case 'SUPERVISOR':
+      userTypeRecord = await Encadrant.create({ ...baseProfile, email: email.trim().toLowerCase() });
+      break;
+    case 'COMPANY':
+      userTypeRecord = await Entreprise.create({
+        user_id: userReg.user_id,
+        nom: nom ? nom.trim().toUpperCase() : null,
+        email: email.trim().toLowerCase(),
+      });
+      break;
+    default:
+      // ADMIN — no user-type record needed
+      break;
+  }
+
+  return { userReg, userTypeRecord };
+}
 
 
 // Initialize a new instance of LocalStorage
@@ -71,7 +146,7 @@ router.get(['/', '/login'], (req, res) => {
         return res.render('auth/register', { messages: req.flash() });
       }
   
-      // Vérifiez si l'email existe déjà
+      // Vérifiez si l'email existe déjà (legacy table check)
       const existingUser = await user_registration.findOne({ where: { email } });
   
       if (existingUser) {
@@ -88,7 +163,9 @@ router.get(['/', '/login'], (req, res) => {
       // First user ever registered becomes ADMIN and is pre-validated
       const userCount = await user_registration.count();
       const isFirstUser = userCount === 0;
+      const legacyRole = isFirstUser ? 'ADMIN' : 'USER';
 
+      // OLD SCHEMA: create record in legacy user_registration table
       const newUser = await user_registration.create({
         NOM: nom.trim().toUpperCase(),
         PRENOM: prenom.trim(),
@@ -96,9 +173,30 @@ router.get(['/', '/login'], (req, res) => {
         PASSWORD: password,
         TOKEN: isFirstUser ? '0' : registrationToken,
         UUID: uuid,
-        role: isFirstUser ? 'ADMIN' : 'USER',
+        role: legacyRole,
         ISVALIDATED: isFirstUser ? true : false,
       });
+
+      // NEW SCHEMA: create record in new user_registration + user-type table (database-redesign spec)
+      // Requirements: 2.1, 2.2, 3.1, 3.2
+      try {
+        await createNewSchemaRecords({
+          email,
+          password,
+          role: legacyRole,
+          nom,
+          prenom,
+          uuid,
+        });
+      } catch (newSchemaError) {
+        // Handle unique constraint violations gracefully — new schema sync is best-effort
+        // during transition period; legacy record was already created successfully
+        if (newSchemaError.name === 'SequelizeUniqueConstraintError') {
+          console.warn('[new-schema] Duplicate email in new user_registration, skipping:', email);
+        } else {
+          console.error('[new-schema] Failed to create new schema records:', newSchemaError.message);
+        }
+      }
   
       if (isFirstUser) {
         req.flash('success', 'Compte administrateur créé avec succès. Vous pouvez vous connecter maintenant.');
@@ -114,7 +212,12 @@ router.get(['/', '/login'], (req, res) => {
       });
   
     } catch (error) {
-      req.flash('error', `Une erreur s'est produite lors de l'inscription de l'utilisateur: ${error}`);
+      // Handle unique constraint violation (duplicate email) with a user-friendly message
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        req.flash('error', `Erreur : l'adresse e-mail existe déjà, essayez une autre adresse ou connectez-vous !`);
+      } else {
+        req.flash('error', `Une erreur s'est produite lors de l'inscription de l'utilisateur: ${error}`);
+      }
       return res.render('auth/register', { messages: req.flash() });
     }
   });
@@ -468,7 +571,7 @@ router.post('/registration', async function (req, res) {
       return res.status(400).json({ success: false, message: 'Les mots de passe ne correspondent pas' });
     }
 
-    // Check if email already exists
+    // Check if email already exists (legacy table)
     const existingUser = await user_registration.findOne({ where: { EMAIL: email } });
 
     if (existingUser) {
@@ -486,23 +589,40 @@ router.post('/registration', async function (req, res) {
       });
     }
 
-    // Hash the password
-/*     const hashedPassword = await bcrypt.hash(password, 10); */
-
     // Generate registration token
     const registrationToken = generateRandomToken(100);
 
     // Create a new user
     const uuid = uuidv4();
 
+    // OLD SCHEMA: create record in legacy user_registration table
     const newUser = await user_registration.create({
       NOM: nom.trim().toUpperCase(),
       PRENOM: prenom.trim(),
       EMAIL: email.trim().toLowerCase(),
-      PASSWORD: password, // Updated to use hashed password
+      PASSWORD: password,
       TOKEN: registrationToken,
       UUID: uuid,
     });
+
+    // NEW SCHEMA: create record in new user_registration + user-type table (database-redesign spec)
+    // Requirements: 2.1, 2.2, 3.1, 3.2
+    try {
+      await createNewSchemaRecords({
+        email,
+        password,
+        role: 'USER', // default role for API registration
+        nom,
+        prenom,
+        uuid,
+      });
+    } catch (newSchemaError) {
+      if (newSchemaError.name === 'SequelizeUniqueConstraintError') {
+        console.warn('[new-schema] Duplicate email in new user_registration, skipping:', email);
+      } else {
+        console.error('[new-schema] Failed to create new schema records:', newSchemaError.message);
+      }
+    }
 
     // Send registration confirmation email
     await sendUserRegistrationMail(email.toLowerCase().trim(), nom.toUpperCase().trim(), registrationToken);
@@ -518,6 +638,14 @@ router.post('/registration', async function (req, res) {
     });
 
   } catch (error) {
+    // Handle unique constraint violation (duplicate email) with a specific error code
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({
+        success: false,
+        message: `Erreur : L'adresse e-mail existe déjà. Essayez une autre adresse ou connectez-vous !`,
+        code: 'DUPLICATE_EMAIL',
+      });
+    }
     // Log error for debugging purposes
     console.error('Erreur lors de l\'inscription de l\'utilisateur :', error);
     return res.status(500).json({

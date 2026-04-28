@@ -125,13 +125,19 @@ async function connectToDatabase() {
 }
 
 async function syncModel() {
-  try {
-    await enseignant.sync({ alter: true });
-    await encadrant.sync({ alter: true });
-    await etudiant.sync({ alter: true });
-    await entreprise.sync({ alter: true });
-  } catch (error) {
-    console.error('Error syncing models:', error);
+  const models = [enseignant, encadrant, etudiant, entreprise];
+  for (const model of models) {
+    try {
+      await model.sync({ alter: true });
+    } catch (error) {
+      // ER_DUP_FIELDNAME / ER_DUP_KEYNAME: table already has the correct schema
+      // (created by Sequelize migrations). Safe to ignore and continue.
+      if (error.original && ['ER_DUP_FIELDNAME', 'ER_DUP_KEYNAME'].includes(error.original.code)) {
+        console.warn(`[syncModel] Skipping alter for ${model.tableName}: ${error.original.sqlMessage}`);
+      } else {
+        console.error('Error syncing models:', error);
+      }
+    }
   }
 }
 

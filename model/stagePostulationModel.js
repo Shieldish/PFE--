@@ -39,25 +39,30 @@ const stagepostulation = sequelize.define('stagepostulation', {
 });
 
 const candidature = sequelize.define('candidature', {
-  candidatureId: {
-    type: DataTypes.UUID,
+  id: {
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    defaultValue: DataTypes.UUIDV4,
-    allowNull: false
+    autoIncrement: true,
   },
-  id: { type: DataTypes.STRING(36), allowNull: false },
-  nom: { type: DataTypes.STRING, allowNull: false },
-  prenom: { type: DataTypes.STRING, allowNull: false },
-  date_naissance: { type: DataTypes.STRING, allowNull: false },
-  adresse: { type: DataTypes.STRING, allowNull: false },
-  telephone: { type: DataTypes.STRING, allowNull: false },
-  email: { type: DataTypes.STRING, allowNull: false },
-  niveau_etudes: { type: DataTypes.STRING, allowNull: false },
-  institution: { type: DataTypes.STRING, allowNull: false },
-  domaine_etudes: { type: DataTypes.STRING, allowNull: false },
-  section: { type: DataTypes.STRING, allowNull: false },
-  annee_obtention: { type: DataTypes.STRING },
-  experience: { type: DataTypes.STRING, allowNull: false },
+  stage_id:    { type: DataTypes.STRING(36),  allowNull: false },
+  etudiant_id: { type: DataTypes.INTEGER,     allowNull: false },
+  status: {
+    type: DataTypes.ENUM('en_attente', 'accepte', 'refuse'),
+    allowNull: false,
+    defaultValue: 'en_attente',
+  },
+  nom:                  { type: DataTypes.STRING(100), allowNull: false },
+  prenom:               { type: DataTypes.STRING(100), allowNull: false },
+  date_naissance:       { type: DataTypes.DATEONLY,    allowNull: true },
+  adresse:              { type: DataTypes.STRING(255), allowNull: true },
+  telephone:            { type: DataTypes.STRING(30),  allowNull: true },
+  email:                { type: DataTypes.STRING(255), allowNull: false },
+  niveau_etudes:        { type: DataTypes.STRING(100), allowNull: false },
+  institution:          { type: DataTypes.STRING(255), allowNull: false },
+  domaine_etudes:       { type: DataTypes.STRING(100), allowNull: false },
+  section:              { type: DataTypes.STRING(100), allowNull: true },
+  annee_obtention:      { type: DataTypes.INTEGER,     allowNull: true },
+  has_experience:       { type: DataTypes.BOOLEAN,     allowNull: false, defaultValue: false },
   experience_description: {
     type: DataTypes.TEXT,
     allowNull: true,
@@ -65,18 +70,14 @@ const candidature = sequelize.define('candidature', {
       try {
         const compressed = zlib.deflateSync(value).toString('base64');
         this.setDataValue('experience_description', compressed);
-      } catch (error) {
-        console.error('Error compressing experience_description:', error);
-      }
+      } catch { this.setDataValue('experience_description', value); }
     },
     get() {
       try {
         const value = this.getDataValue('experience_description');
         if (!value) return '';
         return zlib.inflateSync(Buffer.from(value, 'base64')).toString();
-      } catch {
-        return '';
-      }
+      } catch { return ''; }
     }
   },
   motivation: {
@@ -86,44 +87,52 @@ const candidature = sequelize.define('candidature', {
       try {
         const compressed = zlib.deflateSync(value).toString('base64');
         this.setDataValue('motivation', compressed);
-      } catch (error) {
-        console.error('Error compressing motivation:', error);
-      }
+      } catch { this.setDataValue('motivation', value); }
     },
     get() {
       try {
         const value = this.getDataValue('motivation');
         if (!value) return '';
         return zlib.inflateSync(Buffer.from(value, 'base64')).toString();
-      } catch {
-        return '';
-      }
+      } catch { return ''; }
     }
   },
-  langues: { type: DataTypes.STRING, allowNull: false },
-  logiciels: { type: DataTypes.STRING, allowNull: true },
-  competences_autres: { type: DataTypes.STRING, allowNull: true },
-  date_debut: { type: DataTypes.STRING, allowNull: true },
-  duree_stage: { type: DataTypes.STRING, allowNull: true },
-  cv: { type: DataTypes.STRING, allowNull: false },
-  lettre_motivation: { type: DataTypes.STRING, allowNull: true },
-  releves_notes: { type: DataTypes.STRING, allowNull: true }
+  langues:              { type: DataTypes.STRING(255), allowNull: true },
+  logiciels:            { type: DataTypes.STRING(255), allowNull: true },
+  competences_autres:   { type: DataTypes.STRING(255), allowNull: true },
+  date_debut_souhaitee: { type: DataTypes.DATEONLY,    allowNull: true },
+  duree_stage_mois:     { type: DataTypes.INTEGER,     allowNull: true },
+  cv_url:               { type: DataTypes.STRING(500), allowNull: true },
+  lettre_motivation_url:{ type: DataTypes.STRING(500), allowNull: true },
+  releves_notes_url:    { type: DataTypes.STRING(500), allowNull: true },
 }, {
   tableName: 'candidature',
   timestamps: true,
-  createdAt: 'created_at',
+  createdAt: 'postule_le',
   updatedAt: 'updated_at',
-  indexes: [
-    {
-      unique: true,
-      fields: ['id', 'email']
-    }
-  ]
 });
 
+const SYNC_IGNORABLE_CODES = new Set([
+  'ER_DUP_FIELDNAME',
+  'ER_DUP_KEYNAME',
+  'ER_MULTIPLE_PRI_KEY',
+  'ER_TRUNCATED_WRONG_VALUE',
+  'ER_CANT_DROP_FIELD_OR_KEY',
+  'ER_DUP_ENTRY',
+]);
+
 async function syncPostulationModels() {
-  await stagepostulation.sync({ alter: true });
-  await candidature.sync({ alter: true });
+  for (const [name, model] of [['stagepostulation', stagepostulation], ['candidature', candidature]]) {
+    try {
+      await model.sync({ alter: true });
+    } catch (error) {
+      if (error.original && SYNC_IGNORABLE_CODES.has(error.original.code)) {
+        console.warn(`[syncPostulationModels] Skipping alter for ${name}: ${error.original.sqlMessage}`);
+      } else {
+        throw error;
+      }
+    }
+  }
 }
 
 module.exports = { candidature, stagepostulation, syncPostulationModels };

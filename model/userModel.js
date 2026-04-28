@@ -76,7 +76,15 @@ user_registration.beforeCreate(async (instance) => {
 });
 
 async function syncUserModel() {
-  await user_registration.sync({ alter: true });
+  try {
+    await user_registration.sync({ alter: true });
+  } catch (error) {
+    if (error.original && ['ER_DUP_FIELDNAME', 'ER_DUP_KEYNAME'].includes(error.original.code)) {
+      console.warn(`[syncUserModel] Skipping alter for user_registrations: ${error.original.sqlMessage}`);
+    } else {
+      throw error;
+    }
+  }
 }
 
 module.exports = { user_registration, syncUserModel };

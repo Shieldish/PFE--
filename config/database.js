@@ -12,6 +12,13 @@ const sequelize = new Sequelize(
     dialect: process.env.DATABASE_DIALECT || 'mysql',
     port: parseInt(process.env.DATABASE_PORT, 10) || 3306,
     logging: false,
+    dialectOptions: {
+      charset: 'utf8mb4',
+    },
+    define: {
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_unicode_ci',
+    },
   }
 );
 

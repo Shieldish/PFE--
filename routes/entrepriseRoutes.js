@@ -6,6 +6,10 @@ const { candidature, stagepostulation } = require('../model/stagePostulationMode
 const { Op } = require('sequelize');
 const router = express.Router();
 
+// [NEW SCHEMA] Import new-schema models for dual-write
+const { Stage: NewStage } = require('../model/BusinessModels');
+const { Entreprise: NewEntreprise } = require('../model/UserTypeModels');
+
 
 
 const app = express();
@@ -47,8 +51,62 @@ router.post('/creactionStage', async (req, res) => {
       // Set CreatedBy field in stage data
       stageData.CreatedBy = createdBy;
 
-      // Save stage data to the database
-      const newStage = await stage.create(stageData);
+      // Map form field names (old uppercase) to new DB column names
+      const mappedStageData = {
+        id: require('uuid').v4(),
+        created_by:     createdBy,
+        titre:          stageData.Titre || stageData.titre || '',
+        domaine:        stageData.Domaine || stageData.domaine || '',
+        nom_entreprise: stageData.Nom || stageData.nom_entreprise || '',
+        libelle:        stageData.Libelle || stageData.libelle || '',
+        description:    stageData.Description || stageData.description || null,
+        niveau:         stageData.Niveau || stageData.niveau || '',
+        experience:     stageData.Experience || stageData.experience || '',
+        langue:         stageData.Langue || stageData.langue || '',
+        postes_vacants: parseInt(stageData.PostesVacants || stageData.postes_vacants) || 1,
+        telephone:      stageData.Telephone || stageData.telephone || null,
+        fax:            stageData.Fax || stageData.fax || null,
+        email:          stageData.Email || stageData.email || null,
+        email2:         stageData.Email2 || stageData.email2 || null,
+        date_debut:     stageData.DateDebut || stageData.date_debut || null,
+        date_fin:       stageData.DateFin || stageData.date_fin || null,
+        adresse:        stageData.Address || stageData.adresse || null,
+        rue:            stageData.Rue || stageData.rue || null,
+        ville:          stageData.State || stageData.ville || null,
+        code_postal:    stageData.Zip || stageData.code_postal || null,
+        is_active:      true,
+      };
+
+      // Save stage data to the database (legacy schema)
+      const newStage = await stage.create(mappedStageData);
+
+      // [NEW SCHEMA] Also create a record in the new `stage` table linked to the entreprise
+      try {
+        const entrepriseRecord = await NewEntreprise.findOne({ where: { email: createdBy } });
+        if (entrepriseRecord) {
+          await NewStage.create({
+            entreprise_id: entrepriseRecord.entreprise_id,
+            titre: stageData.Titre || stageData.Libelle || null,
+            domaine: stageData.Domaine || null,
+            description: stageData.Description || null,
+            niveau_requis: null, // legacy schema has free-text Niveau; no direct mapping
+            experience_requise: stageData.Experience || null,
+            langue_requise: stageData.Langue || null,
+            postes_vacants: stageData.PostesVacants ? parseInt(stageData.PostesVacants) || 1 : 1,
+            date_debut: stageData.DateDebut || null,
+            date_fin: stageData.DateFin || null,
+            adresse: stageData.Address || stageData.Rue || null,
+            ville: stageData.State || null,
+            code_postal: stageData.Zip || null,
+            contact_email: stageData.Email || stageData.Email2 || createdBy,
+            contact_telephone: stageData.Telephone || null,
+            is_active: true,
+          });
+        }
+      } catch (newSchemaErr) {
+        // New-schema write failure must not break the legacy flow
+        console.error('[NEW SCHEMA] Erreur lors de la création du stage (nouveau schéma):', newSchemaErr.message);
+      }
 
       // Respond with success message and redirect
       req.flash('success', 'Nouvelle étape ajoutée avec succès.');
@@ -79,14 +137,14 @@ router.get('/stages', async (req, res) => {
           return res.status(401).end();
       }
 
-      const allstage = await stage.findAll({ where: { Createdby: entrepriseEmail } });
+      const allstage = await stage.findAll({ where: { created_by: entrepriseEmail } });
 
       if (!allstage || allstage.length === 0) {
           req.flash('info', 'Pas de stage trouvé pour l\'utilisateur');
           return res.status(404).end();
       }
 
-      res.json(allstage);
+      res.json(allstage.map(s => s.toJSON()));
   } catch (error) {
       console.error('Erreur lors de l\'étape de récupération :', error);
       req.flash('error', 'Une erreur s\'est produite lors de la récupération des données stages : ' + error.message);
@@ -113,16 +171,9 @@ router.get('/', async (req, res) => {
         req.flash('info', 'la session est perdue, reconnectez-vous pour récupérer les données ');
         return res.render('entreprise/index', { stages: [] });
       }
-      const stages = entrepriseEMAIL ? await stage.findAll({ where: { Createdby: entrepriseEMAIL } }) : [];
-
-      // Convert stage array to JSON
-    
-      const stageJSON = stages.map(stages => stages.toJSON());
-
-       await  normalizeDate(stageJSON)
-
-      
-      // Render the page with the fetched stage
+      const stages = entrepriseEMAIL ? await stage.findAll({ where: { created_by: entrepriseEMAIL } }) : [];
+      const stageJSON = stages.map(s => s.toJSON());
+      await normalizeDate(stageJSON);
       return res.render('entreprise/index', { stages: stageJSON });
   } catch (error) {
       // Handle any errors
@@ -143,8 +194,8 @@ router.get('/edit/:id', async (req, res) => {
     delete stages.updatedAt;
     delete stages.createdAt;
 
-    const formattedDateDebut = stages.DateDebut.toISOString().slice(0, 10);
-      const formattedDateFin = stages.DateFin.toISOString().slice(0, 10);
+    const formattedDateDebut = (stages.date_debut || stages.DateDebut || new Date()).toString().slice(0, 10);
+    const formattedDateFin   = (stages.date_fin   || stages.DateFin   || new Date()).toString().slice(0, 10);
     // Render the edit page with the stage data
     return res.render('entreprise/edit-stage', { data:stages, formattedDateDebut, formattedDateFin });
   } 
@@ -319,61 +370,43 @@ router.post('/decision', async (req, res) => {
 });
 
 router.get('/postulant_detail', async (req, res) => {
-  const etudiantEmail = req.query.etudiantEmail // Retrieving from query parameters
-  const stageId = req.query.stageId // Retrieving from query parameters
+  const etudiantEmail = req.query.etudiantEmail;
+  const stageId = req.query.stageId;
   try {
       let candidatures = await candidature.findOne({
           where: {
               email: etudiantEmail,
-              id: stageId,
+              stage_id: stageId,
           },
-      })
+      });
       if (!candidatures) {
-          // Handle the case where no candidature is found
-          return res.status(404).send('candidature introuvable')
+          return res.status(404).send('candidature introuvable');
       }
-    /*   const modifiedcandidature = {
-          ...candidatures.toJSON(),
-          cv: `/stockages/${candidatures.email}/${path.basename(
-              candidatures.cv
-          )}`,
-          lettre_motivation: candidatures.lettre_motivation
-              ? `/stockages/${candidatures.email}/${path.basename(
-                    candidatures.lettre_motivation
-                )}`
-              : 'document pas fournis',
-          releves_notes: candidatures.releves_notes
-              ? `/stockages/${candidatures.email}/${path.basename(
-                    candidatures.releves_notes
-                )}`
-              : 'document pas fournis',
-      } */
-
+      const cJson = candidatures.toJSON();
       const modifiedcandidature = {
-        ...candidatures.toJSON(),
-        cv:  candidatures.cv,
-        lettre_motivation:  candidatures.lettre_motivation || 'document pas fournis',
-        releves_notes: candidatures.releves_notes || 'document pas fournis',
-    };
+        ...cJson,
+        cv:               cJson.cv_url               || cJson.cv               || null,
+        lettre_motivation:cJson.lettre_motivation_url || cJson.lettre_motivation || 'document pas fournis',
+        releves_notes:    cJson.releves_notes_url     || cJson.releves_notes     || 'document pas fournis',
+      };
 
       const StageData = await stagepostulation.findOne({
           where: {
-              stageId: candidatures.id,
-              etudiantEmail: candidatures.email,
+              stageId: stageId,
+              etudiantEmail: etudiantEmail,
           },
-      })
-      const stageDataJSON = StageData.toJSON()
-     
+      });
+      const stageDataJSON = StageData ? StageData.toJSON() : {};
+
       return res.render('entreprise/postulant-details', {
           candidature: modifiedcandidature,
           stage: stageDataJSON,
-      })
+      });
   } catch (error) {
-      // Handle errors
-      console.error(error)
-      return res.status(500).send('Internal Server Error')
+      console.error(error);
+      return res.status(500).send('Internal Server Error');
   }
-})
+});
 
 
 router.get('/postulant', async (req, res) => {

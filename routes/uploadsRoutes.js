@@ -208,8 +208,9 @@ router.post('/saveToDatabase', async (req, res) => {
   }
 });
 
-  router.get(['/','/upload'], (req, res) => { 
-    res.render('admin/uploads',{dt : data, items:items ,fileName:fileName });
+  // Fallback GET / — render with empty state
+  router.get('/', (req, res) => {
+    res.render('admin/uploads', { dt: data, items: items, fileName: fileName });
 });
 
 

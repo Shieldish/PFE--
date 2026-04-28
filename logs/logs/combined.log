@@ -13,3 +13,5 @@
 {"EMAIL":"test.nodemailer.pfe2024@gmail.com","NOM":"SAMUEL","PRENOM":"gabiam","level":"info","message":"user conecteted :","timestamp":"2024-04-15T23:30:26.861Z"}
 {"level":"info","message":"roles OK","timestamp":"2026-04-27T05:14:09.832Z"}
 {"level":"info","message":"roles OK","timestamp":"2026-04-27T05:20:52.443Z"}
+{"level":"warn","message":"Access denied: GET /some/path","timestamp":"2026-04-27T14:12:47.613Z"}
+{"level":"warn","message":"Access denied: GET /some/path","timestamp":"2026-04-27T14:35:46.223Z"}

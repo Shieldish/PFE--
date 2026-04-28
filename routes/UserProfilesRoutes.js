@@ -4,7 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
-const user_registration = require('../controllers/UserRegistration');
+const user_registration = require('../controllers/UserRegistration'); // Legacy model (backward compat)
 const router = express.Router();
 const cookieParser = require('cookie-parser');
 const app = express();
@@ -17,6 +17,10 @@ app.use((req, res, next) => {
   res.locals.messages = req.flash();
   next();
 });
+
+// NEW SCHEMA: import new UserRegistration model (database-redesign spec)
+// Requirements: 2.1, 2.2, 3.1, 3.2
+const { UserRegistration } = require('../model/UserRegistrationModel');
 
 router.get('/', async (req, res) => {
 
@@ -122,7 +126,21 @@ router.post('/updateUserData', async (req, res) => {
       return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
     }
 
+    // OLD SCHEMA: update legacy user_registration table
     await user_registration.update(fieldsWithoutPasswords, { where: { EMAIL } });
+
+    // NEW SCHEMA: sync password update to new user_registration table (database-redesign spec)
+    // Requirements: 2.1, 2.2
+    if (PASSWORD && hashedPassword) {
+      try {
+        await UserRegistration.update(
+          { password_hash: hashedPassword },
+          { where: { email: EMAIL.toLowerCase() } }
+        );
+      } catch (newSchemaError) {
+        console.error('[new-schema] Failed to update password in new user_registration:', newSchemaError.message);
+      }
+    }
 
     const updatedUserData = await user_registration.findOne({ where: { EMAIL } });
     if (updatedUserData) {
@@ -135,6 +153,11 @@ router.post('/updateUserData', async (req, res) => {
     req.flash('error', `Une erreur est survenue lors de la recherche des données utilisateur ${EMAIL}.`);
     return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
   } catch (error) {
+    // Handle unique constraint violations (e.g. duplicate email attempt)
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      req.flash('error', 'Cette adresse e-mail est déjà utilisée par un autre compte.');
+      return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
+    }
     console.error('Erreur lors de la mise à jour :', error);
     req.flash('error', `Une erreur est survenue lors de la mise à jour : ${error.message}`);
     return res.render('settings/profile', { userData: req.session.user, messages: req.flash() });
@@ -166,6 +189,17 @@ router.post('/updateUserData2', async (req, res) => {
       const salt = await bcrypt.genSalt(saltRounds);
       const hashedPassword = await bcrypt.hash(PASSWORD, salt);
       fieldsWithoutPasswords.PASSWORD = hashedPassword;
+
+      // NEW SCHEMA: sync password update to new user_registration table (database-redesign spec)
+      // Requirements: 2.1, 2.2
+      try {
+        await UserRegistration.update(
+          { password_hash: hashedPassword },
+          { where: { email: EMAIL.toLowerCase() } }
+        );
+      } catch (newSchemaError) {
+        console.error('[new-schema] Failed to update password in new user_registration:', newSchemaError.message);
+      }
     }
 
     const existingUser = await user_registration.findOne({ where: { EMAIL } });
@@ -184,6 +218,7 @@ router.post('/updateUserData2', async (req, res) => {
       });
     }
 
+    // OLD SCHEMA: update legacy user_registration table
     await user_registration.update(fieldsWithoutPasswords, { where: { EMAIL } });
 
     const updatedUserData = await user_registration.findOne({ where: { EMAIL } });
@@ -202,6 +237,14 @@ router.post('/updateUserData2', async (req, res) => {
       message: `Une erreur est survenue lors de la recherche des données utilisateur ${EMAIL}.`,
     });
   } catch (error) {
+    // Handle unique constraint violations (e.g. duplicate email attempt)
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({
+        success: false,
+        message: 'Cette adresse e-mail est déjà utilisée par un autre compte.',
+        code: 'DUPLICATE_EMAIL',
+      });
+    }
     console.error('Erreur lors de la mise à jour :', error);
     return res.status(500).json({
       success: false,

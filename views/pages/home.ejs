@@ -65,20 +65,12 @@
 $(document).ready(function() {
   let currentPage = 1;
   const groupsPerPage = 5;
-  let jobData = [];
-  let filteredJobData = [];
+  // Data injected server-side — no fetch needed
+  let jobData = <%- JSON.stringify(stages) %>;
+  let filteredJobData = [...jobData];
 
-  function fetchJobData() {
-    fetch('/api/stages')
-      .then(r => r.json())
-      .then(data => {
-        jobData = data;
-        filteredJobData = [...jobData];
-        populateFilters();
-        updateJobListings();
-      })
-      .catch(err => console.error('Error fetching data:', err));
-  }
+  populateFilters();
+  updateJobListings();
 
   function populateFilters() {
     const domains     = [...new Set(jobData.map(j => j.Domaine))];
@@ -199,7 +191,50 @@ $(document).ready(function() {
     });
   }
 
-  fetchJobData();
+  updateJobListings();
+
+  $(document).on('click', '.pagination .page-link', function(e) {
+    e.preventDefault();
+    const $item = $(this).closest('.page-item');
+    if ($item.hasClass('disabled')||$item.hasClass('active')) return;
+    const label = $(this).attr('aria-label');
+    if (label==='Précédent') currentPage--;
+    else if (label==='Suivant') currentPage++;
+    else currentPage = parseInt($(this).text());
+    updateJobListings();
+  });
+
+  $('#searchFilterForm').on('submit', function(e) { e.preventDefault(); applyFilters(); });
+  $('#sortSelect').on('change', applyFilters);
+
+  function applyFilters() {
+    const q   = $('#searchInput').val().toLowerCase();
+    const dom = $('#domainFilter').val();
+    const exp = $('#experienceFilter').val();
+    const st  = $('#stateFilter').val();
+    const srt = $('#sortSelect').val();
+    const fields = ['Titre','Domaine','Experience','State','Address','Niveau','Libelle','Nom','Description'];
+    filteredJobData = jobData.filter(job => {
+      const match = fields.some(f => job[f] && job[f].toLowerCase().includes(q));
+      return match && (!dom||job.Domaine===dom) && (!exp||job.Niveau===exp) && (!st||job.Address===st);
+    });
+    sortJobData(srt);
+    currentPage = 1;
+    updateJobListings();
+  }
+
+  function sortJobData(opt) {
+    filteredJobData.sort((a,b) => {
+      switch(opt) {
+        case 'dateDesc': return new Date(b.DateDebut)-new Date(a.DateDebut);
+        case 'dateAsc':  return new Date(a.DateDebut)-new Date(b.DateDebut);
+        case 'titleAsc': return a.Titre.localeCompare(b.Titre);
+        case 'titleDesc':return b.Titre.localeCompare(a.Titre);
+        default: return 0;
+      }
+    });
+  }
+
 });
 </script>
 </body>

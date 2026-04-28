@@ -8,12 +8,14 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const { exportData } = require('../controllers/exportController');
 
+// [NEW SCHEMA] Import new schema models for soutenance
+const { Soutenance: SoutenanceNew } = require('../model/BusinessModels');
+const { Enseignant, Encadrant } = require('../model/UserTypeModels');
+
 router.get('/', async (req, res) => {
     try {
       const soutenances = await Soutenance.findAll();
-      //console.log( 'soutenance data : ',soutenances)
-
-      res.render('planification/index', { soutenances : soutenances});
+      res.render('planification/index', { soutenances: soutenances.map(s => s.toJSON()) });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -103,6 +105,96 @@ async function checkConflicts(data, id) {
    /*  console.log(req.body); */
     try {
       const newSoutenance = await Soutenance.create(req.body);
+
+      // [NEW SCHEMA] Also write to new soutenance table; failure is isolated
+      try {
+        const body = req.body;
+
+        // [NEW SCHEMA] Resolve jury member IDs from enseignant/encadrant tables by name
+        // Fields from legacy form: president, rapporteur, encadrantAcademique, encadrantProfessionnel
+        // These are stored as name strings in the legacy schema — look up IDs in new tables.
+
+        // Helper: find enseignant_id by full name (nom + prenom) or return NULL
+        async function resolveEnseignantId(fullName) {
+          if (!fullName || fullName.trim() === '') return null;
+          const parts = fullName.trim().split(/\s+/);
+          if (parts.length < 2) {
+            const found = await Enseignant.findOne({ where: { nom: parts[0] } });
+            return found ? found.enseignant_id : null;
+          }
+          const [prenom, ...nomParts] = parts;
+          const nom = nomParts.join(' ');
+          const found = await Enseignant.findOne({ where: { nom, prenom } })
+            || await Enseignant.findOne({ where: { nom: prenom, prenom: nom } });
+          return found ? found.enseignant_id : null;
+        }
+
+        // Helper: find encadrant_id by full name or return NULL
+        async function resolveEncadrantId(fullName) {
+          if (!fullName || fullName.trim() === '') return null;
+          const parts = fullName.trim().split(/\s+/);
+          if (parts.length < 2) {
+            const found = await Encadrant.findOne({ where: { nom: parts[0] } });
+            return found ? found.encadrant_id : null;
+          }
+          const [prenom, ...nomParts] = parts;
+          const nom = nomParts.join(' ');
+          const found = await Encadrant.findOne({ where: { nom, prenom } })
+            || await Encadrant.findOne({ where: { nom: prenom, prenom: nom } });
+          return found ? found.encadrant_id : null;
+        }
+
+        // [NEW SCHEMA] Resolve all jury member IDs (NULL if not found — allowed by schema)
+        const [presidentId, rapporteurId, encadrantAcademiqueId, encadrantProfessionnelId] = await Promise.all([
+          resolveEnseignantId(body.president),
+          resolveEnseignantId(body.rapporteur),
+          resolveEnseignantId(body.encadrantAcademique),
+          resolveEncadrantId(body.encadrantProfessionnel),
+        ]);
+
+        // [NEW SCHEMA] Map legacy type string to new enum value
+        const typeMap = { MONOME: 'MONOME', BINOME: 'BINOME', TRINOME: 'TRINOME' };
+        const typePresentation = typeMap[(body.type || '').toUpperCase()] || null;
+
+        // [NEW SCHEMA] Parse etudiant names from legacy grouped field (e.g. "Nom Prenom")
+        function splitName(fullName) {
+          if (!fullName || fullName.trim() === '') return { nom: null, prenom: null };
+          const parts = fullName.trim().split(/\s+/);
+          if (parts.length === 1) return { nom: parts[0], prenom: null };
+          const [prenom, ...nomParts] = parts;
+          return { nom: nomParts.join(' '), prenom };
+        }
+
+        const etudiant1 = splitName(body.etudiant1);
+        const etudiant2 = splitName(body.etudiant2);
+        const etudiant3 = splitName(body.etudiant3);
+
+        // [NEW SCHEMA] Create record in new soutenance table
+        await SoutenanceNew.create({
+          affectation_id: body.affectation_id || null,
+          date_soutenance: body.date || null,
+          heure_soutenance: body.time || null,
+          salle: body.salle || null,
+          type_presentation: typePresentation,
+          etudiant1_nom: etudiant1.nom,
+          etudiant1_prenom: etudiant1.prenom,
+          etudiant2_nom: etudiant2.nom || null,
+          etudiant2_prenom: etudiant2.prenom || null,
+          etudiant3_nom: etudiant3.nom || null,
+          etudiant3_prenom: etudiant3.prenom || null,
+          president_id: presidentId,
+          rapporteur_id: rapporteurId,
+          encadrant_academique_id: encadrantAcademiqueId,
+          encadrant_professionnel_id: encadrantProfessionnelId,
+          sujet: body.sujet || null,
+          entreprise_nom: body.entreprise || null,
+          notes: null,
+        });
+      } catch (newSchemaError) {
+        // [NEW SCHEMA] Failure in new schema write — log but do not break legacy response
+        console.error('[NEW SCHEMA] Erreur lors de la création de la soutenance (nouveau schéma):', newSchemaError);
+      }
+
       res.status(201).json(newSoutenance);
     } catch (error) {
       res.status(400).json({ error: error.message });

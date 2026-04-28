@@ -62,23 +62,27 @@ const buildSidebarTree = (items, userRole, parentId = null) => {
 };
 
 const hasAccess = (link, userRole) => {
+  // Support both old role names (from JWT) and new normalized names
   const roleAccess = {
-    '/': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT'],
-    '/etudiant': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT'],
-    '/home': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT'],
-    '/entreprise': ['ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
-    '/encadrement': ['DEPARTEMENT', 'ADMIN'],
-    '/planification': ['DEPARTEMENT', 'ADMIN'],
-    '/settings': ['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN'],
+    '/': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT', 'STUDENT', 'COMPANY', 'SUPERVISOR', 'TEACHER'],
+    '/etudiant': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT', 'STUDENT', 'COMPANY', 'SUPERVISOR', 'TEACHER'],
+    '/home': ['USER', 'ENTREPRISE', 'ADMIN', 'DEPARTEMENT', 'STUDENT', 'COMPANY', 'SUPERVISOR', 'TEACHER'],
+    '/entreprise': ['ENTREPRISE', 'DEPARTEMENT', 'ADMIN', 'COMPANY', 'SUPERVISOR'],
+    '/encadrement': ['DEPARTEMENT', 'ADMIN', 'SUPERVISOR'],
+    '/planification': ['DEPARTEMENT', 'ADMIN', 'SUPERVISOR'],
+    '/settings': ['USER', 'ENTREPRISE', 'DEPARTEMENT', 'ADMIN', 'STUDENT', 'COMPANY', 'SUPERVISOR', 'TEACHER'],
     '/gestion': ['ADMIN'],
     '/files/upload': ['ADMIN'],
   };
 
-  if (!roleAccess[link] || link.startsWith('#')) {
+  if (!link || link.startsWith('#')) {
     return false;
   }
 
-  return roleAccess[link].includes(userRole);
+  const allowed = roleAccess[link];
+  if (!allowed) return false;
+
+  return allowed.includes(userRole);
 };
 
 module.exports = {

@@ -18,6 +18,10 @@ const stream = require('stream');
 const { Readable } = stream;
 const app = express();
 
+// [NEW SCHEMA] Import new-schema models for dual-write
+const { Candidature: NewCandidature, Stage: NewStage } = require('../model/BusinessModels');
+const { Etudiant: NewEtudiant } = require('../model/UserTypeModels');
+
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -36,8 +40,7 @@ router.get('/All', async (req, res) => {
       const { search, sortBy, sortOrder, page, limit, ...filters } = req.query;
       const options = {
         where: filters,
-      /*   order: sortBy && sortOrder ? [[sortBy, sortOrder]] : undefined, */
-      order: sortBy && sortOrder ? [[sortBy, sortOrder]] : [['createdAt', 'DESC']],
+        order: sortBy && sortOrder ? [[sortBy, sortOrder]] : [['created_at', 'DESC']],
         offset: page && limit ? (page - 1) * limit : 0,
         limit: limit ? parseInt(limit) : undefined,
       };
@@ -46,19 +49,15 @@ router.get('/All', async (req, res) => {
         options.where = {
           ...options.where,
           [Op.or]: [
-            // Add search conditions for relevant fields here
-            { Domaine: { [Op.like]: `%${search}%` } },
-            { Nom: { [Op.like]: `%${search}%` } },
-            { Titre: { [Op.like]: `%${search}%` } },
-            { Niveau: { [Op.like]: `%${search}%` } },
-            { Libelle: { [Op.like]: `%${search}%` } },
-            { Description: { [Op.like]: `%${search}%` } },
-            { State: { [Op.like]: `%${search}%` } },
-            { Address: { [Op.like]: `%${search}%` } },
-            { Experience: { [Op.like]: `%${search}%` } },
-            { Langue: { [Op.like]: `%${search}%` } },
-            
-            // Add more search conditions as needed
+            { domaine:        { [Op.like]: `%${search}%` } },
+            { nom_entreprise: { [Op.like]: `%${search}%` } },
+            { titre:          { [Op.like]: `%${search}%` } },
+            { niveau:         { [Op.like]: `%${search}%` } },
+            { libelle:        { [Op.like]: `%${search}%` } },
+            { ville:          { [Op.like]: `%${search}%` } },
+            { adresse:        { [Op.like]: `%${search}%` } },
+            { experience:     { [Op.like]: `%${search}%` } },
+            { langue:         { [Op.like]: `%${search}%` } },
           ],
         };
       }
@@ -240,29 +239,26 @@ router.post('/postulates/:id', upload.fields([
 
     // Create a new instance of the candidature model
     const candidatures = await candidature.create({
-      id,
+      stage_id: id,
+      etudiant_id: 0, // will be resolved below; placeholder
       nom,
       prenom,
-      date_naissance,
-      adresse,
-      telephone,
+      date_naissance: date_naissance || null,
+      adresse: adresse || null,
+      telephone: telephone || null,
       email,
-      niveau_etudes,
-      institution,
-      domaine_etudes,
-      section,
-      annee_obtention,
-      experience,
-      experience_description,
-      motivation,
-      langues,
-      logiciels,
-      competences_autres,
-      date_debut,
-      duree_stage,
-      cv: cvFile ? cvFile.webViewLink : null,
-      lettre_motivation: lettreFile ? lettreFile.webViewLink : null,
-      releves_notes: relevesFile ? relevesFile.webViewLink : null
+      niveau_etudes: niveau_etudes || '',
+      institution: institution || '',
+      domaine_etudes: domaine_etudes || '',
+      section: section || null,
+      experience_description: experience_description || null,
+      motivation: motivation || null,
+      langues: langues || null,
+      logiciels: logiciels || null,
+      competences_autres: competences_autres || null,
+      cv_url: cvFile ? cvFile.webViewLink : null,
+      lettre_motivation_url: lettreFile ? lettreFile.webViewLink : null,
+      releves_notes_url: relevesFile ? relevesFile.webViewLink : null,
     }, { transaction: t });
 
     // Retrieve or determine etudiantID
@@ -298,6 +294,38 @@ router.post('/postulates/:id', upload.fields([
 
     // Commit the transaction
     await t.commit();
+
+    // [NEW SCHEMA] Also create a record in the new `candidature` table with snapshot fields
+    // This runs outside the legacy transaction so a failure here does not roll back the legacy write
+    try {
+      const newEtudiantRecord = await NewEtudiant.findOne({ where: { uuid: etudiantID } })
+        || await NewEtudiant.findOne({ where: { nom, prenom } });
+      const newStageRecord = await NewStage.findOne({ where: { titre: stages.Titre || stages.Libelle } });
+
+      if (newEtudiantRecord && newStageRecord) {
+        await NewCandidature.create({
+          stage_id: newStageRecord.stage_id,
+          etudiant_id: newEtudiantRecord.etudiant_id,
+          status: 'EN_ATTENTE',
+          etudiant_nom: nom,
+          etudiant_prenom: prenom,
+          etudiant_email: email,
+          etudiant_departement: domaine_etudes || null,
+          etudiant_specialite: section || null,
+          cv_path: cvFile ? cvFile.webViewLink : null,
+          lettre_motivation_path: lettreFile ? lettreFile.webViewLink : null,
+          releves_notes_path: relevesFile ? relevesFile.webViewLink : null,
+          motivation_letter: motivation || null,
+        });
+      }
+    } catch (newSchemaErr) {
+      // Unique constraint violation = duplicate application; log but don't fail
+      if (newSchemaErr.name === 'SequelizeUniqueConstraintError') {
+        console.warn('[NEW SCHEMA] Candidature en double ignorée (nouveau schéma):', email, id);
+      } else {
+        console.error('[NEW SCHEMA] Erreur lors de la création de la candidature (nouveau schéma):', newSchemaErr.message);
+      }
+    }
 
     // Send success response
     return res.status(200).json({ message: 'Candidature soumise avec succès' });
@@ -427,6 +455,38 @@ router.post('/postulates/:id', upload.fields([
         
 
         await t.commit();
+
+        // [NEW SCHEMA] Also create a record in the new `candidature` table with snapshot fields
+        // Runs outside the legacy transaction so a failure here does not roll back the legacy write
+        try {
+          const newEtudiantRecord = await NewEtudiant.findOne({ where: { uuid: etudiantID } })
+            || await NewEtudiant.findOne({ where: { nom, prenom } });
+          const newStageRecord = await NewStage.findOne({ where: { titre: stages.Titre || stages.Libelle } });
+
+          if (newEtudiantRecord && newStageRecord) {
+            await NewCandidature.create({
+              stage_id: newStageRecord.stage_id,
+              etudiant_id: newEtudiantRecord.etudiant_id,
+              status: 'EN_ATTENTE',
+              etudiant_nom: nom,
+              etudiant_prenom: prenom,
+              etudiant_email: email,
+              etudiant_departement: domaine_etudes || null,
+              etudiant_specialite: section || null,
+              cv_path: cvFile ? cvFile.webViewLink : null,
+              lettre_motivation_path: lettreFile ? lettreFile.webViewLink : null,
+              releves_notes_path: relevesFile ? relevesFile.webViewLink : null,
+              motivation_letter: motivation || null,
+            });
+          }
+        } catch (newSchemaErr) {
+          // Unique constraint violation = duplicate application; log but don't fail
+          if (newSchemaErr.name === 'SequelizeUniqueConstraintError') {
+            console.warn('[NEW SCHEMA] Candidature en double ignorée (nouveau schéma):', email, id);
+          } else {
+            console.error('[NEW SCHEMA] Erreur lors de la création de la candidature (nouveau schéma):', newSchemaErr.message);
+          }
+        }
 
         req.flash('success', 'candidature soumise avec succès');
         return res.redirect(`/etudiant`);
@@ -665,96 +725,76 @@ if (obj.postulatedAt) {
 });
 }
 router.get('/candidatures', async (req, res) => {
-  const etudiantEmail = req.query.etudiantEmail // Retrieving from query parameters
-  const stageId = req.query.stageId // Retrieving from query parameters
+  const etudiantEmail = req.query.etudiantEmail;
+  const stageId = req.query.stageId;
   try {
       let candidatures = await candidature.findOne({
           where: {
               email: etudiantEmail,
-              id: stageId,
-          },
-      })
-      if (!candidatures) {
-          // Handle the case where no candidature is found
-          return res.status(404).send('candidature introuvable')
-      }
-      const modifiedcandidature = {
-        ...candidatures.toJSON(),
-        cv:candidatures.cv,
-        /*  `/stockages/${candidatures.email}/${path.basename(candidatures.cv)}`,*/
-        lettre_motivation: candidatures.lettre_motivation 
-            ?  candidatures.lettre_motivation /* `/stockages/${candidatures.email}/${path.basename(candidatures.lettre_motivation)}` */
-            : 'document pas fournis',
-        releves_notes: candidatures.releves_notes
-            ? candidatures.releves_notes /*  `/stockages/${candidatures.email}/${path.basename(candidatures.releves_notes)}` */
-            : 'document pas fournis',
-      }
-
-      const StageData = await stagepostulation.findOne({
-          where: {
-              stageId: candidatures.id,
-              etudiantEmail: candidatures.email,
-          },
-      })
-      const stageDataJSON = StageData.toJSON()
-      return res.render('etudiant/candidatures', {
-          candidature: modifiedcandidature,
-          stage: stageDataJSON,
-      })
-  } catch (error) {
-      // Handle errors
-      console.error(error)
-      return res.status(500).send('Erreur interne du serveur')
-  }
-})
-
-
-router.get('/candidatures2', async (req, res) => {
-  const etudiantEmail = req.query.etudiantEmail; // Retrieving from query parameters
-  const stageId = req.query.stageId; // Retrieving from query parameters
-  
-  try {
-      let candidatures = await candidature.findOne({
-          where: {
-              email: etudiantEmail,
-              id: stageId,
+              stage_id: stageId,
           },
       });
-
       if (!candidatures) {
-          return res.status(404).json({ error: 'Candidature introuvable' });
+          return res.status(404).send('candidature introuvable');
       }
-
+      const cJson = candidatures.toJSON();
       const modifiedcandidature = {
-          ...candidatures.toJSON(),
-          cv:candidatures.cv,
-          /*  `/stockages/${candidatures.email}/${path.basename(candidatures.cv)}`,*/
-          lettre_motivation: candidatures.lettre_motivation 
-              ?  candidatures.lettre_motivation /* `/stockages/${candidatures.email}/${path.basename(candidatures.lettre_motivation)}` */
-              : 'document pas fournis',
-          releves_notes: candidatures.releves_notes
-              ? candidatures.releves_notes /*  `/stockages/${candidatures.email}/${path.basename(candidatures.releves_notes)}` */
-              : 'document pas fournis',
+        ...cJson,
+        cv:               cJson.cv_url               || cJson.cv               || null,
+        lettre_motivation:cJson.lettre_motivation_url || cJson.lettre_motivation || 'document pas fournis',
+        releves_notes:    cJson.releves_notes_url     || cJson.releves_notes     || 'document pas fournis',
       };
 
       const StageData = await stagepostulation.findOne({
           where: {
-              stageId: candidatures.id,
-              etudiantEmail: candidatures.email,
+              stageId: stageId,
+              etudiantEmail: etudiantEmail,
           },
       });
+      const stageDataJSON = StageData ? StageData.toJSON() : {};
+      return res.render('etudiant/candidatures', {
+          candidature: modifiedcandidature,
+          stage: stageDataJSON,
+      });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).send('Erreur interne du serveur');
+  }
+});
 
+
+router.get('/candidatures2', async (req, res) => {
+  const etudiantEmail = req.query.etudiantEmail;
+  const stageId = req.query.stageId;
+  try {
+      let candidatures = await candidature.findOne({
+          where: {
+              email: etudiantEmail,
+              stage_id: stageId,
+          },
+      });
+      if (!candidatures) {
+          return res.status(404).json({ error: 'Candidature introuvable' });
+      }
+      const cJson = candidatures.toJSON();
+      const modifiedcandidature = {
+          ...cJson,
+          cv:               cJson.cv_url               || cJson.cv               || null,
+          lettre_motivation:cJson.lettre_motivation_url || cJson.lettre_motivation || 'document pas fournis',
+          releves_notes:    cJson.releves_notes_url     || cJson.releves_notes     || 'document pas fournis',
+      };
+      const StageData = await stagepostulation.findOne({
+          where: {
+              stageId: stageId,
+              etudiantEmail: etudiantEmail,
+          },
+      });
       if (!StageData) {
           return res.status(404).json({ error: 'Données de stages sont introuvables' });
       }
-
-      const stageDataJSON = StageData.toJSON();
-
-      // Send JSON response with data
-
       res.status(200).json({
           candidature: modifiedcandidature,
-          stage: stageDataJSON,
+          stage: StageData.toJSON(),
       });
   } catch (error) {
       console.error(error);
@@ -803,7 +843,7 @@ router.get('/application/:id', async (req, res) => {
     }
 
     // Pass the stage information to the template
-    res.render('etudiant/postuler-maintenant', { stage: exist });
+    res.render('etudiant/postuler-maintenant', { stage: exist.toJSON() });
 
   } catch (error) {
     console.log('error', error);
@@ -819,9 +859,9 @@ router.post('/domaine-suggest', async (req, res) => {
       
       // Find similar domaines and order them randomly
       const similarDomaines = await stage.findAll({
-          where: { Domaine: { [Op.like]: `%${domaine}%` } },
-          raw: true, // Ensures the result is in plain object format
-          order: fn('RAND') // Orders results randomly in MySQL
+          where: { domaine: { [Op.like]: `%${domaine}%` } },
+          raw: true,
+          order: fn('RAND')
       });
 
    
@@ -838,7 +878,7 @@ router.get('/postulate/:id', async (req, res) => {
   const id = req.params.id;
   const Onestage = await stage.findByPk(id);
   if (Onestage) {
-      res.render('etudiant/postuler', { stage: Onestage });
+      res.render('etudiant/postuler', { stage: Onestage.toJSON() });
   } else {
       res.render('pages/404');
   }
