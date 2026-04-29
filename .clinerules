@@ -1,0 +1,41 @@
+# GENERAL BEHAVIOR
+- Be concise and avoid long explanations unless explicitly requested.
+- Prioritize direct fixes, commands, or code changes.
+- Do not repeat user input unless necessary for clarity.
+- Avoid verbose reasoning steps.
+- Never use emoji in code or responses.
+
+# CONTEXT USAGE
+- Use only the minimal required files or code sections.
+- Do not request full project context unless necessary.
+- Prefer local snippet-level reasoning.
+
+# OUTPUT STYLE
+- Provide final answer directly.
+- Use short bullet points when needed.
+- Prefer code or commands over explanations.
+- No introductions or closing statements.
+
+# DEBUGGING RULES
+- If error is provided, go straight to likely cause and fix.
+- Do not list multiple theories unless asked.
+- Always give one best fix first.
+
+# AGENT BEHAVIOR
+- Do not simulate long planning unless required.
+- Avoid multi-step narration.
+- Execute actions directly in Act mode.
+
+# PERFORMANCE OPTIMIZATION
+- Assume local model (Ollama) is slow.
+- Minimize token usage per response.
+- Avoid redundant context expansion.
+
+# TOOL USAGE
+- Call tools only when strictly necessary.
+- Do not chain multiple tool calls unnecessarily.
+
+# CODE OUTPUT
+- Provide only relevant code blocks.
+- Do not include explanations inside code.
+- Never use emoji in any code output.

@@ -2,6 +2,10 @@
 
 require('dotenv').config();
 
+// Validate environment variables before starting
+const { validateEnv } = require('./config/env-validator');
+validateEnv();
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -23,6 +27,8 @@ const planificationRoutes = require('./routes/planificationRoutes');
 const authenticate = require('./middlewares/auth');
 const checkRole = require('./middlewares/roles');
 const logger = require('./logs/logger');
+const requestLogger = require('./middlewares/request-logger');
+const { RATE_LIMITS, PAGINATION } = require('./config/constants');
 
 const { fetchSidebarItems, connectToDatabase } = require('./model/dbConfig');
 const { sequelize } = require('./config/database');
@@ -49,22 +55,23 @@ app.use(cors({
 
 // ── Rate limiters ─────────────────────────────────────────────────────────────
 const connectionLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 200,
+    windowMs: RATE_LIMITS.CONNECTION.WINDOW_MS,
+    max: RATE_LIMITS.CONNECTION.MAX_REQUESTS,
     standardHeaders: true,
     legacyHeaders: false,
     message: 'Too many requests from this IP, please try again later.',
 });
 
 const searchLimiter = rateLimit({
-    windowMs: 60 * 1000,
-    max: 300,
+    windowMs: RATE_LIMITS.SEARCH.WINDOW_MS,
+    max: RATE_LIMITS.SEARCH.MAX_REQUESTS,
     standardHeaders: true,
     legacyHeaders: false,
     message: 'Too many search requests from this IP, please try again later.',
 });
 
 // ── Core middleware ───────────────────────────────────────────────────────────
+app.use(requestLogger()); // Log all HTTP requests
 app.use(cookieParser());
 app.use(flash());
 app.use(express.json({ limit: '50mb' }));
@@ -145,39 +152,50 @@ app.get('/check-token', authenticate, (req, res) => {
 });
 
 // ── Search ────────────────────────────────────────────────────────────────────
-const ITEMS_PER_PAGE = 10;
-
-app.get('/search', searchLimiter, async (req, res, next) => {
+app.get('/search', authenticate, searchLimiter, async (req, res, next) => {
     const query = req.query.q;
     if (!query || !query.trim()) {
         return res.redirect('/home');
     }
 
     const page = parseInt(req.query.page, 10) || 1;
+    const ITEMS_PER_PAGE = 10;
     const terms = query.split(' ').map(t => t.trim()).filter(Boolean);
 
     try {
-        const { count, rows: jobs } = await stage.findAndCountAll({
+        const { count, rows } = await stage.findAndCountAll({
             where: {
                 [Op.or]: terms.flatMap(term => [
-                    { titre:   { [Op.like]: `%${term}%` } },
-                    { domaine: { [Op.like]: `%${term}%` } },
-                    { niveau:  { [Op.like]: `%${term}%` } },
-                    { langue:  { [Op.like]: `%${term}%` } },
-                    { adresse: { [Op.like]: `%${term}%` } },
-                    { ville:   { [Op.like]: `%${term}%` } },
+                    { titre:          { [Op.like]: `%${term}%` } },
+                    { domaine:        { [Op.like]: `%${term}%` } },
+                    { niveau:         { [Op.like]: `%${term}%` } },
+                    { langue:         { [Op.like]: `%${term}%` } },
+                    { adresse:        { [Op.like]: `%${term}%` } },
+                    { ville:          { [Op.like]: `%${term}%` } },
                     { nom_entreprise: { [Op.like]: `%${term}%` } },
+                    { libelle:        { [Op.like]: `%${term}%` } },
                 ])
             },
             limit: ITEMS_PER_PAGE,
             offset: (page - 1) * ITEMS_PER_PAGE,
+            order: [['created_at', 'DESC']],
         });
 
         const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+        // Call toJSON() so uppercase aliases (Domaine, Libelle, Address, Nom, Description) are available in the template
+        const jobs = rows.map(r => r.toJSON());
 
         res.render('pages/search-results', {
             jobs,
             query,
+            length: count,
+            currentPage: page,
+            totalPages,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
             length: count,
             currentPage: page,
             totalPages,

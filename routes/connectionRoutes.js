@@ -429,9 +429,7 @@ router.post('/login', async (req, res) => {
 
     }
 
-    console.log('pass :' ,user.validPassword(password))
-
-     if (!user.validPassword(password)) {
+    if (!user.validPassword(password)) {
       req.flash('error', 'Mot de passe incorrect. Veuillez réessayer.');
       return res.render('auth/login', { messages: req.flash() });
     } 
@@ -531,17 +529,27 @@ router.post('/loging', async (req, res) => {
 
   
 
+    // SECURITY FIX: Changed from 10 years to 7 days for better security
     const token = jwt.sign(
       { userId: user.UUID, email: user.EMAIL, role: user.role },
       process.env.secretKey,
-      { expiresIn: '10y' } // 10 years
+      { expiresIn: '7d' } // 7 days (changed from 10 years)
     );
     
-    // Setting the token cookie with a very long max age (e.g., 10 years)
-    res.cookie('token', token, { httpOnly: true, maxAge: 10 * 365 * 24 * 60 * 60 * 1000 }); // 10 years
+    // Setting the token cookie with secure settings
+    res.cookie('token', token, { 
+      httpOnly: true, 
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+    });
     
-    // Setting the user cookie with a very long max age (e.g., 10 years)
-    res.cookie('user', JSON.stringify(user), { maxAge: 10 * 365 * 24 * 60 * 60 * 1000 }); // 10 years
+    // Setting the user cookie
+    res.cookie('user', JSON.stringify(user), { 
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+    });
     
     
 

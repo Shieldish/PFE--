@@ -218,20 +218,20 @@ document.addEventListener("DOMContentLoaded", function() {
   const stageGrid = document.getElementById('stageGrid');
   const stageTableBody = document.getElementById('stageTableBody');
 
-  (function renderStages(data) {
+  function renderStages(data) {
       data.forEach(stage => {
         // Create card item
         const stageItem = document.createElement('div');
         stageItem.classList.add( 'card', 'animate__animated', 'animate__fadeInUp');
 
-        const descriptionLines = stage.Description.split('\n');
-        const longDescription = stage.Description; // Use the original description for full text
+        const descriptionLines = stage.Description ? stage.Description.split('\n') : [];
+        const longDescription = stage.Description || '';
         const dateFin = new Date(stage.DateFin);
         const dateDebut = new Date(stage.DateDebut);
         const formattedDateFin = dateFin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
         const formattedDateDebut = dateDebut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-        const timeSinceCreated = getTimeSinceCreated(new Date(stage.createdAt));
-        const timeSinceUpdate = getTimeSinceCreated(new Date(stage.updatedAt));
+        const timeSinceCreated = getTimeSinceCreated(new Date(stage.created_at || stage.createdAt));
+        const timeSinceUpdate = getTimeSinceCreated(new Date(stage.updated_at || stage.updatedAt));
 
         stageItem.innerHTML = `
           <div class="card-body">
@@ -258,12 +258,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 <a href="/entreprise/edit/${stage.id}" class="btn btn-outline-success btn-sm mybtn d-flex align-items-center">
                   <i class="bi bi-pencil-square"></i> Edit
                 </a>
-
-
-                        <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-id="${stage.id}" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                            <i class="bi bi-trash3"></i> delete
-                        </button>
-
+                <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-id="${stage.id}" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                  <i class="bi bi-trash3"></i> delete
+                </button>
               </div>
             </div>
           </div>
@@ -285,32 +282,19 @@ document.addEventListener("DOMContentLoaded", function() {
             <a href="/entreprise/edit/${stage.id}" class="btn btn-outline-success btn-sm">
               <i class="bi bi-pencil-square"></i> Edit
             </a>
-          
-<button type="button" class="btn btn-outline-danger btn-sm delete-button" data-id="${stage.id}" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                            <i class="bi bi-trash3"></i> delete
-                        </button>
+            <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-id="${stage.id}" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+              <i class="bi bi-trash3"></i> delete
+            </button>
           </td>
         `;
         stageTableBody.appendChild(stageRow);
       });
-    })
-    .catch(error => console.error('Error fetching stages:', error.message));
+  }
 
-  // Toggle views between card and table
-  const cardViewIcon = document.getElementById('cardViewIcon');
-  const tableViewIcon = document.getElementById('tableViewIcon');
-  const stageGrid = document.getElementById('stageGrid');
-  const stageTableContainer = document.getElementById('stageTableContainer');
+  // Render immediately with server-side data
+  renderStages(stagesData);
 
-  cardViewIcon.addEventListener('click', () => {
-    stageGrid.classList.remove('d-none');
-    stageTableContainer.classList.add('d-none');
-  });
-
-  tableViewIcon.addEventListener('click', () => {
-    stageGrid.classList.add('d-none');
-    stageTableContainer.classList.remove('d-none');
-  });
+  // Toggle views between card and table (handled by DOMContentLoaded above)
 
   function getTimeSinceCreated(createdAt) {
     const now = new Date();

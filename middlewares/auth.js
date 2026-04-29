@@ -52,19 +52,35 @@ const authenticate = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    const ignorePaths = ['/favicon.ico', '/sidebar'];
+    // JSON API paths — return 401 instead of redirecting
+    const apiPaths = [
+      '/api/', '/etudiant/All', '/etudiant/stage_postuler', '/etudiant/stage_postuler2',
+      '/etudiant/stages/byIds', '/etudiant/check-email',
+      '/entreprise/postulant', '/entreprise/stages', '/entreprise/postulant_detail',
+      '/encadrement/AllStages', '/planification/get-soutenances',
+      '/connection/profiles', '/sidebar',
+    ];
 
+    const isApiRequest =
+      req.xhr ||
+      (req.headers.accept && req.headers.accept.includes('application/json')) ||
+      req.headers['x-requested-with'] === 'XMLHttpRequest' ||
+      apiPaths.some(p => req.path === p || req.path.startsWith(p));
+
+    if (isApiRequest) {
+      return res.status(401).json({ error: 'Non authentifié', redirect: '/connection/login' });
+    }
+
+    const ignorePaths = ['/favicon.ico', '/sidebar'];
     if (!ignorePaths.includes(req.originalUrl)) {
       req.session.returnTo = req.originalUrl;
     }
-
     return res.redirect('/connection/login');
   }
 
   try {
     const decoded = jwt.verify(token, process.env.secretKey);
     req.userId = decoded.userId;
-    // Normalise role so both old and new role names work transparently
     req.role = normalizeRole(decoded.role);
     next();
   } catch (err) {

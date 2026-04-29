@@ -165,16 +165,17 @@ function getModelFromTableName(tableName) {
       return enseignant;
     case 'encadrant':
       return encadrant;
-    case 'user_registration':
-      return user_registration;
-    case 'user_registrations':
-      return user_registration;
     case 'etudiant':
       return etudiant;
     case 'entreprise':
       return entreprise;
+    case 'user_registration':
+      return user_registration;
+    case 'user_registrations':
+      return user_registration;
     default:
-      return null;
+      // Pour toute autre table on utilise un modèle dynamique
+      return sequelize.define(tableName, {}, { tableName: tableName, timestamps: false });
   }
 }
 

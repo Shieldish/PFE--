@@ -5,19 +5,32 @@ const bcrypt = require('bcrypt');
 const { sequelize } = require('../config/database');
 
 async function main() {
-  const hash = bcrypt.hashSync('Admin1234!', 10);
-  console.log('New hash:', hash);
-
+  const password = process.argv[2] || 'test2026#';
   await sequelize.authenticate();
 
-  const [rows] = await sequelize.query(
-    `UPDATE user_registrations
-     SET PASSWORD = :hash
-     WHERE EMAIL IN ('admin@gestion.tn','dept@gestion.tn','etudiant@gestion.tn','entreprise@gestion.tn')`,
-    { replacements: { hash } }
-  );
-  console.log('Updated rows:', rows.affectedRows ?? rows);
+  // Generate hash directly in Node — no shell interpolation issues
+  const hash = await bcrypt.hash(password, 10);
+  console.log('Password:', password);
+  console.log('Hash length:', hash.length, '| prefix:', hash.slice(0, 7));
+
+  // Use Sequelize model update (bypasses beforeCreate hook, sets raw hash)
+  const { user_registration } = require('../model/userModel');
+
+  const rows = await user_registration.findAll({
+    where: sequelize.literal("EMAIL LIKE '%gestion.tn'")
+  });
+
+  for (const row of rows) {
+    // Set the hash directly on the instance and save (bypasses beforeCreate)
+    row.PASSWORD = hash;
+    await row.save({ fields: ['PASSWORD'] });
+
+    // Verify immediately
+    const ok = bcrypt.compareSync(password, row.PASSWORD);
+    console.log(`${row.EMAIL}: ${ok ? '✓ OK' : '✗ FAIL'}`);
+  }
+
   await sequelize.close();
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch(e => { console.error(e.message); process.exit(1); });

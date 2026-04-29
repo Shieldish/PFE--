@@ -37,10 +37,21 @@ router.get('/', (req, res)=>
 
 router.get('/All', async (req, res) => {
     try {
-      const { search, sortBy, sortOrder, page, limit, ...filters } = req.query;
+      const { search, sortBy, sortOrder, page, limit, Domaine, Nom, Titre, Address, State } = req.query;
+
+      // Map old uppercase filter names to new lowercase DB column names
+      const where = {};
+      if (Domaine) where.domaine = Domaine;
+      if (Nom)     where.nom_entreprise = Nom;
+      if (Titre)   where.titre = Titre;
+      if (Address || State) where.adresse = Address || State;
+
+      const sortByMap = { createdAt: 'created_at', updatedAt: 'updated_at', Domaine: 'domaine', Titre: 'titre', Nom: 'nom_entreprise' };
+      const resolvedSortBy = sortByMap[sortBy] || sortBy || 'created_at';
+
       const options = {
-        where: filters,
-        order: sortBy && sortOrder ? [[sortBy, sortOrder]] : [['created_at', 'DESC']],
+        where,
+        order: [[resolvedSortBy, sortOrder || 'DESC']],
         offset: page && limit ? (page - 1) * limit : 0,
         limit: limit ? parseInt(limit) : undefined,
       };
@@ -66,7 +77,7 @@ router.get('/All', async (req, res) => {
       const totalPages = limit ? Math.ceil(count / limit) : 1;
   
       res.json({
-        stages: rows,
+        stages: rows.map(r => r.toJSON()),
         pagination: {
           currentPage: page ? parseInt(page) : 1,
           totalPages,
@@ -565,9 +576,9 @@ router.get('/stage_postuler', async (req, res) => {
   
       if (postulated.length === 0) {
        // req.flash('info', 'No postulated found');
-        return res.status(404).json({ error: 'Aucun postulé trouvé' });
+        return res.status(200).json({ postulant: [] });
       }
-  
+
       let postulatedJson = postulated.map(postulated => postulated.toJSON());
   
       await normalizeDate(postulatedJson);
@@ -645,9 +656,9 @@ router.get('/stage_postuler', async (req, res) => {
       });
   
       if (postulated.length === 0) {
-        return res.status(404).json({ error: 'Aucun postulé trouvé' });
+        return res.status(200).json({ postulant: [] });
       }
-  
+
       let postulatedJson = postulated.map(postulated => postulated.toJSON());
   
       await normalizeDate(postulatedJson);

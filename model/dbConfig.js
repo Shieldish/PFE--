@@ -20,10 +20,15 @@ const connectToDatabase = async () => {
 };
 
 const fetchSidebarItems = async (lang, userRole) => {
+  // Validate language parameter to prevent SQL injection
+  const allowedLangs = ['fr', 'en'];
+  const safeLang = allowedLangs.includes(lang) ? lang : 'fr';
+  
+  // Use parameterized query to prevent SQL injection
   const sidebarSql = `
     SELECT
       s.id,
-      s.name_${lang} AS name,
+      s.name_:lang AS name,
       s.link,
       s.icon,
       s.parent_id
@@ -32,7 +37,10 @@ const fetchSidebarItems = async (lang, userRole) => {
   `;
 
   try {
-    const [sidebarResults] = await sequelize.query(sidebarSql);
+    const sidebarResults = await sequelize.query(
+      sidebarSql.replace(':lang', safeLang),
+      { type: sequelize.QueryTypes.SELECT }
+    );
     const sidebarItems = buildSidebarTree(sidebarResults, userRole);
     return sidebarItems;
   } catch (err) {
