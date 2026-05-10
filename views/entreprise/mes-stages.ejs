@@ -350,28 +350,8 @@ document.addEventListener("DOMContentLoaded", function() {
     deleteButtons.forEach(button => {
         button.addEventListener('click', function() {
             const stageId = this.getAttribute('data-id');
-            // Set the stageId to the confirmation modal's delete button
             confirmDeleteBtn.setAttribute('data-id', stageId);
         });
-
-
-        searchInput.addEventListener('input', function() {
-  const searchValue = this.value.toLowerCase();
-  const rows = tableBody.getElementsByTagName('tr');
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const rowText = row.textContent.toLowerCase();
-
-    if (rowText.includes(searchValue)) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
-    }
-  }
-});
-
-
     });
 
 

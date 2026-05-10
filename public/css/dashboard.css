@@ -62,23 +62,9 @@ a:hover { color: var(--accent-hover); }
 
 img { max-width: 100%; }
 
-/* ── Fix Bootstrap Modal Fade Bug ── */
-.modal.fade {
-  opacity: 0;
-  transition: opacity 0.15s linear;
-}
-
-.modal.fade.show {
-  opacity: 1;
-}
-
-.modal-backdrop.fade {
-  opacity: 0;
-}
-
-.modal-backdrop.fade.show {
-  opacity: 0.5;
-}
+/* ── Bootstrap Modal — let Bootstrap own the fade, only ensure z-index stacking ── */
+.modal-backdrop { z-index: 1040; }
+.modal          { z-index: 1050; }
 
 /* ── Animations ── */
 @keyframes fadeIn {

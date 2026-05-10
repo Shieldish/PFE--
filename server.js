@@ -196,14 +196,6 @@ app.get('/search', authenticate, searchLimiter, async (req, res, next) => {
         next(error);
     }
 });
-            length: count,
-            currentPage: page,
-            totalPages,
-        });
-    } catch (error) {
-        next(error);
-    }
-});
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => {

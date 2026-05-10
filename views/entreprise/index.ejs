@@ -12,14 +12,14 @@
       <%- include('../shared/flash-messages') %>
 
       <div class="page-nav-layout">
-        <nav class="page-nav" data-nav-key="entreprise">
-          <button class="page-nav-btn active" data-panel="ent-postulants">
+        <nav class="page-nav">
+          <button class="page-nav-btn" data-panel="ent-postulants">
             <i class="bi bi-people"></i> Postulant(e)s
           </button>
           <button class="page-nav-btn" data-panel="ent-creer">
             <i class="bi bi-plus-circle"></i> Créer un stage
           </button>
-          <button class="page-nav-btn" data-panel="ent-mes-stages">
+          <button class="page-nav-btn active" data-panel="ent-mes-stages">
             <i class="bi bi-briefcase"></i> Mes stages
           </button>
           <button class="page-nav-btn" data-panel="ent-edit">
@@ -34,7 +34,7 @@
         </nav>
 
         <div class="page-panels">
-          <div class="page-panel active" id="ent-postulants">
+          <div class="page-panel" id="ent-postulants">
             <%- include('./postulants') %>
           </div>
           <div class="page-panel" id="ent-creer">
@@ -44,7 +44,7 @@
               </div>
             </div>
           </div>
-          <div class="page-panel" id="ent-mes-stages">
+          <div class="page-panel active" id="ent-mes-stages">
             <%- include('./mes-stages') %>
           </div>
           <div class="page-panel" id="ent-edit">
