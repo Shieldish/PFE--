@@ -43,7 +43,28 @@ const { Op } = require('sequelize');
 const app = express();
 
 // ── Security headers ──────────────────────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc:  ["'self'"],
+            scriptSrc:   ["'self'", "'unsafe-inline'",
+                          "https://cdn.jsdelivr.net",
+                          "https://code.jquery.com",
+                          "https://cdnjs.cloudflare.com"],
+            styleSrc:    ["'self'", "'unsafe-inline'",
+                          "https://cdn.jsdelivr.net",
+                          "https://fonts.googleapis.com",
+                          "https://cdnjs.cloudflare.com"],
+            fontSrc:     ["'self'", "https:", "data:",
+                          "https://fonts.gstatic.com",
+                          "https://cdnjs.cloudflare.com"],
+            imgSrc:      ["'self'", "data:", "https://ui-avatars.com"],
+            connectSrc:  ["'self'"],
+            frameSrc:    ["'none'"],
+            objectSrc:   ["'none'"],
+        },
+    },
+}));
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 app.use(cors({

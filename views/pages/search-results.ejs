@@ -27,7 +27,11 @@
                 </a>
                 <p class="text-muted small mb-1 mt-1"><em><%= job.Nom %></em></p>
                 <p class="text-muted small mb-0">
-                  <%= job.Description.substring(0, 199) %>…
+                  <% if (job.Description && job.Description.length > 0) { %>
+                    <%= job.Description.substring(0, 199) %><% if (job.Description.length > 199) { %>…<% } %>
+                  <% } else { %>
+                    <%= job.Libelle %>
+                  <% } %>
                   <a href="/etudiant/postulate/<%= job.id %>" class="text-success ms-1">voir plus</a>
                 </p>
               </div>
